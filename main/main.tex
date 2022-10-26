@@ -1,0 +1,35 @@
+\documentclass[12pt,twoside,letterpaper,openany]{book}
+
+\input{preamble}
+
+\setcounter{tocdepth}{4}
+
+\usepackage{subfiles}
+
+\begin{document}
+    
+\frontmatter
+
+\begin{titlepage}
+    
+    {\Huge Undergraduate \\ Reinforcement Learning}
+
+    \vspace{\stretch{1}}
+
+    Initially created by \textbf{Alexander D. Cai} for his senior thesis.
+
+    \tableofcontents
+
+\end{titlepage}
+
+
+\mainmatter
+
+\subfile{../1_bandits/bandits}
+
+\subfile{../2_mdps/mdps}
+
+\subfile{../3_control/control}
+
+
+\end{document}

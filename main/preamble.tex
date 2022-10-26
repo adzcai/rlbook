@@ -1,0 +1,67 @@
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in, twoside]{geometry}
+\usepackage{graphicx, hyperref}
+\usepackage[indent]{parskip}
+
+% ==================== HEADER STYLES ====================
+
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\pagestyle{fancy}
+
+\fancyhf{} % clear all existing fields
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\rightmark}
+\fancyfoot[RO, LE]{\thepage}
+
+
+
+% ==================== MATH NOTATION ====================
+
+\usepackage{amsmath, amsfonts, amssymb}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cN}{\mathcal{N}}
+% \newcommand{\P}{\mathbb{P}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+
+\DeclareMathOperator*{\E}{\mathbb{E}}
+\DeclareMathOperator*{\argmax}{\textrm{arg\ max}}
+\DeclareMathOperator*{\var}{\textrm{Var}}
+\DeclareMathOperator*{\tr}{\textrm{Tr}}
+
+
+
+% ==================== TCOLORBOX CONFIGURATION ====================
+
+\usepackage[many]{tcolorbox}
+
+\newcommand{\customtheorem}[4]{
+    \newcounter{#1}[section]
+    \expandafter\newcommand\csname #1name\endcsname{#2}
+    \expandafter\renewcommand\csname the#1\endcsname{\thesection.\arabic{#1}}
+    \newtcbtheorem[use counter*=#1]
+        {#1}
+        {#2}
+        {
+            fonttitle=\bfseries,
+            colback=#4,
+            coltitle=black,
+            enhanced,
+            breakable,
+            parbox=false,
+            boxed title style={colback=#4},
+            attach boxed title to top text left={
+                yshift=-\tcboxedtitleheight/2,
+                yshifttext=-\tcboxedtitleheight/2}
+        }{#3}
+}
+
+\customtheorem{theorem}{Theorem}{th}{green!5}
+\customtheorem{definition}{Definition}{df}{blue!5}
+\customtheorem{remark}{Remark}{rm}{white}
+\customtheorem{example}{Example}{eg}{violet!5}
+
