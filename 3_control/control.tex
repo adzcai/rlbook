@@ -4,12 +4,20 @@
 
 \begin{document}
     
-\chapter{Control}
+\chapter{Linear Quadratic Regulators}
 
-\section{Motivation}
 
-In the last chapter, we covered Markov Decision Processes (MDPs) where the state
-and action spaces were finite.
+\section{Motivation and control theory}
+
+Have you ever tried balancing a pen upright in your palm?
+If not, try it! It's a lot harder than it might seem.
+Unlike the cases we studied the previous chapter,
+the state and action spaces are not finite or even discrete.
+Instead, they are continuous and uncountably infinite.
+How can we teach computers to solve these sorts of \emph{continuous control} problems?
+
+In the last chapter, we covered Markov Decision Processes (MDPs) in the case
+where the state and action spaces were finite.
 We showed that, if we know the state transitions,
 we can calculate the optimal policy using efficient polynomial-time algorithms
 (Value Iteration and Policy Iteration).
@@ -21,7 +29,6 @@ What about the case where state and action spaces are infinite?
 This doesn't necessarily mean that they need to be super ``complex'', in a heuristic sense.
 They could simply be continuous, such as choosing the angle to tilt your
 steering wheel, or the force on a joint of a robotic drone.
-
 
 % TODO come up with better examples
 % Here, we're also assuming that everything is known!
@@ -135,8 +142,7 @@ behavior much; namely, that the functions involved are relatively
 Can we use this structure in other ways? This brings us to the next topic,
 where we make some simplifying assumptions:
 
-\section{The Linear Quadratic Regulator Problem}
-
+\section{The Linear Quadratic Regulator Problem} \label{sec:lqr}
 
 
 \begin{definition}{Linear quadratic regulator problem}{lqr}
@@ -288,7 +294,7 @@ for which \[ (A - BK)^t s_0^\star = \lambda_{\max}^t s_0^\star \xrightarrow{t \t
 As it turns out, we can now solve for the optimal policy $\pi$ via dynamic
 programming in terms of these value and action-value functions.
 
-\subsection{Optimality for LQR}
+\section{Optimality for LQR}
 
 \begin{definition}{Optimal value functions for LQR}{optimal_value_lqr}
     The optimal value function is the one that, in all states and across all timesteps,
@@ -459,4 +465,149 @@ finite-horizon MDP solution, it's fully deterministic and doesn't depend on any 
 (Compare this with the discrete MDP case, where calculating our optimal policy
 required taking an expectation over the state transitions.)
 
+
+\section{Time-dependent dynamics} \label{sec:time_dep}
+
+
+We've closely studied the standard case of LQR, where the state and action spaces are both
+continuous, the dynamics are linear and time-homogeneous, and the cost is quadratic.
+We can also consider situations where some, or all, of these assumptions are relaxed.
+
+So far, we've considered the \emph{time-homogeneous} case, where the dynamics are the same at every timestep. We can also loosen this restriction, and consider the case where the dynamics are \emph{time-dependent.} Our analysis
+remains almost the same, except we just add a time index to each of the relevant matrices.
+
+The problem is now defined as follows:
+\begin{align*}
+    \arg \min_{\pi_{0:T-1} : \cS \to \cA} \quad & \E \left[ \left( \sum_{t=0}^{T-1} (s_t^\top Q_t s_t) + a_t^\top R_t a_t \right) + s_T^\top Q_T s_T \right] \\
+    \textrm{where} \quad s_{t+1} = f_t(s_t, a_t, w_t) &= A_t s_t + B_t a_t + w_t \\
+    s_0 &\sum \mu_0 \\
+    a_t &= \pi_t (s_t) \\
+    w_t &\sim \mathcal{N}(0, \sigma^2 I).
+\end{align*}
+The derivation remains almost exactly the same, and so the Ricatti equation then
+becomes the \emph{time-dependent Ricatti equation:}
+
+\begin{theorem}{Time-dependent Ricatti Equation}{ricatti_time_dependent}
+    \[
+        P_t = Q_t + A_t^\top P_{t+1} A_t - A_t^\top P_{t+1} B_t (R_t + B_t^\top P_{t+1} B_t)^{-1} B_t^\top P_{t+1} A_t.
+    \]
+
+    Note that this is just \autoref{th:ricatti}, but with the
+    time index added to each of the matrices.
+\end{theorem}
+
+Additionally, by allowing the dynamics to vary across time,
+this gives us a \emph{locally linear} approximation of nonlinear dynamics at each timestep!
+We'll discuss this later in the chapter.
+
+\section{More general quadratic cost functions}
+
+Our original cost function had only second-order terms w.r.t. the state and action. We can also consider more general quadratic cost functions that also have first-order terms and a constant term. Combining this with
+time-dependent dynamics, we get the following expression
+\[
+    c_t(s_t, a_t) = ( s_t^\top Q_t s_t + s_t^\top M_t a_t + a_t^\top R_t a_t ) + (s_t^\top q_t + a_t^\top r_t) + c_t.
+\]
+We can also include a constant term $v_t \in \R^d$ in the dynamics:
+\[
+    s_{t+1} = f_t(s_t, a_t, w_t) = A_t s_t + B_t a_t + v_t + w_t.
+\]
+
+
+\section{Tracking a predefined trajectory}
+
+So far, we've been trying to get the robot to stay as close as possible to
+a single point $(s^\star, a^\star).$ We can also consider the case where we
+want the robot to follow a predefined trajectory, which is a sequence of
+states and actions $(s_t^\star, a_t^\star)_{t = 1}^T$. In this case, we can use the following cost function:
+\[
+    c_t(s_t, a_t) = (s_t - s^\star_t)^\top Q (s_t - s^\star_t) + (a_t - a^\star_t)^\top R (a_t - a^\star_t).
+\]
+By expanding out these multiplication, we can see that this is actually a special case of the more general quadratic cost function we discussed
+above: \[
+    M_t = 0, \qquad q_t = -2Q s^\star_t, \qquad r_t = -2R a^\star_t, \qquad c_t = (s^\star_t)^\top Q (s^\star_t) + (a^\star_t)^\top R (a^\star_t).
+\]
+
+
+\section{Infinite-horizon}
+
+So far, we've been considering finite-horizon problems, where we have a fixed number of timesteps $T$. We can also consider the case where we have an infinite horizon, and so we want to minimize the expected cost over all future timesteps.
+Additionally, we'll compare this \emph{undiscounted finite-horizon} case to the \emph{discounted infinite-horizon} case, where we have a discount factor $\gamma \in [0, 1]$ that discounts future rewards.
+
+Instead of considering the \emph{total} expected cost, which is going to diverge as time goes on,
+we'll consider the average cost per timestep. That is, we'll divide our objective
+function by $T,$ the number of timesteps.
+What happens is that the recursion in our Ricatti equation (the recursive equation
+for $P_t$) converges to a fixed value $P$.
+
+From an intuitive perspective of why this happens, let's suppose you have an upcoming project deadline. When it's still a few months away, you might not pay
+much attention to it. But as the deadline gets closer and closer, suddenly the
+horizon becomes clear, and you'll spend more time thinking about it.
+Now the infinite-horizon case is just where the deadline is infinitely far away, so you can just ``behave'' like normal!
+
+This ties in exactly with our analysis of value iteration, which gave us a sequence of policies,
+and then we just took the final policy.
+We're doing the same thing in the large-horizon setting, but note that here there's
+no discount term $\gamma$; the structure of the problem allows us to analyze it even without one.
+
+Note that several parts of this proof are very similar to our derivations of
+value iteration and policy iteration in the previous chapter.
+Let's spend some time on formalizing this connection.
+
+In the discounted case, instead of considering the limit as $T \to \infty,$ we consider the limit as $\gamma \to 1.$ This is because as the discount factor $\gamma$ approaches $1,$ time discounting becomes less and less important, and we're left with the undiscounted case. Just like above, this means we need to
+multiply our cost function by $1 - \gamma,$ and then we can use the same analysis as before.
+
+Let's consider value iteration, which uses the Bellman operator to update $V$: \[
+    V_{t+1}(s) = \max_a \left( r(s, a) + \gamma \E_{s' \sim P(s, a)} V_t(s') \right).
+\]
+The analogue of this in the undiscounted finite-horizon case is the \emph{Ricatti equation} (\autoref{th:ricatti}).
+Instead of thinking of $P_{t+1}$ as defining the value function for the \emph{next timestep,} though, let's think of it as the \emph{next version} of the value function.
+
+% TODO finish this up
+
+\begin{figure}[h]
+    \centering
+    \begin{tabular}{c|c}
+        \textbf{Control} & \textbf{MDP} \\
+        \hline
+        Finite-horizon & Infinite-horizon \\
+        Continuous states and actions & Finite states and actions \\
+        Total undiscounted cost & Total discounted reward \\
+        $\displaystyle \lim_{T \to \infty} \frac{1}{T} \E \left[ \left( \sum_{t=0}^{T-1} c(s_t, a_t) \right) + c(s_T) \right]$ & $\lim_{\gamma \to 1} \displaystyle (1 - \gamma) \E \left[ \sum_{t=0}^{\infty} \gamma^t c(s_t, a_t) \right]$ \\
+        Ricatti equations & Value iteration \\
+        $\displaystyle P \gets Q + A^\top P A - A^\top P B (R + B^\top P B)^{-1} B^\top P A$ & $\displaystyle V(s) \gets \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V(s') \right]$
+    \end{tabular}
+    \caption{Comparison of control and finite MDPs.}
+    \label{fig:control_mdp}
+\end{figure}
+
+
+\section{Approximating nonlinear dynamics with LQR}
+
+Let's return to the CartPole example (\ref{eg:cart_pole}) from the start of the chapter. We want to stabilize the pole around some
+optimal state and action $(s^\star, a^\star).$
+The `Q' in LQR stands for ``quadratic cost,'' so previously
+we've modelled the cost as $c(s, a) = (s - s^\star)^\top Q (s - s^\star) + (a - a^\star)^\top R (a - a^\star).$
+Here, let's relax those constraints and consider some more
+general measure of distance to the optimal state and action: \[
+    c(s, a) = d(s, s^\star) + d(a, a^\star).
+\]
+We'll consider the noise-free setting, since as we previously saw,
+the noise doesn't actually affect the optimal policy.
+
+This is essentially just a general control problem (see \ref{df:optimal_control}). We can use LQR to solve it, but we'll need to approximate the dynamics of the system.
+Here, we don't know the dynamics $f$ or the cost function $c$,
+but we suppose that we're able to \emph{query/sample/simulate} them
+to get their values at a given state and action.
+
+We also assume that $f$ is differentiable and that $c$ is twice-differentiable. This makes sense since we want to approximate
+$f$ as linear and $c$ as quadratic so that we can apply LQR.
+For our approximation to be accurate, we need to make sure that all states are close to the optimal state $s^\star,$
+and we can stay close using actions that are close to $a^\star.$
+
+% TODO: insert figure here for visual intuition, in case people aren't experienced with the calculus
+
+
+
 \end{document}
+
+
