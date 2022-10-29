@@ -1,8 +1,12 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1in, twoside]{geometry}
-\usepackage{graphicx, hyperref, sidenotes}
+\usepackage{graphicx, hyperref, sidenotes, enumitem}
 \usepackage[indent]{parskip}
+
+\newenvironment{steps}
+    {\begingroup \samepage \begin{enumerate}[label={\bfseries Step \arabic{*}.}]}
+    {\end{enumerate} \endgroup}
 
 % ==================== HEADER STYLES ====================
 
@@ -20,6 +24,7 @@
 
 % ==================== MATH NOTATION ====================
 
+% use tcolorbox theorems instead of amsthm
 \usepackage{amsmath, amsfonts, amssymb}
 
 \newcommand{\R}{\mathbb{R}}
@@ -27,11 +32,13 @@
 % \newcommand{\P}{\mathbb{P}}
 \newcommand{\cS}{\mathcal{S}}
 \newcommand{\cA}{\mathcal{A}}
+\newcommand{\qed}{$\blacksquare$}
 
 \DeclareMathOperator*{\E}{\mathbb{E}}
 \DeclareMathOperator*{\argmax}{\textrm{arg\ max}}
 \DeclareMathOperator*{\var}{\textrm{Var}}
 \DeclareMathOperator*{\tr}{\textrm{Tr}}
+\DeclareMathOperator*{\diag}{\textrm{diag}}
 
 
 
