@@ -4,8 +4,12 @@
 
 \begin{document}
     
-\chapter{Linear Quadratic Regulators}
+\chapter[LQR]{Linear Quadratic Regulators}
 
+\begingroup
+\renewcommand{\clearpage}{\relax}
+\tableofcontents
+\endgroup
 
 \section{Motivation}
 
@@ -99,7 +103,7 @@ As a matter of fact, let's consider what happens if we \emph{discretize} the
 problem. For intuition, suppose $n_s = n_a = 1$ (that is, states and actions are real numbers).
 To make $\cS$ and $\cA$ discrete, let's choose some small positive $\epsilon,$
 and simply round states and actions to the nearest multiple of
-$\epsilon.$ For example, if $\epsilon = 0.01$, then we're just rounding $s$ and $a$ to two decimal spaces. \footnote{Formally, we can consider an $\epsilon$-net over the original continuous space. Let $V$ be some normed space. A subset $V_\epsilon \subseteq V$ is called an $\epsilon$-net if for all $v \in V,$ there exists a $v_\epsilon \in V_\epsilon$ such that $\|v - v_\epsilon\| \le \epsilon.$ The rounding example given is technically a $0.005$-net.} If both these state and action spaces can be bounded, then the resulting sets are actually finite, so now we can use our previous tools for MDPs!
+$\epsilon.$ For example, if $\epsilon = 0.01$, then we're just rounding $s$ and $a$ to two decimal spaces. \footnote{Formally, we can consider an $\epsilon$-net over the original continuous space. Let $V$ be some normed space. A subset $V_\epsilon \subseteq V$ is called an $\epsilon$-net if for all $v \in V,$ there exists a $v_\epsilon \in V_\epsilon$ such that $\|v - v_\epsilon\| \le \epsilon.$ The rounding example given is technically a $0.005$-net.} If both these state and action spaces can be bounded, then the resulting sets are actually finite, so now we can use our previous tools for MDPs.
 
 But is this actually a feasible solution? Even if our $\cS$ and $\cA$ are
 finite, the existing algorithms might take unfeasibly long to complete.
@@ -161,7 +165,7 @@ we can generalize the algorithms for LQR to get surprisingly good solutions.
         \textrm{where} \quad & s_{t+1} = A s_t + B a_t + w_t \\
         & a_t = \pi_t (s_t) \\
         & w_t \sim \mathcal{N}(0, \sigma^2 I) \\
-        & s_0 \sim \mu_0
+        & s_0 \sim \mu_0.
     \end{align*}
 \end{definition}
 
@@ -235,7 +239,7 @@ So how do we go about analyzing this system? A good first step might be to intro
 As in the previous chapter, these will be instrumental in constructing optimal policy $\pi$ via dynamic
 programming.
 
-\section{Optimality for LQR} \label{sec:optimal_lqr}
+\section{Optimality and the Ricatti Equation} \label{sec:optimal_lqr}
 
 In this section, we'll derive the optimal policy in the LQR setting.
 We'll do this through induction, which directly translates into a recursive dynamic programming algorithm for actually calculating the optimal policy.
@@ -342,8 +346,8 @@ Substituting this back into the expression for $Q^\star_t,$ we have:
     \label{eq:q_star_lqr}
 \end{equation}
 
-As we'd hoped, this expression is quadratic in $s$ and $a$!
-Furthermore, we'd like to show that it's also convex, in order to make optimizing it over $a$ much easier.
+As we hoped, this expression is quadratic in $s$ and $a$.
+Furthermore, we'd like to show that it's also convex w.r.t. $a$ in order to make the optimization much easier.
 This is fairly straightforward:
 
 \begin{theorem}{$Q^\star_t$ is convex}{optimal_q_convex}
@@ -380,7 +384,7 @@ finite-horizon MDP solution), it's also fully deterministic and isn't affected b
 (Compare this with the discrete MDP case, where calculating our optimal policy
 required taking an expectation over the state transitions.)
 
-\textbf{Step 3.} We're almost there! To complete our inductive proof, we must show that the
+\textbf{Step 3.} To complete our inductive proof, we must show that the
 inductive hypothesis is true at time $t$; that is, we must prove that
 $V^\star_t(s)$ is quadratic.
 Using the identity $V^\star_t(s) = Q^\star_t(s, \pi^\star(s)),$ we have: \begin{align*}
@@ -426,7 +430,7 @@ In summary, we just demonstrated that:
 
 Before we move on to some extensions of LQR, let's consider how the state at time $t$ behaves when we act according to this optimal policy.
 
-\section{Expected state at time $t$}
+\subsection{Expected state at time $t$}
 
 % TODO would a finance example be better here? Probably not realistic
 
@@ -454,21 +458,31 @@ or will it go to infinity as time goes on?
 To answer this, let's imagine that these $K_i$s are equal (call this matrix $K$).
 Then the expression above becomes $(A-BK)^t s_0.$
 Now consider the maximum eigenvalue $\lambda_{\max}$ of $A - BK.$
-If $\lambda_{\max} > 1,$ then there's some initial state $s_0',$ the corresponding eigenvector, for which \[
-    \lim_{t \to \infty} (A - BK)^t s_0' = \lambda_{\max}^t s_0' = \infty.
+If $|\lambda_{\max}| > 1,$ then there's some nonzero initial state $\bar s_0,$ the corresponding eigenvector, for which \[
+    \lim_{t \to \infty} (A - BK)^t \bar s_0 = \lambda_{\max}^t \bar s_0 = \infty.
 \]
-By then, your room is \emph{definitely} on fire!
+By then, your room is \emph{definitely} on fire! Otherwise, if $|\lambda_{\max}| < 1,$ then it's impossible for your original state to explode as dramatically (assuming it's properly normalized).
 
 We've now formulated an optimal solution for the typical, time-homogeneous case of LQR, and considered the expected state under the optimal policy.
 However, this simple case is insufficient for more complex tasks.
 In the following sections, we'll consider some motivating examples, and extensions of LQR where some assumptions are relaxed.
 
-\section{Time-dependent dynamics and cost function} \label{sec:time_dep_lqr}
+\section{Extensions}
+
+In this section, we'll consider settings where some of the assumptions we made above are relaxed.
+Specifically, we'll consider:
+\begin{enumerate}
+    \item \textbf{Time-dependency,} where the dynamics and cost function might change depending on the timestep.
+    \item \textbf{General quadratic cost,} where we allow for linear terms and a constant term.
+    \item \textbf{Tracking a goal trajectory} rather than aiming for a single goal state-action pair.
+\end{enumerate}
+
+\subsection[Time-dependency]{Time-dependent dynamics and cost function} \label{sec:time_dep_lqr}
 
 So far, we've considered the \emph{time-homogeneous} case, where the dynamics and cost function stay the same at every timestep. However, this might not always be the case. For example, if we want to preserve the temperature in a greenhouse, the outside forces are going to change depending on the time of day.
 As another example, in many sports or video games, the rules and scoring system might change during overtime.
 To address these sorts of problems, we can loosen the time-homogeneous restriction, and consider the case where the dynamics and cost function are \emph{time-dependent.}
-Our analysis remains almost identical; in fact, we can simply add a time index to the matrices $A$ and $B$ that determine the dynamics and the matrices $Q$ and $R$ that determine the cost. (Go back and make sure this doesn't affect the results!)
+Our analysis remains almost identical; in fact, we can simply add a time index to the matrices $A$ and $B$ that determine the dynamics and the matrices $Q$ and $R$ that determine the cost. (As an exercise, walk through the derivation and verify this claim!)
 
 The modified problem is now defined as follows:
 \begin{align*}
@@ -493,10 +507,10 @@ and we can modify the Riccati equation accordingly:
 \end{theorem}
 
 Additionally, by allowing the dynamics to vary across time,
-we gain the ability to \emph{locally linearly approximate} nonlinear dynamics at each timestep!
+we gain the ability to \emph{locally approximate} nonlinear dynamics at each timestep.
 We'll discuss this later in the chapter.
 
-\section{More general quadratic cost functions}
+\subsection[General quadratic cost]{More general quadratic cost functions}
 
 Our original cost function had only second-order terms w.r.t. the state and action. We can also consider more general quadratic cost functions that also have first-order terms and a constant term. Combining this with
 time-dependent dynamics results in the following expression, where we introduce a new matrix $M_t$ for the cross term, linear coefficients $q_t$ and $r_t$ for the state and action respectively, and a constant term $c_t$:
@@ -508,9 +522,11 @@ Similarly, we can also include a constant term $v_t \in \R^{n_s}$ in the dynamic
 \[
     s_{t+1} = f_t(s_t, a_t, w_t) = A_t s_t + B_t a_t + v_t + w_t.
 \]
+The derivation of the optimal solution in this case will be left as a homework exercise.
 
+% TODO: Should we maybe go more in detail here, at the expense of new homework problems?
 
-\section{Tracking a predefined trajectory}
+\subsection{Tracking a predefined trajectory}
 
 So far, we've been trying to get the robot to stay as close as possible to the origin, or more generally a goal state-action pair $(s^\star, a^\star).$ However, consider applying LQR to autonomous driving. Now, we want the desired state to change over time, instead of remaining in one location. Otherwise, it wouldn't be a very useful vehicle!
 In these cases, we want the robot to follow a predefined \emph{trajectory} of
@@ -523,7 +539,7 @@ Note that this punishes states and actions that are far from the intended trajec
 \]
 
 
-\section{Infinite-horizon}
+\section{The infinite-horizon setting}
 
 Another assumption we've made is that the task has a \emph{finite horizon} $T$. How about tasks that might matter indefinitely, where we want to minimize the expected cost over \emph{all future timesteps?} Consider, for example, controlling the long-term value of a portfolio, or managing acidity levels in a lake.
 
@@ -549,25 +565,26 @@ The infinite-horizon case is just where the deadline is infinitely far away, so 
 \begin{figure}[h]
     \centering
     \renewcommand{\arraystretch}{1.5}
-    \begin{tabular}{c|c}
-        \textbf{Control} & \textbf{MDP} \\
+    \begin{tabularx}{\textwidth}{m{1in} | >{\centering\arraybackslash}X | >{\centering\arraybackslash}X}
+        & \textbf{Control} & \textbf{Finite MDP} \\
         \hline
-        Continuous states and actions & Finite states and actions \\
-        Minimize total undiscounted cost & Maximize total discounted reward \\
-        Finite-horizon & Infinite-horizon \\
-        $\displaystyle \lim_{T \to \infty} \frac{1}{T} \E \left[ \left( \sum_{t=0}^{T-1} c(s_t, a_t) \right) + c(s_T) \right]$ & $\lim_{\gamma \to 1} \displaystyle (1 - \gamma) \E \left[ \sum_{t=0}^{\infty} \gamma^t r(s_t, a_t) \right]$ \\
-        Riccati equations & Value iteration \\
-        $\displaystyle P \gets Q + A^\top P A - A^\top P B (R + B^\top P B)^{-1} B^\top P A$ & $\displaystyle V(s) \gets \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V(s') \right]$
-    \end{tabular}
-    \caption{A comparison between the continuous control and finite MDP settings, with a summary of the analogy between the Riccati equation and value iteration.}
+        \textbf{State and action spaces} & Continuous & Finite \\
+        \hline
+        \textbf{Optimization problem} & Minimize finite-horizon undiscounted cost & Maximize infinite-horizon discounted reward \emph{or} finite-horizon discounted reward \\
+        \hline
+        \textbf{Approaching the infinite-horizon, undiscounted setting} & $\displaystyle \lim_{T \to \infty} \frac{1}{T} \E \left( \sum_{t=0}^{T-1} c(s_t, a_t) \right)$ & $\displaystyle \lim_{\gamma \to 1} (1 - \gamma) \E \sum_{t=0}^{\infty} \gamma^t r(s_t, a_t)$ \\
+        \hline
+        \textbf{Iterative algorithm for optimal value} & Riccati equations $P \gets Q + A^\top P A - A^\top P B (R + B^\top P B)^{-1} B^\top P A$ & Value iteration $V(s) \gets \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V(s') \right]$
+    \end{tabularx}
+    \caption{A comparison between the continuous control and finite MDP settings.}
     \label{fig:control_mdp}
 \end{figure}
 
 
-\section{Approximating nonlinear dynamics with LQR}
+\section{Approximating nonlinear dynamics}
 
 As its name might suggest, LQR works best when the dynamics are linear and the cost function is quadratic. In these settings, we've shown a way to analytically derive the optimal policy.
-However, let's return to the CartPole example from the start of the chapter (\autoref{eg:cart_pole}). The dynamics (physics) aren't linear, and we might also want to specify a cost function that's more complex than just quadratic! How can we adapt LQR to this more general nonlinear case?
+However, let's return to the CartPole example from the start of the chapter (\autoref{eg:cart_pole}). The dynamics (physics) aren't linear, and we might also want to specify a cost function that's more complex than just quadratic.
 
 Concretely, let's consider a \emph{noise-free} problem since, as we saw, the noise doesn't affect the optimal policy. Let's assume the dynamics and cost function are stationary, and ignore the terminal state for simplicity:
 
@@ -585,11 +602,11 @@ Here, $d$ denotes some general measure of distance to the goal state and action 
 This is now only slightly simplified from the general optimal control problem (see \ref{df:optimal_control}). Here, we don't know an analytical form for the dynamics $f$ or the cost function $c$,
 but we assume that we're able to \emph{query/sample/simulate} them
 to get their values at a given state and action.
-How can we apply LQR in this setting?
+How can we adapt LQR to this more general nonlinear case?
 
 \subsection{Local linearization}
 
-Well, as we briefly mentioned in the introduction, part of the reason we designed the LQR setting this way was because we can take any \emph{locally continuous} function, and approximate it using a Taylor expansion of low-order polynomials! By taking a linear approximation of $f$ and a quadratic approximation of $c,$ we're back to the regime of LQR with these derived matrices in terms of their gradients and Hessians accordingly.
+As we briefly mentioned in the introduction, part of the reason we designed the LQR problem the way we did was because we can take any \emph{locally continuous} function, and approximate it using a Taylor expansion of low-order polynomials. By taking a linear approximation of $f$ and a quadratic approximation of $c,$ we're back to the regime of LQR with these derived matrices in terms of their gradients and Hessians accordingly.
 
 \textbf{Assumptions.} This approach assumes that $f$ is differentiable and that $c$ is twice-differentiable, both around $(s^\star, a^\star).$
 Additionally, since a Taylor expansion generally gets less and less accurate the further you stray from the point of expansion, this means that we also assume that all states are close to the optimal state $s^\star,$
@@ -597,18 +614,18 @@ and that we can stay close using actions that are close to $a^\star.$
 If this seems like a strong set of restrictions, it is! But we'll save this discussion for the next section.
 
 % TODO maybe add Taylor expansion stuff in appendix?
-If you're unfamiliar with Taylor expansions, we recommend taking a calculus course; we'll use them here without much further detail. Linearizing the dynamics around $(s^\star, a^\star)$ gives:
-\begin{align*}
-    f(s, a) &\approx f(s^\star, a^\star) + \nabla_s f(s^\star, a^\star) (s - s^\star) + \nabla_a f(s^\star, a^\star) (a - a^\star) \\
-    (\nabla_s f(s, a))_{ij} &= \frac{d f_i(s, a)}{d s_j}, \quad i, j \le n_s \\
-    (\nabla_a f(s, a))_{ij} &= \frac{d f_i(s, a)}{d a_j}, \quad i \le n_s, j \le n_a
-\end{align*}
+
+If you're unfamiliar with Taylor expansions, we recommend taking a calculus course; we'll use them here without much further introduction. Linearizing the dynamics around $(s^\star, a^\star)$ gives:
+\begin{gather*}
+    f(s, a) \approx f(s^\star, a^\star) + \nabla_s f(s^\star, a^\star) (s - s^\star) + \nabla_a f(s^\star, a^\star) (a - a^\star) \\
+    (\nabla_s f(s, a))_{ij} = \frac{d f_i(s, a)}{d s_j}, \quad i, j \le n_s \qquad (\nabla_a f(s, a))_{ij} = \frac{d f_i(s, a)}{d a_j}, \quad i \le n_s, j \le n_a
+\end{gather*}
 and quadratizing the cost function around $(s^\star, a^\star)$ gives:
 \begin{align*}
     c(s, a) &\approx c(s^\star, a^\star) && \text{constant} \\
     &\qquad + \nabla_s c(s^\star, a^\star) (s - s^\star) + \nabla_a c(s^\star, a^\star) (a - a^\star) && \text{linear} \\
-    &\qquad + \frac{1}{2} (s - s^\star)^\top \nabla_{ss} c(s^\star, a^\star) (s - s^\star) && \text{quadratic} \\
-    &\qquad + \frac{1}{2} (a - a^\star)^\top \nabla_{aa} c(s^\star, a^\star) (a - a^\star) \\
+    &\qquad + \frac{1}{2} (s - s^\star)^\top \nabla_{ss} c(s^\star, a^\star) (s - s^\star) \\
+    &\qquad + \frac{1}{2} (a - a^\star)^\top \nabla_{aa} c(s^\star, a^\star) (a - a^\star) && \text{quadratic} \\
     &\qquad + (s - s^\star)^\top \nabla_{sa} c(s^\star, a^\star) (a - a^\star)
 \end{align*}
 where the gradients and Hessians are defined as
@@ -629,15 +646,13 @@ Namely, we can simply use the definition of derivative, and see how the function
 However, simply taking the second-order approximation of the cost function is insufficient;
 we also need to ensure that it is locally convex, that is, the Hessians $\nabla_{ss} c(s^\star, a^\star)$ and $\nabla_{aa} c(s^\star, a^\star)$ are positive definite.
 
-\subsection{Local convexification}
-
-Recall that an equivalent definition of positive definite matrices is that all of their eigenvalues are positive. One way to naively \emph{force} $\nabla_{ss} c(s^\star, a^\star)$ and $\nabla_{aa} c(s^\star, a^\star)$ to be positive definite is to simply remove any negative eigenvalues.
+\textbf{Local convexification.} Recall that an equivalent definition of positive definite matrices is that all of their eigenvalues are positive. One way to naively \emph{force} $\nabla_{ss} c(s^\star, a^\star)$ and $\nabla_{aa} c(s^\star, a^\star)$ to be positive definite is to simply remove any negative eigenvalues.
 Note that both of these Hessians are symmetric, and so they can be decomposed in terms of their eigenbasis. Thus by removing their eigenvalues and adding a small `lower bound' to the eigenvalues (so that the surface will have some minimum amount of curvature), we obtain
 \begin{align*}
     \nabla_{ss} c(s^\star, a^\star) &= \sum_{i=1}^{n_s} \sigma_i u_i u_i^\top \\
     \nabla_{ss} \widetilde c(s^\star, a^\star) &= \sum_{\substack{i=1 \\ \sigma_i > 0}}^{n_s} \sigma_i u_i u_i^\top + \lambda I.
 \end{align*}
-We can use a similar approach to convexify $\nabla_{aa} \widetilde{c}(s^\star, a^\star).$ Now that we have a convex quadratic approximation to the cost function, and a linear approximation to the state transitions, we can simply apply the time-homogenous LQR methods we derived before!
+We can use a similar approach to convexify $\nabla_{aa} \widetilde{c}(s^\star, a^\star).$ Now that we have a convex quadratic approximation to the cost function, and a linear approximation to the state transitions, we can simply apply the time-homogenous LQR methods we derived before.
 
 % TODO: insert figure here for visual intuition, in case people aren't experienced with the calculus
 
@@ -645,7 +660,7 @@ But what happens when our assumptions break down, namely when we enter states fa
 As we mentioned above, our Taylor approximation will typically become less accurate.
 To address this, we'll need to do a Taylor approximation around \emph{different points at each time step.}
 
-\section{Iterative LQR}
+\subsection{Iterative LQR}
 
 \textbf{Iterative LQR} is a way to resolve the issues with local linearization.
 The key idea is to linearize around different points at each timestep, making creating a time-dependent approximation of the dynamics.
@@ -702,7 +717,7 @@ Formally, we want to find $\alpha \in [0, 1]$ to generate the next iteration of 
     & \bar a^{i+1}_t = \alpha \bar a^i_t + (1-\alpha) \bar a_t \\
     & s_0 = \bar s_0.
 \end{align*}
-Note that this is only optimizing over the closed interval $[0, 1],$ so by the Extreme Value Theorem it's guaranteed to have a global maximum!
+Note that this is only optimizing over the closed interval $[0, 1],$ so by the Extreme Value Theorem it's guaranteed to have a global maximum.
 
 The final output of this algorithm is a policy $\pi^{n_\text{steps}}$ derived after $n_\text{steps}$ of the algorithm.
 Though the proof is somewhat complex, one can show that for many nonlinear control problems, this solution converges to a locally optimal solution (in the policy space).
