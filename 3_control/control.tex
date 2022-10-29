@@ -12,12 +12,13 @@
 Have you ever tried balancing a pen upright on your palm?
 If not, try it! It's a lot harder than seems.
 Unlike the cases we studied the previous chapter,
-the state and action spaces are not finite or even discrete.
-Instead, they are continuous and uncountably infinite.
+the state space and action space aren't \emph{finite}, or even \emph{discrete}.
+Instead, they are \emph{continuous} and \emph{uncountably infinite.}
 In addition, the state transitions governing the system -- that is, the laws of physics --
 are nonlinear and complex.
-Swapping out a pen in your palm for a pole on a cart,
-we have the following classic \emph{control problem:}
+
+We'll keep this motivating example in mind throughout the chapter,
+although reframing it in terms of the following classic \emph{control problem:}
 
 \begin{example}{CartPole}{cart_pole}
     Consider a pole balanced on a cart.
@@ -31,13 +32,14 @@ we have the following classic \emph{control problem:}
     \end{enumerate}
 
     \noindent
-    We can \emph{control} the cart by applying a horizontal force $a$.
+    We can \emph{control}
     \footnote{\emph{Controls} are the continuous analogue to \emph{actions} in the discrete setting. In control theory, the state and controls are typically denoted as
     $x$ and $u,$ but we'll stick with the $s$ and $a$ notation to highlight the
     similarity with the discrete case.}
+    the cart by applying a horizontal force $a$.
 
     \noindent
-    \textbf{Goal:} Stabilize the cart around an ideal state $s^\star$.
+    \textbf{Goal:} Stabilize the cart around an ideal state and action $(s^\star, a^\star)$.
 \end{example}
 
 Beyond this simple scenario, there are many real-world examples that involve continuous control:
@@ -55,38 +57,39 @@ In this chapter, we'll derive similar results in the continuous case by imposing
 some additional structure on the problem.
 
 Note that we're still assuming that the entire environment is \emph{known} --
-that is, we understand `how the world works'. (Hang tight -- we'll get to the
-unknown case soon!)
+that is, we understand `how the world works'. We'll get to the unknown case in the next chapter.
 
 \section{Optimal control}
 
-Recall that an MDP was defined by its state space $\cS$, action space $\cA$, state transitions $P$, reward function $r$, and discount factor $\gamma$ or time horizon $T$. What are the equivalents in the control setting?
+Recall that an MDP is defined by its state space $\cS$, action space $\cA$, state transitions $P$, reward function $r$, and discount factor $\gamma$ or time horizon $T$. What are the equivalents in the control setting?
 
 \begin{itemize}
     \item The state and action spaces are \emph{continuous} rather than finite. That is, $\cS = \R^{n_s}$ and $\cA = \R^{n_a},$ where $n_s$ and $n_a$ are the number of coordinates to specify a single state or action respectively.
-    \item We call the state transitions the \textbf{dynamics} of the system. In the most general case, these might change across timesteps and also include some stochastic \textbf{noise} $w_t$ at each timestep from some distribution $p_{w_t}$. We denote these dynamics as the function $s_{t+1} = f_t(s_t, a_t, w_t).$ Of course, we can simplify to cases where the dynamics are \emph{deterministic/noise-free} (no $w_t$ term) or are \emph{stationary/time-homogenous} (just $f$ without the $t$ subscript).
-    \item Instead of a reward function, it's more intuitive to consider a \textbf{cost function} $c_t: \cS \times \cA \to \R$ that describes \emph{how far away} we are from our goal state/action. Like the dynamics, a special case is when this function is time-homogenous (and we drop the $t$ subscript).
-    \item We consider the \emph{undiscounted} case with a \emph{time horizon} $T$. Note that we end an episode at $s_T$ -- there is no $a_T,$ and so we denote the cost for the final state as $c_T(s_T).$
+    \item We call the state transitions the \textbf{dynamics} of the system. In the most general case, these might change across timesteps and also include some stochastic \textbf{noise} $w_t.$ We denote these dynamics as the function $f_t,$ such that $s_{t+1} = f_t(s_t, a_t, w_t).$ Of course, we can simplify to cases where the dynamics are \emph{deterministic/noise-free} (no $w_t$ term) or are \emph{stationary/time-homogeneous} (the same function $f$ across timesteps).
+    \item Instead of a reward function, it's more intuitive to consider a \textbf{cost function} $c_t: \cS \times \cA \to \R$ that describes \emph{how far away} we are from our \textbf{goal state-action pair} $(s^\star, a^\star)$. An important special case is when the cost is time-homogeneous; that is, it remains the same function $c$ at each timestep.
+    \item We seek to minimize the \emph{undiscounted} cost with a \emph{time horizon} $T$. Note that we end an episode at $s_T$ -- there is no $a_T,$ and so we denote the cost for the final state as $c_T(s_T).$
 \end{itemize}
 
-With all of these components, we can now formulate the \textbf{optimal control problem:} \emph{find a policy (time-dependent) to minimize the expected total cost over $T$ timesteps (undiscounted).}
+With all of these components, we can now formulate the \textbf{optimal control problem:} \emph{find a time-dependent policy to minimize the expected undiscounted cost over $T$ timesteps.}
 
 \begin{definition}{Optimal control problem}{optimal_control}
     \begin{equation}
         \begin{split}
-            \min_{\pi_0, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E \left[
+            \min_{\pi_0, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E_{s_0, w_t} \left[
                 \left( \sum_{t=0}^{T-1} c_t(s_t, a_t) \right) + c_T(s_T)
             \right] \\
             \text{where} \quad & s_{t+1} = f_t(s_t, a_t, w_t), \\
             & a_t = \pi_t(s_t) \\
             & s_0 \sim \mu_0 \\
-            & w_t \sim p_{w_t}
+            & w_t \sim \text{noise}
         \end{split}
     \end{equation}
 \end{definition}
 
 % Note that this is a pretty hard problem the way it's written right now!
 % We have some pretty strict constraints in the form of the state transitions.
+
+\subsection{Discretization}
 
 How does this relate to the finite horizon case?
 If $s_t$ and $a_t$ were discrete, then we'd be able to work backwards using
@@ -96,68 +99,59 @@ As a matter of fact, let's consider what happens if we \emph{discretize} the
 problem. For intuition, suppose $n_s = n_a = 1$ (that is, states and actions are real numbers).
 To make $\cS$ and $\cA$ discrete, let's choose some small positive $\epsilon,$
 and simply round states and actions to the nearest multiple of
-$\epsilon.$ For example, if $\epsilon = 0.01$, then we're just rounding $s$ and $a$ to two decimal spaces. \footnote{Formally, we can consider an $\epsilon$-net over the original continuous space. Let $V$ be some normed space. A subset $V_\epsilon \subseteq V$ is called an $\epsilon$-net if for all $v \in V,$ there exists a $v_\epsilon \in V_\epsilon$ such that $\|v - v_\epsilon\| \le \epsilon.$ The rounding example given is technically a $0.005$-net.}
+$\epsilon.$ For example, if $\epsilon = 0.01$, then we're just rounding $s$ and $a$ to two decimal spaces. \footnote{Formally, we can consider an $\epsilon$-net over the original continuous space. Let $V$ be some normed space. A subset $V_\epsilon \subseteq V$ is called an $\epsilon$-net if for all $v \in V,$ there exists a $v_\epsilon \in V_\epsilon$ such that $\|v - v_\epsilon\| \le \epsilon.$ The rounding example given is technically a $0.005$-net.} If both these state and action spaces can be bounded, then the resulting sets are actually finite, so now we can use our previous tools for MDPs!
 
-If both these state and action spaces can be bounded, then the resulting
-sets are actually finite, so now we can use our previous tools for MDPs!
 But is this actually a feasible solution? Even if our $\cS$ and $\cA$ are
 finite, the existing algorithms might take unfeasibly long to complete.
 Suppose our state and action spaces
 are bounded by some constants $\max_{s \in \cS} \|s\| \le B_s$ and
 $\max_{a \in \cA} \|a\| \le B_a$.
-Then using our rounding method, we must divide each dimension into intervals of length $\varepsilon$,
-resulting in $(B_s/\varepsilon)^{n_s}$ and $(B_a/\varepsilon)^{n_a}$ points!
+Then using our rounding method, we must divide \emph{each dimension} into intervals of length $\varepsilon$,
+resulting in $(B_s/\varepsilon)^{n_s}$ and $(B_a/\varepsilon)^{n_a}$ total points.
+To get a sense of how quickly this grows, let's consider $\varepsilon = 0.01, n_s = n_a = 10$. Then the number of elements in our transition matrix is $|\cS|^2 |\cA| = (100^{10})^2 (100^{10}) = 10^{60}$!
+Try finding a computer that'll fit that in memory! (For reference, 32 GB of memory can store $10^9$ 32-bit floating point numbers.)
 
-To get a sense of how quickly this grows, let's consider $\varepsilon = 0.01, d = k = 10$. Then the number of elements in our transition matrix of size $|\cS|^2 |\cA|$ is on the order of $(100^{10})^2 (100^{10}) = 10^{60}$!
-Try finding a computer that'll fit that in memory! (For reference, 32 GB of memory can store $10^9$ 32-bit floating point numbers!)
 So as we've seen, discretizing the problem isn't a feasible solution as soon as
 our action and state spaces are even moderately high-dimensional.
 How can we do better?
 
-Note that in order for discretization to yield and accurate solution,
-we implicitly relied assume that rounding each value by some tiny amount $\varepsilon$
-wouldn't change the behavior much; namely, that the functions involved are relatively \emph{continuous}.
-Can we use this structure in other ways? This brings us to the topic of \textbf{Linear Quadratic Regulators.}
+Note that by discretizing the state and action spaces, we implicitly assumed that rounding each state or action vector by some tiny amount $\varepsilon$
+wouldn't change the behavior much; namely, that the functions involved were relatively \emph{continuous}.
+Can we use this continuous structure in other ways? This brings us to the topic of \textbf{Linear Quadratic Regulators,} a widely used and studied tool in control theory.
 
 \section{The Linear Quadratic Regulator Problem} \label{sec:lqr}
 
-The optimal control problem stated above seems very difficult to solve!
-The cost function might not be convex, and the state transitions might be very complex, making it difficult to satisfy the constraints.
+The optimal control problem stated above seems very difficult to solve.
+The cost function might not be convex, making optimization difficult,
+and the state transitions might be very complex, making it difficult to satisfy the constraints.
 Is there a relevant simplification that we can analyze?
 
-A natural structure to impose is \emph{linear dynamics} and a \emph{quadratic cost function} (in both arguments).
-Why is this a useful assumption to make?
-Note that given any continuous function, we can locally approximate it using a \emph{Taylor approximation.}
-The simplest non-trivial case for the dynamics is a first-order linear approximation,
-whereas for the cost function it must be quadratic, since we want it to have an optimum.
-This means that even given \emph{nonlinear} dynamics and a \emph{nonlinear} cost function,
-as long as they're continuous,
-we can write out their first and second order approximations respectively
-and use the results that we're about to derive!
-
-These assumptions result in the extremely popular \textbf{linear quadratic regulator} model.
+We'll show that a natural structure to impose is \emph{linear dynamics} and a \emph{quadratic cost function} (in both arguments). This is called the \textbf{linear quadratic regulator} (LQR) model, and is a popular tool in control theory.
 In fact, some people even design systems to be linear in order to use results from LQR!
-We'll see later on that even for more complex setups,
-we can generalize these simple ideas to get surprisingly good solutions.
 
-% TODO: maybe insert an example of another cost function?
-
+Why are these assumptions useful? As we'll see later in the chapter, it lets us \emph{locally approximate} nonlinear dynamics and cost functions
+using their \emph{Taylor approximations} (up to first and second order respectively).
+We'll also find that even for more complex setups,
+we can generalize the algorithms for LQR to get surprisingly good solutions.
 
 \begin{definition}{The linear quadratic regulator}{lqr}
-    \textbf{Linear dynamics} (time-homogeneous): \[
+    \textbf{Linear, time-homogeneous dynamics}: \[
         s_{t+1} = f(s_t, a_t, w_t) = A s_t + B a_t + w_t
     \]
 
-    \noindent \textbf{Quadratic cost function} (time-homogeneous):
+    \noindent \textbf{Quadratic, time-homogeneous cost function}:
     % TODO Link to that video in the multivariable calculus series
-    \footnote{For some intuition into this expression, consider the simple case where $a_t$ and $s_t$ are scalars (and so are $Q$ and $R$), so $c(s_t, a_t) = Q s_t^2 + R a_t^2$. If this notation is unfamiliar to you, we recommend this tutorial from Khan Academy!}
+    \footnote{For some intuition into this expression, consider the simple case where $a_t$ and $s_t$ are scalars (and so are $Q$ and $R$), so $c(s_t, a_t) = Q s_t^2 + R a_t^2$. If this notation is unfamiliar to you, we recommend \href{https://www.khanacademy.org/math/multivariable-calculus/applications-of-multivariable-derivatives/quadratic-approximations/v/expressing-a-quadratic-form-with-a-matrix}{this tutorial on quadratic forms} from Khan Academy!}
     \[
         c(s_t, a_t) = \begin{cases}
             s_t^\top Q s_t + a_t^\top R a_t & t < T \\
             s_T^\top Q s_T & t = T
         \end{cases}
     \]
-    We want $c$ to be a convex function, so $Q$ and $R$ must both be positive definite.
+    We want $c$ to be a convex function (easy to optimize) in both $s_t$ and $a_t$, so we'll set $Q$ and $R$ to both be symmetric. \footnote{Note that it suffices for them to be positive definite, but symmetry makes some later expressions much nicer.}
+
+    Intuitively, the cost function punishes states and actions that are far away from the origin (i.e. both the state and action are zero vectors). More generally, we'll want to replace the origin with a \emph{goal} state and action $(s^\star, a^\star).$ This can easily be done by replacing $s_t$ with $(s_t - s^\star)$ and $a_t$ with $(a_t - a^\star)$ in the expression above.
+    
 
     \noindent \textbf{Isotropic Gaussian noise:} \[ w_t \sim \mathcal{N}(0, \sigma^2 I) \]
 
@@ -171,6 +165,8 @@ we can generalize these simple ideas to get surprisingly good solutions.
     \end{align*}
 \end{definition}
 
+\iffalse
+% TODO We went over this example in lecture, but I'm not sure where in the chapter to put it.
 \begin{example}{Driving down a road}{road_lqr}
     Suppose we're driving down a road. At each time step, we can choose an
     action $a_t$: either we accelerate and apply a force forward ($a_t > 0$),
@@ -211,137 +207,98 @@ we can generalize these simple ideas to get surprisingly good solutions.
         a_t
     \]
 \end{example}
+\fi
 
 
-Let's derive a more compressed form for the state at time $t$ as a summation
-over past time steps. Note that
-
-\begin{align*}
-    s_t &= A s_{t-1} + B a_{t-1} + w_{t-1} \\
-    &= A (As_{t-2} + B a_{t-2} + w_{t-2}) + B a_{t-1} + w_{t-1} \\
-    &= \cdots \\
-    &= A^t s_0 + \sum_{i=0}^{t-1} A^i (B a_{t-i-1} + w_{t-i-1})
-\end{align*}
-
-Let's consider the expected value of the state at this time.
-Since we assume that $\E w_t = 0$ (this is the zero vector in $d$ dimensions),
-by linearity of expectation, the $w_t$ term vanishes, and so we're left with \[
-    \E [s_t \mid s_{0:(t-1)}, a_{0:(t-1)}] = A^t s_0 + \sum_{i=0}^{t-1} A^i B a_{t-i-1}.
-\]
-
-So now we have a good overview of the LQR setting.
-How can we define an optimal time-dependent policy in this setting?
-
-It turns out that the optimal policy is one that is deterministic and \emph{linear} at each time
-step! That is, \[ \pi_t^\star (s_t) = - K_t s_t. \] We'll prove this more
-formally in \autoref{th:optimal_policy_lqr_linear}. This should remind you somewhat of the way in which the optimal policy in
-the previous MDP setting was stationary and deterministic. In both cases,
-it turns out that the optimal policy has special structure!
-
-Note that the average state at time $t$ for the optimal policy is then \[
-    \E [s_t \mid s_0, a_t = - K_t s_t] = \left( \prod_{i=0}^{t-1} (A - B K_i) \right) s_0.
-\]
-This introdces the quantity $A - B K_i,$ which will show up frequently in
-discussions of LQR!
-For example, one important question is: will $s_t$ remain bounded,
-or will it go to infinity as time goes on?
-We can answer this by analyzing this quantity $A - B K_i,$ in particular its
-largest eigenvalue.
-Intuitively, if we imagine that these $K_i$s are equal (call this matrix $K$),
-then this expression looks like $(A-BK)^t s_0.$
-Now consider the maximum eigenvalue of $A - BK,$ which we denote as $\lambda_{\max}.$
-If $\lambda_{\max} > 1,$ then there's some initial state $s_0^\star$
-for which \[ (A - BK)^t s_0^\star = \lambda_{\max}^t s_0^\star \xrightarrow{t \to \infty} \infty. \]
+So how do we go about analyzing this system? A good first step might be to introduce \emph{value functions,} analogous to those in the previous chapter, to reason about the behavior of the system over the time horizon.
 
 \begin{definition}{Value functions for LQR}{value_lqr}
     Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{t-1}),$ we can define the
     value function $V^\pi_t : \cS \to \R$ as \[ \begin{split}
-        V^\pi_t (s) &= \E \left[ \sum_{i=t}^{T} c(s_i, a_i) \right] \\
+        V^\pi_t (s) &= \E \left[ \left( \sum_{i=t}^{T-1} c(s_i, a_i) \right) + c(s_T) \right] \\
         &= \E \left[ \left( \sum_{i=t}^{T-1} s_i^\top Q s_i + a_i^\top R a_i \right) + s_T^\top Q s_T \right] \\
-        \textrm{where} \quad s_t &= s \\
+        \textrm{conditional on} \quad s_t &= s \\
         a_i &= \pi_i(s_i) \quad \forall i \ge t.
     \end{split} \]
-    We call this expression inside the equation the \textbf{cost-to-go},
+    The expression inside the expectation is called the \textbf{cost-to-go},
     since it's just the total cost starting from timestep $t$.
 
-    Similarly, the $Q$ function just additionally conditions on the first
+    The $Q$ function additionally conditions on the first
     action we take: \[ \begin{split}
-        Q^\pi_t (s, a) &= \E \left[ \sum_{i=t}^{T} c(s_i, a_i) \right] \\
+        Q^\pi_t (s, a) &= \E \left[ \left( \sum_{i=t}^{T-1} c(s_i, a_i) \right) + c(s_T) \right] \\
         &= \E \left[ \left( \sum_{i=t}^{T-1} s_i^\top Q s_i + a_i^\top R a_i \right) + s_T^\top Q s_T \right] \\
-        \textrm{where} \quad (s_t, a_t) &= (s, a) \\
+        \textrm{conditional on} \quad (s_t, a_t) &= (s, a) \\
         \quad a_i &= \pi_i(s_i) \quad \forall i > t
     \end{split} \]
 \end{definition}
 
-As it turns out, we can now solve for the optimal policy $\pi$ via dynamic
-programming in terms of these value and action-value functions.
+As in the previous chapter, these will be instrumental in constructing optimal policy $\pi$ via dynamic
+programming.
 
-\section{Optimality for LQR}
+\section{Optimality for LQR} \label{sec:optimal_lqr}
 
-\begin{definition}{Optimal value functions for LQR}{optimal_value_lqr}
-    The optimal value function is the one that, in all states and across all timesteps,
-    achieves \emph{lowest cost} across all policies: \[
+In this section, we'll derive the optimal policy in the LQR setting.
+We'll do this through induction, which directly translates into a recursive dynamic programming algorithm for actually calculating the optimal policy.
+Along the way, we'll prove that the optimal value function is \emph{quadratic,}
+and that the optimal policy is a \emph{linear function} of the state.
+
+\begin{definition}[breakable=false]{Optimal value functions for LQR}{optimal_value_lqr}
+    The \textbf{optimal value function} is the one that, at any time, in any state,
+    achieves \emph{minimum cost} across all policies: \[
         \begin{split}
-            V^\star_t(s) &= \min_\pi V^\pi_t(s) \\
-            &= \min_{\pi_{t:T-1}} \E \left[ \left( \sum_{i=t}^{T-1} s_t^\top Q s_t + a_t^\top R a_t \right) + s_T^\top Q s_T \right] \\
-            \textrm{where} \quad a_i &= \pi_i(s_i) \quad \forall i \ge t \\
-            s_t &= s
+            V^\star_t(s) &= \min_{\pi_t, \dots, \pi_{T-1} : \cS \to \cA} V^\pi_t(s) \\
+            &= \min_{\pi_{t}, \dots, \pi_{T-1}} \E \left[ \left( \sum_{i=t}^{T-1} s_t^\top Q s_t + a_t^\top R a_t \right) + s_T^\top Q s_T \right] \\
+            \textrm{conditional on} \quad & a_i = \pi_i(s_i) \quad \forall i \ge t \\
+            & s_t = s
         \end{split}
     \]
-    Additionally, we'll show theorems \ref{th:optimal_value_lqr_quadratic} and \ref{th:optimal_policy_lqr_linear} below,
-    showing that the $V^\star_t$ is quadratic and that $\pi^\star_t$ is linear.
-    Then, we'll show how to calculate the actual coefficients that specify these
-    functions.
 \end{definition}
 
-
-\begin{theorem}{$V^\star_t$ in LQR is a quadratic function}{optimal_value_lqr_quadratic}
-    Formally, we claim that \[
+\begin{theorem}{Optimal value function in LQR is quadratic and convex}{optimal_value_lqr_quadratic}
+    \[
         V^\star_t(s) = s^\top P_t s + p_t
     \]
-    for some $P_t \in \R^{d \times d}$ and $p_t \in \R^d$ where $P_t$ is positive-definite.
-    Note that this doesn't have a linear term,
-    just a quadratic term plus a constant.
+    for some time-dependent $P_t \in \R^{n_s \times n_s}$ and $p_t \in \R^{n_s}$ where $P_t$ is symmetric. Note that there is no linear term.
 \end{theorem}
-
 
 \begin{theorem}{Optimal policy in LQR is linear}{optimal_policy_lqr_linear}
-    That is, \[
+    \[
         \pi^\star_t (s) = - K_t s
     \]
-    for some $K_t \in \R^{k \times d}.$ (The negative is just there by convention.)
+    for some $K_t \in \R^{k \times d}.$ (The negative is due to convention.)
 \end{theorem}
 
 
-We'll derive these theorems by induction, starting from the last timestep and
-working backwards in time. Note that induction has a very fundamental connection
-with dynamic programming: our inductive proof will naturally lend itself to a DP
-algorithm that allows us to calculate the optimal value and policy!
+% How can we define an optimal time-dependent policy in this setting?
 
-\textbf{Base case:} $V^\star_T(s)$ is quadratic.
-
-\textbf{Inductive hypothesis:} Show that if $V^\star_{t+1}(s)$ is quadratic, then:
-\begin{enumerate}
-    \item $Q^\star_t(s, a)$ is quadratic (in both $s$ and $a$)
-    \item Derive the optimal policy $\pi^\star_t(s) = \arg \min_a Q^\star_t(s, a)$, and show that it's linear.
-    \item Show $V^\star_t(s)$ is quadratic.
-\end{enumerate}
-
-Finally, this will have shown that $V^\star_t(s)$ is quadratic and $\pi^\star_t(s)$ is linear.
-
-This is essentially the same proof as a finite-horizon MDP,
-except that now the state and action are \emph{continuous} instead of finite.
-
-\textbf{Base case.} Let's start by considering the final timestep $V^\pi_T,$ for some policy $\pi.$
-Then the only expression is \[
-    V^\star_T(s) = s^\top Q s,
-\]
-which is quadratic, as we desired. Pattern-matching to the expression from earlier,
-we see that $P_T = Q$ and $p_t = 0.$
+% It turns out that the optimal policy is one that is deterministic and \emph{linear} at each time
+% step! That is, \[ \pi_t^\star (s_t) = - K_t s_t. \] We'll prove this more
+% formally in \autoref{th:optimal_policy_lqr_linear}. This should remind you somewhat of the way in which the optimal policy in
+% the previous MDP setting was stationary and deterministic. In both cases,
+% it turns out that the optimal policy has special structure!
 
 
-\textbf{Inductive step.} Assume $V^\star_{t+1}(s) = s^\top P_{t+1} s + p_{t+1}$
-for all states $s.$ We'll start off by demonstrating that $Q^\star_t(s)$ is quadratic.
+We'll derive both of these theorems simultaneously via an \emph{inductive} proof.
+We'll start from the final timestep $T$ as our base case.
+Then, we'll show that if the theorems hold at time $t+1,$ they must hold for time $t.$
+This is called the \emph{inductive hypothesis,} and by proving it, the theorems will `ripple down' to all earlier timesteps, and we'll have shown that these theorems are always true.
+As an additional bonus, as mentioned above, our proof will naturally produce a DP algorithm that allows us to calculate the optimal value function and policy.
+
+\textbf{Base case:} $V^\star_T(s) = s^\top P_T s + p_T.$ At the final timestep, there are no possible actions to take, and so $V^\star_T(s) = c(s) = s^\top Q s.$ Thus $P_T = Q$ and $p_T$ is the zero vector.
+
+\textbf{Inductive hypothesis:} We seek to show that the inductive step holds for both theorems: If $V^\star_{t+1}(s)$ is quadratic and convex, then $V^\star_t(s)$ must also be quadratic and convex, and $\pi^\star_t(s)$ must be linear. We'll break this down into the following steps:
+\begin{steps}
+    \item Show that $Q^\star_t(s, a)$ is quadratic and convex (in both $s$ and $a$).
+    \item Derive the optimal policy $\pi^\star_t(s) = \arg \min_a Q^\star_t(s, a)$ and show that it's linear.
+    \item Show that $V^\star_t(s)$ is quadratic and convex.
+\end{steps}
+This is essentially the same proof that we wrote in the finite-horizon MDP setting,
+except now the state and action are \emph{continuous} instead of finite.
+
+We first assume our theorems are true at time $t+1.$ That is,
+\[ V^\star_{t+1}(s) = s^\top P_{t+1} s + p_{t+1} \quad \text{for all states} \quad s \in \cS. \]
+
+\textbf{Step 1.} We'll start off by demonstrating that $Q^\star_t(s)$ is quadratic and convex.
 Recall that the definition of $Q^\star_t : \cS \times \cA \to \R$ is \[
     Q^\star_t(s, a) = c(s, a) + \E_{s' \sim f(s, a, w_{t+1})} V^\star_{t+1}(s').
 \]
@@ -349,57 +306,62 @@ We know $c(s, a) := s^\top Q s + a^\top R a.$ Let's consider the average value
 over the next timestep. The only randomness in the dynamics comes from the noise
 $w_{t+1}$, so we can write out this expected value as:
 \begin{align*}
-    \E_{s' \sim f(s, a, w_{t+1})} V^\star_{t+1}(s') &= \E_{w_{t+1} \sim \cN(0, \sigma^2 I)} V^\star_{t+1}(As + Ba + w_{t+1}) \\
-    &= \E_{w_{t+1}} [ (As + Ba + w_{t+1})^\top P_{t+1} (As + Ba + w_{t+1}) + p_{t+1} ].
+    &\qquad \E_{s' \sim f(s, a, w_{t+1})} V^\star_{t+1}(s') \\
+    &= \E_{w_{t+1} \sim \cN(0, \sigma^2 I)} V^\star_{t+1}(As + Ba + w_{t+1}) && \text{definition of } f \\
+    &= \E_{w_{t+1}} [ (As + Ba + w_{t+1})^\top P_{t+1} (As + Ba + w_{t+1}) + p_{t+1} ]. && \text{inductive hypothesis}
 \end{align*}
-Summing these two expressions and combining like terms, we get \begin{align*}
+Summing and combining like terms, we get \begin{align*}
     Q^\star_t(s, a) &= s^\top Q s + a^\top R a + \E_{w_{t+1}} [(As + Ba + w_{t+1})^\top P_{t+1} (As + Ba + w_{t+1}) + p_{t+1}] \\
-    &= s^\top (Q + A^\top P_{t+1} A)s + a^\top (R + B^\top P_{t+1} B) a + 2 s^\top A^\top P_{t+1} B a + p_{t+1} \\
-    &\qquad \E_{w_{t+1}} w_{t+1}^\top P_{t+1} w_{t+1}.
+    &= s^\top (Q + A^\top P_{t+1} A)s + a^\top (R + B^\top P_{t+1} B) a + 2 s^\top A^\top P_{t+1} B a \\
+    &\qquad + \E_{w_{t+1}} [w_{t+1}^\top P_{t+1} w_{t+1}] + p_{t+1}.
 \end{align*}
-Now consider this last term. By writing out the product and using linearity of
+Note that the terms that are linear in $w_t$ have mean zero and vanish.
+Now consider the remaining expectation over the noise. By expanding out the product and using linearity of
 expectation, we can write this out as \begin{align*}
-    \E_{w_{t+1}} w_{t+1}^\top P_{t+1} w_{t+1} &= \sum_{i=1}^d \sum_{j=1}^d (P_{t+1})_{i, j} \E_{w_{t+1}} [(w_{t+1})_i (w_{t+1})_j].
+    \E_{w_{t+1}} [w_{t+1}^\top P_{t+1} w_{t+1}] &= \sum_{i=1}^d \sum_{j=1}^d (P_{t+1})_{ij} \E_{w_{t+1}} [(w_{t+1})_i (w_{t+1})_j].
 \end{align*}
-When dealing with these quadratic forms, it's often helpful to consider the terms
-on the diagonal separately from those off the diagonal. On the diagonal, the
-expectation becomes $\E (w_{t+1})_i^2 = \var \big((w_{t+1})_i \big) = \sigma^2.$
+When dealing with these \emph{quadratic forms,} it's often helpful to consider the terms
+on the diagonal ($i = j$) separately from those off the diagonal. On the diagonal, the
+expectation becomes \[ (P_{t+1})_{ii} \E (w_{t+1})_i^2 = (P_{t+1})_{ii} \var \big((w_{t+1})_i \big) = \sigma^2 (P_{t+1})_{ii}. \]
 Off the diagonal, since the elements of $w_{t+1}$ are independent,
-the expectation factors into $\E (w_{t+1})_i \E (w_{t+1})_j = 0.$
+the expectation factors, and since each element has mean zero, the term disappears: $(P_{t+1})_{ij} \E (w_{t+1})_i \E (w_{t+1})_j = 0.$
 Thus, the only terms left are the ones on the diagonal, so the sum of these can
 be expressed as the trace of $\sigma^2 P_{t+1}$: \[
     \E_{w_{t+1}} w_{t+1}^\top P_{t+1} w_{t+1} = \tr(\sigma^2 P_{t+1}).
 \]
 Substituting this back into the expression for $Q^\star_t,$ we have:
 
-\begin{theorem}{Optimal Q-Function in LQR}{q_star_lqr}
-    \[
-        Q^\star_t(s, a) = s^\top (Q + A^\top P_{t+1} A) s + a^\top (R + B^\top P_{t+1} B) a
-        + 2s^\top A^\top P_{t+1} B a + \tr(\sigma^2 P_{t+1}) + p_{t+1}.
-    \]
-\end{theorem}
+\begin{equation}
+    \boxed{
+        \begin{aligned}
+            Q^\star_t(s, a) &= s^\top (Q + A^\top P_{t+1} A) s + a^\top (R + B^\top P_{t+1} B) a
+            + 2s^\top A^\top P_{t+1} B a \\
+            &\qquad + \tr(\sigma^2 P_{t+1}) + p_{t+1}.
+        \end{aligned}
+    }
+    \label{eq:q_star_lqr}
+\end{equation}
 
-As we'd hoped, this expression is quadratic in $s$ and $a$! (Phew!)
+As we'd hoped, this expression is quadratic in $s$ and $a$!
+Furthermore, we'd like to show that it's also convex, in order to make optimizing it over $a$ much easier.
+This is fairly straightforward:
 
-Now let's move on to the next part of the next part of proving the inductive hypothesis:
-showing that $\pi^\star_t(s) = \arg \min_a Q^\star_t(s, a)$ is linear.
-This becomes easy if $Q^\star_t$ is convex w.r.t. $a\dots$ Which it is!
-
-\begin{theorem}{$Q^\star_t$ is convex in $a$}{optimal_q_convex}
-    Consider the part of \autoref{th:q_star_lqr} that is quadratic in $a,$ namely
+\begin{theorem}{$Q^\star_t$ is convex}{optimal_q_convex}
+    Consider the part of \autoref{eq:q_star_lqr} that is quadratic in $a,$ namely
     $a^\top (R + B^\top P_{t+1} B) a.$ Then $Q^\star_t$ is convex w.r.t. $a$
-    if $R + B^\top P_{t+1} B$ is positive definite.
+    if $R + B^\top P_{t+1} B$ is positive definite (PD).
     
-    To show this, recall that in our definition of LQR,
-    we assumed that $R$ is positive definite (see \autoref{df:lqr}).
-    Also note that $B^\top P_{t+1} B$ is symmetric, and therefore positive definite.
-    Since the sum of two positive-definite matrices is also positive-definite,
-    we have that $R + B^\top P_{t+1} B$ is positive-definite,
-    and so $Q^\star_t$ is convex w.r.t. $a.$
+    It suffices to show that it is symmetric, which we do as follows. Recall that in our definition of LQR,
+    we assumed that $R$ is symmetric (see \autoref{df:lqr}).
+    Also note that since $P_{t+1}$ is symmetric (by the inductive hypothesis), so too must be $B^\top P_{t+1} B.$ (If this isn't clear, try proving it as an exercise!)
+    Since the sum of two symmetric matrices is also symmetric, we have that $R + B^\top P_{t+1} B$ is symmetric,
+    and so $Q^\star_t$ is convex w.r.t. $a.$ A similar proof shows that $Q + A^\top P_{t+1} A$ is symmetric, and so $Q^\star_t$ is also convex in $s.$
 \end{theorem}
 
-This means that finding the minimum is easy:
-we can just take the gradient w.r.t. $a$ and set it to zero!
+\textbf{Step 2.} Now let's move on to the next part of the next part of proving the inductive hypothesis:
+showing that $\pi^\star_t(s) = \arg \min_a Q^\star_t(s, a)$ is linear.
+Since $Q^\star_t$ is convex, finding its minimum over $a$ is easy:
+we can just take the gradient w.r.t. $a$ and set it to zero.
 First, we calculate the gradient:
 \begin{align*}
     \nabla_a Q^\star_t(s, a) &= \nabla_a [ a^\top (R + B^\top P_{t+1} B) a + 2 s^\top A^\top P_{t+1} B a ] \\
@@ -412,7 +374,13 @@ Setting this to zero, we get \begin{align}
 \end{align}
 where $K_t = (R + B^\top P_{t+1} B)^{-1} B^\top P_{t+1} A.$
 
-We're now almost there! To complete our inductive proof, we must show that the
+Note that this optimal policy has an interesting property: in addition to being
+independent of the starting distribution $\mu_0$ (which also happened for our
+finite-horizon MDP solution), it's also fully deterministic and isn't affected by noise!
+(Compare this with the discrete MDP case, where calculating our optimal policy
+required taking an expectation over the state transitions.)
+
+\textbf{Step 3.} We're almost there! To complete our inductive proof, we must show that the
 inductive hypothesis is true at time $t$; that is, we must prove that
 $V^\star_t(s)$ is quadratic.
 Using the identity $V^\star_t(s) = Q^\star_t(s, \pi^\star(s)),$ we have: \begin{align*}
@@ -423,73 +391,120 @@ Using the identity $V^\star_t(s) = Q^\star_t(s, \pi^\star(s)),$ we have: \begin{
 \end{align*}
 Note that w.r.t. $s,$ this is the sum of a quadratic term and a constant,
 which is exactly what we were aiming for!
+
+To conclude our proof, let's concretely specify the values of $P_t$ and $p_t.$
 The constant term is clearly $p_t = \tr(\sigma^2 P_{t+1}) + p_{t+1}.$
 We can simplify the quadratic term by substituting in $K_t.$
 Notice that when we do this, the $(R+B^\top P_{t+1} B)$ term in
 the expression is cancelled out by its inverse, and the remaining terms combine to give
-what is known as the \emph{Ricatti equation:}
-\begin{theorem}{Ricatti equation}{ricatti}
+what is known as the \emph{Riccati equation:}
+
+\begin{theorem}{Riccati equation}{riccati}
     \[
         P_t = Q + A^\top P_{t+1} A - A^\top P_{t+1} B (R + B^\top P_{t+1} B)^{-1} B^\top P_{t+1} A.
     \]
 \end{theorem}
-There are several nice things to note about this expression:
+
+There are several nice things to note about the Riccati equation:
 \begin{enumerate}
-    \item It's defined recursively; Given $P_T, A, B,$ and the state coefficients $Q,$ we can
-    recursively calculate all values of $P_t$ across timesteps.
-    \item It appears frequently in calculations surrounding optimality,
-    such as in $V^\star$ and $Q^\star$.
+    \item It's defined \textbf{recursively.} Given $P_T,$ the dynamics defined by $A$ and $B,$ and the state coefficients $Q,$ we can
+    recursively calculate $P_t$ across all timesteps.
+    \item $P_t$ often appears in calculations surrounding optimality, such as $V^\star_t, Q^\star_t,$ and $\pi^\star_t.$
     \item Together with $A, B,$ and the action coefficients $R,$ it fully defines the optimal policy.
 \end{enumerate}
-The optimal policy also has some interesting properties: in addition to being
-independent of the starting distribution $\mu_0,$ which also happened for our
-finite-horizon MDP solution, it's fully deterministic and doesn't depend on any noise!
-(Compare this with the discrete MDP case, where calculating our optimal policy
-required taking an expectation over the state transitions.)
 
+Now we've shown that $V^\star_t(s) = s^\top P_t s + p_t,$ which is quadratic and convex, and this concludes our proof. \qed
 
-\section{Time-dependent dynamics} \label{sec:time_dep}
+In summary, we just demonstrated that:
 
+\begin{itemize}
+    \item The optimal value function $V^\star_t$ is convex at all $t$.
+    \item The optimal $Q$-function $Q^\star_t$ is convex (in both arguments) at all $t$.
+    \item The optimal policy $\pi^\star_t$ is linear at all $t$.
+    \item All of these quantities can be calculated using a symmetric matrix $P_t$ for each timestep, which can be defined recursively using the Riccati equation.
+\end{itemize}
 
-We've closely studied the standard case of LQR, where the state and action spaces are both
-continuous, the dynamics are linear and time-homogeneous, and the cost is quadratic.
-We can also consider situations where some, or all, of these assumptions are relaxed.
+Before we move on to some extensions of LQR, let's consider how the state at time $t$ behaves when we act according to this optimal policy.
 
-So far, we've considered the \emph{time-homogeneous} case, where the dynamics are the same at every timestep. We can also loosen this restriction, and consider the case where the dynamics are \emph{time-dependent.} Our analysis
-remains almost the same, except we just add a time index to each of the relevant matrices.
+\section{Expected state at time $t$}
 
-The problem is now defined as follows:
+% TODO would a finance example be better here? Probably not realistic
+
+Suppose you're about to go to bed, and the thermostat in your room is controlled by an optimal policy under LQR. A very reasonable question to ask would be: what's the expected state (i.e. temperature) of the room at a given time $t$? Certainly you don't want to freeze or boil overnight!
+
+To answer this question, let's first express the state at time $t$ in a cleaner way in terms of the history. Note that having linear dynamics makes it easy to expand terms backwards in time:
 \begin{align*}
-    \arg \min_{\pi_{0:T-1} : \cS \to \cA} \quad & \E \left[ \left( \sum_{t=0}^{T-1} (s_t^\top Q_t s_t) + a_t^\top R_t a_t \right) + s_T^\top Q_T s_T \right] \\
-    \textrm{where} \quad s_{t+1} = f_t(s_t, a_t, w_t) &= A_t s_t + B_t a_t + w_t \\
-    s_0 &\sum \mu_0 \\
-    a_t &= \pi_t (s_t) \\
-    w_t &\sim \mathcal{N}(0, \sigma^2 I).
+    s_t &= A s_{t-1} + B a_{t-1} + w_{t-1} \\
+    &= A (As_{t-2} + B a_{t-2} + w_{t-2}) + B a_{t-1} + w_{t-1} \\
+    &= \cdots \\
+    &= A^t s_0 + \sum_{i=0}^{t-1} A^i (B a_{t-i-1} + w_{t-i-1}).
 \end{align*}
-The derivation remains almost exactly the same, and so the Ricatti equation then
-becomes the \emph{time-dependent Ricatti equation:}
 
-\begin{theorem}{Time-dependent Ricatti Equation}{ricatti_time_dependent}
+Let's consider the \emph{average state} at this time, given all the past states and actions.
+Since we assume that $\E w_t = 0$ (this is the zero vector in $d$ dimensions),
+when we take an expectation, the $w_t$ term vanishes due to linearity, and so we're left with \[
+    \E [s_t \mid s_{0:(t-1)}, a_{0:(t-1)}] = A^t s_0 + \sum_{i=0}^{t-1} A^i B a_{t-i-1}.
+\]
+If we choose actions according to our optimal policy, this becomes \[
+    \E [s_t \mid s_0, a_t = - K_t s_t] = \left( \prod_{i=0}^{t-1} (A - B K_i) \right) s_0.
+\]
+This introdces the quantity $A - B K_i,$ which shows up frequently in control theory.
+For example, one important question is: will $s_t$ remain bounded,
+or will it go to infinity as time goes on?
+To answer this, let's imagine that these $K_i$s are equal (call this matrix $K$).
+Then the expression above becomes $(A-BK)^t s_0.$
+Now consider the maximum eigenvalue $\lambda_{\max}$ of $A - BK.$
+If $\lambda_{\max} > 1,$ then there's some initial state $s_0',$ the corresponding eigenvector, for which \[
+    \lim_{t \to \infty} (A - BK)^t s_0' = \lambda_{\max}^t s_0' = \infty.
+\]
+By then, your room is \emph{definitely} on fire!
+
+We've now formulated an optimal solution for the typical, time-homogeneous case of LQR, and considered the expected state under the optimal policy.
+However, this simple case is insufficient for more complex tasks.
+In the following sections, we'll consider some motivating examples, and extensions of LQR where some assumptions are relaxed.
+
+\section{Time-dependent dynamics and cost function} \label{sec:time_dep_lqr}
+
+So far, we've considered the \emph{time-homogeneous} case, where the dynamics and cost function stay the same at every timestep. However, this might not always be the case. For example, if we want to preserve the temperature in a greenhouse, the outside forces are going to change depending on the time of day.
+As another example, in many sports or video games, the rules and scoring system might change during overtime.
+To address these sorts of problems, we can loosen the time-homogeneous restriction, and consider the case where the dynamics and cost function are \emph{time-dependent.}
+Our analysis remains almost identical; in fact, we can simply add a time index to the matrices $A$ and $B$ that determine the dynamics and the matrices $Q$ and $R$ that determine the cost. (Go back and make sure this doesn't affect the results!)
+
+The modified problem is now defined as follows:
+\begin{align*}
+    \arg \min_{\pi_{0}, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E \left[ \left( \sum_{t=0}^{T-1} (s_t^\top Q_t s_t) + a_t^\top R_t a_t \right) + s_T^\top Q_T s_T \right] \\
+    \textrm{where} \quad & s_{t+1} = f_t(s_t, a_t, w_t) = A_t s_t + B_t a_t + w_t \\
+    & s_0 \sim \mu_0 \\
+    & a_t = \pi_t (s_t) \\
+    & w_t \sim \mathcal{N}(0, \sigma^2 I).
+\end{align*}
+
+The derivation of the optimal value functions and the optimal policy remains almost exactly the same,
+and we can modify the Riccati equation accordingly:
+
+\begin{theorem}{Time-dependent Riccati Equation}{riccati_time_dependent}
     \[
         P_t = Q_t + A_t^\top P_{t+1} A_t - A_t^\top P_{t+1} B_t (R_t + B_t^\top P_{t+1} B_t)^{-1} B_t^\top P_{t+1} A_t.
     \]
 
-    Note that this is just \autoref{th:ricatti}, but with the
-    time index added to each of the matrices.
+    \noindent
+    Note that this is just the time-homogeneous Riccati equation (\autoref{th:riccati}), but with the
+    time index added to each of the relevant matrices.
 \end{theorem}
 
 Additionally, by allowing the dynamics to vary across time,
-this gives us a \emph{locally linear} approximation of nonlinear dynamics at each timestep!
+we gain the ability to \emph{locally linearly approximate} nonlinear dynamics at each timestep!
 We'll discuss this later in the chapter.
 
 \section{More general quadratic cost functions}
 
 Our original cost function had only second-order terms w.r.t. the state and action. We can also consider more general quadratic cost functions that also have first-order terms and a constant term. Combining this with
-time-dependent dynamics, we get the following expression
-\[
+time-dependent dynamics results in the following expression, where we introduce a new matrix $M_t$ for the cross term, linear coefficients $q_t$ and $r_t$ for the state and action respectively, and a constant term $c_t$:
+\begin{equation}
     c_t(s_t, a_t) = ( s_t^\top Q_t s_t + s_t^\top M_t a_t + a_t^\top R_t a_t ) + (s_t^\top q_t + a_t^\top r_t) + c_t.
-\]
-We can also include a constant term $v_t \in \R^d$ in the dynamics:
+    \label{df:general_quadratic_cost}
+\end{equation}
+Similarly, we can also include a constant term $v_t \in \R^{n_s}$ in the dynamics (note that this is \emph{fixed} at each timestep, unlike the noise $w_t$):
 \[
     s_{t+1} = f_t(s_t, a_t, w_t) = A_t s_t + B_t a_t + v_t + w_t.
 \]
@@ -497,96 +512,231 @@ We can also include a constant term $v_t \in \R^d$ in the dynamics:
 
 \section{Tracking a predefined trajectory}
 
-So far, we've been trying to get the robot to stay as close as possible to
-a single point $(s^\star, a^\star).$ We can also consider the case where we
-want the robot to follow a predefined trajectory, which is a sequence of
-states and actions $(s_t^\star, a_t^\star)_{t = 1}^T$. In this case, we can use the following cost function:
+So far, we've been trying to get the robot to stay as close as possible to the origin, or more generally a goal state-action pair $(s^\star, a^\star).$ However, consider applying LQR to autonomous driving. Now, we want the desired state to change over time, instead of remaining in one location. Otherwise, it wouldn't be a very useful vehicle!
+In these cases, we want the robot to follow a predefined \emph{trajectory} of
+states and actions $(s_t^\star, a_t^\star)_{t=0}^{T-1}$. To do this, we'll modify the cost function accordingly:
 \[
     c_t(s_t, a_t) = (s_t - s^\star_t)^\top Q (s_t - s^\star_t) + (a_t - a^\star_t)^\top R (a_t - a^\star_t).
 \]
-By expanding out these multiplication, we can see that this is actually a special case of the more general quadratic cost function we discussed
-above: \[
+Note that this punishes states and actions that are far from the intended trajectory. By expanding out these multiplications, we can see that this is actually a special case of the more general quadratic cost function we discussed above (\autoref{df:general_quadratic_cost}): \[
     M_t = 0, \qquad q_t = -2Q s^\star_t, \qquad r_t = -2R a^\star_t, \qquad c_t = (s^\star_t)^\top Q (s^\star_t) + (a^\star_t)^\top R (a^\star_t).
 \]
 
 
 \section{Infinite-horizon}
 
-So far, we've been considering finite-horizon problems, where we have a fixed number of timesteps $T$. We can also consider the case where we have an infinite horizon, and so we want to minimize the expected cost over all future timesteps.
-Additionally, we'll compare this \emph{undiscounted finite-horizon} case to the \emph{discounted infinite-horizon} case, where we have a discount factor $\gamma \in [0, 1]$ that discounts future rewards.
+Another assumption we've made is that the task has a \emph{finite horizon} $T$. How about tasks that might matter indefinitely, where we want to minimize the expected cost over \emph{all future timesteps?} Consider, for example, controlling the long-term value of a portfolio, or managing acidity levels in a lake.
 
-Instead of considering the \emph{total} expected cost, which is going to diverge as time goes on,
-we'll consider the average cost per timestep. That is, we'll divide our objective
-function by $T,$ the number of timesteps.
-What happens is that the recursion in our Ricatti equation (the recursive equation
-for $P_t$) converges to a fixed value $P$.
+In the previous chapter, we dealt with such \textbf{infinite-horizon} cases by \emph{discounting} future rewards. This time, we'll take a different approach by considering the limit of a \emph{finite}-horizon task as $T \to \infty$.
+As it turns out, our derivation is exactly analogous to value iteration from the previous chapter! However, here the structure is nice enough that we don't need a discount factor $\gamma$ to deal with limits analytically. (Note that we must normalize by $1/T$ to keep the total cost bounded.)
 
-From an intuitive perspective of why this happens, let's suppose you have an upcoming project deadline. When it's still a few months away, you might not pay
-much attention to it. But as the deadline gets closer and closer, suddenly the
-horizon becomes clear, and you'll spend more time thinking about it.
-Now the infinite-horizon case is just where the deadline is infinitely far away, so you can just ``behave'' like normal!
-
-This ties in exactly with our analysis of value iteration, which gave us a sequence of policies,
-and then we just took the final policy.
-We're doing the same thing in the large-horizon setting, but note that here there's
-no discount term $\gamma$; the structure of the problem allows us to analyze it even without one.
-
-Note that several parts of this proof are very similar to our derivations of
-value iteration and policy iteration in the previous chapter.
-Let's spend some time on formalizing this connection.
-
-In the discounted case, instead of considering the limit as $T \to \infty,$ we consider the limit as $\gamma \to 1.$ This is because as the discount factor $\gamma$ approaches $1,$ time discounting becomes less and less important, and we're left with the undiscounted case. Just like above, this means we need to
-multiply our cost function by $1 - \gamma,$ and then we can use the same analysis as before.
-
-Let's consider value iteration, which uses the Bellman operator to update $V$: \[
-    V_{t+1}(s) = \max_a \left( r(s, a) + \gamma \E_{s' \sim P(s, a)} V_t(s') \right).
+In the discounted case, analogously to taking the limit as $T \to \infty,$ we consider the limit as the discount factor $\gamma$ approaches $1.$ This is because as $\gamma \to 1,$ time discounting becomes less and less important -- just like the horizon $T$ vanishing into the distance -- and we're left with the undiscounted case. (Note that for the total reward to remain bounded, we must normalize the sum by $1 - \gamma.$) Let's consider value iteration in this setting, which uses the Bellman operator $\mathcal{J}$ to update $V$: \[
+    V_{t+1}(s) = \lim_{\gamma \to 1} (\mathcal{J} V_t)(s) = \lim_{\gamma \to 1} \max_a \left( r(s, a) + \gamma \E_{s' \sim P(s, a)} V_t(s') \right).
 \]
-The analogue of this in the undiscounted finite-horizon case is the \emph{Ricatti equation} (\autoref{th:ricatti}).
-Instead of thinking of $P_{t+1}$ as defining the value function for the \emph{next timestep,} though, let's think of it as the \emph{next version} of the value function.
+This is exactly analogous to the \emph{Riccati equation} (\ref{th:riccati})!
+Instead of thinking of $P_{t+1}$ as defining the value function for the \emph{next timestep,} though, we think of it as the \emph{next version} of the value function in an iterative algorithm.
+Then both of these algorithms are doing the same thing:
+iteratively refining the value function by acting greedily w.r.t. the current iteration.
+
+By going through the same derivation in \autoref{sec:optimal_lqr}, we'll see that $P_t$ (defined recursively by the Riccati equation) converges to a fixed value $P$.
+For an intuitive perspective on why this happens, let's suppose you have an upcoming project deadline. When it's still a few months away, you might not pay
+much attention to it, and behave as you normally do. But as the deadline gets closer and closer, suddenly the
+horizon becomes more and more relevant, and you'll spend more time thinking about it.
+The infinite-horizon case is just where the deadline is infinitely far away, so you can just behave ``like normal'' all the time!
 
 % TODO finish this up
 
 \begin{figure}[h]
     \centering
+    \renewcommand{\arraystretch}{1.5}
     \begin{tabular}{c|c}
         \textbf{Control} & \textbf{MDP} \\
         \hline
-        Finite-horizon & Infinite-horizon \\
         Continuous states and actions & Finite states and actions \\
-        Total undiscounted cost & Total discounted reward \\
-        $\displaystyle \lim_{T \to \infty} \frac{1}{T} \E \left[ \left( \sum_{t=0}^{T-1} c(s_t, a_t) \right) + c(s_T) \right]$ & $\lim_{\gamma \to 1} \displaystyle (1 - \gamma) \E \left[ \sum_{t=0}^{\infty} \gamma^t c(s_t, a_t) \right]$ \\
-        Ricatti equations & Value iteration \\
+        Minimize total undiscounted cost & Maximize total discounted reward \\
+        Finite-horizon & Infinite-horizon \\
+        $\displaystyle \lim_{T \to \infty} \frac{1}{T} \E \left[ \left( \sum_{t=0}^{T-1} c(s_t, a_t) \right) + c(s_T) \right]$ & $\lim_{\gamma \to 1} \displaystyle (1 - \gamma) \E \left[ \sum_{t=0}^{\infty} \gamma^t r(s_t, a_t) \right]$ \\
+        Riccati equations & Value iteration \\
         $\displaystyle P \gets Q + A^\top P A - A^\top P B (R + B^\top P B)^{-1} B^\top P A$ & $\displaystyle V(s) \gets \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V(s') \right]$
     \end{tabular}
-    \caption{Comparison of control and finite MDPs.}
+    \caption{A comparison between the continuous control and finite MDP settings, with a summary of the analogy between the Riccati equation and value iteration.}
     \label{fig:control_mdp}
 \end{figure}
 
 
 \section{Approximating nonlinear dynamics with LQR}
 
-Let's return to the CartPole example (\ref{eg:cart_pole}) from the start of the chapter. We want to stabilize the pole around some
-optimal state and action $(s^\star, a^\star).$
-The `Q' in LQR stands for ``quadratic cost,'' so previously
-we've modelled the cost as $c(s, a) = (s - s^\star)^\top Q (s - s^\star) + (a - a^\star)^\top R (a - a^\star).$
-Here, let's relax those constraints and consider some more
-general measure of distance to the optimal state and action: \[
-    c(s, a) = d(s, s^\star) + d(a, a^\star).
-\]
-We'll consider the noise-free setting, since as we previously saw,
-the noise doesn't actually affect the optimal policy.
+As its name might suggest, LQR works best when the dynamics are linear and the cost function is quadratic. In these settings, we've shown a way to analytically derive the optimal policy.
+However, let's return to the CartPole example from the start of the chapter (\autoref{eg:cart_pole}). The dynamics (physics) aren't linear, and we might also want to specify a cost function that's more complex than just quadratic! How can we adapt LQR to this more general nonlinear case?
 
-This is essentially just a general control problem (see \ref{df:optimal_control}). We can use LQR to solve it, but we'll need to approximate the dynamics of the system.
-Here, we don't know the dynamics $f$ or the cost function $c$,
-but we suppose that we're able to \emph{query/sample/simulate} them
+Concretely, let's consider a \emph{noise-free} problem since, as we saw, the noise doesn't affect the optimal policy. Let's assume the dynamics and cost function are stationary, and ignore the terminal state for simplicity:
+
+\begin{definition}{Nonlinear control problem}{nonlinear_control}
+\begin{align*}
+    \min_{\pi_0, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E_{s_0} \left[ \sum_{t=0}^{T-1} c(s_t, a_t) \right] \\
+    \text{where} \quad & s_{t+1} = f(s_t, a_t) \\
+    & a_t = \pi_t(s_t) \\
+    & s_0 \sim \mu_0 \\
+    & c(s, a) = d(s, s^\star) + d(a, a^\star).
+\end{align*}
+Here, $d$ denotes some general measure of distance to the goal state and action $(s^\star, a^\star).$
+\end{definition}
+
+This is now only slightly simplified from the general optimal control problem (see \ref{df:optimal_control}). Here, we don't know an analytical form for the dynamics $f$ or the cost function $c$,
+but we assume that we're able to \emph{query/sample/simulate} them
 to get their values at a given state and action.
+How can we apply LQR in this setting?
 
-We also assume that $f$ is differentiable and that $c$ is twice-differentiable. This makes sense since we want to approximate
-$f$ as linear and $c$ as quadratic so that we can apply LQR.
-For our approximation to be accurate, we need to make sure that all states are close to the optimal state $s^\star,$
-and we can stay close using actions that are close to $a^\star.$
+\subsection{Local linearization}
+
+Well, as we briefly mentioned in the introduction, part of the reason we designed the LQR setting this way was because we can take any \emph{locally continuous} function, and approximate it using a Taylor expansion of low-order polynomials! By taking a linear approximation of $f$ and a quadratic approximation of $c,$ we're back to the regime of LQR with these derived matrices in terms of their gradients and Hessians accordingly.
+
+\textbf{Assumptions.} This approach assumes that $f$ is differentiable and that $c$ is twice-differentiable, both around $(s^\star, a^\star).$
+Additionally, since a Taylor expansion generally gets less and less accurate the further you stray from the point of expansion, this means that we also assume that all states are close to the optimal state $s^\star,$
+and that we can stay close using actions that are close to $a^\star.$
+If this seems like a strong set of restrictions, it is! But we'll save this discussion for the next section.
+
+% TODO maybe add Taylor expansion stuff in appendix?
+If you're unfamiliar with Taylor expansions, we recommend taking a calculus course; we'll use them here without much further detail. Linearizing the dynamics around $(s^\star, a^\star)$ gives:
+\begin{align*}
+    f(s, a) &\approx f(s^\star, a^\star) + \nabla_s f(s^\star, a^\star) (s - s^\star) + \nabla_a f(s^\star, a^\star) (a - a^\star) \\
+    (\nabla_s f(s, a))_{ij} &= \frac{d f_i(s, a)}{d s_j}, \quad i, j \le n_s \\
+    (\nabla_a f(s, a))_{ij} &= \frac{d f_i(s, a)}{d a_j}, \quad i \le n_s, j \le n_a
+\end{align*}
+and quadratizing the cost function around $(s^\star, a^\star)$ gives:
+\begin{align*}
+    c(s, a) &\approx c(s^\star, a^\star) && \text{constant} \\
+    &\qquad + \nabla_s c(s^\star, a^\star) (s - s^\star) + \nabla_a c(s^\star, a^\star) (a - a^\star) && \text{linear} \\
+    &\qquad + \frac{1}{2} (s - s^\star)^\top \nabla_{ss} c(s^\star, a^\star) (s - s^\star) && \text{quadratic} \\
+    &\qquad + \frac{1}{2} (a - a^\star)^\top \nabla_{aa} c(s^\star, a^\star) (a - a^\star) \\
+    &\qquad + (s - s^\star)^\top \nabla_{sa} c(s^\star, a^\star) (a - a^\star)
+\end{align*}
+where the gradients and Hessians are defined as
+\begin{align*}
+    (\nabla_s c(s, a))_{i} &= \frac{d c(s, a)}{d s_i}, \quad i \le n_s
+    & (\nabla_a c(s, a))_{i} &= \frac{d c(s, a)}{d a_i}, \quad i \le n_a \\
+    (\nabla_{ss} c(s, a))_{ij} &= \frac{d^2 c(s, a)}{d s_i d s_j}, \quad i, j \le n_s
+    & (\nabla_{aa} c(s, a))_{ij} &= \frac{d^2 c(s, a)}{d a_i d a_j}, \quad i, j \le n_a \\
+    (\nabla_{sa} c(s, a))_{ij} &= \frac{d^2 c(s, a)}{d s_i d a_j}. \quad i \le n_s, j \le n_a
+\end{align*}
+
+We note that this cost can be expressed in the general quadratic form seen in \autoref{df:general_quadratic_cost}.
+We leave it as an exercise to derive the corresponding matrices and vectors $Q, R, M, q, r, c.$
+To calculate these gradients and Hessians in practice, we use a method known as \textbf{finite differencing} for numerically computing derivatives.
+Namely, we can simply use the definition of derivative, and see how the function changes as we add or subtract a tiny $\delta$ to the input.
+% Do we need to go further into detail about finite differencing?
+
+However, simply taking the second-order approximation of the cost function is insufficient;
+we also need to ensure that it is locally convex, that is, the Hessians $\nabla_{ss} c(s^\star, a^\star)$ and $\nabla_{aa} c(s^\star, a^\star)$ are positive definite.
+
+\subsection{Local convexification}
+
+Recall that an equivalent definition of positive definite matrices is that all of their eigenvalues are positive. One way to naively \emph{force} $\nabla_{ss} c(s^\star, a^\star)$ and $\nabla_{aa} c(s^\star, a^\star)$ to be positive definite is to simply remove any negative eigenvalues.
+Note that both of these Hessians are symmetric, and so they can be decomposed in terms of their eigenbasis. Thus by removing their eigenvalues and adding a small `lower bound' to the eigenvalues (so that the surface will have some minimum amount of curvature), we obtain
+\begin{align*}
+    \nabla_{ss} c(s^\star, a^\star) &= \sum_{i=1}^{n_s} \sigma_i u_i u_i^\top \\
+    \nabla_{ss} \widetilde c(s^\star, a^\star) &= \sum_{\substack{i=1 \\ \sigma_i > 0}}^{n_s} \sigma_i u_i u_i^\top + \lambda I.
+\end{align*}
+We can use a similar approach to convexify $\nabla_{aa} \widetilde{c}(s^\star, a^\star).$ Now that we have a convex quadratic approximation to the cost function, and a linear approximation to the state transitions, we can simply apply the time-homogenous LQR methods we derived before!
 
 % TODO: insert figure here for visual intuition, in case people aren't experienced with the calculus
+
+But what happens when our assumptions break down, namely when we enter states far away from $s^\star$ and want to use actions far from $a^\star$?
+As we mentioned above, our Taylor approximation will typically become less accurate.
+To address this, we'll need to do a Taylor approximation around \emph{different points at each time step.}
+
+\section{Iterative LQR}
+
+\textbf{Iterative LQR} is a way to resolve the issues with local linearization.
+The key idea is to linearize around different points at each timestep, making creating a time-dependent approximation of the dynamics.
+We'll break it into a few steps:
+\begin{steps}
+    \item Form an LQR around the current candidate trajectory $(\bar s^i_t, \bar a^i_t)_{t=0}^{T-1}$ using local approximation.
+    \item Apply the solution to time-dependent LQR from \autoref{sec:time_dep_lqr} to obtain an optimal policy $\pi^i.$
+    \item Generate a new trajectory $(\tilde a_t)_{t=0}^{T-1}$ using $\pi^i.$
+    \item Compute a better candidate trajectory $\mathbf{a}^{i+1}$ by interpolating between $\mathbf{a}^i$ and $\tilde {\mathbf{a}}.$
+\end{steps}
+Now the question becomes: How do we choose the best \emph{waypoints} $(\bar s_t, \bar a_t)$ to get the best approximation?
+
+We'll once again use an iterative approach, similarly to value iteration, where at each step we update the waypoints \emph{greedily} w.r.t. the current iteration.
+Let's use a superscript to denote the iteration of the algorithm.
+We can start off by initializing some (bad) sequence of waypoints $\bar a^0_0, \dots, \bar a^0_{T-1}$ by some approximate method such as local linearization.
+Applying these actions at their respective timesteps gives a sample trajectory \[
+    \bar s_0, \bar a_0, \bar s_1, \bar a_1, \dots, \bar s_{T-1}, \bar a_{T-1} \quad \text{where} \quad
+    \bar s^0_0 = \bar s_0 = \E_{s_0 \sim \mu_0} [s_0], \quad \bar s^0_{t+1} = f(\bar s^0_t, \bar a^0_t).
+\]
+Now, at each timestep $t,$ we linearize $f$ and quadratize (and convexify) $c$ around the point generated in the sample trajectory, using the same Taylor expansion techniques we saw in the previous section:
+\begingroup
+\newcommand{\iter}[1]{\bar {#1}^i_t}
+\newcommand{\grad}[2]{\nabla_{#2} #1(\iter s, \iter a)}
+\begin{align*}
+    f_t(s, a) &\approx f(\iter s, \iter a) + \grad f s (s - \iter s) + \grad f a (a - \iter a) \\
+    c_t(s, a) &\approx c(\iter s, \iter a) + \begin{bmatrix}
+        s - \iter s & a - \iter a
+    \end{bmatrix} \begin{bmatrix}
+        \grad c s \\
+        \grad c a
+    \end{bmatrix} \\
+    &\qquad + \frac{1}{2} \begin{bmatrix}
+        s - \iter s & a - \iter a
+    \end{bmatrix} \begin{bmatrix}
+        \nabla_{ss} c(\iter s, \iter a) & \nabla_{sa} c(\iter s, \iter a) \\
+        \nabla_{as} c(\iter s, \iter a) & \nabla_{aa} c(\iter s, \iter a)
+    \end{bmatrix}
+    \begin{bmatrix}
+        s - \iter s \\
+        a - \iter a
+    \end{bmatrix}
+\end{align*}
+\endgroup
+Now let's use the time-dependent LQR solution to compute an optimal policy $\pi^i_0, \dots, \pi^i_{T-1}.$ We can then generate a new sample trajectory by taking actions according to this optimal policy: \[
+    \bar s^{i+1}_0 = \bar s_0, \qquad \tilde a_t = \pi^i_t(\bar s^{i+1}_t), \qquad \bar s^{i+1}_{t+1} = f(\bar s^{i+1}_t, \tilde a_t).
+\]
+Note that the states are drawn by sampling from the \emph{true} dynamics,
+and also that we've denoted these actions as $\tilde a_t$ and aren't directly using them for the next iteration $a^{i+1}_t$.
+Rather, we want to interpolate between them and the actions from the previous iteration $\bar a^i_0, \dots, \bar a^i_{T-1}.$
+This is so that the cost will \emph{increase monotonically,} since if the new policy turns out to actually be worse, we can stay closer to the previous trajectory. (Can you think of an intuitive example where this might happen?)
+Formally, we want to find $\alpha \in [0, 1]$ to generate the next iteration of actions: \begin{align*}
+    \min_{\alpha \in [0, 1]} \quad & \sum_{t=0}^{T-1} c(s_t, \bar a^{i+1}_t) \\
+    \text{where} \quad & s_{t+1} = f(s_t, \bar a^{i+1}_t) \\
+    & \bar a^{i+1}_t = \alpha \bar a^i_t + (1-\alpha) \bar a_t \\
+    & s_0 = \bar s_0.
+\end{align*}
+Note that this is only optimizing over the closed interval $[0, 1],$ so by the Extreme Value Theorem it's guaranteed to have a global maximum!
+
+The final output of this algorithm is a policy $\pi^{n_\text{steps}}$ derived after $n_\text{steps}$ of the algorithm.
+Though the proof is somewhat complex, one can show that for many nonlinear control problems, this solution converges to a locally optimal solution (in the policy space).
+
+
+\section{Programming and Implementation}
+
+Not sure how much to include here yet. WIP. Walk through a basic Python solution
+to OpenAI Gym and CartPole? (Or save this for homework?)
+
+
+
+\section{Exercises}
+
+\begin{enumerate}
+\item Consider a cleaning robot with one wheel on each side of its body. Your pet has made a mess nearby, and you want to steer the robot to go clean it up.
+Let's represent the state of the robot as a $3$-dimensional vector containing its $(x, y)$ coordinates and its angle $\theta,$ relative to some global reference frame.
+We can control the robot using its linear velocity $v$ (change in $x, y$) and angular velocity $\omega$ (change in $\theta$).
+For simplicity, we'll assume the robot is perfectly ideal and there's no noise in the system.
+\begin{enumerate}
+    \item Formally describe the true of the system as a function $f : \cS \times \cA \to \cS.$ Assume the system works in timesteps of $dt = 1 s$ and that all distances are measured in meters.
+    \item Linearize the dynamics that you derived using a first-order Taylor approximation. Is this approximation stationary or time-dependent?
+    \item Suppose the mess is at location $(x^\star, y^\star) = (2, 2).$ We want to reach that state using a small amount of energy. Write down the quadratic cost function using $Q = \diag(1, 1, 0.5),$ expressing that we care about the final position more than the state, and $R = 0.2 I$ to penalize large action steps.
+\end{enumerate}
+Now that our LQR is set up, let's find the optimal policy.
+\begin{enumerate}
+    \item Let the horizon be $T = 50$ timesteps. Write down the recursive update formula for $P_t$ (Hint: use the Riccati equation).
+    \item Write the closed form solution of the optimal policy at time $T-1.$ Verify that this is a linear function of the state. 
+\end{enumerate}
+
+\item (Todo.)
+
+
+\end{enumerate}
 
 
 
