@@ -1,0 +1,239 @@
+\documentclass[../main/main]{subfiles}
+
+\setcounter{chapter}{1}
+
+\begin{document}
+    
+\chapter{Markov Decision Processes}
+
+
+For now, we'll assume that the world is known. This involves the state transitions and the reward.
+
+Unknown systems are similar to complex systems. In both, once we don't access the world everywhere, we need to actually \emph{learn} about the world around us.
+
+
+
+\section{Optimality}
+
+
+\begin{theorem}{Value Iteration}{val_iter}
+
+Initialize:
+
+\[
+    V^0 \sim \|V^0\|_\infty \in [0, 1/1-\gamma]
+\]
+
+Iterate until convergence:
+
+\[
+    V^{t+1} \gets \mathcal{J}(V^t)
+\]
+
+\tcbsubtitle[colback=white]{Analysis}
+
+This algorithm runs in $O(|\cS|^3)$ time since we need to perform a matrix
+inversion.
+
+\end{theorem}
+
+
+
+
+
+\begin{theorem}{Exact Policy Evaluation}{exact_pi_eval}
+
+Represent the reward from each state-action pair as a vector
+
+\[ R^\pi \in \R^{|\cS|} \qquad R^\pi_s = r(s, \pi(s)) \]
+
+Also represent the state transitions
+
+\[ P^\pi \in \R^{|\cS \times \cS} \qquad P^\pi_{s, s'} = P(s' | s, \pi(s)) \]
+
+That is, row $i$ of $P^\pi$ is a distribution over the \emph{next state}
+given that the current state is $s_i$
+and we choose an action using policy $\pi$.
+
+Using this notation, we can express the Bellman consistency equation as
+
+\begin{align*}
+    \begin{pmatrix}
+        \vdots \\ V^\pi(s) \\ \vdots
+    \end{pmatrix}
+    &=
+    \begin{pmatrix}
+        \vdots \\ r(s, \pi(s)) \\ \vdots
+    \end{pmatrix}
+    +
+    \gamma
+    \begin{pmatrix}
+        & \vdots & \\
+        \quad & P(s' \mid s, \pi(s)) & \quad \\
+        & \vdots &
+    \end{pmatrix}
+    \begin{pmatrix}
+        \vdots \\ V^\pi(s') \\ \vdots
+    \end{pmatrix} \\
+    V^\pi &= R^\pi + \gamma P^\pi V^\pi \\
+    (I - \gamma P^\pi) V^\pi &= R^\pi \\
+    V^\pi &= (I - \gamma P^\pi) R^\pi
+\end{align*}
+
+if $I - \gamma P^\pi$ is invertible, which we can prove is the case.
+
+
+\end{theorem}
+
+
+
+\begin{theorem}{Iterative Policy Evaluation}{iter_pi_eval}
+
+How can we calculate the value function $V^\pi$ of a policy $\pi$?
+
+Above, we saw an exact function that runs in $O(|\cS|^2)$.
+But say we really need a fast algorithm, and we're okay with having an
+approximate answer. Can we do better? Yes!
+
+Using the same notation as above,
+let's initialize $V^0$ such that the elements are drawn uniformly
+from $[0, 1/(1-\gamma)]$.
+
+Then we can iterate the fixed-point equation we found above:
+
+\[ V^{t+1} \gets R + \gamma P V^t \]
+
+
+\end{theorem}
+
+% One case in which we might want a fast, approximate algorithm like the one we
+% just found is when we want to use it as part of another algorithm.
+
+How can we use this fast approximate algorithm?
+
+\begin{theorem}{Policy Iteration}{pi_iter}
+
+Remember, for now we're only considering policies that are
+\emph{stationary and deterministic}. There's $|\cS|^{|\cA}$ of these, so let's
+start off by choosing one at random. Let's call this initial policy $\pi^0$,
+using the superscript to indicate the time step.
+
+Now for $t = 0, 1, \dots$, we perform the following:
+
+\begin{enumerate}
+    
+\item \emph{Policy Evaluation}: First use the algorithm from earlier to
+    calculate $V^{\pi^t}(s)$ for all states $s$. Then use this to calculate the
+    state-action values:
+
+    \[
+        Q^{\pi^t}(s, a) = r(s, a) + \gamma \sum_{s'} P(s' \mid s, a) V^{\pi^t} (s')
+    \]
+
+\item \emph{Policy Improvement}: Update the policy so that, at each state,
+    it chooses the action with the highest action-value:
+
+    \[
+        \pi^{t+1}(s) = \argmax_a Q^{\pi^t} (s, a)
+    \]
+
+    In other words, we're setting it to act greedily with respect to the new Q-function.
+
+\end{enumerate}
+
+What's the computational complexity of this?
+
+% TODO
+
+\end{theorem}
+
+
+
+
+\section{Finite Horizon MDPs}
+
+Suppose we're only able to act for $H$ timesteps.
+
+% TODO come up with example
+
+Now, instead of discounting, all we care about is the (average) total reward
+that we get over this time.
+
+\[ \E[ \sum_{t=0}^{H-1} r(s_t, a_t) ] \]
+
+To be more precise, we'll consider policies that depend on the time.
+We'll denote the policy at timestep $h$ as $\pi_h : \cS \to \cA$. In other
+words, we're dropping the constraint that policies must be stationary.
+
+This is also called an \emph{episodic model}.
+
+% How to solve these problems? \emph{Dynamic programming}
+
+% A bit more annoying notationally to keep track of time
+
+Note that since our policy is nonstationary, we also need to adjust our value
+function (and Q-function) to account for this.
+Instead of considering the total infinite-horizon discounted reward like we did
+earlier,
+we'll instead consider the \emph{remaining} reward from a given timestep
+onwards:
+
+\begin{align*}
+    V^\pi_h(s) &= \E \left[ \sum_\tau^{H-1} r(s_\tau, a_\tau) \mid s_h = s, a_\tau = \pi_h(s_h) \right] \\
+    Q^\pi_h(s, a) &= \E \left[ \sum_\tau^{H-1} r(s_\tau, a_\tau) \mid (s_h, a_h) = (s, a) \right]
+\end{align*}
+
+
+We can also define our Bellman consistency equations, by splitting up the total
+reward into the immediate reward (at this time step) and the future reward,
+represented by our state value function from that next time step:
+
+\[
+    Q^\pi_h(s, a) = r(s, a) + \E_{s' \sim P(s, a)}[V^\pi_{h+1}(s')]
+\]
+
+\begin{theorem}{Computing the optimal policy}{pi_star_dp}
+
+We can solve for the optimal policy using dynamic programming.
+
+\begin{itemize}
+\item \emph{Base case.} At the end of the episode (time step $H-1$),
+    we can't take any more actions, so the $Q$-function is simply the reward
+    that we obtain:
+
+    \[
+        Q^\star_{H-1}(s, a) = r(s, a)
+    \]
+
+    so the best thing to do is just act greedily
+    and get as much reward as we can!
+
+    \[
+        \pi^\star_{H-1}(s) = \argmax_a Q^\star_{H-1}(s, a)
+    \]
+
+    Then $V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
+    trajectory, is simply whatever action gives the most reward.
+
+    \[
+        V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
+    \]
+
+\item \emph{Recursion.} Then, we can work backwards in time, starting from the
+    end, using our consistency equations!
+\end{itemize}
+
+Note that this is exactly just value iteration and policy iteration combined,
+since our policy is nonstationary, so we can exactly specify its decisions at
+each time step!
+
+\tcbsubtitle[colback=white]{Analysis}
+
+
+Total computation time $O(H |\cS|^2 |\cA|)$
+
+
+
+\end{theorem}
+
+\end{document}
