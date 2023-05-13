@@ -7,9 +7,150 @@
 \chapter{Markov Decision Processes}
 
 
-For now, we'll assume that the world is known. This involves the state transitions and the reward.
+\todo{Add section on ``What is RL?'' Agent taking actions that impact the environment. Introduce $\Delta$ notation. We'll also overload notation and use $s_t$ both to represent the actual state $s_t \in \S$ and to represent the \emph{event} that we observe state $s_t$ at time $t$. Most notation (e.g. uppercase letters for random variables) is borrowed from Sutton and Barto.}
 
-Unknown systems are similar to complex systems. In both, once we don't access the world everywhere, we need to actually \emph{learn} about the world around us.
+How can we \emph{formalize} a reinforcement learning task in a way that is both \emph{sufficiently general} yet also tractable enough for \emph{fruitful analysis}?
+
+In this chapter, we'll turn to \textbf{Markov decision processes} as a simple yet general formalism for solving decision problems.
+
+\begin{definition}{Markov Decision Process}{mdp}
+    
+The key components of a Markov decision process are:
+
+\begin{enumerate}
+    \item The \textbf{state} (a.k.a. the \textbf{environment}) that the agent interacts with. We use $\S$ to denote the set of possible states, called the \textbf{state space}.
+    \item The \textbf{agent} and the \textbf{actions} that it can take. We use $\A$ to denote the set of possible actions, called the \textbf{action space}.
+    \item The \textbf{reward} signal. In this course we'll take it to be a deterministic function of a state-action pair, i.e. $r : \S \times \A \to \mathbb{R}$. In general, though, the reward function can also be stochastic, and it can also accept the \emph{resulting} state as an argument; that is, $r : \S \times \A \times \S \to \Delta(\R)$.
+    \item The \textbf{state transitions} (a.k.a. \textbf{dynamics}) that describe what state we \textbf{transition to} after taking an action. We'll denote this by $P : \S \times \A \to \Delta(\S)$ (as opposed to $\P$ which denotes the underlying probability measure.)
+    \item A \emph{discount factor} $\gamma \in [0, 1)$. We'll see later that this ensures that the \emph{return}, or total reward, is well-defined in infinite-horizon problems.
+    \item Some \textbf{initial state distribution} $\rho \in \Delta(\S)$.
+\end{enumerate}
+
+Combined together, we call these a Markov decision process
+
+\[
+    M = (\S, \A, P, r, \gamma, \rho).
+\]
+
+\end{definition}
+
+
+The reason we call it a \emph{Markov} decision process is that the transition function only depends on the ``current'' state and action. Formally, this implies that the state process satisfies the \textbf{Markov property}, that is,
+
+\[
+    \P(s_{t+1} \mid (s_\tau, a_\tau)_{\tau=0}^t) = P(s_{t+1} \mid s_t, a_t).
+\]
+
+\begin{example}{Examples of MDPs}{mdp_examples}
+    \textbf{Board games and video games} are often MDPs. For example, in chess or Go, the state of the game only depends on the pieces on the board and not on the previous history. Several possible reward functions could be possible, e.g. $+1$ upon winning the game and $0$ otherwise, or to receive reward upon taking the opponent's pieces. The state transitions are based on the opponent's moves.
+
+    \textbf{Robotic control} can be framed as an MDP task. In this setting, physics provides the state transitions. A possible action might be activating a motor to move forwards. The reward function could be designed based on the task; for example, one could reward the robot for arriving at a desired location.
+\end{example}
+
+We'll distinguish between \textbf{finite-horizon} MDPs, where the agent eventually enters a \textbf{terminal state}, and \textbf{infinite-horizon} MDPs, where the agent might keep going on and on.
+
+We call the total reward the \emph{return}. For finite-horizon MDPs, we can just add up the rewards:
+
+\[
+    G_t := R_t + R_{t+1} + \cdots + R_T,
+\]
+
+where $T$ is the number of time steps and $R_t := r(S_t, A_t)$. However, for infinite-horizon problems (i.e. $T = \infty$), in order for this to be well-defined, we need to \emph{discount} future rewards:
+
+\[
+    G_t := R_t + \gamma R_{t+1} + \cdots + \gamma^{\tau-t} R_{\tau} + \cdots = \sum_{\tau = t}^\infty \gamma^{\tau-t} R_\tau.
+\]
+
+Can you see why this ensures that $G_t$ is finite?
+
+Note that we recover the finite-horizon definition by letting $\gamma = 1$ and $T$ be finite.
+
+Our key \emph{goal} in a reinforcement learning task is to \emph{maximize expected return}.
+
+Why can't we just maximize the current reward at each timestep, i.e. use a greedy strategy? Well, in RL as in real life, often making greedy decisions (e.g. procrastinating) will leave you worse off than if you make some short-term sacrifices for long-term gains.
+
+We call the ``video recording'' of states, actions, and rewards a \textbf{trajectory}
+
+\[
+    \xi_t = (s_\tau, a_\tau, r_\tau)_{\tau=0}^t
+\]
+
+
+\section{Policies and value functions}
+
+A \textbf{policy} $\pi$ describes the agent's strategy: which actions it takes in a given situation.
+
+Policies can either be \textbf{deterministic} (in the same situation, the agent will always take the same action) or \textbf{stochastic} (in the same situation, the agent will sample an action from a distribution).
+
+What do I mean by ``situation''? In the most general setting, this could include all of the states, actions, and rewards in the trajectory so far.
+
+However, due to the Markov assumption, the state transitions only depend on the current state. Thus a \textbf{stationary} policy $\pi : \S \to \Delta(\A)$ --- one that only depends on the current state --- can do just as well.
+
+Fix a policy $\pi$. We'd like a concise way to refer to the expected return when \emph{starting in a given state} and acting according to $\pi$. We call this the \textbf{value function} of $\pi$ and denote it by
+
+\begin{align*}
+    V^\pi(s) &:= \E_\pi [G_0 \mid S_0 = s] % \\
+    % &= \E_\pi \left[ \sum_{t=0}^\infty \gamma^t R_t \mid S_0 = s \right].
+\end{align*}
+
+We start at time $0$ without loss of generality; can you see why we could have chosen to start at any time?
+
+Similarly, we can define the \textbf{action-value function} of $\pi$ (aka the \textbf{Q-function}) as the expected return when starting in a given state and taking a given action:
+
+\begin{align*}
+    Q^\pi(s, a) &:= \E_\pi [G_0 \mid S_0 = s, A_0 = a] % \\
+    % &= \E_\pi [\sum_{t=0}^\infty \gamma^t R_t \mid S_0 = s, A_0 = a].
+\end{align*}
+
+\subsection{Bellman self-consistency equations}
+
+Note that we can break down the return as
+
+\[
+    G_t = R_t + \gamma G_{t+1}:
+\]
+
+the reward from the \emph{current time-step} and that from \emph{future time-steps}. It turns out that this simple observation gives us a way to solve for the value function analytically!
+
+Let's expand out the definition of the value function to see what I mean. Let's first consider the simple case where $\pi : \S \to \A$ is deterministic:
+
+\begin{align*}
+    V^\pi(s) &:= \E_\pi[G_0 \mid S_0 = s] \\
+    &= r(s, \pi(s)) + \gamma \E_{s' \sim P(\cdot \mid s, \pi(s))} {\color{blue} \E_\pi [G_1 \mid S_1 = s']} \\
+    &= r(s, \pi(s)) + \gamma \sum_{s' \in \S} P(s' \mid s, \pi(s)) {\color{blue} V^\pi(s')}.
+\end{align*}
+
+For stochastic policies, we simply average out over the relevant quantities:
+
+\begin{align*}
+    V^\pi(s) &:= \E_\pi [G_0 \mid S_0 = s] \\
+    % &= \E_\pi \left[ \sum_{t=0}^\infty \gamma^t R_t \mid S_0 = s \right] \\
+    &= \E_\pi \left[ R_0 + \gamma G_1 \mid S_0 = s \right] \\
+    &= \E_{a \sim \pi(\cdot \mid s)} \left[ r(s, a) + \gamma \E_{s' \sim P(\cdot \mid s, a)}  {\color{blue} \E_\pi [G_1 \mid S_1 = s']} \right] \\
+    &= \sum_a \pi(a \mid s) \left[r(s, a) + \gamma \sum_{s'} P(s' \mid s, a) {\color{blue} V^\pi(s')} \right].
+\end{align*}
+
+
+
+
+\section{Finite MDPs}
+
+When the state and action space are finite, we can neatly express quantities as vectors and matrices:
+
+\[
+    r \in \R^{|\S| \times |\A|}, \quad P \in [0, 1]^{|\S| \times (|\S| \times |\A|)}, \quad \rho \in [0, 1]^{|\S|}, \quad \pi \in [0, 1]^{|\A| \times |\S|}, \quad V^\pi \in \R^{|\S|}, \quad Q^\pi \in \R^{|\S| \times |\A|}.
+\]
+
+
+
+\section{Exercises}
+
+Show that without discounting, the reward
+
+
+% For now, we'll assume that the world is known. This involves the state transitions and the reward.
+
+% Unknown systems are similar to complex systems. In both, once we don't access the world everywhere, we need to actually \emph{learn} about the world around us.
 
 
 
@@ -32,7 +173,7 @@ Iterate until convergence:
 
 \tcbsubtitle[colback=white]{Analysis}
 
-This algorithm runs in $O(|\cS|^3)$ time since we need to perform a matrix
+This algorithm runs in $O(|\S|^3)$ time since we need to perform a matrix
 inversion.
 
 \end{theorem}
@@ -45,11 +186,11 @@ inversion.
 
 Represent the reward from each state-action pair as a vector
 
-\[ R^\pi \in \R^{|\cS|} \qquad R^\pi_s = r(s, \pi(s)) \]
+\[ R^\pi \in \R^{|\S|} \qquad R^\pi_s = r(s, \pi(s)) \]
 
 Also represent the state transitions
 
-\[ P^\pi \in \R^{|\cS \times \cS} \qquad P^\pi_{s, s'} = P(s' | s, \pi(s)) \]
+\[ P^\pi \in \R^{|\S \times \S} \qquad P^\pi_{s, s'} = P(s' | s, \pi(s)) \]
 
 That is, row $i$ of $P^\pi$ is a distribution over the \emph{next state}
 given that the current state is $s_i$
@@ -91,7 +232,7 @@ if $I - \gamma P^\pi$ is invertible, which we can prove is the case.
 
 How can we calculate the value function $V^\pi$ of a policy $\pi$?
 
-Above, we saw an exact function that runs in $O(|\cS|^2)$.
+Above, we saw an exact function that runs in $O(|\S|^2)$.
 But say we really need a fast algorithm, and we're okay with having an
 approximate answer. Can we do better? Yes!
 
@@ -114,7 +255,7 @@ How can we use this fast approximate algorithm?
 \begin{theorem}{Policy Iteration}{pi_iter}
 
 Remember, for now we're only considering policies that are
-\emph{stationary and deterministic}. There's $|\cS|^{|\cA}$ of these, so let's
+\emph{stationary and deterministic}. There's $|\S|^{|\A}$ of these, so let's
 start off by choosing one at random. Let's call this initial policy $\pi^0$,
 using the superscript to indicate the time step.
 
@@ -162,7 +303,7 @@ that we get over this time.
 \[ \E[ \sum_{t=0}^{H-1} r(s_t, a_t) ] \]
 
 To be more precise, we'll consider policies that depend on the time.
-We'll denote the policy at timestep $h$ as $\pi_h : \cS \to \cA$. In other
+We'll denote the policy at timestep $h$ as $\pi_h : \S \to \A$. In other
 words, we're dropping the constraint that policies must be stationary.
 
 This is also called an \emph{episodic model}.
@@ -230,7 +371,7 @@ each time step!
 \tcbsubtitle[colback=white]{Analysis}
 
 
-Total computation time $O(H |\cS|^2 |\cA|)$
+Total computation time $O(H |\S|^2 |\A|)$
 
 
 

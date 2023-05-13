@@ -128,7 +128,7 @@ This is an example of \textbf{importance sampling:} updating a distribution to p
 
 A central idea from supervised learning is the bias-variance tradeoff. So far, our method is \emph{unbiased,} meaning that its average is the true policy gradient. Can we find ways to reduce the variance of our estimator as well?
 
-We can instead subtract a \textbf{baseline function} $b_t : \cS \to \R$ at each timestep $t.$ This modifies the policy gradient as follows: \[
+We can instead subtract a \textbf{baseline function} $b_t : \S \to \R$ at each timestep $t.$ This modifies the policy gradient as follows: \[
     \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
         \sum_{t=0}^{H-1} \nabla \log \pi_\theta (a_t | s_t) \left(
             \left(
@@ -189,7 +189,7 @@ Why can we drop the $\E \phi(s_t, a')$ term? By linearity of expectation, consid
 
 \subsection{Neural policies}
 
-More generally, we could map states and actions to unnormalized scores via some parameterized function $f_\theta : \cS \times \cA \to \R,$ such as a neural network, and choose actions according to a softmax: \[
+More generally, we could map states and actions to unnormalized scores via some parameterized function $f_\theta : \S \times \A \to \R,$ such as a neural network, and choose actions according to a softmax: \[
     \pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.
 \]
 
