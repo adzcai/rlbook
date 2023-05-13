@@ -65,12 +65,12 @@ that is, we understand `how the world works'. We'll get to the unknown case in t
 
 \section{Optimal control}
 
-Recall that an MDP is defined by its state space $\cS$, action space $\cA$, state transitions $P$, reward function $r$, and discount factor $\gamma$ or time horizon $T$. What are the equivalents in the control setting?
+Recall that an MDP is defined by its state space $\S$, action space $\A$, state transitions $P$, reward function $r$, and discount factor $\gamma$ or time horizon $T$. What are the equivalents in the control setting?
 
 \begin{itemize}
-    \item The state and action spaces are \emph{continuous} rather than finite. That is, $\cS = \R^{n_s}$ and $\cA = \R^{n_a},$ where $n_s$ and $n_a$ are the number of coordinates to specify a single state or action respectively.
+    \item The state and action spaces are \emph{continuous} rather than finite. That is, $\S = \R^{n_s}$ and $\A = \R^{n_a},$ where $n_s$ and $n_a$ are the number of coordinates to specify a single state or action respectively.
     \item We call the state transitions the \textbf{dynamics} of the system. In the most general case, these might change across timesteps and also include some stochastic \textbf{noise} $w_t.$ We denote these dynamics as the function $f_t,$ such that $s_{t+1} = f_t(s_t, a_t, w_t).$ Of course, we can simplify to cases where the dynamics are \emph{deterministic/noise-free} (no $w_t$ term) or are \emph{stationary/time-homogeneous} (the same function $f$ across timesteps).
-    \item Instead of a reward function, it's more intuitive to consider a \textbf{cost function} $c_t: \cS \times \cA \to \R$ that describes \emph{how far away} we are from our \textbf{goal state-action pair} $(s^\star, a^\star)$. An important special case is when the cost is time-homogeneous; that is, it remains the same function $c$ at each timestep.
+    \item Instead of a reward function, it's more intuitive to consider a \textbf{cost function} $c_t: \S \times \A \to \R$ that describes \emph{how far away} we are from our \textbf{goal state-action pair} $(s^\star, a^\star)$. An important special case is when the cost is time-homogeneous; that is, it remains the same function $c$ at each timestep.
     \item We seek to minimize the \emph{undiscounted} cost with a \emph{time horizon} $T$. Note that we end an episode at $s_T$ -- there is no $a_T,$ and so we denote the cost for the final state as $c_T(s_T).$
 \end{itemize}
 
@@ -79,7 +79,7 @@ With all of these components, we can now formulate the \textbf{optimal control p
 \begin{definition}{Optimal control problem}{optimal_control}
     \begin{equation}
         \begin{split}
-            \min_{\pi_0, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E_{s_0, w_t} \left[
+            \min_{\pi_0, \dots, \pi_{T-1} : \S \to \A} \quad & \E_{s_0, w_t} \left[
                 \left( \sum_{t=0}^{T-1} c_t(s_t, a_t) \right) + c_T(s_T)
             \right] \\
             \text{where} \quad & s_{t+1} = f_t(s_t, a_t, w_t), \\
@@ -101,18 +101,18 @@ the DP algorithms we saw before.
 % In this case, you can also think of $f_t$ as an (uncountably infinite-dimensional matrix.
 As a matter of fact, let's consider what happens if we \emph{discretize} the
 problem. For intuition, suppose $n_s = n_a = 1$ (that is, states and actions are real numbers).
-To make $\cS$ and $\cA$ discrete, let's choose some small positive $\epsilon,$
+To make $\S$ and $\A$ discrete, let's choose some small positive $\epsilon,$
 and simply round states and actions to the nearest multiple of
 $\epsilon.$ For example, if $\epsilon = 0.01$, then we're just rounding $s$ and $a$ to two decimal spaces. \footnote{Formally, we can consider an $\epsilon$-net over the original continuous space. Let $V$ be some normed space. A subset $V_\epsilon \subseteq V$ is called an $\epsilon$-net if for all $v \in V,$ there exists a $v_\epsilon \in V_\epsilon$ such that $\|v - v_\epsilon\| \le \epsilon.$ The rounding example given is technically a $0.005$-net.} If both these state and action spaces can be bounded, then the resulting sets are actually finite, so now we can use our previous tools for MDPs.
 
-But is this actually a feasible solution? Even if our $\cS$ and $\cA$ are
+But is this actually a feasible solution? Even if our $\S$ and $\A$ are
 finite, the existing algorithms might take unfeasibly long to complete.
 Suppose our state and action spaces
-are bounded by some constants $\max_{s \in \cS} \|s\| \le B_s$ and
-$\max_{a \in \cA} \|a\| \le B_a$.
+are bounded by some constants $\max_{s \in \S} \|s\| \le B_s$ and
+$\max_{a \in \A} \|a\| \le B_a$.
 Then using our rounding method, we must divide \emph{each dimension} into intervals of length $\varepsilon$,
 resulting in $(B_s/\varepsilon)^{n_s}$ and $(B_a/\varepsilon)^{n_a}$ total points.
-To get a sense of how quickly this grows, let's consider $\varepsilon = 0.01, n_s = n_a = 10$. Then the number of elements in our transition matrix is $|\cS|^2 |\cA| = (100^{10})^2 (100^{10}) = 10^{60}$!
+To get a sense of how quickly this grows, let's consider $\varepsilon = 0.01, n_s = n_a = 10$. Then the number of elements in our transition matrix is $|\S|^2 |\A| = (100^{10})^2 (100^{10}) = 10^{60}$!
 Try finding a computer that'll fit that in memory! (For reference, 32 GB of memory can store $10^9$ 32-bit floating point numbers.)
 
 So as we've seen, discretizing the problem isn't a feasible solution as soon as
@@ -161,7 +161,7 @@ we can generalize the algorithms for LQR to get surprisingly good solutions.
 
     \noindent Putting everything together, the optimization problem we want to solve is:
     \begin{align*}
-        \min_{\pi_0, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E \left[ \left( \sum_{t=0}^{T-1} s_t^\top Q s_t + a_t^\top R a_t \right) + s_T^\top Q s_T \right] \\
+        \min_{\pi_0, \dots, \pi_{T-1} : \S \to \A} \quad & \E \left[ \left( \sum_{t=0}^{T-1} s_t^\top Q s_t + a_t^\top R a_t \right) + s_T^\top Q s_T \right] \\
         \textrm{where} \quad & s_{t+1} = A s_t + B a_t + w_t \\
         & a_t = \pi_t (s_t) \\
         & w_t \sim \mathcal{N}(0, \sigma^2 I) \\
@@ -218,7 +218,7 @@ So how do we go about analyzing this system? A good first step might be to intro
 
 \begin{definition}{Value functions for LQR}{value_lqr}
     Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{t-1}),$ we can define the
-    value function $V^\pi_t : \cS \to \R$ as \[ \begin{split}
+    value function $V^\pi_t : \S \to \R$ as \[ \begin{split}
         V^\pi_t (s) &= \E \left[ \left( \sum_{i=t}^{T-1} c(s_i, a_i) \right) + c(s_T) \right] \\
         &= \E \left[ \left( \sum_{i=t}^{T-1} s_i^\top Q s_i + a_i^\top R a_i \right) + s_T^\top Q s_T \right] \\
         \textrm{conditional on} \quad s_t &= s \\
@@ -250,7 +250,7 @@ and that the optimal policy is a \emph{linear function} of the state.
     The \textbf{optimal value function} is the one that, at any time, in any state,
     achieves \emph{minimum cost} across all policies: \[
         \begin{split}
-            V^\star_t(s) &= \min_{\pi_t, \dots, \pi_{T-1} : \cS \to \cA} V^\pi_t(s) \\
+            V^\star_t(s) &= \min_{\pi_t, \dots, \pi_{T-1} : \S \to \A} V^\pi_t(s) \\
             &= \min_{\pi_{t}, \dots, \pi_{T-1}} \E \left[ \left( \sum_{i=t}^{T-1} s_t^\top Q s_t + a_t^\top R a_t \right) + s_T^\top Q s_T \right] \\
             \textrm{conditional on} \quad & a_i = \pi_i(s_i) \quad \forall i \ge t \\
             & s_t = s
@@ -300,10 +300,10 @@ This is essentially the same proof that we wrote in the finite-horizon MDP setti
 except now the state and action are \emph{continuous} instead of finite.
 
 We first assume our theorems are true at time $t+1.$ That is,
-\[ V^\star_{t+1}(s) = s^\top P_{t+1} s + p_{t+1} \quad \text{for all states} \quad s \in \cS. \]
+\[ V^\star_{t+1}(s) = s^\top P_{t+1} s + p_{t+1} \quad \text{for all states} \quad s \in \S. \]
 
 \textbf{Step 1.} We'll start off by demonstrating that $Q^\star_t(s)$ is quadratic and convex.
-Recall that the definition of $Q^\star_t : \cS \times \cA \to \R$ is \[
+Recall that the definition of $Q^\star_t : \S \times \A \to \R$ is \[
     Q^\star_t(s, a) = c(s, a) + \E_{s' \sim f(s, a, w_{t+1})} V^\star_{t+1}(s').
 \]
 We know $c(s, a) := s^\top Q s + a^\top R a.$ Let's consider the average value
@@ -486,7 +486,7 @@ Our analysis remains almost identical; in fact, we can simply add a time index t
 
 The modified problem is now defined as follows:
 \begin{align*}
-    \arg \min_{\pi_{0}, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E \left[ \left( \sum_{t=0}^{T-1} (s_t^\top Q_t s_t) + a_t^\top R_t a_t \right) + s_T^\top Q_T s_T \right] \\
+    \arg \min_{\pi_{0}, \dots, \pi_{T-1} : \S \to \A} \quad & \E \left[ \left( \sum_{t=0}^{T-1} (s_t^\top Q_t s_t) + a_t^\top R_t a_t \right) + s_T^\top Q_T s_T \right] \\
     \textrm{where} \quad & s_{t+1} = f_t(s_t, a_t, w_t) = A_t s_t + B_t a_t + w_t \\
     & s_0 \sim \mu_0 \\
     & a_t = \pi_t (s_t) \\
@@ -590,7 +590,7 @@ Concretely, let's consider a \emph{noise-free} problem since, as we saw, the noi
 
 \begin{definition}{Nonlinear control problem}{nonlinear_control}
 \begin{align*}
-    \min_{\pi_0, \dots, \pi_{T-1} : \cS \to \cA} \quad & \E_{s_0} \left[ \sum_{t=0}^{T-1} c(s_t, a_t) \right] \\
+    \min_{\pi_0, \dots, \pi_{T-1} : \S \to \A} \quad & \E_{s_0} \left[ \sum_{t=0}^{T-1} c(s_t, a_t) \right] \\
     \text{where} \quad & s_{t+1} = f(s_t, a_t) \\
     & a_t = \pi_t(s_t) \\
     & s_0 \sim \mu_0 \\
@@ -738,7 +738,7 @@ Let's represent the state of the robot as a $3$-dimensional vector containing it
 We can control the robot using its linear velocity $v$ (change in $x, y$) and angular velocity $\omega$ (change in $\theta$).
 For simplicity, we'll assume the robot is perfectly ideal and there's no noise in the system.
 \begin{enumerate}
-    \item Formally describe the true of the system as a function $f : \cS \times \cA \to \cS.$ Assume the system works in timesteps of $dt = 1 s$ and that all distances are measured in meters.
+    \item Formally describe the true of the system as a function $f : \S \times \A \to \S.$ Assume the system works in timesteps of $dt = 1 s$ and that all distances are measured in meters.
     \item Linearize the dynamics that you derived using a first-order Taylor approximation. Is this approximation stationary or time-dependent?
     \item Suppose the mess is at location $(x^\star, y^\star) = (2, 2).$ We want to reach that state using a small amount of energy. Write down the quadratic cost function using $Q = \diag(1, 1, 0.5),$ expressing that we care about the final position more than the state, and $R = 0.2 I$ to penalize large action steps.
 \end{enumerate}

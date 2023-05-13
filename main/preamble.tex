@@ -1,7 +1,7 @@
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1in, twoside]{geometry}
-\usepackage{graphicx, hyperref, sidenotes, enumitem, tabularx}
+\usepackage{graphicx, hyperref, sidenotes, enumitem, tabularx, todonotes}
 \usepackage[indent]{parskip}
 
 \newenvironment{steps}
@@ -29,9 +29,10 @@
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\cN}{\mathcal{N}}
-% \newcommand{\P}{\mathbb{P}}
-\newcommand{\cS}{\mathcal{S}}
-\newcommand{\cA}{\mathcal{A}}
+\let\P\relax
+\DeclareMathOperator{\P}{\mathbb{P}}
+\renewcommand{\S}{\mathcal{S}}
+\newcommand{\A}{\mathcal{A}}
 \newcommand{\qed}{$\blacksquare$}
 
 \renewcommand{\tilde}{\widetilde}
