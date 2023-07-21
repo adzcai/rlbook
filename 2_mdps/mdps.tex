@@ -3,8 +3,11 @@
 \setcounter{chapter}{1}
 
 \begin{document}
+
     
 \chapter{Markov Decision Processes}
+
+\tableofcontents
 
 
 \todo{Add section on ``What is RL?'' Agent taking actions that impact the environment. Introduce $\Delta$ notation. We'll also overload notation and use $s_t$ both to represent the actual state $s_t \in \S$ and to represent the \emph{event} that we observe state $s_t$ at time $t$. Most notation (e.g. uppercase letters for random variables) is borrowed from Sutton and Barto.}
@@ -49,7 +52,7 @@ The reason we call it a \emph{Markov} decision process is that the transition fu
 
 We'll distinguish between \textbf{finite-horizon} MDPs, where the agent eventually enters a \textbf{terminal state}, and \textbf{infinite-horizon} MDPs, where the agent might keep going on and on.
 
-We call the total reward the \emph{return}. For finite-horizon MDPs, we can just add up the rewards:
+We call the total reward the \textbf{return}. For finite-horizon MDPs, we can just add up the rewards:
 
 \[
     G_t := R_t + R_{t+1} + \cdots + R_T,
@@ -107,10 +110,10 @@ Similarly, we can define the \textbf{action-value function} of $\pi$ (aka the \t
 Note that we can break down the return as
 
 \[
-    G_t = R_t + \gamma G_{t+1}:
+    G_t = R_t + \gamma G_{t+1},
 \]
 
-the reward from the \emph{current time-step} and that from \emph{future time-steps}. It turns out that this simple observation gives us a way to solve for the value function analytically!
+the reward from the \emph{current time-step} plus the total reward from from \emph{future time-steps}. It turns out that this simple observation, along with linearity of expectation, gives us a set of equations to solve for the value function analytically!
 
 Let's expand out the definition of the value function to see what I mean. Let's first consider the simple case where $\pi : \S \to \A$ is deterministic:
 
@@ -119,6 +122,8 @@ Let's expand out the definition of the value function to see what I mean. Let's 
     &= r(s, \pi(s)) + \gamma \E_{s' \sim P(\cdot \mid s, \pi(s))} {\color{blue} \E_\pi [G_1 \mid S_1 = s']} \\
     &= r(s, \pi(s)) + \gamma \sum_{s' \in \S} P(s' \mid s, \pi(s)) {\color{blue} V^\pi(s')}.
 \end{align*}
+
+This is a set of $|\mathcal{S}|$ equations (one per state) in $|\mathcal{S}|$ unknowns (the value of each state), which we can solve for $V^\pi$.
 
 For stochastic policies, we simply average out over the relevant quantities:
 
@@ -130,22 +135,40 @@ For stochastic policies, we simply average out over the relevant quantities:
     &= \sum_a \pi(a \mid s) \left[r(s, a) + \gamma \sum_{s'} P(s' \mid s, a) {\color{blue} V^\pi(s')} \right].
 \end{align*}
 
+These are called the \textbf{Bellman self-consistency equations}. They encapsulate that the value function's prediction of the current state must be consistent with its prediction of other states.
+
+Can you write the Bellman self-consistency equations for the action-value function?
 
 
+\section{Tabular MDPs}
 
-\section{Finite MDPs}
-
-When the state and action space are finite, we can neatly express quantities as vectors and matrices:
+When the state and action space are finite and small, we can think of the value function and $Q$-function as \emph{lookup tables} with each cell corresponding to the value of a state (or state-action pair). We can neatly express quantities as vectors and matrices:
 
 \[
-    r \in \R^{|\S| \times |\A|}, \quad P \in [0, 1]^{|\S| \times (|\S| \times |\A|)}, \quad \rho \in [0, 1]^{|\S|}, \quad \pi \in [0, 1]^{|\A| \times |\S|}, \quad V^\pi \in \R^{|\S|}, \quad Q^\pi \in \R^{|\S| \times |\A|}.
+    r \in \R^{|\S| \times |\A|}, \quad P \in [0, 1]^{(|\S| \times |\A|) \times |\S|}, \quad \rho \in [0, 1]^{|\S|}, \quad \pi \in [0, 1]^{|\A| \times |\S|}, \quad V^\pi \in \R^{|\S|}, \quad Q^\pi \in \R^{|\S| \times |\A|}.
 \]
 
+Make sure that these dimensions make sense!
 
+Note that when the policy is deterministic, by definition, the actions can be determined from the state, and so we can chop off the action dimension in most cases:
 
-\section{Exercises}
+\begin{align*}
+    r^{\pi} \in \R^{|\S|}, \quad P^{\pi} \in [0, 1]^{|\S| \times |\S|}, \quad \rho \in [0, 1]^{|\S|}, \quad \pi \in \A^{|\S|}, \quad V^\pi \in \R^{|\S|}.
+\end{align*}
 
-Show that without discounting, the reward
+Then, rewriting the system of Bellman equations in this notation gives
+
+\[
+    V^\pi = r^\pi + \gamma P^\pi V^\pi \implies V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.
+\]
+
+Note that we've assumed that $I - \gamma P^\pi$ is invertible. Can you see why this is the case?
+
+Recall that a linear operator, i.e. a square matrix, is invertible if and only if its null space is trivial; that is, it doesn't map any nonzero vector to zero. In this case, we can see that $I - \gamma P^\pi$ is invertible because it maps any nonzero vector to a vector with at least one nonzero element.
+
+% \subsection{Exercises}
+
+% Show that without discounting, the reward
 
 
 % For now, we'll assume that the world is known. This involves the state transitions and the reward.
