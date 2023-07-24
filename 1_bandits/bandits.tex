@@ -2,10 +2,226 @@
 
 
 \begin{document}
+
+\tableofcontents
     
 \chapter{Bandits}
 
+
+The \textbf{multi-armed bandits} (MAB) setting is a simple but powerful setting for studying the basic challenges of RL. In this setting, an agent repeatedly chooses from a fixed set of actions, called \textbf{arms}, each of which has an associated reward distribution. The agent's goal is to maximize the total reward it receives over some time period.
+
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{States} & \textbf{Actions} &\textbf{Rewards} \\
+        \hline
+        None & Finite & Stochastic \\
+        \hline
+    \end{tabular}
+\end{center}
+
+In particular, we'll spend a lot of time discussing the \textbf{Exploration-Exploitation Tradeoff}: should the agent choose new actions to learn more about the environment, or should it choose actions that it already knows to be good?
+
+\begin{example}{Online advertising}{advertising}
+    Let's suppose you, the agent, are an advertising company. You have $K$ different ads that you can show to users; For concreteness, let's suppose there's just a single user. You receive $1$ reward if the user clicks the ad, and $0$ otherwise. Thus, the unknown \emph{reward distribution} associated to each ad is a Bernoulli distribution defined by the probability that the user clicks on the ad. Your goal is to maximize the total number of clicks by the user.
+\end{example}
+
+\todo{Insert examples of clinical trials, finance, etc.}
+
+In this chapter, we will introduce the multi-armed bandits setting, and discuss some of the challenges that arise when trying to solve problems in this setting. We will also introduce some of the key concepts that we will use throughout the book, such as regret and exploration-exploitation tradeoffs.
+
 \section{Multi-Armed Bandits}
+
+\begin{remark}{Namesake}{multi-armed}
+    The name ``multi-armed bandits'' comes from slot machines in casinos, which are often called ``one-armed bandits'' since they have one arm (the lever) and take money from the player.
+\end{remark}
+
+Let $K$ denote the number of arms. We'll label them $1, \dots, K$ and use \emph{superscripts} to indicate the arm index; since we seldom need to raise values to a power, this won't cause much confusion. For simplicity, we'll assume rewards are \emph{bounded} between $0$ and $1$. Then each arm has an unknown reward distribution $\nu^k \in \triangle([0, 1])$ with mean $\mu^k = \E_{r \sim \nu^k} [r]$.
+
+Formally speaking, the agent's interaction with the MAB environment can be described by the following process:
+
+\begin{lstlisting}
+for timestep in range(0, T):
+    # Agent chooses an arm
+    k = agent.choose_arm()
+    
+    # Environment generates a reward
+    r = env.generate_reward(k)
+    
+    # Agent observes the reward
+    agent.observe_reward(k, r)
+\end{lstlisting}
+
+What's the optimal strategy for the agent? Convince yourself that the agent should try to always pull the arm with the highest expected reward $\mu^\star := \max_{k \in [K]} \mu^k$.
+
+The goal, then, is to minimize the \textbf{regret}, defined below:
+
+\begin{definition}{Regret}{regret}
+    
+The agent's \textbf{regret} after $T$ timesteps is the difference between the total reward it observes and the total reward it \emph{would} have received if it had always pulled the optimal arm:
+
+\begin{equation}
+    \text{Regret}_T := \sum_{t=0}^{T-1} \mu^\star - \mu^{a_t}
+\end{equation}
+
+Often we consider the \textbf{expected regret} $\E[\text{Regret}_T]$, where the randomness comes from the agent's strategy.
+
+\end{definition}
+
+Ideally, we'd like to asymptotically achieve \textbf{zero regret}, i.e. $\E[\text{Regret}_T] = o(T)$.
+
+\todo{Define Big O notation in appendix}
+
+\subsection{Pure exploration (random guessing)}
+
+A trivial strategy is to always choose arms at random (i.e. ``pure exploration''). What is the expected regret of this strategy?
+
+\begin{align*}
+    \E[\text{Regret}_T] &= \sum_{t=0}^{T-1} \E[\mu^\star - \mu^{a_t}] \\
+    &= T (\mu^\star - \bar \mu) > 0 \\
+    \text{where} \quad \bar \mu &:= \E[\mu^{a_t}] = \frac{1}{K} \sum_{k=1}^K \mu^k
+\end{align*}
+
+
+\subsection{Pure greedy}
+
+How might we improve on pure exploration? Instead, we could try each arm once, and then commit to the one with the highest observed reward. We'll call this the \textbf{pure greedy} strategy.
+
+How does the expected regret of this strategy compare to that of pure exploration? For concreteness, suppose there's just two arms, with Bernoulli reward distributions given by $\mu^1 > \mu^2$.
+
+Let's let $r^1$ be the random reward from the first arm and $r^2$ be the random reward from the second. If $r^1 > r^2$, then we achieve zero regret. Otherwise, we achieve regret $T(\mu^1 - \mu^2)$. Thus, the expected regret is simply:
+
+\begin{align*}
+    \E[\text{Regret}_T] &= \P(r^1 < r^2) \cdot T(\mu^1 - \mu^2) + c \\
+    &= (1 - \mu^1) \mu^2 \cdot T(\mu^1 - \mu^2) + c
+\end{align*}
+
+Which is still $\Theta(T)$, the same as pure exploration!
+
+Can we do better? For one, we could reduce the variance of the reward estimates by pulling each arm \emph{multiple times}. This is called the \textbf{explore-then-commit} strategy.
+
+\subsection{Explore-then-commit}
+
+Let's pull each arm $N_{\text{explore}}$ times, and then commit to the arm with the highest observed average reward. What is the expected regret of this strategy?
+
+\begin{lstlisting}
+# exploration phase
+for k in range(K):
+    total = 0
+    for i in range(N_explore):
+        total += env.generate_reward(k)
+    avg_reward[k] = total / N_explore
+k_hat = argmax(avg_reward)
+
+# exploitation phase
+for t in range(T):
+    r = env.generate_reward(k_hat)
+\end{lstlisting}
+
+(Note that the ``pure greedy'' strategy is just the special case where $N_{\text{explore}} = 1$.)
+
+Let's analyze the expected regret of this strategy by splitting it up into the exploration and exploitation phases.
+
+\paragraph*{Exploration phase.} This phase takes $N_{\text{explore}} K$ timesteps. Since at each step we incur at most $1$ regret, the total regret is at most $N_{\text{explore}} K$.
+
+\paragraph*{Exploitation phase.} This will take a bit more effort. We'll ultimately prove that:
+
+\begin{enumerate}
+    \item For any total time $T$,
+    \item We can choose $N_{\text{explore}}$ such that
+    \item With arbitrarily high probability, the regret is sublinear.
+\end{enumerate}
+
+Let $\hat k := \argmax_{k \in [K]} \hat \mu^k$ be the arm we choose to ``exploit''. We know the regret from the exploitation phase is
+
+\[
+    T_{\text{exploit}} (\mu^\star - \mu^{\hat k}) \qquad \text{where} \qquad T_{\text{exploit}} := T - N_{\text{explore}} K.
+\]
+
+So we'd like to bound $\mu^\star - \mu^{\hat k} = o(1)$ in order to achieve sublinear regret. How can we do this?
+
+Hoeffding's inequality tells us that, for a given arm $k$, since the rewards from that arm are i.i.d.,
+
+\begin{equation}
+    \P\left(|\hat \mu^k - \mu^k | > \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta. \label{eq:hoeffding-etc}
+\end{equation}
+
+
+But note that we can't directly apply this to $\hat k$ since it's a random variable. Instead, we need to ``uniform-ize'' this bound across \emph{all} the arms, i.e. bound the residual across all the arms simultaneously, so that the resulting bound will apply \emph{no matter what} $\hat k$ ``crystallizes'' to.
+
+The \emph{union bound} provides a simple way to do this: The probability of error (i.e. the inequality \ref*{eq:hoeffding-etc}) for a \emph{single} arm is $\delta$, so the probability that \emph{any} of the arms is far from the mean is $K \delta$. Exchanging $\delta := K \delta$ and taking the complement of both sides, we have
+
+\begin{align*}
+    \P\left( \forall k \in [K], |\hat \mu^k - \mu^k | \le \sqrt{\frac{\ln(2K/\delta)}{2N_{\text{explore}}}} \right) &\ge 1-\delta
+\end{align*}
+
+Then to apply this bound to $\hat k$ in particular, we can apply the useful trick of ``adding zero'':
+
+\begin{align*}
+    \mu^{k^\star} - \mu^{\hat k} &= \mu^{k^\star} - \mu^{\hat k} + (\hat \mu^{k^\star} - \hat \mu^{k^\star}) + \hat \mu^{\hat k} - \hat \mu^{\hat k} \\
+    &= (\mu^{k^\star} - \hat \mu^{k^\star}) + \underbrace{(\hat \mu^{k^\star} - \hat \mu^{\hat k})}_{\le 0 \text{ by definition of } \hat k} \phantom{} + (\hat \mu^{\hat k} - \mu^{\hat k}) \\
+    &\le 2 \sqrt{\frac{\ln(2K/\delta)}{2N_{\text{explore}}}} \text{ with probability at least } 1-\delta
+\end{align*}
+
+So then setting $N_{\text{explore}} = \sqrt{T}$, for example, achieves sublinear regret, as desired.
+
+\todo{elaborate on this bound and include ``optimal'' $N_\text{explore}$}
+
+The ETC algorithm is rather ``abrupt'' in that it switches from exploration to exploitation after a fixed number of timesteps. In practice, it's often better to use a more gradual transition, which brings us to the \emph{epsilon-greedy} algorithm.
+
+\subsection{Epsilon-greedy}
+
+The \textbf{epsilon-greedy} algorithm is a simple modification of ETC that gradually transitions from exploration to exploitation. It works as follows:
+
+\begin{lstlisting}
+for t in range(T):
+    if random() < epsilon(t):
+        # exploration
+        k = random_choice(K)
+    else:
+        # exploitation
+        # element-wise division
+        k = argmax(total_reward / num_pulls)
+    r = env.generate_reward(k)
+    total_reward[k] += r
+    num_pulls[k] += 1
+\end{lstlisting}
+
+Note that $\epsilon$ can vary over time. In particular we might want to gradually \emph{decrease} $\epsilon$ as we learn more about the environment over time.
+
+\todo{Insert optimal epsilon and regret analysis / high probability bound}
+
+In particular, in the ETC case, we had to set $N_{\text{explore}}$ based on the total number of timesteps $T$. But the epsilon-greedy algorithm actually handles the exploration \emph{automatically}: the regret rate holds for \emph{any} $t$, and doesn't depend on the final horizon $T$.
+
+But the way these algorithms explore is rather naive: we've been exploring \emph{uniformly} across all the arms. But what if we could be smarter about it? In particular, what if we could explore more for arms that we're less certain about? This brings us to the \textbf{Upper Confidence Bound} (UCB) algorithm.
+
+
+\subsection{Upper Confidence Bound (UCB)}
+
+
+Intuitively, we'll estimate \emph{confidence intervals} for the mean of each arm, and then choose the arm with the highest \emph{upper confidence bound}. This operates on the principle of \textbf{optimism in the face of uncertainty}: we'll choose the arm that we're most optimistic about.
+
+In particular, we'd like to compute some upper confidence bound $M^k_t$ for arm $k$ at time $t$ and then choose $a_t := \argmax_{k \in [K]} M^k_t$. But how should we compute $M^k_t$?
+
+In our regret analysis for ETC, we were able to compute this bound using Hoeffding's inequality. But that required us to know the number of times we'd pulled each arm. In the UCB algorithm, we'll use a different approach: we'll compute a bound based on the \emph{number of times we've pulled each arm so far}.
+
+Let $N^k_t$ denote the number of times arm $k$ has been pulled within the first $t$ timesteps, and $\hat \mu^k_t$ denote the sample average of those pulls. That is,
+
+\begin{align*}
+    N^k_t &:= \sum_{\tau=t}^{t-1} \mathbf{1} \{ a_\tau = k \} \\
+    \hat \mu^k_t &:= \frac{1}{N^k_t} \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} r_\tau.
+\end{align*}
+
+However, note that we can't use Hoeffding's inequality to bound $\hat \mu^k_t$, since Hoeffding's inequality assumes that the \emph{number of samples} is \emph{fixed}. Here, though, it's random since it depends on the agent's actions, which in turn depend on the random previously observed rewards.
+
+To get around this, we'll need to shift our focus from \emph{time} to \emph{number of samples}. In particular, we'll define $\tilde r^k_n$ to be the $n$th sample from arm $k$, and $\tilde \mu^k_n$ to be the sample average of the first $n$ samples from arm $k$. This satisfies all the assumptions required for Hoeffding's inequality!
+
+So how can we extend our bound on $\tilde\mu^k_n$ to $\hat \mu^k_t$? Well, we know $N^k_t \le t$ (which would be the case if we had pulled arm $k$ every time). So we can apply the same trick as last time, where we uniform-ize across all possible values of $N^k_t$. In particular, we have
+
+\begin{align*}
+    \P\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2t/\delta)}{2n}} \right) &\ge 1-\delta
+\end{align*}
+
 
 
 \end{document}
