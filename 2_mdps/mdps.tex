@@ -1,17 +1,17 @@
 \documentclass[../main/main]{subfiles}
 
-\setcounter{chapter}{1}
+\setcounter{chapter}{0}
 
 \begin{document}
 
-    
+
 \chapter{Markov Decision Processes}
 
 \tableofcontents
 
-\section{Introduction}
+\section{The MDP formalism}
 
-RL studies how an agent can learn to make sequential decisions in an environment. This is a very general problem! How can we \emph{formalize} this task in a way that is both \emph{sufficiently general} yet also tractable enough for \emph{fruitful analysis}?
+The field of RL studies how an agent can learn to make sequential decisions in an environment. This is a very general problem! How can we \emph{formalize} this task in a way that is both \emph{sufficiently general} yet also tractable enough for \emph{fruitful analysis}?
 
 Let's consider some examples of sequential decision problems to identify the key common properties we'd like to capture:
 
@@ -21,41 +21,23 @@ Let's consider some examples of sequential decision problems to identify the key
     \item \textbf{Robotic control}, where the robot can move and interact with the environment.
 \end{itemize}
 
-All of these fit into the RL framework (consider what the agent, state, and possible reward signals are in each example). In particular, the \emph{rules} of the environment stay the same over time. We can formalize such environments using \textbf{Markov decision processes} (MDPs).
+\todo{Insert pictures}
 
-% there is some agent that takes actions within its environment. These actions change the state of the environment, which in turn affects the agent's future observations. The agent's goal is to maximize its ``reward'' (e.g. by winning the game, earning points, or arriving at a desired location).
+All of these fit into the RL framework! Consider what the agent, state, and possible reward signals are in each example.
 
-% For motivation, let's begin by considering a simple example of a sequential decision problem: a \textbf{grid-world} in which the agent can move up, down, left, or right in a grid.
-
-% \begin{figure}[h]
-%     \centering
-%     \begin{tikzpicture}
-%         \draw[step=1cm,gray,very thin] (0, 0) grid (4, 3);
-%         \fill[black] (0, 0) rectangle (1, 1);
-%         \fill[black] (3, 2) rectangle (4, 3);
-%         \fill[red!20] (1, 2) rectangle (2, 3);
-%         \fill[red!20] (2, 0) rectangle (3, 1);
-%         % draw a small user icon in the first square
-%         \node[anchor=center] at (0.5, 0.5) {\includegraphics[width=0.5cm]{../assets/user.png}};
-%     \end{tikzpicture}
-%     \caption{A grid-world.}
-% \end{figure}
-
-\subsection{Definition}
-
-MDPs are environments where the state transitions only depend on the most recent state and action. Formally, we say that the state transitions satisfy the \textbf{Markov property}, that is,
+In particular, the \emph{rules} of the environment stay the same over time. We can formalize such environments using \textbf{Markov decision processes} (MDPs). These are environments where the state transitions only depend on the \emph{most recent} state and action. Formally, we say that the state transitions satisfy the \textbf{Markov property}:
 
 \[
-    \P(s_{t+1} \mid (s_\tau, a_\tau)_{\tau=0}^t) = P(s_{t+1} \mid s_t, a_t).
+    \P(s_{t+1} \mid s_0, a_0, \dots, s_t, a_t) = P(s_{t+1} \mid s_t, a_t).
 \]
 
-We'll see that this simple assumption leads to a rich set of problems and algorithms.
+Where $P : \S \times \A \to \Delta(\S)$ describes the \textbf{state transitions}. We'll see that this simple assumption leads to a rich set of problems and algorithms.
 
-MDPs are usually classified as \textbf{finite-horizon}, where the interactions end after some finite number of time steps, or \textbf{infinite-horizon}, where the interactions can continue indefinitely. We'll begin with the finite-horizon case for ease of analysis, but the ideas naturally extend to the infinite-horizon case.
+MDPs are usually classified as \textbf{finite-horizon} (aka \textbf{episodic}), where the interactions end after some finite number of time steps, or \textbf{infinite-horizon}, where the interactions can continue indefinitely. We'll begin with the finite-horizon case for ease of analysis and then discuss the infinite-horizon case later in the chapter.
 
-% We'll also assume that the interactions end after some finite number of time steps, called the \textbf{time horizon}. (It's straightforward to extend the framework to infinite-horizon problems, but we'll leave that for another time.)
+In each setting, we'll describe how to evaluate different \textbf{policies} and how to compute (or approximate) the \textbf{optimal policy}. We'll introduce the \textbf{Bellman consistency condition}, which allows us to break down the episode into individual timesteps. Thinking of the r.h.s. of this equation as a function of the value function gives us the \textbf{Bellman operator}, which we'll show is a \textbf{contraction mapping}. We'll exploit this useful fact to define iterative algorithms for computing the value function and optimal policy.
 
-\begin{definition}{(Finite-horizon) Markov Decision Process}{mdp}
+\section{Finite horizon (episodic) MDPs}
 
 The key components of a (finite-horizon) Markov decision process are:
 
@@ -75,261 +57,610 @@ Combined together, these objects specify a finite-horizon Markov decision proces
     M = (\S, \A, \mu, P, r, H).
 \]
 
-\end{definition}
+\begin{example}{Tidying}{tidy}
+    Let's consider an extremely simple decision problem throughout this chapter: the task of keeping your room tidy!
 
-% \begin{example}{Examples of MDPs}{mdp_examples}
-%     \textbf{Board games and video games} are often MDPs. For example, in chess or Go, the state of the game only depends on the pieces on the board and not on the previous history. Several possible reward functions could be possible, e.g. $+1$ upon winning the game and $0$ otherwise, or to receive reward upon taking the opponent's pieces. The state transitions are based on the opponent's moves.
+    Your room has the possible states $\mathcal{S} = \{ \text{orderly}, \text{messy} \}$. You can take either of the actions $\A = \{ \text{tidy}, \text{ignore} \}$. The room starts off tidy.
+    
+    The state transitions are as follows: if you tidy the room, it becomes (or remains) orderly; if you ignore the room, it might become messy.
+    
+    The rewards are as follows: You get penalized for tidying an orderly room (a waste of time) or ignoring a messy room, but you get rewarded for ignoring an orderly room (since you can enjoy). Tidying a messy room is a chore that gives no reward.
+    
+    These are summarized in the following table:
 
-%     \textbf{Robotic control} can be framed as an MDP task. In this setting, physics provides the state transitions. A possible action might be activating a motor to move forwards. The reward function could be designed based on the task; for example, one could reward the robot for arriving at a desired location.
-% \end{example}
+    \[
+    \begin{array}{ccccc}
+        s & a & P(\text{orderly} \mid s, a) & P(\text{messy} \mid s, a) & r(s, a) \\
+        \text{orderly} & \text{tidy} & 1 & 0 & -1 \\
+        \text{orderly} & \text{ignore} & 0.7 & 0.3 & 1 \\
+        \text{messy} & \text{tidy} & 1 & 0 & 0 \\
+        \text{messy} & \text{ignore} & 0 & 1 & -1
+    \end{array}
+    \]
 
-% \subsection{Additional concepts}
+    Consider a time horizon of $H = 7$ days (one interaction per day). Suppose $t = 0$ corresponds to Monday and $t = 6$ corresponds to Sunday.
+\end{example}
 
-We call the total reward the \textbf{return}:
+\subsection{Policies}
+
+A \textbf{policy} $\pi$ describes the agent's strategy: which actions it takes in a given situation. A key goal of RL is to find the \textbf{optimal policy} that maximizes the total reward on average.
+
+There are two axes along which policies can vary:
+
+\begin{itemize}
+    \item Policies can be \textbf{deterministic} or \textbf{stochastic}. A deterministic policy maps ``situations'' to actions while a stochastic policy maps ``situations'' to probability distributions over actions. (The use of ``situation'' is clarified below.)
+    \item Policies can be \textbf{stationary} or \textbf{history-dependent}. A stationary policy only depends on the current state, while a history-dependent policy can depend on the entire history of states, actions, and rewards. In the episodic setting, we'll consider \textbf{time-dependent} policies that depend on the time step $t$, i.e. $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$ where $\pi_t : \mathcal{S} \to \A$ or $\Delta(\A)$ for each $t \in [H]$.
+\end{itemize}
+
+A fascinating result is that every MDP has an optimal policy that is stationary and deterministic! Intuitively, the Markov property implies that the current state contains all the information we need to make the optimal decision. We'll prove this result constructively later in the chapter.
+
+\todo{Insert timeline diagram of policy}
+
+\begin{example}{Tidying policy}{tidy_policy}
+    Here are some possible policies for the tidying example:
+
+    \begin{itemize}
+        \item Always tidy: $\pi_t(s) = \text{tidy}$ for all $t$.
+        \item Only tidy on weekends: $\pi_t(s) = \text{tidy}$ if $t \in \{ 5, 6 \}$ and $\pi_t(s) = \text{ignore}$ otherwise.
+        \item Only tidy if the room is messy: $\pi_t(\text{messy}) = \text{tidy}$ and $\pi_t(\text{orderly}) = \text{ignore}$ for all $t$.
+    \end{itemize}
+\end{example}
+
+How can we compare policies? We'd like to compare them in terms of the \textbf{trajectories} that they induce\dots
+
+\subsection{Trajectories}
+
+A sequence of states, actions, and rewards is called a \textbf{trajectory}:
 
 \[
-    G := R_0 + \cdots + R_{H-1},
+    \tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})
 \]
 
-where $R_t := r(S_t, A_t)$. The key \emph{goal} in a reinforcement learning task is to \emph{maximize expected return} $\E[G]$.
+(Note that sources differ as to whether to include the reward at the final time step. This is a minor detail.)
 
-We'll also consider the \textbf{return-to-go}, the total reward from a given time step onwards:
+Once we've chosen a policy, we can sample trajectories by choosing actions according to the policy and observing the state transitions and rewards. That is, a policy induces a distribution $\rho^{\pi}$ over trajectories. (We assume that $\mu$ and $P$ are clear from context.)
+
+\begin{example}{Trajectories in the tidying environment}{tidy_traj}
+    Here is a possible trajectory for the tidying example:
+
+    \begin{center}
+    \begin{tabular}{cccccccc}
+        $t$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\
+        \hline
+        $s$ & orderly & orderly & orderly & messy & messy & orderly & orderly \\
+        $a$ & tidy & ignore & ignore & ignore & tidy & ignore & ignore \\
+        $r$ & $-1$ & $1$ & $1$ & $-1$ & $0$ & $1$ & $1$
+    \end{tabular}
+    \end{center}
+
+    Could any of the above policies have generated this trajectory?
+\end{example}
+
+Note that for a stationary policy, using the Markov property, we can specify this probability distribution in an \textbf{autoregressive} way (i.e. one timestep at a time):
 
 \[
-    G_t := R_t + \cdots + R_{H-1}.
+    \rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})
+\]
+
+For a deterministic policy $\pi$, we have that $\pi_t(a \mid s) = \mathbb{I}[a = \pi_t(s)]$; that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise. In this case, the only randomness used in sampling trajectories comes from the initial state distribution $\mu$ and the state transitions $P$.
+
+\subsection{Value functions}
+
+We'll use $G_t$ to denote the cumulative reward from a given time step onwards (called the \textbf{return-to-go}):
+
+\[
+    G_t(\tau) := r_t + \cdots + r_{H-1}
+\]
+
+(The dependence on $\tau$ will be omitted for brevity.) Our goal is to find a policy $\pi$ that maximizes the expected return:
+
+\[
+    \max_{\pi} \E_{\tau \sim \rho^\pi} [G_0].
+\]
+
+We'll need a concise way to refer to the expected return conditional on \emph{starting in a given state at a given time}. We call this the \textbf{value function} of $\pi$ at time $t$ and denote it by
+
+\[
+    V_t^\pi(s) := \E_{\tau \sim \rho^\pi} [G_t \mid s_t = s]
 \]
 
 
-
-% However, for infinite-horizon problems (i.e. $T = \infty$), in order for this to be well-defined, we need to \emph{discount} future rewards:
-
-% \[
-%     G_t := R_t + \gamma R_{t+1} + \cdots + \gamma^{\tau-t} R_{\tau} + \cdots = \sum_{\tau = t}^\infty \gamma^{\tau-t} R_\tau.
-% \]
-
-% Can you see why this ensures that $G_t$ is finite?
-
-% Note that we recover the finite-horizon definition by letting $\gamma = 1$ and $T$ be finite.
-
-
-Why can't we just maximize the current reward at each timestep, i.e. use a greedy strategy? Well, in RL as in real life, making greedy decisions (e.g. procrastinating) will often leave you worse off than if you make some short-term sacrifices for long-term gains.
-
-We call the ``video recording'' of states, actions, and rewards a \textbf{trajectory}:
+Similarly, we can define the \textbf{action-value function} (aka the \textbf{Q-function}) as the expected return when starting in a given state and taking a given action:
 
 \[
-    \tau = (s_t, a_t, r_t)_{t=0}^{H-1}
+    Q_t^\pi(s, a) := \E_{\tau \sim \rho^\pi} [G_t \mid s_t = s, a_t = a]
+\]
+
+\begin{remark}{Connection between value and action-value functions}{value_connection}
+    Note that the value function is just the average action-value:
+
+    \[
+        V_t^\pi(s) = \E_{a \sim \pi_t(s)} [Q_t^\pi(s, a)]
+    \]
+
+    and similarly the action-value can be expressed in terms of the value:
+
+    \[
+        Q_t^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{t+1}^\pi(s')]
+    \]
+\end{remark}
+
+\subsubsection{One-step (Bellman) consistency}
+
+Note that by simply considering the return as the sum of the \emph{current} reward and the \emph{future} return, we can describe the value function recursively (in terms of itself):
+
+\[
+    V_t^\pi(s) = \E_{\substack{a \sim \pi_t(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{t+1}^\pi(s')]
+\]
+
+The same goes for the action-value function:
+
+\[
+    Q_t^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{t+1}(s')}} [Q_{t+1}^\pi(s', a')]
+\]
+
+These are called the \textbf{Bellman consistency equations}.
+
+\todo{Add etymology}
+
+\begin{remark}{Bellman consistency equations for deterministic policies}{bellman_det}
+    Note that for deterministic policies, the Bellman consistency equations simplify to
+
+    \[
+        V_t^\pi(s) = r(s, \pi_t(s)) + \E_{s' \sim P(s, \pi_t(s))} [V_{t+1}^\pi(s')]
+    \]
+
+    and
+
+    \[
+        Q_t^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [Q_{t+1}^\pi(s', \pi_{t+1}(s'))]
+    \]
+\end{remark}
+
+
+
+\subsubsection{Bellman operators}
+
+Fix a policy $\pi$. Consider the higher-order operator that takes in a ``value function'' $v : \S \to \R$ and returns the r.h.s. of the Bellman equation for that ``value function'':
+
+\[
+    [\bop^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')]
+\]
+
+(Note that the passed function is used to evaluate the \emph{next} state.) We'll call this $\bop$ operator the \textbf{Bellman operator}.
+
+Intuitively, the resulting ``value function'' evaluates states as follows: from the given state, take one action according to $\pi$, observe some reward, and then evaluate the next state using the given function.
+
+This also gives us a concise way to express the Bellman consistency equations:
+
+\[
+    V_t^\pi = \bop^{\pi}(V_{t+1}^\pi)
+\]
+
+Note that this is defined on any function mapping states to real numbers; $v$ doesn't necessarily have to be a well-defined value function.
+
+
+\subsection{Policy evaluation}
+
+How can we actually compute the value function of a given policy? This is the task of \textbf{policy evaluation}.
+
+\subsubsection{Dynamic programming}
+
+The Bellman consistency equation gives us a convenient algorithm for evaluating stationary policies: it expresses the value function at time $t$ as a function of the value function at time $t+1$. This means we can start at the end of the time horizon, where the value is known, and work backwards in time, using the Bellman consistency equation to compute the value function at each time step.
+
+\begin{lstlisting}
+V[t][s] = 0 for all timesteps t (including t = H) and states s
+for t = H-1, H-2, ..., 0:
+    for s in S, a in A, s' in S:
+        V[t][s] += pi[t][s] * P[s][a][s'] * (r[s][a] + V[t+1][s'])
+\end{lstlisting}
+
+
+\begin{example}{Tidying policy evaluation}{tidy_eval}
+    Let's evaluate the policy from \ref{eg:tidy_policy} that tidies iff the room is messy. We'll use the Bellman consistency equation to compute the value function at each time step.
+
+    \begin{align*}
+        V_{H-1}^\pi(\text{orderly}) &= r(\text{orderly}, \text{ignore}) \\
+        &= 1 \\
+        V_{H-1}^\pi(\text{messy}) &= r(\text{messy}, \text{tidy}) \\
+        &= 0 \\
+        V_{H-2}^\pi(\text{orderly}) &= r(\text{orderly}, \text{ignore}) + \E_{s' \sim P(\text{orderly}, \text{ignore})} [V_{H-1}^\pi(s')] \\
+        &= 1 + 0.7 \cdot V_{H-1}^{\pi}(\text{orderly}) + 0.3 \cdot V_{H-1}^{\pi}(\text{messy}) \\
+        &= 1 + 0.7 \cdot 1 + 0.3 \cdot 0 \\
+        &= 1.7 \\
+        V_{H-2}^\pi(\text{messy}) &= r(\text{messy}, \text{tidy}) + \E_{s' \sim P(\text{messy}, \text{tidy})} [V_{H-1}^\pi(s')] \\
+        &= 0 + 1 \cdot V_{H-1}^{\pi}(\text{orderly}) + 0 \cdot V_{H-1}^{\pi}(\text{messy}) \\
+        &= 1 \\
+        V_{H-3}^\pi(\text{orderly}) &= r(\text{orderly}, \text{ignore}) + \E_{s' \sim P(\text{orderly}, \text{ignore})} [V_{H-2}^\pi(s')] \\
+        &= 1 + 0.7 \cdot V_{H-2}^{\pi}(\text{orderly}) + 0.3 \cdot V_{H-2}^{\pi}(\text{messy}) \\
+        &= 1 + 0.7 \cdot 1.7 + 0.3 \cdot 1 \\
+        &= 2.49 \\
+        V_{H-3}^\pi(\text{messy}) &= r(\text{messy}, \text{tidy}) + \E_{s' \sim P(\text{messy}, \text{tidy})} [V_{H-2}^\pi(s')] \\
+        &= 0 + 1 \cdot V_{H-2}^{\pi}(\text{orderly}) + 0 \cdot V_{H-2}^{\pi}(\text{messy}) \\
+        &= 1.7
+    \end{align*}
+
+    You may wish to repeat this computation for the other policies to get a better sense of this algorithm.
+\end{example}
+
+\todo{Formalise code conventions}
+
+\subsection{Optimal policies}
+
+We've just seen how to evaluate a given policy. But how can we find the \emph{best} policy for a given environment -- the one that does better than all the others (in expectation)? Formally speaking, we call a policy $\pi^\star$ \textbf{optimal} if it does at least as well as \emph{any} other policy $\pi$ (including stochastic and history-dependent ones) in all situations:
+
+\[
+    V_t^{\pi^\star}(s) \geq V_t^\pi(s) \quad \forall s \in \S, t \in [H]
+\]
+
+Convince yourself that all optimal policies must have the same value function. We call this the \textbf{optimal value function} and denote it by $V_t^\star(s)$. The same goes for the action-value function $Q_t^\star(s, a)$.
+
+We mentioned earlier that every MDP has an optimal policy that is stationary and deterministic. In particular, we can construct such a policy by acting \emph{greedily} with respect to the optimal action-value function:
+
+\[
+    \pi_t^\star(s) = \argmax_a Q_t^\star(s, a)
+\]
+
+\begin{theorem}{It is optimal to be greedy w.r.t. the optimal value function}{optimal}
+    Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and action-value functions. Consider the greedy policy
+
+    \[
+        \hat \pi_t(s) := \argmax_a Q_t^{\star}(s, a).
+    \]
+
+    We aim to show that $\hat \pi$ is optimal; that is, $V^{\hat \pi} = V^{\star}$.
+
+    Fix an arbitrary state $s \in \S$ and time $t \in [H]$.
+
+    Firstly, by the definition of $V^{\star}$, we already know $V_t^{\star}(s) \ge V_t^{\hat \pi}(s)$. So for equality to hold we just need to show that $V_t^{\star}(s) \le V_t^{\hat \pi}(s)$. We'll do this by first showing that the Bellman operator $\mathcal{J}^{\hat \pi}$ never decreases $V_t^{\star}$ and then applying this result recursively.
+    
+    \textbf{Lemma:} $\mathcal{J}^{\hat \pi}$ never decreases $V^{\star}$ (elementwise):
+    
+    $$
+    [\mathcal{J}^{\hat \pi} (V_{t+1}^{\star})](s) \ge V_t^{\star}(s)
+    $$
+    
+    To see this, let's expand the definition of $V^{\star}$:
+    
+    \begin{align*}
+    V_t^{\star}(s) &= \max_{\pi \in \Pi} V_t^{\pi}(s) \\
+    &= \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{t+1}^\pi(s') \right] && \text{Bellman consistency} \\
+    &\le \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{t+1}^{\star}(s') \right] && \text{definition of } V^\star \\
+    &= \max_{a} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{t+1}^{\star}(s') \right] && \text{only depends on } \pi \text{ via } a \\
+    &= [\mathcal{J}^{\hat \pi}(V_{t+1}^{\star})](s).
+    \end{align*}
+    
+    Note that the expression $a \sim \pi$ above might depend on the past history; this isn't shown in the notation and doesn't affect our result. We can now apply this result recursively to get
+    
+    $$
+    V^{\star}_t(s) \le V^{\hat \pi}_t(s)
+    $$
+
+    as follows. (Note that even though $\hat \pi$ is deterministic, we'll use the $a \sim \hat \pi(s)$ notation to make it explicit that we're sampling a trajectory from it.)
+    
+    \begin{align*}
+    V_{t}^{\star}(s) &\le \mathcal{J}^{\hat \pi}(V_{t+1}^{\star})(s) \\
+    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue} V_{t+1}^{\star}(s')} \right] \right] && \text{definition of } \mathcal{J}^{\hat \pi} \\
+    &\le \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue}[ \mathcal{J}^{\hat \pi} (V_{t+1}^{\star})] (s')} \right] \right] && \text{above lemma} \\
+    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)}{\color{blue} \left[ \mathop{\mathbb{E}}_{a' \sim \hat \pi}  r(s', a') + \mathop{\mathbb{E}}_{s''} V_{t+2}^{\star}(s'') \right]} \right] && \text{definition of } \mathcal{J}^{\hat \pi} \\
+    &\le \cdots && \text{apply at all timesteps} \\
+    &= \mathop{\mathbb{E}}_{\tau \sim \rho^{\hat \pi}} [G_{t} \mid s_t = s] && \text{rewrite expectation} \\
+    &= V_{t}^{\hat \pi}(s) && \text{definition}
+    \end{align*}
+
+    And so we have $V^{\star} = V^{\hat \pi}$, making $\hat \pi$ optimal.
+\end{theorem}
+
+
+\subsubsection{Dynamic programming}
+
+Now that we've shown this greedy policy is optimal, we can work backwards in time to compute the optimal value function and optimal policy. This is called \textbf{dynamic programming}.
+
+
+\begin{theorem}{Computing the optimal policy}{pi_star_dp}
+    We can solve for the optimal policy in an episodic MDP using \textbf{dynamic programming}.
+    
+    \begin{itemize}
+    \item \emph{Base case.} At the end of the episode (time step $H-1$),
+        we can't take any more actions, so the $Q$-function is simply the reward
+        that we obtain:
+    
+        \[
+            Q^\star_{H-1}(s, a) = r(s, a)
+        \]
+    
+        so the best thing to do is just act greedily
+        and get as much reward as we can!
+    
+        \[
+            \pi^\star_{H-1}(s) = \argmax_a Q^\star_{H-1}(s, a)
+        \]
+    
+        Then $V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
+        trajectory, is simply whatever action gives the most reward.
+    
+        \[
+            V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
+        \]
+    
+    \item \emph{Recursion.} Then, we can work backwards in time, starting from the
+        end, using our consistency equations! i.e. for each $t = H-2, \dots, 0$, we set
+
+        \begin{align*}
+            Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{t+1}(s')] \\
+            \pi^\star_{t}(s) &= \argmax_a Q^\star_{t}(s, a) \\
+            V^\star_{t}(s) &= \max_a Q^\star_{t}(s, a)
+        \end{align*}
+    \end{itemize}
+    
+    % Note that this is exactly just value iteration and policy iteration combined, since our policy is nonstationary, so we can exactly specify its decisions at each time step!
+    
+    \tcbsubtitle[colback=white]{Analysis}
+    
+    
+    At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of the $|\S| |\A|$ state-action pairs. Each computation takes $|\S|$ operations to evaluate the average value over $s'$. This gives a total computation time of $O(H |\S|^2 |\A|)$.
+\end{theorem}
+
+
+
+
+\subsection{Summary}
+
+We've just seen the definition of a finite-horizon MDP and how to evaluate and compute the optimal policy for such an MDP. Here's a summary of the key concepts:
+
+\begin{itemize}
+    \item A \textbf{finite-horizon} (a.k.a. \textbf{episodic}) MDP is a tuple $(\S, \A, \mu, P, r, H)$ where $\S$ is the state space, $\A$ is the action space, $\mu$ is the initial state distribution, $P$ is the state transition function, $r$ is the reward function, and $H$ is the time horizon.
+    \item A \textbf{policy} $\pi$ is a strategy for choosing actions. A \textbf{stationary} policy is one that only depends on the current state.
+    \item A \textbf{trajectory} $\tau$ is a sequence of states, actions, and rewards. A trajectory distribution $\rho^\pi$ is the distribution over trajectories induced by a policy $\pi$.
+    \item The \textbf{return-to-go} $G_t$ is the cumulative reward from a given time step onwards.
+    \item The \textbf{value function} $V_t^\pi(s)$ is the expected return-to-go conditional on starting in a given state at a given time.
+    \item The \textbf{action-value function} $Q_t^\pi(s, a)$ is the expected return-to-go conditional on starting in a given state, taking a given action, and then following the policy.
+    \item The \textbf{Bellman consistency equations} express the value function and action-value function recursively in terms of themselves.
+    \item \textbf{Policy evaluation} is the task of computing the value function of a given policy. We can do this by starting at the end of the time horizon and working backwards in time.
+    \item An \textbf{optimal policy} is one that does at least as well as any other policy in all situations. We can compute the optimal policy using dynamic programming.
+\end{itemize}
+
+
+\newpage
+
+\section{Infinite horizon MDPs}
+
+What happens if a trajectory is allowed to continue possibly forever? This is the setting of \textbf{infinite horizon} MDPs. We'll need to make a few adjustments to make the problem tractable.
+
+Instead of a time horizon $H$, we now need a \textbf{discount factor} $\gamma$ such that rewards become less valuable the further into the future they are. Formally, instead of the ``undiscounted'' return-to-go above (which might blow up to infinity), we work with the \textbf{discounted} return-to-go, which is well-defined (assuming the rewards are bounded):
+
+\[
+    G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{t+k}
 \]
 
 
-\section{Policies and value functions}
+This also has a nice real-world interpretation: it's better to get a reward now than later, since you can invest it and get more rewards in the future.
 
-A \textbf{policy} describes the agent's strategy: which actions it takes in a given situation. One key goal of RL is to find the \textbf{optimal policy} that maximizes the expected return.
+The other components of the MDP remain the same:
 
-Policies can either be \textbf{deterministic} (in the same situation, the agent will always take the same action) or \textbf{stochastic} (in the same situation, the agent will sample an action from a distribution).
+\[ M = (\S, \A, \mu, P, r, \gamma). \]
 
-What do we mean by ``situation''? In the most general setting, this could include all of the states, actions, and rewards in the trajectory so far. However, due to the Markov assumption, the state transitions only depend on the current state. Thus a \textbf{stationary} policy $\pi : \S \to \Delta(\A)$ --- one that only depends on the current state --- can do just as well.
-
-In the finite-horizon case, we'll consider \textbf{time-dependent} policies that depend on the time step $t$ as well, i.e. $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$.
-
-Once we've chosen a policy, we can sample trajectories by choosing actions according to the policy and observing the state transitions and rewards. We call this the \textbf{trajectory distribution}:
+We'll shift our focus to time-independent policies $\pi : \S \to \A$ (deterministic) or $\Delta(\A)$ (stochastic). We also consider time-independent value functions $V^\pi : \S \to \R$ and $Q^\pi : \S \times \A \to \R$. We need to adjust the Bellman consistency functions accordingly to account for the discounting:
 
 \begin{align*}
-    \P(\tau ; \pi) &= \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots \pi_{H-1}(a_{H-1} \mid s_{H-1}) \\
-    \text{where} \quad \tau &= (s_t, a_t, r_t)_{t=0}^{H-1}.
+    V^\pi(s) &= \E_{\tau \sim \rho^\pi} [G_0 \mid s_0 = s] \\
+    &= \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma V^\pi(s')]\\
+    Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [G_0 \mid s_0 = s, a_0 = a] \\
+    &= r(s, a) + \gamma \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi(s')}} [Q^\pi(s', a')]
 \end{align*}
 
-We'll abuse notation and use $\tau \sim \pi$ to denote that $\tau$ is sampled from this distribution.
+Here is an outline of the rest of the chapter:
 
-We'd like a concise way to refer to the expected return when \emph{starting in a given state at a given time} and acting according to $\pi$. We call this the \textbf{value function} of $\pi$ and denote it by
+\begin{enumerate}
+    \item Several algorithms rely heavily on the fact that the Bellman operator is a \emph{contracting map}, and so it has a unique attracting fixed point.
+    \item We'll discuss how to evaluate policies (i.e. compute their corresponding value functions) in this new setting.
+    \item Then we'll discuss two iterative algorithms for computing the optimal policy: value iteration and policy iteration.
+\end{enumerate}
 
-\begin{align*}
-    V_t^\pi(s) &:= \E_{\tau \sim \pi} [G_t \mid S_t = s] % \\
-    % &= \E_\pi \left[ \sum_{t=0}^\infty \gamma^t R_t \mid S_0 = s \right].
-\end{align*}
 
-% We start at time $0$ without loss of generality; can you see why we could have chosen to start at any time? % see AJKS for proof
+\subsection{Contracting maps}
 
-Similarly, we can define the \textbf{action-value function} of $\pi$ (aka the \textbf{Q-function}) as the expected return when starting in a given state and taking a given action:
+One crucial property of the Bellman operator is that it is a \textbf{contraction mapping} for any policy. Intuitively, if we start with two ``value functions'' $v, u : \S \to \R$, if we repeatedly apply the Bellman operator to each of them, they will get closer and closer together at an exponential rate. A useful fact known as the \textbf{Banach fixed-point theorem} tells us that this procedure will converge to the true value function!
 
-\begin{align*}
-    Q_t^\pi(s, a) &:= \E_{\tau \sim \pi} [G_t \mid S_t = s, A_t = a] % \\
-    % &= \E_\pi [\sum_{t=0}^\infty \gamma^t R_t \mid S_0 = s, A_0 = a].
-\end{align*}
-
-\subsection{Bellman self-consistency equations}
-
-Note that we can break down the return as
+Let's make this more rigorous. How can we measure the distance between two value functions? We'll take the \textbf{supremum norm} as our distance metric:
 
 \[
-    G_t = R_t + \gamma G_{t+1},
+    \| v - u \|_{\infty} := \sup_{s \in \S} |v(s) - u(s)|
 \]
 
-the reward from the \emph{current time-step} plus the total reward from from \emph{future time-steps}. It turns out that this simple observation, along with linearity of expectation, gives us a set of equations to solve for the value function analytically!
+We aim to show that
 
-Let's expand out the definition of the value function to see what I mean. Let's first consider the simple case where $\pi : \S \to \A$ is deterministic:
+\[\|\mathcal{J}^{\pi} (v) - \mathcal{J}^{\pi} (u) \|_{\infty} \le \gamma \|v - u \|_{\infty}.\]
 
-\begin{align*}
-    V^\pi(s) &:= \E_\pi[G_0 \mid S_0 = s] \\
-    &= r(s, \pi(s)) + \gamma \E_{s' \sim P(\cdot \mid s, \pi(s))} {\color{blue} \E_\pi [G_1 \mid S_1 = s']} \\
-    &= r(s, \pi(s)) + \gamma \sum_{s' \in \S} P(s' \mid s, \pi(s)) {\color{blue} V^\pi(s')}.
-\end{align*}
-
-This is a set of $|\mathcal{S}|$ equations (one per state) in $|\mathcal{S}|$ unknowns (the value of each state), which we can solve for $V^\pi$.
-
-For stochastic policies, we simply average out over the relevant quantities:
+The following derivation demonstrates this:
 
 \begin{align*}
-    V^\pi(s) &:= \E_\pi [G_0 \mid S_0 = s] \\
-    % &= \E_\pi \left[ \sum_{t=0}^\infty \gamma^t R_t \mid S_0 = s \right] \\
-    &= \E_\pi \left[ R_0 + \gamma G_1 \mid S_0 = s \right] \\
-    &= \E_{a \sim \pi(\cdot \mid s)} \left[ r(s, a) + \gamma \E_{s' \sim P(\cdot \mid s, a)}  {\color{blue} \E_\pi [G_1 \mid S_1 = s']} \right] \\
-    &= \sum_a \pi(a \mid s) \left[r(s, a) + \gamma \sum_{s'} P(s' \mid s, a) {\color{blue} V^\pi(s')} \right].
+|[\mathcal{J}^{\pi} (v)](s) - [\mathcal{J}^{\pi} (u)](s)|&= \left| \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[ r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} v(s') \right] - \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} u(s') \right] \right| \\
+&= \gamma \left|\mathop{\mathbb{E}}_{s' \sim P(s, a)} [v(s') - u(s')] \right| \\
+&\le \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)}|v(s') - u(s')| \qquad \text{(Jensen's)} \\
+&\le \gamma \max_{s'} |v(s') - u(s')| \\
+&= \gamma \|v - u \|_{\infty}.
 \end{align*}
 
-These are called the \textbf{Bellman self-consistency equations}. They encapsulate that the value function's prediction of the current state must be consistent with its prediction of other states.
+Then the Banach fixed-point theorem tells us that repeatedly applying the Bellman operator will converge to the true value function exponentially:
 
-Can you write the Bellman self-consistency equations for the action-value function?
+\[ \|(\mathcal{J}^\pi)^{(t)}(v) - V^\pi \|_{\infty} \le \gamma^{t} \| v - V^\pi\|_{\infty} \]
+
+where $(J^\pi)^{(t)}(v)$ denotes applying $J^\pi$ to $v$ $t$ times. We'll use this useful fact to prove the convergence of several algorithms later on.
+
+\subsection{Tabular case (linear algebraic notation)}
+
+When the state and action spaces are finite and small, we can think of the value function and $Q$-function as \emph{lookup tables} with each cell corresponding to the value of a state (or state-action pair). We can neatly express quantities as vectors and matrices:
+
+\begin{align*}
+    % r \in \R^{|\S| \times |\A|}, \quad P \in [0, 1]^{(|\S| \times |\A|) \times |\S|}, \quad \rho \in [0, 1]^{|\S|}, \quad \pi \in [0, 1]^{|\A| \times |\S|}, \quad V^\pi \in \R^{|\S|}, \quad Q^\pi \in \R^{|\S| \times |\A|}.
+    r &\in \R^{|\S| \times |\A|} &
+    P &\in [0, 1]^{(|\S \times \A|) \times |\S|} &
+    \rho &\in [0, 1]^{|\S|} \\
+    \pi &\in [0, 1]^{|\A| \times |\S|} &
+    V^\pi &\in \R^{|\S|} &
+    Q^\pi &\in \R^{|\S| \times |\A|}.
+\end{align*}
+
+(Verify that these types make sense!) Note that when the policy $\pi$ is deterministic, the actions can be determined from the states, and so we can chop off the action dimension for the rewards and state transitions:
+
+\begin{align*}
+    r^{\pi} &\in \R^{|\S|} & P^{\pi} &\in [0, 1]^{|\S| \times |\S|} & \rho &\in [0, 1]^{|\S|} \\
+    \pi &\in \A^{|\S|} & V^\pi &\in \R^{|\S|} & Q^\pi &\in \R^{|\S| \times |\A|}.
+\end{align*}
 
 
-\section{Tabular MDPs}
+\subsection{Policy evaluation}
 
-When the state and action space are finite and small, we can think of the value function and $Q$-function as \emph{lookup tables} with each cell corresponding to the value of a state (or state-action pair). We can neatly express quantities as vectors and matrices:
+
+Note that the previous DP technique no longer works since there is no ``final timestep'' to start from. We'll need another approach to policy evaluation. Once again, the Bellman consistency conditions give a convenient way to evaluate a policy \emph{exactly}; for a faster approximate solution, we can iterate the policy's Bellman operator, since we know that it has a unique fixed point at the true solution.
+
+
+\subsubsection{Simplified Bellman consistency equations}
+
+The Bellman consistency equations for a deterministic policy can be jointly written in this linear-algebraic notation as
 
 \[
-    r \in \R^{|\S| \times |\A|}, \quad P \in [0, 1]^{(|\S| \times |\A|) \times |\S|}, \quad \rho \in [0, 1]^{|\S|}, \quad \pi \in [0, 1]^{|\A| \times |\S|}, \quad V^\pi \in \R^{|\S|}, \quad Q^\pi \in \R^{|\S| \times |\A|}.
+    V^\pi = r^\pi + \gamma P^\pi V^\pi.
 \]
 
-Make sure that these dimensions make sense!
-
-Note that when the policy is deterministic, by definition, the actions can be determined from the state, and so we can chop off the action dimension in most cases:
-
-\begin{align*}
-    r^{\pi} \in \R^{|\S|}, \quad P^{\pi} \in [0, 1]^{|\S| \times |\S|}, \quad \rho \in [0, 1]^{|\S|}, \quad \pi \in \A^{|\S|}, \quad V^\pi \in \R^{|\S|}.
-\end{align*}
-
-Then, rewriting the system of Bellman equations in this notation gives
+(Unfortunately, this notation doesn't simplify the expression for $Q^\pi$.) This system of equations can be solved with a matrix inversion:
 
 \[
-    V^\pi = r^\pi + \gamma P^\pi V^\pi \implies V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.
+    V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.
 \]
 
 Note that we've assumed that $I - \gamma P^\pi$ is invertible. Can you see why this is the case?
 
-Recall that a linear operator, i.e. a square matrix, is invertible if and only if its null space is trivial; that is, it doesn't map any nonzero vector to zero. In this case, we can see that $I - \gamma P^\pi$ is invertible because it maps any nonzero vector to a vector with at least one nonzero element.
+(Recall that a linear operator, i.e. a square matrix, is invertible if and only if its null space is trivial; that is, it doesn't map any nonzero vector to zero. In this case, we can see that $I - \gamma P^\pi$ is invertible because it maps any nonzero vector to a vector with at least one nonzero element.)
 
-% \subsection{Exercises}
-
-% Show that without discounting, the reward
+\todo{clarify this hint}
 
 
-% For now, we'll assume that the world is known. This involves the state transitions and the reward.
+\subsubsection{Iterative policy evaluation}
 
-% Unknown systems are similar to complex systems. In both, once we don't access the world everywhere, we need to actually \emph{learn} about the world around us.
+The matrix inversion above takes roughly $O(|\S|^3)$ time. Can we trade off the requirement of finding the \emph{exact} value function for a faster \emph{approximate} algorithm?
 
-
-
-\section{Optimality}
-
-
-\begin{theorem}{Value Iteration}{val_iter}
-
-Initialize:
+Let's use the Bellman operator to define an iterative algorithm for computing the value function. We'll start with an initial guess $v^{(0)}$ and then iterate the Bellman operator:
 
 \[
-    V^0 \sim \|V^0\|_\infty \in [0, 1/1-\gamma]
+    v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}) = r^{\pi} + \gamma P^{\pi} v.
 \]
 
-Iterate until convergence:
+i.e. $v^{(t)} = (\mathcal{J}^{\pi})^{(t)} (v^{(0)})$. Note that each iteration takes $O(|\S|^2)$ time for the matrix-vector multiplication.
 
-\[
-    V^{t+1} \gets \mathcal{J}(V^t)
-\]
-
-\tcbsubtitle[colback=white]{Analysis}
-
-This algorithm runs in $O(|\S|^3)$ time since we need to perform a matrix
-inversion.
-
-\end{theorem}
+Then as we showed before, by the Banach fixed-point theorem:
 
 
+\[ \|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty} \]
 
 
-
-\begin{theorem}{Exact Policy Evaluation}{exact_pi_eval}
-
-Represent the reward from each state-action pair as a vector
-
-\[ R^\pi \in \R^{|\S|} \qquad R^\pi_s = r(s, \pi(s)) \]
-
-Also represent the state transitions
-
-\[ P^\pi \in \R^{|\S \times \S} \qquad P^\pi_{s, s'} = P(s' | s, \pi(s)) \]
-
-That is, row $i$ of $P^\pi$ is a distribution over the \emph{next state}
-given that the current state is $s_i$
-and we choose an action using policy $\pi$.
-
-Using this notation, we can express the Bellman consistency equation as
+How many iterations do we need for an $\epsilon$-accurate estimate? We can work backwards to solve for $t$:
 
 \begin{align*}
-    \begin{pmatrix}
-        \vdots \\ V^\pi(s) \\ \vdots
-    \end{pmatrix}
-    &=
-    \begin{pmatrix}
-        \vdots \\ r(s, \pi(s)) \\ \vdots
-    \end{pmatrix}
-    +
-    \gamma
-    \begin{pmatrix}
-        & \vdots & \\
-        \quad & P(s' \mid s, \pi(s)) & \quad \\
-        & \vdots &
-    \end{pmatrix}
-    \begin{pmatrix}
-        \vdots \\ V^\pi(s') \\ \vdots
-    \end{pmatrix} \\
-    V^\pi &= R^\pi + \gamma P^\pi V^\pi \\
-    (I - \gamma P^\pi) V^\pi &= R^\pi \\
-    V^\pi &= (I - \gamma P^\pi) R^\pi
+    \gamma^t \|v^{(0)} - V^\pi\|_{\infty} &\le \epsilon \\
+    t &\le \frac{\log (\epsilon / \|v^{(0)} - V^\pi\|_{\infty})}{\log \gamma} \\
+    &= \frac{\log (\|v^{(0)} - V^\pi\|_{\infty} / \epsilon)}{\log (1 / \gamma)} \\
 \end{align*}
 
-if $I - \gamma P^\pi$ is invertible, which we can prove is the case.
+And so the number of iterations required for an $\epsilon$-accurate estimate is
+
+\[ O\left( |\S|^2 |\A| \cdot \frac{\log(1/(\epsilon (1-\gamma)))}{1-\gamma} \right). \]
+
+Note that we've applied the inequalities $\|v^{(0)} - V^\pi\|_{\infty} \le 1/(1-\gamma)$ and $\log (1/x) \ge 1-x$.
+
+\subsection{Optimal policies}
+
+Now let's move on to solving for the optimal policy. Once again, we can't use the DP approach from the episodic case. Instead, we'll exploit the observation that the Bellman consistency equations for the optimal value function doesn't depend on any policy:
+
+\[
+    V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s') \right]
+\]
+
+To see this, recall we showed that the greedy policy w.r.t. the optimal value function is optimal; substituting this policy into the standard Bellman consistency equations gives the above expression.
+
+As before, thinking of the r.h.s. as an operator on value functions gives the \textbf{Bellman optimality operator}
+
+\[
+    [\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right].
+\]
+
+Since the greedy-w.r.t.-$V^\star$ policy is still a policy, our result that the Bellman operator is a contracting map still holds, and so we can repeatedly apply this operator to converge to the optimal value function! This algorithm is known as \textbf{value iteration}.
 
 
+\subsubsection{Value iteration}
+
+\todo{Write pseudocode}
+
+
+As the final step of the algorithm, to return an actual policy, we can simply act greedily w.r.t. the final iteration $v^{(T)}$ of our above algorithm. We must be careful, though: The value function of this greedy policy is \emph{not} the same as $v^{(T)}$!
+
+Formally, if $\|v^{(T)} - V^\star\|_{\infty} \le \epsilon$, then the greedy policy $\hat \pi$ satisfies $\|V^{\hat \pi} - V^\star\|_{\infty} \le \frac{2\gamma}{1-\gamma} \epsilon$, which might potentially be very large, i.e. a very loose bound!
+
+\begin{theorem}{Greedy policy value degradation}{greedy_worsen}
+    We aim to show that
+
+    \[
+        \|V^{\hat \pi} - V^\star \|_{\infty} \le 2 \frac{\gamma}{1-\gamma} \|v - V^\star\|_{\infty}
+    \]
+
+    where $\hat \pi(s) = \argmax_a q(s, a)$ is the greedy policy w.r.t. $q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s')$.
+
+    We first have
+
+    \begin{align*}
+        V^{\star}(s) - V^{\hat \pi}(s) &= Q^{\star}(s,\pi^\star(s)) - Q^{\hat \pi}(s, \hat \pi(s))\\
+        &= [Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s))] + [Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))]
+    \end{align*}
+
+    Let's bound these two quantities separately.
+
+    For the first quantity, note that by the definition of $\hat \pi$, we have $q(s, \hat \pi(s)) \ge q(s,\pi^\star(s))$. Let's add $q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
+
+    \begin{align*}
+        Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s)) &\le [Q^{\star}(s,\pi^\star(s))- q(s,\pi^\star(s))] + [q(s, \hat \pi(s)) - Q^{\star}(s, \hat \pi(s))] \\
+        &= \gamma \E_{s' \sim P(s, \pi^{\star}(s))} [ V^{\star}(s') - v(s') ] + \gamma \E_{s' \sim P(s, \hat \pi(s))} [ v(s') - V^{\star}(s') ] \\
+        &\le 2 \gamma \|v - V^{\star}\|_{\infty}
+    \end{align*}
+
+    The second one is bounded by
+
+    \begin{align*}
+        Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))
+        &=
+        \gamma \E_{s'\sim P(s, \hat \pi(s))}\left( V^\star(s') - V^{\hat \pi}(s') \right)\\
+        & \leq 
+        \gamma \|V^{\star} - V^{\hat \pi}\|_\infty
+    \end{align*}
+
+    and thus
+
+    \begin{align*}
+        \|V^\star - V^{\hat \pi}\|_\infty &\le 2 \gamma \|v - V^{\star}\|_{\infty} + \gamma \|V^{\star} - V^{\hat \pi}\|_\infty \\
+        \|V^\star - V^{\hat \pi}\|_\infty &\le {2 \gamma \|v - V^{\star}\|_{\infty} \over 1-\gamma}.
+    \end{align*}
 \end{theorem}
 
+So in order to achieve $\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
 
+\[
+    \|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.
+\]
 
-\begin{theorem}{Iterative Policy Evaluation}{iter_pi_eval}
+This means we need to run the algorithm for
 
-How can we calculate the value function $V^\pi$ of a policy $\pi$?
+\[
+    T = O\left( \frac{\log(\gamma/(\epsilon (1-\gamma)^2))}{1-\gamma} \right)
+\]
 
-Above, we saw an exact function that runs in $O(|\S|^2)$.
-But say we really need a fast algorithm, and we're okay with having an
-approximate answer. Can we do better? Yes!
+\subsubsection{Policy iteration}
 
-Using the same notation as above,
-let's initialize $V^0$ such that the elements are drawn uniformly
-from $[0, 1/(1-\gamma)]$.
-
-Then we can iterate the fixed-point equation we found above:
-
-\[ V^{t+1} \gets R + \gamma P V^t \]
-
-
-\end{theorem}
-
-% One case in which we might want a fast, approximate algorithm like the one we
-% just found is when we want to use it as part of another algorithm.
-
-How can we use this fast approximate algorithm?
+Can we mitigate this ``greedy worsening''? Instead
 
 \begin{theorem}{Policy Iteration}{pi_iter}
 
 Remember, for now we're only considering policies that are
-\emph{stationary and deterministic}. There's $|\S|^{|\A}$ of these, so let's
+\emph{stationary and deterministic}. There's $|\S|^{|\A|}$ of these, so let's
 start off by choosing one at random. Let's call this initial policy $\pi^0$,
 using the superscript to indicate the time step.
 
@@ -337,7 +668,7 @@ Now for $t = 0, 1, \dots$, we perform the following:
 
 \begin{enumerate}
     
-\item \emph{Policy Evaluation}: First use the algorithm from earlier to
+\item \emph{Policy Evaluation}: First use the exact policy evaluation algorithm from earlier to
     calculate $V^{\pi^t}(s)$ for all states $s$. Then use this to calculate the
     state-action values:
 
@@ -346,106 +677,24 @@ Now for $t = 0, 1, \dots$, we perform the following:
     \]
 
 \item \emph{Policy Improvement}: Update the policy so that, at each state,
-    it chooses the action with the highest action-value:
+    it chooses the action with the highest action-value (according to the current iterate):
 
     \[
         \pi^{t+1}(s) = \argmax_a Q^{\pi^t} (s, a)
     \]
 
-    In other words, we're setting it to act greedily with respect to the new Q-function.
-
+    In other words, we're setting it to act greedily with respect to the current Q-function.
 \end{enumerate}
 
 What's the computational complexity of this?
 
-% TODO
 
-\end{theorem}
-
-
-
-
-\section{Finite Horizon MDPs}
-
-
-% Now, instead of discounting, all we care about is the (average) total reward
-% that we get over this time.
-
-% \[ \E[ \sum_{t=0}^{H-1} r(s_t, a_t) ] \]
-
-% To be more precise, we'll consider policies that depend on the time.
-% We'll denote the policy at timestep $h$ as $\pi_h : \S \to \A$. In other
-% words, we're dropping the constraint that policies must be stationary.
-
-This is also called an \emph{episodic model}.
-
-% How to solve these problems? \emph{Dynamic programming}
-
-% A bit more annoying notationally to keep track of time
-
-Note that since our policy is nonstationary, we also need to adjust our value
-function (and Q-function) to account for this.
-Instead of considering the total infinite-horizon discounted reward like we did
-earlier,
-we'll instead consider the \emph{remaining} reward from a given timestep
-onwards:
-
-\begin{align*}
-    V^\pi_h(s) &= \E \left[ \sum_\tau^{H-1} r(s_\tau, a_\tau) \mid s_h = s, a_\tau = \pi_h(s_h) \right] \\
-    Q^\pi_h(s, a) &= \E \left[ \sum_\tau^{H-1} r(s_\tau, a_\tau) \mid (s_h, a_h) = (s, a) \right]
-\end{align*}
-
-
-We can also define our Bellman consistency equations, by splitting up the total
-reward into the immediate reward (at this time step) and the future reward,
-represented by our state value function from that next time step:
-
-\[
-    Q^\pi_h(s, a) = r(s, a) + \E_{s' \sim P(s, a)}[V^\pi_{h+1}(s')]
-\]
-
-\begin{theorem}{Computing the optimal policy}{pi_star_dp}
-
-We can solve for the optimal policy using dynamic programming.
-
-\begin{itemize}
-\item \emph{Base case.} At the end of the episode (time step $H-1$),
-    we can't take any more actions, so the $Q$-function is simply the reward
-    that we obtain:
-
-    \[
-        Q^\star_{H-1}(s, a) = r(s, a)
-    \]
-
-    so the best thing to do is just act greedily
-    and get as much reward as we can!
-
-    \[
-        \pi^\star_{H-1}(s) = \argmax_a Q^\star_{H-1}(s, a)
-    \]
-
-    Then $V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
-    trajectory, is simply whatever action gives the most reward.
-
-    \[
-        V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
-    \]
-
-\item \emph{Recursion.} Then, we can work backwards in time, starting from the
-    end, using our consistency equations!
-\end{itemize}
-
-Note that this is exactly just value iteration and policy iteration combined,
-since our policy is nonstationary, so we can exactly specify its decisions at
-each time step!
-
-\tcbsubtitle[colback=white]{Analysis}
-
-
-Total computation time $O(H |\S|^2 |\A|)$
-
+Let's analyse this algorithm.
 
 
 \end{theorem}
+
+\todo{finish policy iteration}
+
 
 \end{document}
