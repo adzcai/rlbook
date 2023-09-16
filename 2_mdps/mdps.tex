@@ -672,5 +672,16 @@ This means we can now apply the Bellman convergence result \ref{eq:bellman_conve
 \]
 \end{theorem}
 
+\section{Summary}
+
+\begin{itemize}
+    \item Markov decision processes (MDPs) are a framework for sequential decision making under uncertainty. They consist of a state space $\S$, an action space $\A$, an initial state distribution $\mu \in \Delta(\S)$, a transition function $P(s' \mid s, a)$, and a reward function $r(s, a)$. They can be finite-horizon (ends after $H$ timesteps) or infinite-horizon (where rewards scale by $\gamma \in (0, 1)$ at each timestep).
+    \item Our goal is to find a policy $\pi$ that maximizes expected total reward. Policies can be \textbf{deterministic} or \textbf{stochastic}. They can be \textbf{stationary} or \textbf{history-dependent}.
+    \item A policy induces a distribution over \textbf{trajectories}.
+    \item We can evaluate a policy by computing its \textbf{value function} $V^\pi(s)$, which is the expected total reward starting from state $s$ and following policy $\pi$. We can also compute the \textbf{state-action value function} $Q^\pi(s, a)$, which is the expected total reward starting from state $s$, taking action $a$, and then following policy $\pi$. In the finite-horizon setting, these also depend on the timestep $h$.
+    \item The \textbf{Bellman consistency equation} is an equation that the value function must satisfy. It can be used to solve for the value functions exactly. Thinking of the r.h.s. of this equation as an operator on value functions gives the \textbf{Bellman operator}.
+    \item In the finite-horizon setting, we can compute the optimal policy using \textbf{dynamic programming}.
+    \item In the infinite-horizon setting, we can compute the optimal policy using \textbf{value iteration} or \textbf{policy iteration}.
+\end{itemize}
 
 \end{document}
