@@ -28,20 +28,18 @@ Let's consider some examples of sequential decision problems to identify the key
 All of these fit into the RL framework! Consider what the agent, state, and possible reward signals are in each example.
 
 These are environments where the \textbf{state transitions}, the ``rules'' of the environment, only depend on the \emph{most recent} state and action. We can formalize such environments using \textbf{Markov decision processes} (MDPs). Formally, we say that the state transitions satisfy the \textbf{Markov property}:
-
 \[
-    \P(s_{t+1} \mid s_0, a_0, \dots, s_t, a_t) = P(s_{t+1} \mid s_t, a_t).
+    \P(s_{h+1} \mid s_0, a_0, \dots, s_h, a_h) = P(s_{h+1} \mid s_h, a_h)
 \]
+where $P : \S \times \A \to \Delta(\S)$ is the state transition function. We'll see that this simple assumption leads to a rich set of problems and algorithms.
 
-Where $P : \S \times \A \to \Delta(\S)$ is the state transition function. We'll see that this simple assumption leads to a rich set of problems and algorithms.
-
-MDPs are usually classified as \textbf{finite-horizon} (aka \textbf{episodic}), where the interactions end after some finite number of time steps, or \textbf{infinite-horizon}, where the interactions can continue indefinitely. We'll begin with the finite-horizon case and then discuss the infinite-horizon case.
+MDPs are usually classified as \textbf{finite-horizon}, where the interactions end after some finite number of time steps, or \textbf{infinite-horizon}, where the interactions can continue indefinitely. We'll begin with the finite-horizon case and then discuss the infinite-horizon case.
 
 In each setting, we'll describe how to evaluate different \textbf{policies} (strategies for choosing actions) and how to compute or approximate the \textbf{optimal policy}. We'll introduce the \textbf{Bellman consistency condition}, which allows us to analyze the whole series of interactions in terms of individual timesteps.
 
-\section{Finite horizon (episodic) MDPs}
+\section{Finite horizon MDPs}
 
-The components of a finite-horizon (aka \textbf{episodic}) Markov decision process are:
+The components of a finite-horizon Markov decision process are:
 
 \begin{enumerate}
     \item The \textbf{state} that the agent interacts with. We use $\S$ to denote the set of possible states, called the \textbf{state space}.
@@ -53,7 +51,6 @@ The components of a finite-horizon (aka \textbf{episodic}) Markov decision proce
 \end{enumerate}
 
 Combined together, these objects specify a finite-horizon Markov decision process:
-
 \[
     M = (\S, \A, \mu, P, r, H).
 \]
@@ -90,7 +87,7 @@ There are two axes along which policies can vary:
 
 \begin{itemize}
     \item Policies can be \textbf{deterministic} or \textbf{stochastic}. A deterministic policy maps ``situations'' to actions while a stochastic policy maps ``situations'' to \emph{probability distributions} over actions. (The use of ``situation'' is clarified below.)
-    \item Policies can be \textbf{stationary} or \textbf{history-dependent}. A stationary policy only depends on the current state, while a history-dependent policy can depend on the entire history of states, actions, and rewards. In the episodic setting, we'll also consider \textbf{time-dependent} policies that depend on the time step $t$, i.e. $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$ where $\pi_t : \mathcal{S} \to \A$ or $\Delta(\A)$ for each $t \in [H]$.
+    \item Policies can be \textbf{stationary} or \textbf{history-dependent}. A stationary policy only depends on the current state, while a history-dependent policy can depend on the entire history of states, actions, and rewards. In the finite-horizon setting, we'll also consider \textbf{time-dependent} policies that depend on the time step $t$, i.e. $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$ where $\pi_h : \mathcal{S} \to \A$ or $\Delta(\A)$ for each $h \in [H]$.
 \end{itemize}
 
 A fascinating result is that every finite-horizon MDP has an optimal policy that is time-dependent and deterministic! Intuitively, the Markov property implies that the current state contains all the information we need to make the optimal decision. We'll prove this result constructively later in the chapter.
@@ -101,21 +98,19 @@ A fascinating result is that every finite-horizon MDP has an optimal policy that
     Here are some possible policies for the tidying example:
 
     \begin{itemize}
-        \item Always tidy: $\pi_t(s) = \text{tidy}$ for all $t$.
-        \item Only tidy on weekends: $\pi_t(s) = \text{tidy}$ if $t \in \{ 5, 6 \}$ and $\pi_t(s) = \text{ignore}$ otherwise.
-        \item Only tidy if the room is messy: $\pi_t(\text{messy}) = \text{tidy}$ and $\pi_t(\text{orderly}) = \text{ignore}$ for all $t$.
+        \item Always tidy: $\pi_h(s) = \text{tidy}$ for all $t$.
+        \item Only tidy on weekends: $\pi_h(s) = \text{tidy}$ if $t \in \{ 5, 6 \}$ and $\pi_h(s) = \text{ignore}$ otherwise.
+        \item Only tidy if the room is messy: $\pi_h(\text{messy}) = \text{tidy}$ and $\pi_h(\text{orderly}) = \text{ignore}$ for all $t$.
     \end{itemize}
 \end{example}
 
 \subsection{Trajectories}
 
 A sequence of states, actions, and rewards is called a \textbf{trajectory}:
-
 \[
     \tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})
 \]
-
-(Note that sources differ as to whether to include the reward at the final time step. This is a minor detail.)
+where $r_h = r(s_h, a_h)$. (Note that sources differ as to whether to include the reward at the final time step. This is a minor detail.)
 
 Once we've chosen a policy, we can sample trajectories by choosing actions according to the policy and observing the state transitions and rewards. That is, a policy induces a distribution $\rho^{\pi}$ over trajectories. (We assume that $\mu$ and $P$ are clear from context.)
 
@@ -136,105 +131,77 @@ Once we've chosen a policy, we can sample trajectories by choosing actions accor
 \end{example}
 
 Note that for a stationary policy, using the Markov property, we can specify this probability distribution in an \textbf{autoregressive} way (i.e. one timestep at a time):
-
 \[
     \rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})
 \]
 
 \textbf{Exercise:} How would you modify this to include stochastic rewards?
 
-For a deterministic policy $\pi$, we have that $\pi_t(a \mid s) = \mathbb{I}[a = \pi_t(s)]$; that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise. In this case, the only randomness in sampling trajectories comes from the initial state distribution $\mu$ and the state transitions $P$.
+For a deterministic policy $\pi$, we have that $\pi_h(a \mid s) = \mathbb{I}[a = \pi_h(s)]$; that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise. In this case, the only randomness in sampling trajectories comes from the initial state distribution $\mu$ and the state transitions $P$.
 
 \subsection{Value functions}
 
-We'll use $G_t$ to denote the cumulative reward from a given time step onwards (called the \textbf{return-to-go}):
-
+The main goal of RL is to find an \textbf{optimal policy} $\pi^\star$ that maximizes the expected total reward:
 \[
-    G_t(\tau) := r_t + \cdots + r_{H-1}
+    \pi^{\star} = \argmax_{\pi} \E_{\tau \sim \rho^\pi} [r_0 + \cdots + r_{H-1}].
 \]
-
-(The dependence on $\tau$ will be omitted for brevity.) The main goal of RL is to find an \textbf{optimal policy} $\pi^\star$ that maximizes the expected return:
-
-\[
-    \pi^{\star} = \argmax_{\pi} \E_{\tau \sim \rho^\pi} [G_0].
-\]
-
 We'll need a concise way to refer to the expected return conditional on \emph{starting in a given state at a given time}. We call this the \textbf{value function} of $\pi$ at time $t$ and denote it by
-
 \[
-    V_t^\pi(s) := \E_{\tau \sim \rho^\pi} [G_t \mid s_t = s]
+    V_h^\pi(s) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s]
 \]
-
-
 Similarly, we can define the \textbf{action-value function} (aka the \textbf{Q-function}) as the expected return when starting in a given state and taking a given action:
-
 \[
-    Q_t^\pi(s, a) := \E_{\tau \sim \rho^\pi} [G_t \mid s_t = s, a_t = a]
+    Q_h^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s, a_h = a]
 \]
 
 \begin{remark}{Connection between value and action-value functions}{value_connection}
     Note that the value function is just the average action-value over actions drawn from the policy:
 
     \[
-        V_t^\pi(s) = \E_{a \sim \pi_t(s)} [Q_t^\pi(s, a)]
+        V_h^\pi(s) = \E_{a \sim \pi_h(s)} [Q_h^\pi(s, a)]
     \]
 
     and the action-value can be expressed in terms of the value of the following state:
 
     \[
-        Q_t^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{t+1}^\pi(s')]
+        Q_h^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{h+1}^\pi(s')]
     \]
 \end{remark}
 
 \subsubsection{The one-step (Bellman) consistency equation}
 
 Note that by simply considering the return as the sum of the \emph{current} reward and the \emph{future} return, we can describe the value function recursively (in terms of itself):
-
 \begin{equation}
-    V_t^\pi(s) = \E_{\substack{a \sim \pi_t(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{t+1}^\pi(s')]
+    V_h^\pi(s) = \E_{\substack{a \sim \pi_h(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{h+1}^\pi(s')] \label{eq:bellman_consistency}
 \end{equation}
-
 This is named the \textbf{Bellman consistency equation} after \textbf{Richard Bellman} (1920--1984), who is credited with introducing dynamic programming in 1953.
+
+One can analogously derive the Bellman consistency equation for the action-value function:
+\[
+    Q_h^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{h+1}(s')}} [Q_{h+1}^\pi(s', a')]
+\]
 
 \begin{remark}{The Bellman consistency equation for deterministic policies}{bellman_det}
     Note that for deterministic policies, the Bellman consistency equation simplifies to
-
-    \[
-        V_t^\pi(s) = r(s, \pi_t(s)) + \E_{s' \sim P(s, \pi_t(s))} [V_{t+1}^\pi(s')]
-    \]
-\end{remark}
-
-\begin{remark}{Bellman consistency for the action-value function}{bellman_q}
-    One can analogously derive the Bellman consistency equation for the action-value function:
-
-    \[
-        Q_t^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{t+1}(s')}} [Q_{t+1}^\pi(s', a')]
-    \]
-
-    which can also be simplified for deterministic policies:
-
-    \[
-        Q_t^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [Q_{t+1}^\pi(s', \pi_{t+1}(s'))]
-    \]
+    \begin{align*}
+        V_h^\pi(s) &= r(s, \pi_h(s)) + \E_{s' \sim P(s, \pi_h(s))} [V_{h+1}^\pi(s')] \\
+        Q_h^\pi(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [Q_{h+1}^\pi(s', \pi_{h+1}(s'))]
+    \end{align*}
 \end{remark}
 
 \subsubsection{The Bellman operator}
 \label{sec:bellman_operator}
 
 Fix a policy $\pi$. Consider the higher-order operator that takes in a ``value function'' $v : \S \to \R$ and returns the r.h.s. of the Bellman equation for that ``value function'':
-
 \[
-    [\bop^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')]
+    [\bop^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].
 \]
-
 We'll call $\bop^\pi$ the \textbf{Bellman operator} for $\pi$. Note that it's defined on any ``value function'' mapping states to real numbers; $v$ doesn't necessarily have to be a well-defined value function for some policy. It also gives us a concise way to express the Bellman consistency equation:
-
 \[
-    V_t^\pi = \bop^{\pi}(V_{t+1}^\pi)
+    V_h^\pi = \bop^{\pi}(V_{h+1}^\pi)
 \]
 
 Intuitively, the output of the Bellman operator, a new ``value function'', evaluates states as follows: from a given state, take one action according to $\pi$, observe the reward, and then evaluate the next state using the input ``value function''.
-
 
 \subsection{Policy evaluation}
 
@@ -246,10 +213,10 @@ The Bellman consistency equation gives us a convenient algorithm for evaluating 
 
 \begin{definition}{Dynamic programming for policy evaluation in finite-horizon MDPs}{dp_finite}
     \begin{algorithmic}
-\State $V_t(s) \gets 0$ for all $t \in \{ 0, \dots, H \}, s \in S$
+\State $V_h(s) \gets 0$ for all $t \in \{ 0, \dots, H \}, s \in S$
 \For{$t = H-1, \dots, 0$}
     \For{$s \in \S, a \in \A, s' \in \S$}
-        \State $V_t(s) \gets V_t(s) + \pi_t(a \mid s) P(s' \mid s, a) [r(s, a) + V_{t+1}(s')]$
+        \State $V_h(s) \gets V_h(s) + \pi_h(a \mid s) P(s' \mid s, a) [r(s, a) + V_{h+1}(s')]$
     \EndFor
 \EndFor
     \end{algorithmic}
@@ -257,8 +224,7 @@ The Bellman consistency equation gives us a convenient algorithm for evaluating 
 
 
 \begin{example}{Tidying policy evaluation}{tidy_eval}
-    Let's evaluate the policy from \ref{eg:tidy_policy} that tidies iff the room is messy. We'll use the Bellman consistency equation to compute the value function at each time step.
-
+    Let's evaluate the policy from \ref{eg:tidy_policy} that tidies if and only if the room is messy. We'll use the Bellman consistency equation to compute the value function at each time step.
     \begin{align*}
         V_{H-1}^\pi(\text{orderly}) &= r(\text{orderly}, \text{ignore}) \\
         &= 1 \\
@@ -279,70 +245,62 @@ The Bellman consistency equation gives us a convenient algorithm for evaluating 
         &= 0 + 1 \cdot V_{H-2}^{\pi}(\text{orderly}) + 0 \cdot V_{H-2}^{\pi}(\text{messy}) \\
         &= 1.7
     \end{align*}
-
-    You may wish to repeat this computation for the other policies to get a better sense of this algorithm.
+    etc. You may wish to repeat this computation for the other policies to get a better sense of this algorithm.
 \end{example}
 
 \subsection{Optimal policies}
 
 We've just seen how to \emph{evaluate} a given policy. But how can we find the \textbf{optimal} policy for a given environment? Formally speaking, we call a policy $\pi^\star$ optimal if it does at least as well as \emph{any} other policy $\pi$ (including stochastic and history-dependent ones) in all situations:
-
 \[
-    V_t^{\pi^\star}(s) \geq V_t^\pi(s) \quad \forall s \in \S, t \in [H]
+    V_h^{\pi^\star}(s) = \E_{\tau \sim \rho^{\pi^{\star}}}[r_h + \cdots + r_{H-1} \mid s_h] \ge \E_{\tau \sim \rho^{\pi}}[r_h + \cdots + r_{H-1} \mid \tau_h] \quad \forall \pi, \tau_h, h \in [H]
 \]
+where we condition on the trajectory up to time $h$, denoted $\tau_h = (s_0, a_0, r_0, \dots, s_h)$.
+Convince yourself that all optimal policies must have the same value function. We call this the \textbf{optimal value function} and denote it by $V_h^\star(s)$. The same goes for the action-value function $Q_h^\star(s, a)$.
 
-Convince yourself that all optimal policies must have the same value function. We call this the \textbf{optimal value function} and denote it by $V_t^\star(s)$. The same goes for the action-value function $Q_t^\star(s, a)$.
-
-We mentioned earlier that every MDP has an optimal policy that is stationary and deterministic. In particular, we can construct such a policy by acting \emph{greedily} with respect to the optimal action-value function:
-
+It is a crucial fact that \textbf{every finite-horizon MDP has an optimal policy that is time-dependent and deterministic.} In particular, we can construct such a policy by acting \emph{greedily} with respect to the optimal action-value function:
 \[
-    \pi_t^\star(s) = \argmax_a Q_t^\star(s, a)
+    \pi_h^\star(s) = \argmax_a Q_h^\star(s, a)
 \]
 
 \begin{theorem}{It is optimal to be greedy w.r.t. the optimal value function}{optimal}
     Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and action-value functions. Consider the greedy policy
-
     \[
-        \hat \pi_t(s) := \argmax_a Q_t^{\star}(s, a).
+        \hat \pi_h(s) := \argmax_a Q_h^{\star}(s, a).
     \]
-
     We aim to show that $\hat \pi$ is optimal; that is, $V^{\hat \pi} = V^{\star}$.
 
-    Fix an arbitrary state $s \in \S$ and time $t \in [H]$.
+    Fix an arbitrary state $s \in \S$ and time $h \in [H]$.
 
-    Firstly, by the definition of $V^{\star}$, we already know $V_t^{\star}(s) \ge V_t^{\hat \pi}(s)$. So for equality to hold we just need to show that $V_t^{\star}(s) \le V_t^{\hat \pi}(s)$. We'll first show that the Bellman operator $\bop^{\hat \pi}$ never decreases $V_t^{\star}$. Then we'll apply this result recursively to show that $V^{\star} = V^{\hat \pi}$.
+    Firstly, by the definition of $V^{\star}$, we already know $V_h^{\star}(s) \ge V_h^{\hat \pi}(s)$. So for equality to hold we just need to show that $V_h^{\star}(s) \le V_h^{\hat \pi}(s)$. We'll first show that the Bellman operator $\bop^{\hat \pi}$ never decreases $V_h^{\star}$. Then we'll apply this result recursively to show that $V^{\star} = V^{\hat \pi}$.
     
-    \textbf{Lemma:} $\bop^{\hat \pi}$ never decreases $V_t^{\star}$ (elementwise):
-    
+    \textbf{Lemma:} $\bop^{\hat \pi}$ never decreases $V_h^{\star}$ (elementwise):
     \[
-        [\bop^{\hat \pi} (V_{t+1}^{\star})](s) \ge V_t^{\star}(s).
+        [\bop^{\hat \pi} (V_{h+1}^{\star})](s) \ge V_h^{\star}(s).
     \]
     
     \textbf{Proof:}
     
     \begin{align*}
-    V_t^{\star}(s) &= \max_{\pi \in \Pi} V_t^{\pi}(s) \\
-    &= \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{t+1}^\pi(s') \right] && \text{Bellman consistency} \\
-    &\le \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{t+1}^{\star}(s') \right] && \text{definition of } V^\star \\
-    &= \max_{a} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{t+1}^{\star}(s') \right] && \text{only depends on } \pi \text{ via } a \\
-    &= [\bop^{\hat \pi}(V_{t+1}^{\star})](s).
+    V_h^{\star}(s) &= \max_{\pi \in \Pi} V_h^{\pi}(s) \\
+    &= \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^\pi(s') \right] && \text{Bellman consistency} \\
+    &\le \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^{\star}(s') \right] && \text{definition of } V^\star \\
+    &= \max_{a} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^{\star}(s') \right] && \text{only depends on } \pi \text{ via } a \\
+    &= [\bop^{\hat \pi}(V_{h+1}^{\star})](s).
     \end{align*}
+    Note that the chosen action $a \sim \pi(\dots)$ above might depend on the past history; this isn't shown in the notation and doesn't affect our result (make sure you see why).
     
-    Note that the chosen action $a \sim \pi(\dots)$ above might depend on the past history; this isn't shown in the notation and doesn't affect our result (make sure you see why). We can now apply this result recursively to get
-    
-    $$
+    We can now apply this result recursively to get
+    \[
     V^{\star}_t(s) \le V^{\hat \pi}_t(s)
-    $$
-
+    \]
     as follows. (Note that even though $\hat \pi$ is deterministic, we'll use the $a \sim \hat \pi(s)$ notation to make it explicit that we're sampling a trajectory from it.)
-    
     \begin{align*}
-    V_{t}^{\star}(s) &\le [\bop^{\hat \pi}(V_{t+1}^{\star})](s) \\
-    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue} V_{t+1}^{\star}(s')} \right] \right] && \text{definition of } \bop^{\hat \pi} \\
+    V_{t}^{\star}(s) &\le [\bop^{\hat \pi}(V_{h+1}^{\star})](s) \\
+    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue} V_{h+1}^{\star}(s')} \right] \right] && \text{definition of } \bop^{\hat \pi} \\
     &\le \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue}[ \bop^{\hat \pi} (V_{t+2}^{\star})] (s')} \right] \right] && \text{above lemma} \\
     &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)}{\color{blue} \left[ \mathop{\mathbb{E}}_{a' \sim \hat \pi}  r(s', a') + \mathop{\mathbb{E}}_{s''} V_{t+2}^{\star}(s'') \right]} \right] && \text{definition of } \bop^{\hat \pi} \\
     &\le \cdots && \text{apply at all timesteps} \\
-    &= \mathop{\mathbb{E}}_{\tau \sim \rho^{\hat \pi}} [G_{t} \mid s_t = s] && \text{rewrite expectation} \\
+    &= \mathop{\mathbb{E}}_{\tau \sim \rho^{\hat \pi}} [G_{t} \mid s_h = s] && \text{rewrite expectation} \\
     &= V_{t}^{\hat \pi}(s) && \text{definition}
     \end{align*}
 
@@ -356,36 +314,30 @@ Now that we've shown this particular greedy policy is optimal, all we need to do
 
 
 \begin{definition}{DP for optimal policy}{pi_star_dp}
-    We can solve for the optimal policy in an episodic MDP using \textbf{dynamic programming}.
+    We can solve for the optimal policy in an finite-horizon MDP using \textbf{dynamic programming}.
     
     \begin{itemize}
     \item \emph{Base case.} At the end of the episode (time step $H-1$),
         we can't take any more actions, so the $Q$-function is simply the reward
         that we obtain:
-    
         \[
             Q^\star_{H-1}(s, a) = r(s, a)
         \]
-    
         so the best thing to do is just act greedily
         and get as much reward as we can!
-    
         \[
             \pi^\star_{H-1}(s) = \argmax_a Q^\star_{H-1}(s, a)
         \]
-    
         Then $V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
         trajectory, is simply whatever action gives the most reward.
-    
         \[
             V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
         \]
     
     \item \emph{Recursion.} Then, we can work backwards in time, starting from the
         end, using our consistency equations! i.e. for each $t = H-2, \dots, 0$, we set
-
         \begin{align*}
-            Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{t+1}(s')] \\
+            Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{h+1}(s')] \\
             \pi^\star_{t}(s) &= \argmax_a Q^\star_{t}(s, a) \\
             V^\star_{t}(s) &= \max_a Q^\star_{t}(s, a)
         \end{align*}
@@ -411,33 +363,27 @@ Now that we've shown this particular greedy policy is optimal, all we need to do
 What happens if a trajectory is allowed to continue forever? This is the setting of \textbf{infinite horizon} MDPs. We'll need to make a few adjustments to make the problem tractable.
 
 First of all, note that using the total cumulative reward is no longer a good idea, since it might blow up to infinity. Instead of a time horizon $H$, we now need a \textbf{discount factor} $\gamma \in (0, 1)$ such that rewards become less valuable the further into the future they are:
-
 \[
-    G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{t+k}
+    r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{h+k}
 \]
-
-This also has a nice real-world interpretation: it's better to get a reward now than later, since you can invest it to get more reward in the future.
-
-The other components of the MDP remain the same:
-
+This also has a nice real-world interpretation: it's better to get a reward now than later, since you can invest it to get more reward in the future. The other components of the MDP remain the same:
 \[ M = (\S, \A, \mu, P, r, \gamma). \]
 
-It also becomes impossible to store any quantities that scale with $H$, e.g. the time-dependent policies and value functions from the episodic case. We'll shift to time-independent policies $\pi : \S \to \A$ (deterministic) or $\Delta(\A)$ (stochastic).
+It also becomes impossible to ``store'' any quantities that scale with $H$, e.g. the time-dependent policies and value functions from the finite-horizon case. We'll shift to time-independent policies $\pi : \S \to \A$ (deterministic) or $\Delta(\A)$ (stochastic).
 
 \textbf{Exercise:} Which of the policies in \ref{eg:tidy_policy} are time-independent?
 
-We also consider time-independent value functions $V^\pi : \S \to \R$ and $Q^\pi : \S \times \A \to \R$. We need to adjust the Bellman consistency functions accordingly to account for the discounting:
-
+We also consider time-independent value functions $V^\pi : \S \to \R$ and $Q^\pi : \S \times \A \to \R$. We need to insert a factor of $\gamma$ into the Bellman consistency equation (\ref{eq:bellman_consistency}) to account for the discounting:
 \begin{align*}
-    V^\pi(s) &= \E_{\tau \sim \rho^\pi} [G_t \mid s_t = s] && \text{for any } t \in \mathbb{N} \\
+    V^\pi(s) &= \E_{\tau \sim \rho^\pi} [r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} \cdots \mid s_h = s] && \text{for any } h \in \mathbb{N} \\
     &= \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma V^\pi(s')]\\
-    Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [G_t \mid s_t = s, a_t = a] && \text{for any } t \in \mathbb{N} \\
+    Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} + \cdots \mid s_h = s, a_h = a] && \text{for any } h \in \mathbb{N} \\
     &= r(s, a) + \gamma \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi(s')}} [Q^\pi(s', a')]
 \end{align*}
 
 \textbf{Exercise:} Heuristically speaking, why doesn't it matter which time step we condition on when defining the value functions?
 
-In this chapter, we'll show that the Bellman operator \ref{sec:bellman_operator} is a contraction mapping for any policy. We'll discuss how to evaluate policies (i.e. compute their corresponding value functions). Finally, we'll present and analyze two iterative algorithms, based on the Bellman operator, for computing the optimal policy: \textbf{value iteration} and \textbf{policy iteration}.
+In this chapter, we'll show that the Bellman operator (\ref{sec:bellman_operator}) in the discounted reward setting is a \textbf{contraction mapping} for any policy. We'll discuss how to evaluate policies (i.e. compute their corresponding value functions). Finally, we'll present and analyze two iterative algorithms, based on the Bellman operator, for computing the optimal policy: \textbf{value iteration} and \textbf{policy iteration}.
 
 
 \subsection{The Bellman operator is a contraction mapping}
@@ -450,25 +396,29 @@ Recall from \ref{sec:bellman_operator} that the Bellman operator $\bop^{\pi}$ fo
 
 The crucial property of the Bellman operator is that it is a \textbf{contraction mapping} for any policy. Intuitively, if we start with two ``value functions'' $v, u : \S \to \R$, if we repeatedly apply the Bellman operator to each of them, they will get closer and closer together at an exponential rate. A useful fact known as the \textbf{Banach fixed-point theorem} tells us that this procedure converges to the true value function! (We won't prove this here, though it only takes some algebraic manipulation.)
 
+\begin{theorem}{The Bellman operator is a contraction mapping}{bellman_contraction}
+
 Let's make this more rigorous. How can we measure the distance between two value functions? We'll take the \textbf{supremum norm} as our distance metric:
-
 \[
-    \| v - u \|_{\infty} := \sup_{s \in \S} |v(s) - u(s)|
+    \| v - u \|_{\infty} := \sup_{s \in \S} |v(s) - u(s)|,
 \]
-
-We aim to show that
-
-\[\|\bop^{\pi} (v) - \bop^{\pi} (u) \|_{\infty} \le \gamma \|v - u \|_{\infty}.\]
+i.e. we compare the ``value functions'' on the state that causes the biggest gap between them. We aim to show that
+\[
+    \|\bop^{\pi} (v) - \bop^{\pi} (u) \|_{\infty} \le \gamma \|v - u \|_{\infty}.
+\]
 
 \textbf{Proof:}
 
 \begin{align*}
-|[\bop^{\pi} (v)](s) - [\bop^{\pi} (u)](s)|&= \left| \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[ r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} v(s') \right] - \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} u(s') \right] \right| \\
+|[\bop^{\pi} (v)](s) - [\bop^{\pi} (u)](s)|&= \Big| \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[ r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} v(s') \right] \\
+&\qquad - \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} u(s') \right] \Big| \\
 &= \gamma \left|\mathop{\mathbb{E}}_{s' \sim P(s, a)} [v(s') - u(s')] \right| \\
 &\le \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)}|v(s') - u(s')| \qquad \text{(Jensen's)} \\
 &\le \gamma \max_{s'} |v(s') - u(s')| \\
 &= \gamma \|v - u \|_{\infty}.
 \end{align*}
+
+\end{theorem}
 
 Then the Banach fixed-point theorem tells us that repeatedly applying the Bellman operator will converge to the true value function exponentially:
 
@@ -504,19 +454,17 @@ For $P^\pi$, we'll treat the rows as the states and the columns as the next stat
 
 \begin{example}{Tidying MDP}{tidy_tabular}
     The tabular MDP from before has $|\S| = 2$ and $|\A| = 2$. Let's write down the quantities for the policy $\pi$ that tidies iff the room is messy:
-
     \[
         r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad
         P^{\pi} = \begin{bmatrix} 0.7 & 0.3 \\ 1 & 0 \end{bmatrix}, \quad
         \mu = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
     \]
-
     We'll see how to evaluate this policy in the next section.
 \end{example}
 
 \subsection{Policy evaluation}
 
-The backwards DP technique we used in the episodic case no longer works since there is no ``final timestep'' to start from. We'll need another approach to policy evaluation.
+The backwards DP technique we used in the finite-horizon case no longer works since there is no ``final timestep'' to start from. We'll need another approach to policy evaluation.
 
 The Bellman consistency conditions yield a system of equations we can solve to evaluate a policy \emph{exactly}. For a faster approximate solution, we can iterate the policy's Bellman operator, since we know that it has a unique fixed point at the true value function.
 
@@ -524,17 +472,13 @@ The Bellman consistency conditions yield a system of equations we can solve to e
 \subsubsection{Tabular case for deterministic policies}
 
 The Bellman consistency equation for a deterministic policy can be written in tabular notation as
-
 \[
     V^\pi = r^\pi + \gamma P^\pi V^\pi.
 \]
-
 (Unfortunately, this notation doesn't simplify the expression for $Q^\pi$.) This system of equations can be solved with a matrix inversion:
-
 \begin{equation}
     V^\pi = (I - \gamma P^\pi)^{-1} r^\pi. \label{eq:matrix_inversion_pe}
 \end{equation}
-
 Note we've assumed that $I - \gamma P^\pi$ is invertible. Can you see why this is the case?
 
 (Recall that a linear operator, i.e. a square matrix, is invertible if and only if its null space is trivial; that is, it doesn't map any nonzero vector to zero. In this case, we can see that $I - \gamma P^\pi$ is invertible because it maps any nonzero vector to a vector with at least one nonzero element.)
@@ -549,49 +493,38 @@ Note we've assumed that $I - \gamma P^\pi$ is invertible. Can you see why this i
 The matrix inversion above takes roughly $O(|\S|^3)$ time. Can we trade off the requirement of finding the \emph{exact} value function for a faster \emph{approximate} algorithm?
 
 Let's use the Bellman operator to define an iterative algorithm for computing the value function. We'll start with an initial guess $v^{(0)}$ with elements in $[0, 1/(1-\gamma)]$ and then iterate the Bellman operator:
-
 \[
-    v^{(t+1)} = \bop^{\pi}(v^{(t)}) = r^{\pi} + \gamma P^{\pi} v^{(t)}.
+    v^{(t+1)} = \bop^{\pi}(v^{(t)}) = r^{\pi} + \gamma P^{\pi} v^{(t)},
 \]
-
 i.e. $v^{(t)} = (\bop^{\pi})^{(t)} (v^{(0)})$. Note that each iteration takes $O(|\S|^2)$ time for the matrix-vector multiplication.
 
 Then, as we showed in \ref{eq:bellman_convergence}, by the Banach fixed-point theorem:
-
-
-\[ \|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty} \]
-
-
+\[
+    \|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.
+\]
 How many iterations do we need for an $\epsilon$-accurate estimate? We can work backwards to solve for $t$:
-
 \begin{align*}
     \gamma^t \|v^{(0)} - V^\pi\|_{\infty} &\le \epsilon \\
     t &\ge \frac{\log (\epsilon / \|v^{(0)} - V^\pi\|_{\infty})}{\log \gamma} \\
     &= \frac{\log (\|v^{(0)} - V^\pi\|_{\infty} / \epsilon)}{\log (1 / \gamma)} \\
 \end{align*}
-
 And so the number of iterations required for an $\epsilon$-accurate estimate is
-
 \begin{equation}
     T = O\left( \frac{\log(1/(\epsilon (1-\gamma)))}{1-\gamma} \right). \label{eq:iterations_vi}
 \end{equation}
-
 Note that we've applied the inequalities $\|v^{(0)} - V^\pi\|_{\infty} \le 1/(1-\gamma)$ and $\log (1/x) \ge 1-x$.
 
 \subsection{Optimal policies}
 
-Now let's move on to solving for the optimal policy. Once again, we can't use the backwards DP approach from the episodic case since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation for the optimal value function doesn't depend on any policy:
-
+Now let's move on to solving for the optimal policy. Once again, we can't use the backwards DP approach from the finite-horizon case since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation for the optimal value function doesn't depend on any policy:
 \[
     V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s') \right]
 \]
-
 To see this, recall we showed that the greedy policy w.r.t. the optimal value function is optimal; substituting this policy into the standard Bellman consistency equation gives the above expression.
 
 \textbf{Exercise:} Verify this.
 
 As before, thinking of the r.h.s. as an operator on value functions gives the \textbf{Bellman optimality operator}
-
 \[
     [\bop^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right].
 \]
@@ -621,30 +554,23 @@ We must be careful, though: the value function of this greedy policy, $V^{\hat \
 
 The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\star\|_{\infty} \le \epsilon$, then the greedy policy $\hat \pi$ satisfies $\|V^{\hat \pi} - V^\star\|_{\infty} \le \frac{2\gamma}{1-\gamma} \epsilon$, which might potentially be very large.
 
-\begin{theorem}{Greedy policy value degradation}{greedy_worsen}
+\begin{theorem}{Greedy policy value worsening}{greedy_worsen}
     We aim to show that
-
     \[
         \|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}
     \]
-
     where $\hat \pi(s) = \argmax_a q(s, a)$ is the greedy policy w.r.t. \[ q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s'). \]
 
     \textbf{Proof:} We first have
-
     \begin{align*}
         V^{\star}(s) - V^{\hat \pi}(s) &= Q^{\star}(s,\pi^\star(s)) - Q^{\hat \pi}(s, \hat \pi(s))\\
-        &= [Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s))] + [Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))]
+        &= [Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s))] + [Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))].
     \end{align*}
-
     Let's bound these two quantities separately.
 
     For the first quantity, note that by the definition of $\hat \pi$, we have
-    
     \[ q(s, \hat \pi(s)) \ge q(s,\pi^\star(s)). \]
-    
     Let's add $q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
-
     \begin{align*}
         Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s)) &\le [Q^{\star}(s,\pi^\star(s))- q(s,\pi^\star(s))] + [q(s, \hat \pi(s)) - Q^{\star}(s, \hat \pi(s))] \\
         &= \gamma \E_{s' \sim P(s, \pi^{\star}(s))} [ V^{\star}(s') - v(s') ] + \gamma \E_{s' \sim P(s, \hat \pi(s))} [ v(s') - V^{\star}(s') ] \\
@@ -652,7 +578,6 @@ The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\st
     \end{align*}
 
     The second one is bounded by
-
     \begin{align*}
         Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))
         &=
@@ -660,9 +585,7 @@ The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\st
         & \leq 
         \gamma \|V^{\star} - V^{\hat \pi}\|_\infty
     \end{align*}
-
     and thus
-
     \begin{align*}
         \|V^\star - V^{\hat \pi}\|_\infty &\le 2 \gamma \|v - V^{\star}\|_{\infty} + \gamma \|V^{\star} - V^{\hat \pi}\|_\infty \\
         \|V^\star - V^{\hat \pi}\|_\infty &\le {2 \gamma \|v - V^{\star}\|_{\infty} \over 1-\gamma}.
@@ -670,17 +593,13 @@ The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\st
 \end{theorem}
 
 So in order to compensate and achieve $\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
-
 \[
     \|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.
 \]
-
 This means, using \ref{eq:iterations_vi}, we need to run the algorithm for
-
 \[
     T = O\left( \frac{\log(\gamma/(\epsilon (1-\gamma)^2))}{1-\gamma} \right)
 \]
-
 iterations to achieve an $\epsilon$-accurate estimate of the optimal value function.
 
 \subsubsection{Policy iteration}
@@ -725,40 +644,32 @@ We'll prove convergence by showing that the policies improve monotonically:
     V^{\pi^{t+1}}(s) \ge [\bop^{\star}(V^{\pi^{t}})](s) \ge V^{\pi^{t}}(s).
 \]
 
-The right-hand inequality follows from the fact that $\bop^{\star}$ is a contraction mapping with a fixed point at $V^{\star}$.
+The right-hand inequality follows from the fact that $\bop^{\star}$ is a contraction mapping with a fixed point at $V^{\star}$ (see \ref{eq:bellman_convergence})
 
 To show the left-hand inequality, we'll first show that iterates improve monotonically, that is, $V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s)$ for all $s$. Then we'll use this to show $V^{\pi^{t+1}}(s) \ge [\bop^{\star}(V^{\pi^{t}})](s)$. Note that
-
 \begin{align*}
     [\bop^{\star} (V^{\pi^{t}})](s) &= \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^{\pi^{t}}(s') \right] \\
     &= r(s, \pi^{t+1}(s)) + \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} V^{\pi^{t}}(s')
 \end{align*}
-
 Since $[\bop^{\star}(V^{\pi^{t}})](s) \ge V^{\pi^{t}}(s)$, we then have
-
 \begin{equation}
     \begin{aligned}
         V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &\ge V^{\pi^{t+1}}(s) - \bop^{\star} (V^{\pi^{t}})(s) \nonumber \\
         &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right].
     \end{aligned} \label{eq:pi_iter_proof}
 \end{equation}
-
 But note that the expression being averaged is the same as the expression on the l.h.s. with $s$ replaced by $s'$. So we can apply the same inequality recursively to get
-
 \begin{align*}
     V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &\ge  \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right] \\
     &\ge \gamma^2 \E_{\substack{s' \sim P(s, \pi^{t+1}(s)) \\ s'' \sim P(s', \pi^{t+1}(s'))}} \left[V^{\pi^{t+1}}(s'') -  V^{\pi^{t}}(s'') \right]\\
     &\ge \cdots
 \end{align*}
-
 which implies that $V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s)$ for all $s$. We can then plug this back into \ref{eq:pi_iter_proof} to get the desired result.
 
 This means we can now apply the Bellman convergence result \ref{eq:bellman_convergence} to get
-
 \[
     \|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\bop^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.
 \]
-
 \end{theorem}
 
 
