@@ -9,9 +9,10 @@
 
 \tableofcontents
 
+\newpage
 \section{Introduction}
 
-The field of RL studies how an agent can learn to make sequential decisions in an environment. This is a very general problem! How can we \emph{formalize} this task in a way that is both \emph{sufficiently general} yet also tractable enough for \emph{fruitful analysis}?
+The field of RL studies how an agent can learn to make sequential decisions in an interactive environment. This is a very general problem! How can we \emph{formalize} this task in a way that is both \emph{sufficiently general} yet also tractable enough for \emph{fruitful analysis}?
 
 Let's consider some examples of sequential decision problems to identify the key common properties we'd like to capture:
 
@@ -25,20 +26,29 @@ Let's consider some examples of sequential decision problems to identify the key
 
 % \todo{Insert pictures}
 
-All of these fit into the RL framework! Consider what the agent, state, and possible reward signals are in each example.
+All of these fit into the RL framework. Furthermore, these are environments where the \textbf{state transitions}, the ``rules'' of the environment, only depend on the \emph{most recent} state and action. This is called the \textbf{Markov property}.
 
-These are environments where the \textbf{state transitions}, the ``rules'' of the environment, only depend on the \emph{most recent} state and action. We can formalize such environments using \textbf{Markov decision processes} (MDPs). Formally, we say that the state transitions satisfy the \textbf{Markov property}:
-\[
-    \P(s_{h+1} \mid s_0, a_0, \dots, s_h, a_h) = P(s_{h+1} \mid s_h, a_h)
-\]
-where $P : \S \times \A \to \Delta(\S)$ is the state transition function. We'll see that this simple assumption leads to a rich set of problems and algorithms.
+\begin{definition}{Markov property}{markov}
+    An interactive environment satisfies the \textbf{Markov property} if the probability of transitioning to a new state only depends on the current state and action:
+    \[
+        \P(s_{h+1} \mid s_0, a_0, \dots, s_h, a_h) = P(s_{h+1} \mid s_h, a_h)
+    \]
+    where $P : \S \times \A \to \Delta(\S)$ describes the state transitions. (We'll elaborate on this notation later in the chapter.)
+\end{definition}
 
-MDPs are usually classified as \textbf{finite-horizon}, where the interactions end after some finite number of time steps, or \textbf{infinite-horizon}, where the interactions can continue indefinitely. We'll begin with the finite-horizon case and then discuss the infinite-horizon case.
+We'll see that this simple assumption leads to a rich set of problems and algorithms. Environments with the Markov property are called \textbf{Markov decision processes} (MDPs) and will be the focus of this chapter.
+
+\textbf{Exercise:} What information might be encoded in the state for each of the above examples? What might the valid set of actions be? Describe the state transitions heuristically and verify that they satisfy the Markov property.
+
+MDPs are usually classified as \textbf{finite-horizon}, where the interactions end after some finite number of time steps, or \textbf{infinite-horizon}, where the interactions can continue indefinitely. We'll begin with the finite-horizon case and discuss the infinite-horizon case in the second half of the chapter.
 
 In each setting, we'll describe how to evaluate different \textbf{policies} (strategies for choosing actions) and how to compute (or approximate) the \textbf{optimal policy} for a given MDP. We'll introduce the \textbf{Bellman consistency condition}, which allows us to analyze the whole series of interactions in terms of individual timesteps.
 
+\newpage
 \section{Finite horizon MDPs}
 
+
+\begin{definition}{Finite-horizon Markov decision process}{finite_mdp}
 The components of a finite-horizon Markov decision process are:
 
 \begin{enumerate}
@@ -54,8 +64,9 @@ Combined together, these objects specify a finite-horizon Markov decision proces
 \[
     M = (\S, \A, \mu, P, r, H).
 \]
+\end{definition}
 
-\begin{example}{Tidying}{tidy}
+\begin{example}{Tidying MDP}{tidy_mdp}
     Let's consider an extremely simple decision problem throughout this chapter: the task of keeping your room tidy!
 
     Your room has the possible states $\mathcal{S} = \{ \text{orderly}, \text{messy} \}$. You can take either of the actions $\A = \{ \text{tidy}, \text{ignore} \}$. The room starts off orderly.
@@ -76,44 +87,48 @@ Combined together, these objects specify a finite-horizon Markov decision proces
     \end{array}
     \]
 
-    Consider a time horizon of $H = 7$ days (one interaction per day). Let $t = 0$ correspond to Monday and $t = 6$ corresponds to Sunday.
+    Consider a time horizon of $H = 7$ days (one interaction per day). Let $t = 0$ correspond to Monday and $t = 6$ correspond to Sunday.
 \end{example}
 
 \subsection{Policies}
 
-A \textbf{policy} $\pi$ describes the agent's strategy: which actions it takes in a given situation. A key goal of RL is to find the \textbf{optimal policy} that maximizes the total reward on average.
+\begin{definition}{Policies}{policy}
+    A \textbf{policy} $\pi$ describes the agent's strategy: which actions it takes in a given situation. A key goal of RL is to find the \textbf{optimal policy} that maximizes the total reward on average.
 
-There are three axes along which policies can vary:
+    There are three axes along which policies can vary: their outputs, inputs, and time-dependence. We'll discuss each of these in turn.
 
-\begin{itemize}
-    \item \textbf{Deterministic or stochastic.} A deterministic policy maps ``situations'' to actions while a stochastic policy maps ``situations'' to \emph{distributions} over actions. (The use of ``situation'' is clarified below.)
-    \item \textbf{State-dependent or history-dependent.} A state-dependent (a.k.a. ``Markovian'') policy only depends on the current state, while a history-dependent policy depends on the sequence of past states, actions, and rewards.
-    \item \textbf{Stationary or time-dependent.} A stationary policy is the same at all time steps, while a time-dependent policy $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$ can vary over time.
-\end{itemize}
+    \begin{enumerate}
+        \item \textbf{Deterministic or stochastic.} A deterministic policy outputs actions while a stochastic policy outputs \emph{distributions} over actions.
+        \item \textbf{State-dependent or history-dependent.} A state-dependent (a.k.a. ``Markovian'') policy only depends on the current state, while a history-dependent policy depends on the sequence of past states, actions, and rewards. We'll only consider state-dependent policies in this course.
+        \item \textbf{Stationary or time-dependent.} A stationary policy remains the same function at all time steps, while a time-dependent policy $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$ specifies a different function $\pi_h$ at each time step $h$.
+    \end{enumerate}
+\end{definition}
 
 A fascinating result is that every finite-horizon MDP has an optimal deterministic time-dependent policy! Intuitively, the Markov property implies that the current state contains all the information we need to make the optimal decision. We'll prove this result constructively later in the chapter.
 
 % \todo{Insert timeline diagram of policy}
 
-\begin{example}{Tidying policy}{tidy_policy}
-    Here are some possible policies for the tidying example:
+\begin{example}{Tidying policies}{tidy_policy}
+    Here are some possible policies for the tidying MDP \eqref{eg:tidy_mdp}:
 
     \begin{itemize}
-        \item Always tidy: $\pi_h(s) = \text{tidy}$ for all $t$.
-        \item Only tidy on weekends: $\pi_h(s) = \text{tidy}$ if $t \in \{ 5, 6 \}$ and $\pi_h(s) = \text{ignore}$ otherwise.
-        \item Only tidy if the room is messy: $\pi_h(\text{messy}) = \text{tidy}$ and $\pi_h(\text{orderly}) = \text{ignore}$ for all $t$.
+        \item Always tidy: $\pi(s) = \text{tidy}$.
+        \item Only tidy on weekends: $\pi_h(s) = \text{tidy}$ if $h \in \{ 5, 6 \}$ and $\pi_h(s) = \text{ignore}$ otherwise.
+        \item Only tidy if the room is messy: $\pi_h(\text{messy}) = \text{tidy}$ and $\pi_h(\text{orderly}) = \text{ignore}$ for all $h$.
     \end{itemize}
 \end{example}
 
 \subsection{Trajectories}
 
+\begin{definition}{Trajectories}{trajectory}
 A sequence of states, actions, and rewards is called a \textbf{trajectory}:
 \[
     \tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})
 \]
 where $r_h = r(s_h, a_h)$. (Note that sources differ as to whether to include the reward at the final time step. This is a minor detail.)
+\end{definition}
 
-Once we've chosen a policy, we can sample trajectories by choosing actions according to the policy and observing the state transitions and rewards. That is, a policy induces a distribution $\rho^{\pi}$ over trajectories. (We assume that $\mu$ and $P$ are clear from context.)
+Once we've chosen a policy, we can sample trajectories by repeatedly choosing actions according to the policy, transitioning according to the state transitions, and observing the rewards. That is, a policy induces a distribution $\rho^{\pi}$ over trajectories. (We assume that $\mu$ and $P$ are clear from context.)
 
 \begin{example}{Trajectories in the tidying environment}{tidy_traj}
     Here is a possible trajectory for the tidying example:
@@ -128,13 +143,16 @@ Once we've chosen a policy, we can sample trajectories by choosing actions accor
     \end{tabular}
     \end{center}
 
-    Could any of the above policies have generated this trajectory?
+    Could any of the policies in \ref{eg:tidy_policy} have generated this trajectory?
 \end{example}
 
-Note that for a stationary policy, using the Markov property, we can specify this probability distribution in an \textbf{autoregressive} way (i.e. one timestep at a time):
-\[
-    \rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})
-\]
+Note that for a state-dependent policy, using the Markov property \eqref{df:markov}, we can specify this probability distribution in an \textbf{autoregressive} way (i.e. one timestep at a time):
+
+\begin{definition}{Autoregressive trajectory distribution}{autoregressive_trajectories}
+    \[
+        \rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})
+    \]
+\end{definition}
 
 \textbf{Exercise:} How would you modify this to include stochastic rewards?
 
@@ -142,42 +160,54 @@ For a deterministic policy $\pi$, we have that $\pi_h(a \mid s) = \mathbb{I}[a =
 
 \subsection{Value functions}
 
-The main goal of RL is to find an \textbf{optimal policy} $\pi^\star$ that maximizes the expected total reward:
-\[
-    \pi^{\star} = \argmax_{\pi} \E_{\tau \sim \rho^\pi} [r_0 + \cdots + r_{H-1}].
-\]
-We'll need a concise way to refer to the expected return conditional on \emph{starting in a given state at a given time}. We call this the \textbf{value function} of $\pi$ at time $t$ and denote it by
-\[
-    V_h^\pi(s) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s]
-\]
-Similarly, we can define the \textbf{action-value function} (aka the \textbf{Q-function}) as the expected return when starting in a given state and taking a given action:
-\[
-    Q_h^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s, a_h = a]
-\]
+The main goal of RL is to find a policy that maximizes the average total reward $r_0 + \cdots + r_{H-1}$. (Note that this is a random variable that depends on the policy.) Let's introduce some notation for analyzing this quantity.
 
-\begin{remark}{Connection between value and action-value functions}{value_connection}
-    Note that the value function is just the average action-value over actions drawn from the policy:
+A policy's \textbf{value function} is its expected total reward \emph{starting in a given state at a given time}:
+
+\begin{definition}{Value function}{value}
     \[
-        V_h^\pi(s) = \E_{a \sim \pi_h(s)} [Q_h^\pi(s, a)]
+        V_h^\pi(s) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s]
     \]
-    and the action-value can be expressed in terms of the value of the following state:
+\end{definition}
+
+Similarly, we can define the \textbf{action-value function} (aka the \textbf{Q-function}) as the expected total reward when starting in a given state and taking a given action:
+
+\begin{definition}{Action-value function}{action_value}
     \[
-        Q_h^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{h+1}^\pi(s')]
+        Q_h^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s, a_h = a]
     \]
-\end{remark}
+\end{definition}
+
+Note that the value function is just the average action-value over actions drawn from the policy:
+\[
+    V_h^\pi(s) = \E_{a \sim \pi_h(s)} [Q_h^\pi(s, a)]
+\]
+and the action-value can be expressed in terms of the value of the following state:
+\[
+    Q_h^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{h+1}^\pi(s')]
+\]
 
 \subsubsection{The one-step (Bellman) consistency equation}
 
-Note that by simply considering the return as the sum of the \emph{current} reward and the \emph{future} return, we can describe the value function recursively (in terms of itself):
+Note that by simply considering the cumulative reward as the sum of the \emph{current} reward and the \emph{future} cumulative reward, we can describe the value function recursively (in terms of itself). This is named the \textbf{Bellman consistency equation} after \textbf{Richard Bellman} (1920--1984), who is credited with introducing dynamic programming in 1953.
+
+\begin{definition}{Bellman consistency equation for the value function}{bellman_consistency}
 \begin{equation}
     V_h^\pi(s) = \E_{\substack{a \sim \pi_h(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{h+1}^\pi(s')] \label{eq:bellman_consistency}
 \end{equation}
-This is named the \textbf{Bellman consistency equation} after \textbf{Richard Bellman} (1920--1984), who is credited with introducing dynamic programming in 1953.
+\end{definition}
+
+% TODO add visual diagram
+
+\textbf{Exercise:} Verify that this equation holds by expanding $V_h^\pi(s)$ and $V_{h+1}^\pi(s')$.
 
 One can analogously derive the Bellman consistency equation for the action-value function:
+
+\begin{definition}{Bellman consistency equation for action-values}{bellman_consistency_action}
 \[
     Q_h^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{h+1}(s')}} [Q_{h+1}^\pi(s', a')]
 \]
+\end{definition}
 
 \begin{remark}{The Bellman consistency equation for deterministic policies}{bellman_det}
     Note that for deterministic policies, the Bellman consistency equation simplifies to
@@ -191,17 +221,21 @@ One can analogously derive the Bellman consistency equation for the action-value
 \label{sec:bellman_operator}
 
 Fix a policy $\pi$. Consider the higher-order operator that takes in a ``value function'' $v : \S \to \R$ and returns the r.h.s. of the Bellman equation for that ``value function'':
+
+\begin{definition}{Bellman operator}{bellman_operator}
 \[
     [\bop^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].
 \]
-We'll call $\bop^\pi$ the \textbf{Bellman operator} for $\pi$. Note that it's defined on any ``value function'' mapping states to real numbers; $v$ doesn't have to be a well-defined value function for some policy. The Bellman operator also gives us a concise way to express the Bellman consistency equation:
+\end{definition}
+
+We'll call $\bop^\pi : (\S \to \R) \to (\S \to \R)$ the \textbf{Bellman operator} of $\pi$. Note that it's defined on any ``value function'' mapping states to real numbers; $v$ doesn't have to be a well-defined value function for some policy (hence the lowercase notation). The Bellman operator also gives us a concise way to express the Bellman consistency equation \eqref{eq:bellman_consistency}:
 \[
     V_h^\pi = \bop^{\pi}(V_{h+1}^\pi)
 \]
 
 Intuitively, the output of the Bellman operator, a new ``value function'', evaluates states as follows: from a given state, take one action according to $\pi$, observe the reward, and then evaluate the next state using the input ``value function''.
 
-Later in the chapter when we discuss infinite-horizon MDPs, we'll show that the Bellman operator is more than just a notational convenience: We'll use it to construct algorithms for computing the optimal policy.
+When we discuss infinite-horizon MDPs, the Bellman operator will turn out to be more than just a notational convenience: We'll use it to construct algorithms for computing the optimal policy.
 
 \subsection{Policy evaluation}
 
@@ -210,9 +244,9 @@ How can we actually compute the value function of a given policy? This is the ta
 \subsubsection{Dynamic programming}
 \label{sec:dp}
 
-The Bellman consistency equation gives us a convenient algorithm for evaluating stationary policies: it expresses the value function at timestep $h$ as a function of the value function at timestep $h+1$. This means we can start at the end of the time horizon, where the value is known, and work backwards in time, using the Bellman consistency equation to compute the value function at each time step.
+The Bellman consistency equation \eqref{eq:bellman_consistency} gives us a convenient algorithm for evaluating stationary policies: it expresses the value function at timestep $h$ as a function of the value function at timestep $h+1$. This means we can start at the end of the time horizon, where the value is known, and work backwards in time, using the Bellman consistency equation to compute the value function at each time step.
 
-\begin{definition}{Dynamic programming for policy evaluation in finite-horizon MDPs}{dp_finite}
+\begin{definition}{Dynamic programming for policy evaluation}{dp_eval_finite}
     \begin{algorithmic}
 \State $V_h(s) \gets 0$ for all $t \in \{ 0, \dots, H \}, s \in S$
 \For{$t = H-1, \dots, 0$}
@@ -222,6 +256,10 @@ The Bellman consistency equation gives us a convenient algorithm for evaluating 
 \EndFor
     \end{algorithmic}
 \end{definition}
+
+This clearly runs in time $O(H \cdot |\S|^2 \cdot |\A|)$ by counting the loops.
+
+\textbf{Exercise:} Do you see where we compute $Q^\pi_h$ along the way? Make this step explicit.
 
 
 \begin{example}{Tidying policy evaluation}{tidy_eval_finite}
@@ -251,15 +289,20 @@ The Bellman consistency equation gives us a convenient algorithm for evaluating 
 
 \subsection{Optimal policies}
 
-We've just seen how to \emph{evaluate} a given policy. But how can we find the \textbf{optimal} policy for a given environment? Formally speaking, we call a policy optimal, and denote it by $\pi^\star$, if it does at least as well as \emph{any} other policy $\pi$ (including stochastic and history-dependent ones) in all situations:
-\begin{equation}
-    \begin{aligned}
-        V_h^{\pi^\star}(s) &= \E_{\tau \sim \rho^{\pi^{\star}}}[r_h + \cdots + r_{H-1} \mid s_h = s] \\
-        &\ge \E_{\tau \sim \rho^{\pi}}[r_h + \cdots + r_{H-1} \mid \tau_h] \quad \forall \pi, \tau_h, h \in [H]
-    \end{aligned}
-    \label{eq:optimal_policy_finite}
-\end{equation}
-where we condition on the trajectory up to time $h$, denoted $\tau_h = (s_0, a_0, r_0, \dots, s_h)$, where $s_h = s$.
+We've just seen how to \emph{evaluate} a given policy. But how can we find the \textbf{optimal policy} for a given environment?
+
+\begin{definition}{Optimal policies}{optimal_policy}
+    We call a policy optimal, and denote it by $\pi^\star$, if it does at least as well as \emph{any} other policy $\pi$ (including stochastic and history-dependent ones) in all situations:
+    \begin{equation}
+        \begin{aligned}
+            V_h^{\pi^\star}(s) &= \E_{\tau \sim \rho^{\pi^{\star}}}[r_h + \cdots + r_{H-1} \mid s_h = s] \\
+            &\ge \E_{\tau \sim \rho^{\pi}}[r_h + \cdots + r_{H-1} \mid \tau_h] \quad \forall \pi, \tau_h, h \in [H]
+        \end{aligned}
+        \label{eq:optimal_policy_finite}
+    \end{equation}
+    where we condition on the trajectory up to time $h$, denoted $\tau_h = (s_0, a_0, r_0, \dots, s_h)$, where $s_h = s$.
+\end{definition}
+
 Convince yourself that all optimal policies must have the same value function. We call this the \textbf{optimal value function} and denote it by $V_h^\star(s)$. The same goes for the action-value function $Q_h^\star(s, a)$.
 
 It is a stunning fact that \textbf{every finite-horizon MDP has an optimal policy that is time-dependent and deterministic.} In particular, we can construct such a policy by acting \emph{greedily} with respect to the optimal action-value function:
@@ -267,7 +310,7 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
     \pi_h^\star(s) = \argmax_a Q_h^\star(s, a).
 \]
 
-\begin{theorem}{It is optimal to be greedy w.r.t. the optimal value function}{optimal}
+\begin{theorem}{It is optimal to be greedy w.r.t. the optimal value function}{optimal_greedy}
     Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and action-value functions. Consider the greedy policy
     \[
         \hat \pi_h(s) := \argmax_a Q_h^{\star}(s, a).
@@ -315,7 +358,7 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
 
 \subsubsection{Dynamic programming}
 
-Now that we've shown this particular greedy policy is optimal, all we need to do is compute the optimal value function and optimal policy. We can do this by working backwards in time and using \textbf{dynamic programming} (DP).
+Now that we've shown this particular greedy policy is optimal, all we need to do is compute the optimal value function and optimal policy. We can do this by working backwards in time using \textbf{dynamic programming} (DP).
 
 
 \begin{definition}{DP for optimal policy}{pi_star_dp}
@@ -347,15 +390,11 @@ Now that we've shown this particular greedy policy is optimal, all we need to do
             V^\star_{t}(s) &= \max_a Q^\star_{t}(s, a)
         \end{align*}
     \end{itemize}
-    
-    % Note that this is exactly just value iteration and policy iteration combined, since our policy is nonstationary, so we can exactly specify its decisions at each time step!
-    
-    \tcbsubtitle[colback=white]{Analysis}
-    
-    
-    At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of the $|\S| |\A|$ state-action pairs. Each computation takes $|\S|$ operations to evaluate the average value over $s'$. This gives a total computation time of $O(H |\S|^2 |\A|)$.
 \end{definition}
 
+At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of the $|\S| |\A|$ state-action pairs. Each computation takes $|\S|$ operations to evaluate the average value over $s'$. This gives a total computation time of $O(H |\S|^2 |\A|)$.
+
+Note that this algorithm is identical to the policy evaluation algorithm \ref{df:dp_eval_finite}, but instead of \emph{averaging} over the actions chosen by a policy, we instead simply take a \emph{maximum} over the action-values. We'll see this relationship between \textbf{policy evaluation} and \textbf{optimal policy computation} show up again in the infinite-horizon setting.
 
 \begin{example}{Optimal policy for the tidying MDP}{tidy_dp}
     Left as an exercise.
@@ -365,19 +404,25 @@ Now that we've shown this particular greedy policy is optimal, all we need to do
 
 \section{Infinite horizon MDPs}
 
-What happens if a trajectory is allowed to continue forever (i.e. $H = \infty$? This is the setting of \textbf{infinite horizon} MDPs. We'll need to make a few adjustments to make the problem tractable.
+What happens if a trajectory is allowed to continue forever (i.e. $H = \infty$)? This is the setting of \textbf{infinite horizon} MDPs.
 
-\subsection{Discounted rewards}
+In this chapter, we'll describe the necessary adjustments from the finite-horizon case to make the problem tractable. We'll show that the Bellman operator \eqref{sec:bellman_operator} in the discounted reward setting is a \textbf{contraction mapping} for any policy. We'll discuss how to evaluate policies (i.e. compute their corresponding value functions). Finally, we'll present and analyze two iterative algorithms, based on the Bellman operator, for computing the optimal policy: \textbf{value iteration} and \textbf{policy iteration}.
+
+\subsection{Differences from finite-horizon}
+
+\subsubsection{Discounted rewards}
 
 % 2023-09-13 lecture
 
-First of all, note that using the \emph{total} cumulative reward $r_0 + r_1 + r_2 + \cdots$ is no longer a good idea, since it might blow up to infinity. Instead of a time horizon $H$, we now need a \textbf{discount factor} $\gamma \in [0, 1)$ such that rewards become less valuable the further into the future they are:
+First of all, note that maximizing the cumulative reward $r_h + r_{h+1} + r_{h+2} + \cdots$ is no longer a good idea since it might blow up to infinity. Instead of a time horizon $H$, we now need a \textbf{discount factor} $\gamma \in [0, 1)$ such that rewards become less valuable the further into the future they are:
 \[
     r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{h+k}.
 \]
-We can think of $\gamma$ as measuring how much we care about the future: if it's close to $0$, we only care about the near-term rewards; it's close to $1$, we put more weight into future rewards. You can also analyze $\gamma$ as the probability of \emph{continuing} the trajectory at each time step. (This is equivalent to $H$ being distributed by a First Success distribution with success probability $\gamma$.) This accords with the above interpretation: if $\gamma$ is close to $0$, the trajectory will likely be very short, while if $\gamma$ is close to $1$, the trajectory will likely continue for a long time.
+We can think of $\gamma$ as measuring how much we care about the future: if it's close to $0$, we only care about the near-term rewards; it's close to $1$, we put more weight into future rewards.
 
-\textbf{Exercise:} Assuming that $r_h \in [0, 1]$ for all $h \in \mathbb{N}$, what is the maximum possible cumulative reward? You may find it useful to review geometric series.
+You can also analyze $\gamma$ as the probability of \emph{continuing} the trajectory at each time step. (This is equivalent to $H$ being distributed by a First Success distribution with success probability $\gamma$.) This accords with the above interpretation: if $\gamma$ is close to $0$, the trajectory will likely be very short, while if $\gamma$ is close to $1$, the trajectory will likely continue for a long time.
+
+\textbf{Exercise:} Assuming that $r_h \in [0, 1]$ for all $h \in \mathbb{N}$, what is the maximum \textbf{discounted} cumulative reward? You may find it useful to review geometric series.
 
 The other components of the MDP remain the same:
 \[ M = (\S, \A, \mu, P, r, \gamma). \]
@@ -403,9 +448,6 @@ We also consider stationary value functions $V^\pi : \S \to \R$ and $Q^\pi : \S 
 
 \textbf{Exercise:} Heuristically speaking, why does it no longer matter which time step we condition on when defining the value function?
 
-In this chapter, we'll show that the Bellman operator \eqref{sec:bellman_operator} in the discounted reward setting is a \textbf{contraction mapping} for any policy. We'll discuss how to evaluate policies (i.e. compute their corresponding value functions). Finally, we'll present and analyze two iterative algorithms, based on the Bellman operator, for computing the optimal policy: \textbf{value iteration} and \textbf{policy iteration}.
-
-
 \subsection{The Bellman operator is a contraction mapping}
 
 Recall from \ref{sec:bellman_operator} that the Bellman operator $\bop^{\pi}$ for a policy $\pi$ takes in a ``value function'' $v : \S \to \R$ and returns the r.h.s. of the Bellman equation for that ``value function''. In the infinite-horizon setting, this is
@@ -416,16 +458,20 @@ Recall from \ref{sec:bellman_operator} that the Bellman operator $\bop^{\pi}$ fo
 
 The crucial property of the Bellman operator is that it is a \textbf{contraction mapping} for any policy. Intuitively, if we start with two ``value functions'' $v, u : \S \to \R$, if we repeatedly apply the Bellman operator to each of them, they will get closer and closer together at an exponential rate.
 
-Formally, let $X$ be some space with a norm $\|\cdot\|$. We call an operator $f: X \to X$ a \textbf{contraction mapping} if for any $x, y \in X$,
-\[
-    \|f(x) - f(y)\| \le \gamma \|x - y\|
-\]
-for some fixed $\gamma \in (0, 1)$.
+\begin{definition}{Contraction mapping}{contraction}
+    Let $X$ be some space with a norm $\|\cdot\|$. We call an operator $f: X \to X$ a \textbf{contraction mapping} if for any $x, y \in X$,
+    \[
+        \|f(x) - f(y)\| \le \gamma \|x - y\|
+    \]
+    for some fixed $\gamma \in (0, 1)$.
+\end{definition}
 
 \textbf{Exercise:} Show that for a contraction mapping $f$ with coefficient $\gamma$, for all $t \in \mathbb{N}$,
 \[
-    \|f^{(t)}(x) - f^{(t)}(y)\| \le \gamma^t \|x - y\|.
+    \|f^{(t)}(x) - f^{(t)}(y)\| \le \gamma^t \|x - y\|,
 \]
+i.e. that any two points will be pushed closer by at least a factor of $\gamma$ at each iteration.
+
 It is a powerful fact (known as the \textbf{Banach fixed-point theorem}) that every contraction mapping has a unique \textbf{fixed point} $x^\star$ such that $f(x^\star) = x^\star$. This means that if we repeatedly apply $f$ to any starting point, we will eventually converge to $x^\star$:
 \begin{equation}
     \|f^{(t)}(x) - x^\star\| \le \gamma^t \|x - x^\star\|. \label{eq:contraction_convergence}
@@ -548,9 +594,9 @@ How many iterations do we need for an $\epsilon$-accurate estimate? We can work 
 \begin{align*}
     \gamma^t \|v^{(0)} - V^\pi\|_{\infty} &\le \epsilon \\
     t &\ge \frac{\log (\epsilon / \|v^{(0)} - V^\pi\|_{\infty})}{\log \gamma} \\
-    &= \frac{\log (\|v^{(0)} - V^\pi\|_{\infty} / \epsilon)}{\log (1 / \gamma)} \\
+    &= \frac{\log (\|v^{(0)} - V^\pi\|_{\infty} / \epsilon)}{\log (1 / \gamma)},
 \end{align*}
-And so the number of iterations required for an $\epsilon$-accurate estimate is
+and so the number of iterations required for an $\epsilon$-accurate estimate is
 \begin{equation}
     T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \right). \label{eq:iterations_vi}
 \end{equation}
@@ -569,12 +615,13 @@ Now let's move on to solving for an optimal policy in the infinite-horizon case.
 
 Once again, all optimal policies share the same \textbf{optimal value function} $V^\star$, and the greedy policy w.r.t. this value function is optimal.
 
-\textbf{Exercise:} Verify this by modifying the proof \ref{th:optimal} from the finite-horizon case.
+\textbf{Exercise:} Verify this by modifying the proof \ref{th:optimal_greedy} from the finite-horizon case.
 
 So how can we compute such an optimal policy? We can't use the backwards DP approach from the finite-horizon case \eqref{df:pi_star_dp}) since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation \eqref{eq:bellman_consistency_infinite} for the optimal value function doesn't depend on any policy:
 \[
-    V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s') \right]
+    V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]
 \]
+
 \textbf{Exercise:} Verify this by substituting the greedy policy into the Bellman consistency equation.
 
 As before, thinking of the r.h.s. as an operator on value functions gives the \textbf{Bellman optimality operator}
@@ -664,7 +711,7 @@ Can we mitigate this ``greedy worsening''? What if instead of approximating the 
 \State $\pi^{(0)} : \S \to \A$ arbitrary
 \For{$t = 0, \dots, T-1$}
     \State $V^{\pi^{(t)}} \gets (I - \gamma P^{\pi^{(t)}})^{-1} r^{\pi^{(t)}}$
-    \Comment (Exact) Policy Evaluation (see \eqref{eq:matrix_inversion_pe})
+    \Comment (Exact) Policy Evaluation \eqref{eq:matrix_inversion_pe}
     \State $Q^{\pi^{(t)}}(s, a) \gets r(s, a) + \gamma \E_{s' \sim P(s, a)} [V^{\pi^{(t)}} (s')]$
     \State $\pi^{(t+1)}(s) \gets \argmax_a Q^{\pi^{(t)}} (s, a)$
     \Comment Policy Improvement
