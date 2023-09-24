@@ -224,7 +224,7 @@ The Bellman consistency equation gives us a convenient algorithm for evaluating 
 \end{definition}
 
 
-\begin{example}{Tidying policy evaluation}{tidy_eval}
+\begin{example}{Tidying policy evaluation}{tidy_eval_finite}
     Let's evaluate the policy from \ref{eg:tidy_policy} that tidies if and only if the room is messy. We'll use the Bellman consistency equation to compute the value function at each time step.
     \begin{align*}
         V_{H-1}^\pi(\text{orderly}) &= r(\text{orderly}, \text{ignore}) \\
@@ -436,7 +436,7 @@ Let's return to the RL setting and apply this result to the Bellman operator. Ho
     \| v - u \|_{\infty} := \sup_{s \in \S} |v(s) - u(s)|,
 \]
 i.e. we compare the ``value functions'' on the state that causes the biggest gap between them.
-Then \ref{eq:contraction_convergence} implies that if we repeatedly apply $\bop^\pi$ to any starting ``value function'', we will eventually converge to $V^\pi$:
+Then \eqref{eq:contraction_convergence} implies that if we repeatedly apply $\bop^\pi$ to any starting ``value function'', we will eventually converge to $V^\pi$:
 \begin{equation}
     \|(\bop^\pi)^{(t)}(v) - V^\pi \|_{\infty} \le \gamma^{t} \| v - V^\pi\|_{\infty}. \label{eq:bellman_convergence}
 \end{equation}
@@ -511,7 +511,7 @@ Note we've assumed that $I - \gamma P^\pi$ is invertible. Can you see why this i
 
 (Recall that a linear operator, i.e. a square matrix, is invertible if and only if its null space is trivial; that is, it doesn't map any nonzero vector to zero. In this case, we can see that $I - \gamma P^\pi$ is invertible because it maps any nonzero vector to a vector with at least one nonzero element.)
 
-\begin{example}{Tidying policy evaluation}{tidy_eval}
+\begin{example}{Tidying policy evaluation}{tidy_eval_infinite}
     Let's use the same policy $\pi$ that tidies if and only if the room is messy.
     Setting $\gamma = 0.95$, we must invert
     \[
@@ -540,7 +540,7 @@ Let's use the Bellman operator to define an iterative algorithm for computing th
 \]
 i.e. $v^{(t)} = (\bop^{\pi})^{(t)} (v^{(0)})$. Note that each iteration takes $O(|\S|^2)$ time for the matrix-vector multiplication.
 
-Then, as we showed in \ref{eq:bellman_convergence}, by the Banach fixed-point theorem:
+Then, as we showed in \eqref{eq:bellman_convergence}, by the Banach fixed-point theorem:
 \[
     \|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.
 \]
@@ -571,7 +571,7 @@ Once again, all optimal policies share the same \textbf{optimal value function} 
 
 \textbf{Exercise:} Verify this by modifying the proof \ref{th:optimal} from the finite-horizon case.
 
-So how can we compute such an optimal policy? We can't use the backwards DP approach from the finite-horizon case \eqref{df:pi_star_dp}) since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation (\ref{eq:bellman_consistency_infinite} for the optimal value function doesn't depend on any policy:
+So how can we compute such an optimal policy? We can't use the backwards DP approach from the finite-horizon case \eqref{df:pi_star_dp}) since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation \eqref{eq:bellman_consistency_infinite} for the optimal value function doesn't depend on any policy:
 \[
     V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s') \right]
 \]
@@ -641,7 +641,7 @@ The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\st
     and thus
     \begin{align*}
         \|V^\star - V^{\hat \pi}\|_\infty &\le 2 \gamma \|v - V^{\star}\|_{\infty} + \gamma \|V^{\star} - V^{\hat \pi}\|_\infty \\
-        \|V^\star - V^{\hat \pi}\|_\infty &\le {2 \gamma \|v - V^{\star}\|_{\infty} \over 1-\gamma}.
+        \|V^\star - V^{\hat \pi}\|_\infty &\le \frac{2 \gamma \|v - V^{\star}\|_{\infty}}{1-\gamma}.
     \end{align*}
 \end{theorem}
 
@@ -649,7 +649,7 @@ So in order to compensate and achieve $\|V^{\hat \pi} - V^{\star}\| \le \epsilon
 \[
     \|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.
 \]
-This means, using \ref{eq:iterations_vi}, we need to run value iteration for
+This means, using \eqref{eq:iterations_vi}, we need to run value iteration for
 \[
     T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)
 \]
@@ -664,7 +664,7 @@ Can we mitigate this ``greedy worsening''? What if instead of approximating the 
 \State $\pi^{(0)} : \S \to \A$ arbitrary
 \For{$t = 0, \dots, T-1$}
     \State $V^{\pi^{(t)}} \gets (I - \gamma P^{\pi^{(t)}})^{-1} r^{\pi^{(t)}}$
-    \Comment (Exact) Policy Evaluation (see \ref{eq:matrix_inversion_pe})
+    \Comment (Exact) Policy Evaluation (see \eqref{eq:matrix_inversion_pe})
     \State $Q^{\pi^{(t)}}(s, a) \gets r(s, a) + \gamma \E_{s' \sim P(s, a)} [V^{\pi^{(t)}} (s')]$
     \State $\pi^{(t+1)}(s) \gets \argmax_a Q^{\pi^{(t)}} (s, a)$
     \Comment Policy Improvement
@@ -705,14 +705,14 @@ But note that the expression being averaged is the same as the expression on the
     &\ge \gamma^2 \E_{\substack{s' \sim P(s, \pi^{t+1}(s)) \\ s'' \sim P(s', \pi^{t+1}(s'))}} \left[V^{\pi^{t+1}}(s'') -  V^{\pi^{t}}(s'') \right]\\
     &\ge \cdots
 \end{align*}
-which implies that $V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s)$ for all $s$ (since the r.h.s. converges to zero). We can then plug this back into \ref{eq:pi_iter_proof} to get the desired result:
+which implies that $V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s)$ for all $s$ (since the r.h.s. converges to zero). We can then plug this back into \eqref{eq:pi_iter_proof} to get the desired result:
 \begin{align*}
     V^{\pi^{t+1}}(s) - \bop^{\star} (V^{\pi^{t}})(s) &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right] \\
     &\ge 0 \\
     V^{\pi^{t+1}}(s) &\ge [\bop^{\star}(V^{\pi^{t}})](s)
 \end{align*}
 
-This means we can now apply the Bellman convergence result \ref{eq:bellman_convergence} to get
+This means we can now apply the Bellman convergence result \eqref{eq:bellman_convergence} to get
 \[
     \|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\bop^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.
 \]
