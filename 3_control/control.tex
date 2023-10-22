@@ -15,12 +15,12 @@
 Have you ever tried balancing a pen upright on your palm?
 If not, try it! It's a lot harder than seems.
 Unlike the settings we studied in the previous chapter,
-the state space and action space in this example aren'\hi \emph{finite}, or even \emph{discrete}.
-Instead, they are \emph{continuous} (real-valued) and therefore \emph{uncountably infinite.}
+the state space and action space in this example aren't \emph{finite}, or even \emph{discrete}.
+Instead, they are \emph{continuous} (real-valued) and therefore \emph{uncountably infinite}.
 In addition, the state transitions governing the system -- that is, the laws of physics --
 are highly complex.
 
-This task is an example of a classic \emph{control problem:}
+This task is the classic CartPole \emph{control problem}:
 
 \begin{figure}[h]
     \centering
@@ -40,13 +40,13 @@ This task is an example of a classic \emph{control problem:}
         \item The angular velocity of the pole.
     \end{enumerate}
 
-    We can \emph{control} the cart by applying a horizontal force $\act$.
+    We can \emph{control} the cart by applying a horizontal force $\act \in \R$.
 
     \textbf{Goal:} Stabilize the cart around an ideal state and action $(\st^\star, \act^\star)$.
 \end{example}
 
 \emph{Controls} are the analogue to \emph{actions} in MDPs. In control theory, the state and controls are typically denoted as
-$x$ and $u$, but we'll stick with the $\st$ and $\act$ notation to highlight the
+$\st$ and $u$, but we'll stick with the $\st$ and $\act$ notation to highlight the
 similarity with MDPs.
 
 Beyond this simple scenario, there are many real-world examples that involve continuous control. Here are just a few:
@@ -112,11 +112,11 @@ How does this relate to the finite horizon case?
 If $\st_\hi$ and $\act_\hi$ were discrete, then we'd be able to work backwards using
 the DP algorithms we saw before \eqref{df:pi_star_dp}.
 % In this case, you can also think of $f_\hi$ as an (uncountably infinite-dimensional matrix.
-A \st a matter of fact, let's consider what happens if we \emph{discretize} the
+As a matter of fact, let's consider what happens if we \emph{discretize} the
 problem. For intuition, suppose $n_\st = n_\act = 1$ (that is, states and actions are real numbers).
 To make $\S$ and $\A$ discrete, let's choose some small positive $\epsilon$,
 and simply round states and actions to the nearest multiple of
-$\epsilon$. For example, if $\epsilon = 0.01$, then we're just rounding $\st$ and $\act$ to two decimal spaces.
+$\epsilon$. For example, if $\epsilon = 0.01$, then we round $\st$ and $\act$ to two decimal spaces.
 % \footnote{Formally, we can consider an $\epsilon$-net over the original continuous space. Let $V$ be some normed space. A subset $V_\epsilon \subseteq V$ is called an $\epsilon$-net if for all $v \in V$, there exists a $v_\epsilon \in V_\epsilon$ such that $\|v - v_\epsilon\| \le \epsilon$. The rounding example given is technically a $0.005$-net.} If both these state and action spaces can be bounded, then the resulting sets are actually finite, so now we can use our previous tools for MDPs.
 
 How well does this work? Even if our $\S$ and $\A$ are
@@ -134,7 +134,8 @@ the action and state spaces are even moderately high-dimensional.
 How can we do better?
 
 Note that by discretizing the state and action spaces, we implicitly assumed that rounding each state or action vector by some tiny amount $\varepsilon$
-wouldn'\hi change the behavior much; namely, that the functions involved were relatively \emph{continuous}.
+wouldn't change the behavior of the system by much;
+namely, that the cost and dynamics were relatively \emph{continuous}.
 Can we use this continuous structure in other ways? This brings us to the topic of \textbf{Linear Quadratic Regulators,} a widely used and studied tool in control theory.
 
 \section{The Linear Quadratic Regulator Problem} \label{sec:lqr}
@@ -144,13 +145,14 @@ The cost function might not be convex, making optimization difficult,
 and the state transitions might be very complex, making it difficult to satisfy the constraints.
 Is there a relevant simplification that we can analyze?
 
-We'll show that a natural structure to impose is \emph{linear dynamics} and a \emph{quadratic cost function} (in both arguments). This is called the \textbf{linear quadratic regulator} (LQR) model, and is a popular tool in control theory.
-In fact, some people even design systems to be linear in order to use results from LQR!
+We'll show that a natural structure to impose is \emph{linear dynamics} and a \emph{(convex) quadratic cost function} (in both arguments). This model is called the \textbf{linear quadratic regulator} (LQR), and is a fundamental tool in control theory.
+% In fact, some people even design systems to be linear in order to use results from LQR!
 
-Why are these assumptions useful? A \st we'll see later in the chapter, it lets us \emph{locally approximate} nonlinear dynamics and cost functions
-using their \emph{Taylor approximations} (up to first and second order respectively).
+Why are these assumptions useful?
+As we'll see later in the chapter,
+it lets us \emph{locally approximate} more complex dynamics and cost functions using their \emph{Taylor approximations} (up to first and second order respectively).
 We'll also find that even for more complex setups,
-we can generalize the algorithms for LQR to get surprisingly good solutions.
+we can adapt the LQR model to get surprisingly good solutions.
 
 \begin{definition}{The linear quadratic regulator}{lqr}
     \textbf{Linear, time-homogeneous dynamics}: \[
@@ -165,15 +167,15 @@ we can generalize the algorithms for LQR to get surprisingly good solutions.
     \[
         c(\st_\hi, \act_\hi) = \begin{cases}
             \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi & \hi < \hor \\
-            \st_\hor^\top Q \st_\hor & \hi = \hor
+            \st_\hi^\top Q \st_\hi & \hi = \hor
         \end{cases}
     \]
-    We want $c$ to be a convex function (easy to optimize) in both $\st_\hi$ and $\act_\hi$, so we'll set $Q$ and $R$ to both be positive definite matrices. We can furthermore assume without loss of generality that they are both symmetric (see exercise below).
+    We require $Q$ and $R$ to both be positive definite matrices so that $c$ has a well-defined unique minimum. We can furthermore assume without loss of generality that they are both symmetric (see exercise below).
 
     Intuitively, the cost function punishes states and actions that are far away from the origin (i.e. both the state and action are zero vectors). More generally, we'll want to replace the origin with a \emph{goal} state and action $(\st^\star, \act^\star)$. This can easily be done by replacing $\st_\hi$ with $(\st_\hi - \st^\star)$ and $\act_\hi$ with $(\act_\hi - \act^\star)$ in the expression above.
     
 
-    \noindent \textbf{Spherical Gaussian noise:} \[ w_\hi \sim \mathcal{N}(0, \sigma^2 I) \]
+    \noindent \textbf{Spherical Gaussian noise:} \[ w_\hi \sim \mathcal{N}(0, \sigma^2 I) \quad \forall \hi \in [H] \]
 
     \noindent Putting everything together, the optimization problem we want to solve is:
     \begin{align*}
@@ -185,7 +187,7 @@ we can generalize the algorithms for LQR to get surprisingly good solutions.
     \end{align*}
 \end{definition}
 
-\textbf{Exercise:} We've set $Q$ and $R$ to be positive definite and symmetric. Here we'll show that the symmetry condition can be imposed without loss of generality. Show that replacing $Q$ with $(Q + Q^\top) / 2$ (which is symmetric) yields the same cost function.
+\textbf{Exercise:} We've set $Q$ and $R$ to be \emph{symmetric} positive definite (SPD) matrices. Here we'll show that the symmetry condition can be imposed without loss of generality. Show that replacing $Q$ with $(Q + Q^\top) / 2$ (which is symmetric) yields the same cost function.
 
 \iffalse
 % TODO We went over this example in lecture, but I'm not sure where in the chapter to put it.
@@ -232,7 +234,7 @@ we can generalize the algorithms for LQR to get surprisingly good solutions.
 \fi
 
 
-So how do we go about analyzing this system? A good first step might be to introduce \emph{value functions,} analogous to those in the previous chapter, to reason about the behavior of the system over the time horizon.
+So how do we go about analyzing this system? A good first step might be to introduce \emph{value functions,} analogous to those from MDPs \eqref{df:value}, to reason about the behavior of the system over the time horizon.
 
 \begin{definition}{Value functions for LQR}{value_lqr}
     Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})$, we can define the
@@ -269,39 +271,38 @@ So how do we go about analyzing this system? A good first step might be to intro
     \]
 \end{definition}
 
-A \st in the previous chapter, these will be instrumental in constructing optimal policy $\pi$ via dynamic
-programming.
+As in the previous chapter, these will be instrumental in constructing the optimal policy $\pi$ via \textbf{dynamic programming}.
 
 \section{Optimality and the Riccati Equation} \label{sec:optimal_lqr}
 
-In this section, we'll compute the optimal value function and policy in the LQR setting using \textbf{dynamic programming}, in a very similar way to the DP algorithms we saw in the previous chapter. % TODO add reference for completed version.
+In this section, we'll compute the optimal value function and policy in the LQR setting using \textbf{dynamic programming}, in a very similar way to the DP algorithms we saw in \autoref{sec:dp}. % TODO add reference for completed version.
 \begin{enumerate}
-    \item We'll compute $V_H^\star(x)$ as our base case.
-    \item Then we'll work backwards, using $V_{h+1}^\star(x)$ to compute $Q_h^\star(x, u)$, $\pi_{h+1}^\star(x)$, and $V_h^\star(x)$.
+    \item We'll compute $V_H^\star(\st)$ as our base case.
+    \item Then we'll work backwards, using $V_{h+1}^\star(\st)$ to compute $Q_h^\star(\st, u)$, $\pi_{h+1}^\star(\st)$, and $V_h^\star(\st)$.
 \end{enumerate}
-Along the way, we will prove that $V_h^\star$ and $\pi_h^\star$ have very simple structure: $V_h^\star(x)$ is a \emph{convex quadratic} and $\pi_h^\star(x)$ is \emph{linear}.
+Along the way, we will prove the striking fact that $V_h^\star$ and $\pi_h^\star$ have very simple structure: $V_h^\star(\st)$ is a \emph{convex quadratic} and $\pi_h^\star(\st)$ is \emph{linear}.
 
 \begin{definition}[breakable=false]{Optimal value functions for LQR}{optimal_value_lqr}
-    The \textbf{optimal value function} is the one that, at any time, in any state,
+    The \textbf{optimal value function} is the one that, at any time and in any state,
     achieves \emph{minimum cost} across \emph{all policies}: \[
         \begin{split}
             V^\star_\hi(\st) &= \min_{\pi_\hi, \dots, \pi_{\hor-1}} V^\pi_\hi(\st) \\
             &= \min_{\pi_{\hi}, \dots, \pi_{\hor-1}} \E \left[ \left( \sum_{i=\hi}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor
-            \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall i \ge \hi \right] \\
+            \mid \st_\hi = \st, \forall i \ge \hi. \act_i = \pi_i(\st_i) \right] \\
         \end{split}
     \]
 \end{definition}
 
 \begin{theorem}{Optimal value function in LQR is a convex quadratic}{optimal_value_lqr_quadratic}
     \[
-        V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi
+        V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi \quad \forall \hi \in [H]
     \]
-    for some time-dependent $P_\hi \in \R^{n_\st \times n_\st}$ and $p_\hi \in \R^{n_\st}$ where $P_\hi$ is symmetric and positive definite. Note that there is no linear term.
+    for some time-dependent $P_\hi \in \R^{n_\st \times n_\st}$ and $p_\hi \in \R^{n_\st}$ where $P_\hi$ is SPD. Note that there is no linear term.
 \end{theorem}
 
 \begin{theorem}{Optimal policy in LQR is linear}{optimal_policy_lqr_linear}
     \[
-        \pi^\star_\hi (\st) = - K_\hi \st
+        \pi^\star_\hi (\st) = - K_\hi \st \quad \forall \hi \in [H]
     \]
     for some $K_\hi \in \R^{k \times d}$. (The negative is due to convention.)
 \end{theorem}
@@ -316,7 +317,7 @@ Along the way, we will prove that $V_h^\star$ and $\pi_h^\star$ have very simple
 % it turns out that the optimal policy has special structure!
 
 
-\textbf{Base case:} $V^\star_\hor(\st) = \st^\top P_\hor \st + p_\hor$. At the final timestep, there are no possible actions to take, and so $V^\star_\hor(\st) = c(\st) = \st^\top Q \st$. Thus $P_\hor = Q$ and $p_\hor$ is the zero vector.
+\textbf{Base case:} At the final timestep, there are no possible actions to take, and so $V^\star_\hor(\st) = c(\st) = \st^\top Q \st$. Thus $V_\hor^\star(\st) = \st^\top P_\hi \st + p_\hi$ where $P_\hor = Q$ and $p_\hor$ is the zero vector.
 
 \textbf{Inductive hypothesis:} We seek to show that the inductive step holds for both theorems: If $V^\star_{\hi+1}(\st)$ is a convex quadratic, then $V^\star_\hi(\st)$ must also be a convex quadratic, and $\pi^\star_\hi(\st)$ must be linear. We'll break this down into the following steps:
 \begin{steps}
@@ -327,24 +328,24 @@ Along the way, we will prove that $V_h^\star$ and $\pi_h^\star$ have very simple
 This is essentially the same proof that we wrote in the finite-horizon MDP setting,
 except now the state and action are \emph{continuous} instead of finite.
 
-We first assume our theorems are true at time $\hi+1$. That is,
-\[ V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \text{for all states} \quad \st \in \S. \]
+We first assume the inductive hypothesis that our theorems are true at time $\hi+1$. That is,
+\[ V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \S. \]
 
 \textbf{Step 1.} We'll start off by demonstrating that $Q^\star_\hi(\st)$ is a convex quadratic.
 Recall that the definition of $Q^\star_\hi : \S \times \A \to \R$ is \[
-    Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, a, w_{\hi+1})} V^\star_{\hi+1}(\st').
+    Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} V^\star_{\hi+1}(\st').
 \]
-We know $c(\st, \act) := \st^\top Q \st + \act^\top R \act$. Let's consider the average value
+Recall $c(\st, \act) = \st^\top Q \st + \act^\top R \act$. Let's consider the average value
 over the next timestep. The only randomness in the dynamics comes from the noise
 $w_{\hi+1}$, so we can write out this expected value as:
 \begin{align*}
-    &\qquad \E_{\st' \sim f(\st, a, w_{\hi+1})} V^\star_{\hi+1}(\st') \\
-    &= \E_{w_{\hi+1} \sim \cN(0, \sigma^2 I)} V^\star_{\hi+1}(A \st + B \act + w_{\hi+1}) && \text{definition of } f \\
-    &= \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. && \text{inductive hypothesis}
+    & \E_{\st' \sim f(\st, \act, w_{\hi+1})} [V^\star_{\hi+1}(\st')] \\
+    {} = {} & \E_{w_{\hi+1} \sim \cN(0, \sigma^2 I)} [V^\star_{\hi+1}(A \st + B \act + w_{\hi+1})] && \text{definition of } f \\
+    {} = {} & \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. && \text{inductive hypothesis}
 \end{align*}
 Summing and combining like terms, we get \begin{align*}
     Q^\star_\hi(\st, \act) &= \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
-    &= \st^\top (Q + \act^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) a + 2 \st^\top \act^\top P_{\hi+1} B a \\
+    &= \st^\top (Q + A^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act \\
     &\qquad + \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] + p_{\hi+1}.
 \end{align*}
 Note that the terms that are linear in $w_\hi$ have mean zero and vanish.
@@ -366,59 +367,51 @@ Substituting this back into the expression for $Q^\star_\hi$, we have:
 \begin{equation}
     \boxed{
         \begin{aligned}
-            Q^\star_\hi(\st, \act) &= \st^\top (Q + \act^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) a
-            + 2\st^\top \act^\top P_{\hi+1} B a \\
+            Q^\star_\hi(\st, \act) &= \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
+            + 2\st^\top A^\top P_{\hi+1} B \act \\
             &\qquad + \tr(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
         \end{aligned}
     }
     \label{eq:q_star_lqr}
 \end{equation}
 
-A \st we hoped, this expression is quadratic in $\st$ and $\act$.
-Furthermore, we'd like to show that it also has positive curvature with respect to $\act$ so that its minimum with respect to $\act$ is well-defined.
+As we hoped, this expression is quadratic in $\st$ and $\act$.
+Furthermore, we'd like to show that it also has \emph{positive curvature} with respect to $\act$, i.e. \[ \nabla_{\act \act} Q_\hi^\star(x, u) = R + B^\top P_{\hi+1} B \] is positive definite, so that its minimum with respect to $\act$ is well-defined.
 This is fairly straightforward:
-
-\begin{theorem}{$Q^\star_\hi$ is a convex quadratic}{optimal_q_convex}
-    Consider the part of \autoref{eq:q_star_lqr} that is quadratic in $\act$, namely
-    $\act^\top (R + B^\top P_{\hi+1} B) \act$. Then $Q^\star_\hi$ is a convex quadratic with respect to $\act$
-    if $R + B^\top P_{\hi+1} B$ is symmetric and positive definite (SPD).
-\end{theorem}
-
-To see why this is the case, recall that in our definition of LQR,
+recall that in our definition of LQR,
 we assumed that $R$ is SPD (see \autoref{df:lqr}).
-Also note that since $P_{\hi+1}$ is SPD (by the inductive hypothesis), so too must be $B^\top P_{\hi+1} B$. (If this isn'\hi clear, try proving it as an exercise!)
+Also note that since $P_{\hi+1}$ is SPD (by the inductive hypothesis), so too must be $B^\top P_{\hi+1} B$. (If this isn't clear, try proving it as an exercise!)
 Since the sum of two SPD matrices is also SPD, we have that $R + B^\top P_{\hi+1} B$ is SPD,
-and so $Q^\star_\hi$ is convex with respect to $\act$. A similar proof shows that $Q + \act^\top P_{\hi+1} A$ is SPD, and so $Q^\star_\hi$ is also a convex quadratic.
+and so $Q^\star_\hi$ is indeed a convex quadratic with respect to $\act$. A similar proof shows that it's also convex with respect to $\st$.
 
-\textbf{Step 2.} Now let's move on to the next part of proving the inductive hypothesis:
-showing that $\pi^\star_\hi(\st) = \arg \min_\act Q^\star_\hi(\st, \act)$ is linear.
+\textbf{Step 2.} Now we aim to show that $\pi^\star_\hi$ is linear.
 Since $Q^\star_\hi$ is a convex quadratic, finding its minimum over $\act$ is easy:
-we can just take the gradient with respect to $\act$ and set it to zero.
+we simply set the gradient with respect to $\act$ equal to zero and solve for $\act$.
 First, we calculate the gradient:
 \begin{align*}
-    \nabla_\act Q^\star_\hi(\st, \act) &= \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) a + 2 \st^\top \act^\top P_{\hi+1} B a ] \\
-    &= 2 (R + B^\top P_{\hi+1} B) a + (2 \st^\top \act^\top P_{\hi+1} B)^\top
+    \nabla_\act Q^\star_\hi(\st, \act) &= \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
+    &= 2 (R + B^\top P_{\hi+1} B) \act + 2 (\st^\top A^\top P_{\hi+1} B)^\top
 \end{align*}
 Setting this to zero, we get \begin{align}
-    0 &= (R + B^\top P_{\hi+1} B) a + B^\top P_{\hi+1} A \st \nonumber \\
-    \pi^\star_\hi(\st) := a &= -(R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A \st \nonumber \\
+    0 &= (R + B^\top P_{\hi+1} B) \pi^\star_\hi(\st) + B^\top P_{\hi+1} A \st \nonumber \\
+    \pi^\star_\hi(\st) &= (R + B^\top P_{\hi+1} B)^{-1} (-B^\top P_{\hi+1} A \st) \nonumber \\
     &= - K_\hi \st,
 \end{align}
 where $K_\hi = (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A$.
 
 Note that this optimal policy has an interesting property: in addition to being
 independent of the starting distribution $\mu_0$ (which also happened for our
-finite-horizon MDP solution), it's also fully deterministic and isn'\hi affected by noise!
+finite-horizon MDP solution), it's also fully \textbf{deterministic} and isn't affected by noise!
 (Compare this with the discrete MDP case, where calculating our optimal policy
 required taking an expectation over the state transitions.)
 
 \textbf{Step 3.} To complete our inductive proof, we must show that the
 inductive hypothesis is true at time $\hi$; that is, we must prove that
-$V^\star_\hi(\st)$ is quadratic.
+$V^\star_\hi(\st)$ is a convex quadratic.
 Using the identity $V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))$, we have: \begin{align*}
     V^\star_\hi(\st) &= Q^\star_\hi(\st, \pi^\star(\st)) \\
-    &= \st^\top (Q + \act^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
-    + 2\st^\top \act^\top P_{\hi+1} B (-K_\hi \st) \\
+    &= \st^\top (Q + A^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
+    + 2\st^\top A^\top P_{\hi+1} B (-K_\hi \st) \\
         &\qquad + \tr(\sigma^2 P_{\hi+1}) + p_{\hi+1}
 \end{align*}
 Note that with respect to $\st$, this is the sum of a quadratic term and a constant,
@@ -429,20 +422,20 @@ The constant term is clearly $p_\hi = \tr(\sigma^2 P_{\hi+1}) + p_{\hi+1}$.
 We can simplify the quadratic term by substituting in $K_\hi$.
 Notice that when we do this, the $(R+B^\top P_{\hi+1} B)$ term in
 the expression is cancelled out by its inverse, and the remaining terms combine to give
-what is known as the \emph{Riccati equation:}
+what is known as the \textbf{Riccati equation}:
 
 \begin{definition}{Riccati equation}{riccati}
     \[
-        P_\hi = Q + \act^\top P_{\hi+1} A - \act^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
+        P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
     \]
 \end{definition}
 
-There are several nice things to note about the Riccati equation:
+There are several nice properties to note about the Riccati equation:
 \begin{enumerate}
-    \item It's defined \textbf{recursively.} Given the dynamics defined by $\act$ and $B$, and the state coefficients $Q$, we can
+    \item It's defined \textbf{recursively.} Given the dynamics defined by $A$ and $B$, and the state cost matrix $Q$, we can
     recursively calculate $P_\hi$ across all timesteps starting from $P_\hor = Q$.
     \item $P_\hi$ often appears in calculations surrounding optimality, such as $V^\star_\hi, Q^\star_\hi$, and $\pi^\star_\hi$.
-    \item Together with $A, B$, and the action coefficients $R$, it fully defines the optimal policy.
+    \item Together with the dynamics given by $A$ and $B$, and the action coefficients $R$, it fully defines the optimal policy.
 \end{enumerate}
 
 Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$, which is a convex quadratic, and this concludes our proof. \qed
@@ -460,75 +453,83 @@ Before we move on to some extensions of LQR, let's consider how the state at tim
 
 \subsection{Expected state at time $\hi$}
 
-% TODO would a finance example be better here? Probably not realistic
-
-Suppose you're about to go to bed, and the thermostat in your room is controlled by an optimal policy under LQR. A very reasonable question to ask would be: what's the expected state (i.e. temperature) of the room at a given time $\hi$? Certainly you don'\hi want to freeze or boil overnight!
-
-To answer this question, let's first express the state at time $\hi$ in a cleaner way in terms of the history. Note that having linear dynamics makes it easy to expand terms backwards in time:
+How can we compute the expected state at time $\hi$ when acting according to the optimal policy?
+Let's first express $\st_\hi$ in a cleaner way in terms of the history. Note that having linear dynamics makes it easy to expand terms backwards in time:
 \begin{align*}
     \st_\hi &= A \st_{\hi-1} + B \act_{\hi-1} + w_{\hi-1} \\
     &= A (A\st_{\hi-2} + B \act_{\hi-2} + w_{\hi-2}) + B \act_{\hi-1} + w_{\hi-1} \\
     &= \cdots \\
-    &= \act^\hi \st_0 + \sum_{i=0}^{\hi-1} \act^i (B \act_{\hi-i-1} + w_{\hi-i-1}).
+    &= A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i (B \act_{\hi-i-1} + w_{\hi-i-1}).
 \end{align*}
 
 Let's consider the \emph{average state} at this time, given all the past states and actions.
-Since we assume that $\E w_\hi = 0$ (this is the zero vector in $d$ dimensions),
+Since we assume that $\E [w_\hi] = 0$ (this is the zero vector in $d$ dimensions),
 when we take an expectation, the $w_\hi$ term vanishes due to linearity, and so we're left with \[
-    \E [\st_\hi \mid \st_{0:(\hi-1)}, \act_{0:(\hi-1)}] = \act^\hi \st_0 + \sum_{i=0}^{\hi-1} \act^i B \act_{\hi-i-1}.
+    \E [\st_\hi \mid \st_{0:(\hi-1)}, \act_{0:(\hi-1)}] = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i B \act_{\hi-i-1}.
 \]
 If we choose actions according to our optimal policy, this becomes \[
     \E [\st_\hi \mid \st_0, \forall i \le \hi . \act_i = - K_i \st_i] = \left( \prod_{i=0}^{\hi-1} (A - B K_i) \right) \st_0.
 \]
+\textbf{Exercise:} Verify this.
+
 This introdces the quantity $A - B K_i$, which shows up frequently in control theory.
 For example, one important question is: will $\st_\hi$ remain bounded,
 or will it go to infinity as time goes on?
-To answer this, let's imagine that these $K_i$\st are equal (call this matrix $K$).
+To answer this, let's imagine that these $K_i$s are equal (call this matrix $K$).
 Then the expression above becomes $(A-BK)^\hi \st_0$.
 Now consider the maximum eigenvalue $\lambda_{\max}$ of $A - BK$.
 If $|\lambda_{\max}| > 1$, then there's some nonzero initial state $\bar \st_0$, the corresponding eigenvector, for which \[
-    \lim_{\hi \to \infty} (A - BK)^\hi \bar \st_0 = \lambda_{\max}^\hi \bar \st_0 = \infty.
+    \lim_{\hi \to \infty} (A - BK)^\hi \bar \st_0
+    = \lim_{\hi \to \infty} \lambda_{\max}^\hi \bar \st_0
+    = \infty.
 \]
-By then, your room is \emph{definitely} on fire! Otherwise, if $|\lambda_{\max}| < 1$, then it's impossible for your original state to explode as dramatically (assuming it's properly normalized).
-
-We've now formulated an optimal solution for the typical, time-homogeneous case of LQR, and considered the expected state under the optimal policy.
-However, this simple case is insufficient for more complex tasks.
-In the following sections, we'll consider some motivating examples, and extensions of LQR where some assumptions are relaxed.
+Otherwise, if $|\lambda_{\max}| < 1$, then it's impossible for your original state to explode as dramatically.
 
 \section{Extensions}
 
-In this section, we'll consider settings where some of the assumptions we made above are relaxed.
+We've now formulated an optimal solution for the time-homogeneous LQR
+and computed the expected state under the optimal policy.
+However, real world tasks rarely have such simple dynamics, and we may wish to design more complex cost functions.
+In this section, we'll consider more general extensions of LQR where some of the assumptions we made above are relaxed.
 Specifically, we'll consider:
 \begin{enumerate}
-    \item \textbf{Time-dependency,} where the dynamics and cost function might change depending on the timestep.
-    \item \textbf{General quadratic cost,} where we allow for linear terms and a constant term.
+    \item \textbf{Time-dependency}, where the dynamics and cost function might change depending on the timestep.
+    \item \textbf{General quadratic cost}, where we allow for linear terms and a constant term.
     \item \textbf{Tracking a goal trajectory} rather than aiming for a single goal state-action pair.
 \end{enumerate}
 
 \subsection[Time-dependency]{Time-dependent dynamics and cost function} \label{sec:time_dep_lqr}
 
-So far, we've considered the \emph{time-homogeneous} case, where the dynamics and cost function stay the same at every timestep. However, this might not always be the case. For example, if we want to preserve the temperature in a greenhouse, the outside forces are going to change depending on the time of day.
-A \st another example, in many sports or video games, the rules and scoring system might change during overtime.
+So far, we've considered the \emph{time-homogeneous} case,
+where the dynamics and cost function stay the same at every timestep.
+However, this might not always be the case.
+For example, if we want to preserve the temperature in a greenhouse, the outside forces are going to change depending on the time of day.
+% TODO lol these examples are kinda bad.
+As another example, in many sports or video games, the rules and scoring system might change during overtime.
 To address these sorts of problems, we can loosen the time-homogeneous restriction, and consider the case where the dynamics and cost function are \emph{time-dependent.}
-Our analysis remains almost identical; in fact, we can simply add a time index to the matrices $\act$ and $B$ that determine the dynamics and the matrices $Q$ and $R$ that determine the cost. (A \st an exercise, walk through the derivation and verify this claim!)
+Our analysis remains almost identical; in fact, we can simply add a time index to the matrices $A$ and $B$ that determine the dynamics and the matrices $Q$ and $R$ that determine the cost. (As an exercise, walk through the derivation and verify this claim!)
 
 The modified problem is now defined as follows:
-\begin{align*}
-    \arg \min_{\pi_{0}, \dots, \pi_{\hor-1} : \S \to \A} \quad & \E \left[ \left( \sum_{\hi=0}^{\hor-1} (\st_\hi^\top Q_\hi \st_\hi) + \act_\hi^\top R_\hi \act_\hi \right) + \st_\hor^\top Q_\hor \st_\hor \right] \\
-    \textrm{where} \quad & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = \act_\hi \st_\hi + B_\hi \act_\hi + w_\hi \\
-    & \st_0 \sim \mu_0 \\
-    & \act_\hi = \pi_\hi (\st_\hi) \\
-    & w_\hi \sim \mathcal{N}(0, \sigma^2 I).
-\end{align*}
+
+\begin{definition}{Time-dependent LQR}{time_dependent_lqr}
+    \begin{align*}
+        \arg \min_{\pi_{0}, \dots, \pi_{\hor-1}} \quad & \E \left[ \left( \sum_{\hi=0}^{\hor-1} (\st_\hi^\top Q_\hi \st_\hi) + \act_\hi^\top R_\hi \act_\hi \right) + \st_\hor^\top Q_\hor \st_\hor \right] \\
+        \textrm{where} \quad & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + w_\hi \\
+        & \st_0 \sim \mu_0 \\
+        & \act_\hi = \pi_\hi (\st_\hi) \\
+        & w_\hi \sim \mathcal{N}(0, \sigma^2 I).
+    \end{align*}
+\end{definition}
 
 The derivation of the optimal value functions and the optimal policy remains almost exactly the same,
 and we can modify the Riccati equation accordingly:
 
 \begin{definition}{Time-dependent Riccati Equation}{riccati_time_dependent}
     \[
-        P_\hi = Q_\hi + \act_\hi^\top P_{\hi+1} \act_\hi - \act_\hi^\top P_{\hi+1} B_\hi (R_\hi + B_\hi^\top P_{\hi+1} B_\hi)^{-1} B_\hi^\top P_{\hi+1} \act_\hi.
+        P_\hi = Q_\hi + A_\hi^\top P_{\hi+1} A_\hi - A_\hi^\top P_{\hi+1} B_\hi (R_\hi + B_\hi^\top P_{\hi+1} B_\hi)^{-1} B_\hi^\top P_{\hi+1} A_\hi.
     \]
-    Note that this is just the time-homogeneous Riccati equation (\autoref{th:riccati}), but with the
+    Note that this is just the time-homogeneous Riccati equation (\autoref{df:riccati}),
+    but with the
     time index added to each of the relevant matrices.
 \end{definition}
 
@@ -544,9 +545,9 @@ time-dependent dynamics results in the following expression, where we introduce 
     c_\hi(\st_\hi, \act_\hi) = ( \st_\hi^\top Q_\hi \st_\hi + \st_\hi^\top M_\hi \act_\hi + \act_\hi^\top R_\hi \act_\hi ) + (\st_\hi^\top q_\hi + \act_\hi^\top r_\hi) + c_\hi.
     \label{df:general_quadratic_cost}
 \end{equation}
-Similarly, we can also include a constant term $v_\hi \in \R^{n_\st}$ in the dynamics (note that this is \emph{fixed} at each timestep, unlike the noise $w_\hi$):
+Similarly, we can also include a constant term $v_\hi \in \R^{n_\st}$ in the dynamics (note that this is \emph{deterministic} at each timestep, unlike the stochastic noise $w_\hi$):
 \[
-    \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = \act_\hi \st_\hi + B_\hi \act_\hi + v_\hi + w_\hi.
+    \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + v_\hi + w_\hi.
 \]
 The derivation of the optimal solution in this case will be left as a homework exercise.
 
@@ -554,9 +555,11 @@ The derivation of the optimal solution in this case will be left as a homework e
 
 \subsection{Tracking a predefined trajectory}
 
-So far, we've been trying to get the robot to stay as close as possible to the origin, or more generally a goal state-action pair $(\st^\star, \act^\star)$. However, consider applying LQR to autonomous driving. Now, we want the desired state to change over time, instead of remaining in one location. Otherwise, it wouldn'\hi be a very useful vehicle!
+So far, we've been trying to get the robot to stay as close as possible to the origin, or more generally a goal state-action pair $(\st^\star, \act^\star)$.
+However, consider applying LQR to a task like autonomous driving, where the desired state changes over time, instead of remaining in one location.
+% Otherwise, it wouldn't be a very useful vehicle!
 In these cases, we want the robot to follow a predefined \emph{trajectory} of
-states and actions $(\st_\hi^\star, \act_\hi^\star)_{\hi=0}^{\hor-1}$. To do this, we'll modify the cost function accordingly:
+states and actions $(\st_\hi^\star, \act_\hi^\star)_{\hi=0}^{\hor-1}$. To express this as a control problem, we'll need a corresponding time-dependent cost function:
 \[
     c_\hi(\st_\hi, \act_\hi) = (\st_\hi - \st^\star_\hi)^\top Q (\st_\hi - \st^\star_\hi) + (\act_\hi - \act^\star_\hi)^\top R (\act_\hi - \act^\star_\hi).
 \]
@@ -565,26 +568,31 @@ Note that this punishes states and actions that are far from the intended trajec
 \]
 
 
-\section{The infinite-horizon setting}
+\iffalse
+\section{The infinite-horizon setting $(*)$}
 
-Another assumption we've made is that the task has a \emph{finite horizon} $\hor$. How about tasks that might matter indefinitely, where we want to minimize the expected cost over \emph{all future timesteps?} Consider, for example, controlling the long-term value of a portfolio, or managing acidity levels in a lake.
+Another assumption we've made is that the task has a \emph{finite horizon} $\hor$. How about tasks that might continue indefinitely, where we want to minimize the expected cost over \emph{all future timesteps}? Consider, for example, controlling the long-term value of a financial portfolio, or managing acidity levels in a lake.
+
+For an intuitive perspective on why this happens, let's suppose you have an upcoming project deadline. When it's still a few months away, you might not pay
+much attention to it, and behave as you normally do. But as the deadline gets closer and closer, suddenly the
+horizon becomes more and more relevant, and you'll spend more time thinking about it.
+The infinite-horizon case is just where the deadline is infinitely far away, so you can just behave ``like normal'' all the time!
 
 In the previous chapter, we dealt with such \textbf{infinite-horizon} cases by \emph{discounting} future rewards. This time, we'll take a different approach by considering the limit of a \emph{finite}-horizon task as $\hor \to \infty$.
-A \st it turns out, our derivation is exactly analogous to value iteration from the previous chapter! However, here the structure is nice enough that we don'\hi need a discount factor $\gamma$ to deal with limits analytically. (Note that we must normalize by $1/\hor$ to keep the total cost bounded.)
+As it turns out, our derivation is exactly analogous to value iteration for MDPs (\autoref{df:value_iteration_pseudocode})!
+However, here the structure is nice enough that we don't need a discount factor $\gamma$ to deal with limits analytically.
+(Note that we must normalize by $1/\hor$ to keep the total cost bounded.)
 
 In the discounted case, analogously to taking the limit as $\hor \to \infty$, we consider the limit as the discount factor $\gamma$ approaches $1$. This is because as $\gamma \to 1$, time discounting becomes less and less important -- just like the horizon $\hor$ vanishing into the distance -- and we're left with the undiscounted case. (Note that for the total reward to remain bounded, we must normalize the sum by $1 - \gamma$.) Let's consider value iteration in this setting, which uses the Bellman operator $\mathcal{J}$ to update $V$: \[
     V_{\hi+1}(\st) = \lim_{\gamma \to 1} (\mathcal{J} V_\hi)(\st) = \lim_{\gamma \to 1} \max_a \left( r(\st, \act) + \gamma \E_{\st' \sim P(\st, \act)} V_\hi(\st') \right).
 \]
-This is exactly analogous to the \emph{Riccati equation} (\ref{th:riccati})!
+This is exactly analogous to the \emph{Riccati equation} \eqref{df:riccati}!
 Instead of thinking of $P_{\hi+1}$ as defining the value function for the \emph{next timestep,} though, we think of it as the \emph{next version} of the value function in an iterative algorithm.
 Then both of these algorithms are doing the same thing:
 iteratively refining the value function by acting greedily with respect to the current iteration.
 
 By going through the same derivation in \autoref{sec:optimal_lqr}, we'll see that $P_\hi$ (defined recursively by the Riccati equation) converges to a fixed value $P$.
-For an intuitive perspective on why this happens, let's suppose you have an upcoming project deadline. When it's still a few months away, you might not pay
-much attention to it, and behave as you normally do. But as the deadline gets closer and closer, suddenly the
-horizon becomes more and more relevant, and you'll spend more time thinking about it.
-The infinite-horizon case is just where the deadline is infinitely far away, so you can just behave ``like normal'' all the time!
+
 
 % TODO finish this up
 
@@ -599,24 +607,25 @@ The infinite-horizon case is just where the deadline is infinitely far away, so 
         \hline
         \textbf{Optimization problem} & Minimize finite-horizon undiscounted cost & Maximize infinite-horizon discounted reward \emph{or} finite-horizon discounted reward \\
         \hline
-        \textbf{Approaching the infinite-horizon, undiscounted setting} & $\displaystyle \lim_{\hor \to \infty} \frac{1}{\hor} \E \left( \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi) \right)$ & $\displaystyle \lim_{\gamma \to 1} (1 - \gamma) \E \sum_{\hi=0}^{\infty} \gamm\act^\hi r(\st_\hi, \act_\hi)$ \\
+        \textbf{Approaching the infinite-horizon, undiscounted setting} & $\lim_{\hor \to \infty} \frac{1}{\hor} \E \left( \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi) \right)$ & $\lim_{\gamma \to 1} (1 - \gamma) \E \sum_{\hi=0}^{\infty} \gamma^\hi r(\st_\hi, \act_\hi)$ \\
         \hline
-        \textbf{Iterative algorithm for optimal value} & Riccati equations $P \gets Q + \act^\top P A - \act^\top P B (R + B^\top P B)^{-1} B^\top P A$ & Value iteration $V(\st) \gets \max_a \left[ r(\st, \act) + \gamma \E_{\st' \sim P(\st, \act)} V(\st') \right]$
+        \textbf{Iterative algorithm for optimal value} & Riccati equations $P := Q + \act^\top P A - \act^\top P B (R + B^\top P B)^{-1} B^\top P A$ & Value iteration $V(\st) := \max_a \left[ r(\st, \act) + \gamma \E_{\st' \sim P(\st, \act)} V(\st') \right]$
     \end{tabularx}
     \caption{A comparison between the continuous control and finite MDP settings.}
     \label{fig:control_mdp}
 \end{figure}
 \fi
 
+\fi
 
-\section{Approximating nonlinear dynamics}
+\section{Approximating nonlinear dynamics} \label{sec:approx_nonlinear}
 
 The LQR algorithm solves for the optimal policy when the dynamics are \emph{linear} and the cost function is a \emph{convex quadratic}.
 However, real settings are rarely this simple!
 Let's return to the CartPole example from the start of the chapter (\autoref{eg:cart_pole}).
-The dynamics (physics) aren'\hi linear, and we might also want to specify a cost function that's more complex.
+The dynamics (physics) aren't linear, and we might also want to specify a cost function that's more complex.
 
-Concretely, let's consider a \emph{noise-free} problem since, as we saw, the noise doesn'\hi factor into the optimal policy. Let's assume the dynamics and cost function are stationary, and ignore the terminal state for simplicity:
+Concretely, let's consider a \emph{noise-free} problem since, as we saw, the noise doesn't factor into the optimal policy. Let's assume the dynamics and cost function are stationary, and ignore the terminal state for simplicity:
 
 \begin{definition}{Nonlinear control problem}{nonlinear_control}
 \begin{align*}
@@ -624,40 +633,38 @@ Concretely, let's consider a \emph{noise-free} problem since, as we saw, the noi
     \text{where} \quad & \st_{\hi+1} = f(\st_\hi, \act_\hi) \\
     & \act_\hi = \pi_\hi(\st_\hi) \\
     & \st_0 \sim \mu_0 \\
-    & c(\st, \act) = d(\st, \st^\star) + d(a, \act^\star).
+    & c(\st, \act) = d(\st, \st^\star) + d(\act, \act^\star).
 \end{align*}
-Here, $d$ denotes some general measure of distance to the goal state and action $(\st^\star, \act^\star)$.
+Here, $d$ denotes some general distance metric between its two arguments.
 \end{definition}
 
-This is now only slightly simplified from the general optimal control problem (see \ref{df:optimal_control}). Here, we don'\hi know an analytical form for the dynamics $f$ or the cost function $c$,
-but we assume that we're able to \emph{query/sample/simulate} them
-to get their values at a given state and action.
+This is now only slightly simplified from the general optimal control problem (see \ref{df:optimal_control}). Here, we don't know an analytical form for the dynamics $f$ or the cost function $c$,
+but we assume that we're able to \emph{query/sample/simulate} them to get their values at a given state and action.
+To clarify, consider the case where the dynamics are given by real world physics.
+We can't (yet) write down an expression for the dynamics that we can differentiate or integrate analytically.
+However, we can still \emph{simulate} the dynamics and cost function by running a real-world experiment and measuring the resulting states and costs.
 How can we adapt LQR to this more general nonlinear case?
 
 \subsection{Local linearization}
 
-A \st we briefly mentioned in the introduction, part of the reason we designed the LQR problem the way we did was because we can take any \emph{locally continuous} function, and approximate it using a Taylor expansion of low-order polynomials. By taking a linear approximation of $f$ and a quadratic approximation of $c$, we're back to the regime of LQR with these derived matrices in terms of their gradients and Hessians accordingly.
+How can we apply LQR when the dynamics are nonlinear or the cost function is more complex?
+We'll exploit the useful fact that we can take any \emph{locally continuous} function and approximate it using a Taylor expansion of low-order polynomials.
+In particular, as long as the dynamics $f$ are differentiable around $(\st^\star, \act^\star)$ and the cost function $c$ is twice differentiable at $(\st^\star, \act^\star)$, we can take a linear approximation of $f$ and a quadratic approximation of $c$ to bring us back to the regime of LQR.
 
-\textbf{Assumptions.} This approach assumes that $f$ is differentiable and that $c$ is twice-differentiable, both around $(\st^\star, \act^\star)$.
-Additionally, since a Taylor expansion generally gets less and less accurate the further you stray from the point of expansion, this means that we also assume that all states are close to the optimal state $\st^\star$,
-and that we can stay close using actions that are close to $\act^\star$.
-If this seems like a strong set of restrictions, it is! But we'll save this discussion for the next section.
-
-% TODO maybe add Taylor expansion stuff in appendix?
-
-% TODO remind
-If you're unfamiliar with Taylor expansions, we recommend taking a calculus course; we'll use them here without much further introduction. Linearizing the dynamics around $(\st^\star, \act^\star)$ gives:
+% TODO add Taylor expansion stuff to appendix
+% If you're unfamiliar with Taylor expansions, we recommend taking a calculus course; we'll use them here without much further introduction.
+Linearizing the dynamics around $(\st^\star, \act^\star)$ gives:
 \begin{gather*}
-    f(\st, \act) \approx f(\st^\star, \act^\star) + \nabla_\st f(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act f(\st^\star, \act^\star) (a - \act^\star) \\
+    f(\st, \act) \approx f(\st^\star, \act^\star) + \nabla_\st f(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act f(\st^\star, \act^\star) (\act - \act^\star) \\
     (\nabla_\st f(\st, \act))_{ij} = \frac{d f_i(\st, \act)}{d \st_j}, \quad i, j \le n_\st \qquad (\nabla_\act f(\st, \act))_{ij} = \frac{d f_i(\st, \act)}{d \act_j}, \quad i \le n_\st, j \le n_\act
 \end{gather*}
 and quadratizing the cost function around $(\st^\star, \act^\star)$ gives:
 \begin{align*}
-    c(\st, \act) &\approx c(\st^\star, \act^\star) && \text{constant} \\
-    &\qquad + \nabla_\st c(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act c(\st^\star, \act^\star) (a - \act^\star) && \text{linear} \\
-    &\qquad + \frac{1}{2} (\st - \st^\star)^\top \nabla_{\st \st} c(\st^\star, \act^\star) (\st - \st^\star) \\
-    &\qquad + \frac{1}{2} (a - \act^\star)^\top \nabla_{\act \act} c(\st^\star, \act^\star) (a - \act^\star) && \text{quadratic} \\
-    &\qquad + (\st - \st^\star)^\top \nabla_{\st \act} c(\st^\star, \act^\star) (a - \act^\star)
+    c(\st, \act) &\approx c(\st^\star, \act^\star) && \text{constant term} \\
+    &\qquad + \nabla_\st c(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act c(\st^\star, \act^\star) (a - \act^\star) && \text{linear terms} \\
+    &\qquad + \frac{1}{2} (\st - \st^\star)^\top \nabla_{\st \st} c(\st^\star, \act^\star) (\st - \st^\star) && \text{quadratic terms} \\
+    &\qquad + \frac{1}{2} (\act - \act^\star)^\top \nabla_{\act \act} c(\st^\star, \act^\star) (\act - \act^\star) \\
+    &\qquad + (\st - \st^\star)^\top \nabla_{\st \act} c(\st^\star, \act^\star) (\act - \act^\star)
 \end{align*}
 where the gradients and Hessians are defined as
 \begin{align*}
@@ -668,92 +675,119 @@ where the gradients and Hessians are defined as
     (\nabla_{\st \act} c(\st, \act))_{ij} &= \frac{d^2 c(\st, \act)}{d \st_i d \act_j}. \quad i \le n_\st, j \le n_\act
 \end{align*}
 
-We note that this cost can be expressed in the general quadratic form seen in \autoref{df:general_quadratic_cost}.
-We leave it as an exercise to derive the corresponding matrices and vectors $Q, R, M, q, r, c$.
-To calculate these gradients and Hessians in practice, we use a method known as \textbf{finite differencing} for numerically computing derivatives.
-Namely, we can simply use the definition of derivative, and see how the function changes as we add or subtract a tiny $\delta$ to the input.
-% Do we need to go further into detail about finite differencing?
+\textbf{Exercise:} Note that this cost can be expressed in the general quadratic form seen in \autoref{df:general_quadratic_cost}. Derive the corresponding quantities $Q, R, M, q, r, c$.
 
-However, simply taking the second-order approximation of the cost function is insufficient;
-we also need to ensure that it is locally convex, that is, the Hessians $\nabla_{\st \st} c(\st^\star, \act^\star)$ and $\nabla_{\act \act} c(\st^\star, \act^\star)$ are positive definite.
+\subsection{Finite differencing}
 
-\textbf{Local convexification.} Recall that an equivalent definition of positive definite matrices is that all of their eigenvalues are positive. One way to naively \emph{force} $\nabla_{\st \st} c(\st^\star, \act^\star)$ and $\nabla_{\act \act} c(\st^\star, \act^\star)$ to be positive definite is to set any negative eigenvalues to some small positive value.
-Note that both of these Hessians are symmetric, and so they can be decomposed in terms of their eigenbasis. Thus by removing their eigenvalues and adding a small `lower bound' to the eigenvalues (so that the surface will have some minimum amount of curvature), we obtain
-\begin{align*}
-    \nabla_{\st \st} c(\st^\star, \act^\star) &= \sum_{i=1}^{n_\st} \sigma_i u_i u_i^\top \\
-    \nabla_{\st \st} \widetilde c(\st^\star, \act^\star) &= \sum_{\substack{i=1 \\ \sigma_i > 0}}^{n_\st} \sigma_i u_i u_i^\top + \lambda I.
-\end{align*}
-We can use a similar approach to convexify $\nabla_{\act \act} \widetilde{c}(\st^\star, \act^\star)$. Now that we have a convex quadratic approximation to the cost function, and a linear approximation to the state transitions, we can simply apply the time-homogenous LQR methods from \autoref{sec:optimal_lqr}.
+To calculate these gradients and Hessians in practice,
+we use a method known as \textbf{finite differencing} for numerically computing derivatives.
+Namely, we can simply use the limit definition of the derivative,
+and see how the function changes as we add or subtract a tiny $\delta$ to the input.
+Note that this only requires us to be able to \emph{query} the function, not to have an analytical expression for it,
+which is why it's so useful in practice.
+% TODO Do we need to go further into detail about finite differencing?
 
-% TODO: insert figure here for visual intuition, in case people aren'\hi experienced with the calculus
+\subsection{Local convexification}
 
-But what happens when our assumptions break down, namely when we enter states far away from $\st^\star$ and want to use actions far from $\act^\star$?
-A \st we mentioned above, our Taylor approximation will typically become less accurate.
-To address this, we'll need to do a Taylor approximation around \emph{different points at each time step.}
+However, simply taking the second-order approximation of the cost function is insufficient,
+since for LQR we required that the $Q$ and $R$ matrices were positive definite, i.e. that all of their eigenvalues were positive.
+
+One way to naively \emph{force} some symmetric matrix $D$ to be positive definite is to set any non-positive eigenvalues to some small positive value $\varepsilon > 0$.
+Recall that any real symmetric matrix $D \in \R^{n \times n}$ has an basis of eigenvectors $u_1, \dots, u_n$ with corresponding eigenvalues $\lambda_1, \dots, \lambda_n$ such that $D u_i = \lambda_i u_i$. Then we can construct the positive definite approximation by \[
+    \widetilde{D} = \sum_{i=1, \dots, n \mid \lambda_i > 0} \lambda_i u_i u_i^\top + \varepsilon I.
+\]
+
+\textbf{Exercise:} Convince yourself that $\widetilde{D}$ is indeed positive definite.
+
+Note that Hessian matrices are generally symmetric, so we can apply this process to $Q$ and $R$ to obtain the positive definite approximations $\widetilde{Q}$ and $\widetilde{R}$. Now that we have a convex quadratic approximation to the cost function, and a linear approximation to the state transitions, we can simply apply the time-homogenous LQR methods from \autoref{sec:optimal_lqr}.
+
+% TODO: insert figure here for visual intuition, in case people aren't experienced with the calculus
+
+But what happens when we enter states far away from $\st^\star$ or want to use actions far from $\act^\star$?
+A Taylor approximation is only accurate in a \emph{local} region around the point of linearization,
+so the performance of our LQR controller will degrade as we move further away.
+We'll see how to address this in the next section using the \textbf{iterative LQR} algorithm.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{log_taylor.png}
+    \caption{A visual intuition for local linearization.}
+    \label{fig:local_linearization}
+    % https://upload.wikimedia.org/wikipedia/commons/2/27/Logarithm_GIF.gif
+\end{figure}
 
 \subsection{Iterative LQR}
 
-\textbf{Iterative LQR} is a way to resolve the issues with local linearization.
-The key idea is to linearize around different points at each timestep, creating a time-dependent approximation of the dynamics.
-We'll break it into a few steps:
-\begin{steps}
-    \item Form an LQR around the current candidate trajectory $(\bar \st^i_\hi, \bar \act^i_\hi)_{\hi=0}^{\hor-1}$ using local approximation.
-    \item Apply the solution to time-dependent LQR from \autoref{sec:time_dep_lqr} to obtain an optimal policy $\pi^i$.
-    \item Generate a new trajectory $(\tilde \act_\hi)_{\hi=0}^{\hor-1}$ using $\pi^i$.
-    \item Compute a better candidate trajectory $\mathbf{a}^{i+1}$ by interpolating between $\mathbf{a}^i$ and $\tilde {\mathbf{a}}$.
-\end{steps}
-Now the question becomes: How do we choose the best \emph{waypoints} $(\bar \st_\hi, \bar \act_\hi)$ to get the best approximation?
+Earlier, we tried to use local linearization to solve nonlinear control problems with the LQR, but we ran into the issue that the approximation is only accurate in a local region around the point of linearization.
+Instead, we'll use an iterative approach, where we repeatedly linearize around different points to create a \emph{time-dependent} approximation of the dynamics, and then solve the resulting time-dependent LQR problem to obtain a better policy.
+This is known as \textbf{iterative LQR} or \textbf{iLQR}:
 
-We'll once again use an iterative approach, similarly to value iteration, where at each step we update the waypoints \emph{greedily} with respect to the current iteration.
-Let's use a superscript to denote the iteration of the algorithm.
-We can start off by initializing some (bad) sequence of waypoints $\bar \act^0_0, \dots, \bar \act^0_{\hor-1}$ by some approximate method such as local linearization.
-Applying these actions at their respective timesteps gives a sample trajectory \[
-    \bar \st_0, \bar \act_0, \bar \st_1, \bar \act_1, \dots, \bar \st_{\hor-1}, \bar \act_{\hor-1} \quad \text{where} \quad
-    \bar \st^0_0 = \bar \st_0 = \E_{\st_0 \sim \mu_0} [\st_0], \quad \bar \st^0_{\hi+1} = f(\bar \st^0_\hi, \bar \act^0_\hi).
-\]
-Now, at each timestep $\hi$, we linearize $f$ and quadratize (and convexify) $c$ around the point generated in the sample trajectory, using the same Taylor expansion techniques we saw in the previous section:
+\begin{definition}{Iterative LQR (high-level)}{ilqr}
+    For each iteration of the algorithm:
+    \begin{steps}
+        \item Form a time-dependent LQR problem around the current candidate trajectory using local linearization.
+        \item Compute the optimal policy using \autoref{sec:time_dep_lqr}.
+        \item Generate a new series of actions using this policy.
+        \item Compute a better candidate trajectory by interpolating between the current and proposed actions.
+    \end{steps}
+\end{definition}
+
+Now let's go through the details of each step. We'll use superscripts to denote the iteration of the algorithm. We'll also denote $\bar \st_0 = \E_{\st_0 \sim \mu_0} [\st_0]$ as the expected initial state.
+
+At iteration $i$ of the algorithm, we begin with a \textbf{candidate} trajectory $\bar \tau^i = (\bar \st^i_0, \bar \act^i_0, \dots, \bar \st^i_{\hor-1}, \bar \act^i_{\hor-1})$.
+
+\textbf{Step 1: Form a time-dependent LQR problem.}
+At each timestep $\hi \in [\hor]$, we use the techniques from \autoref{sec:approx_nonlinear} to linearize the dynamics and quadratize the cost function around $(\bar \st^i_\hi, \bar \act^i_\hi)$:
 \begingroup
 \newcommand{\iter}[1]{\bar {#1}^i_\hi}
-\newcommand{\grad}[2]{\nabla_{#2} #1(\iter \st, \iter a)}
+\newcommand{\grad}[2]{\nabla_{#2} #1(\iter \st, \iter \act)}
 \begin{align*}
-    f_\hi(\st, \act) &\approx f(\iter \st, \iter a) + \grad f \st (\st - \iter \st) + \grad f a (a - \iter a) \\
-    c_\hi(\st, \act) &\approx c(\iter \st, \iter a) + \begin{bmatrix}
-        \st - \iter \st & a - \iter a
+    f_\hi(\st, \act) &\approx f(\iter \st, \iter \act) + \grad f \st (\st - \iter \st) + \grad f \act (\act - \iter \act) \\
+    c_\hi(\st, \act) &\approx c(\iter \st, \iter \act) + \begin{bmatrix}
+        \st - \iter \st & \act - \iter \act
     \end{bmatrix} \begin{bmatrix}
         \grad c \st \\
-        \grad c a
+        \grad c \act
     \end{bmatrix} \\
     &\qquad + \frac{1}{2} \begin{bmatrix}
-        \st - \iter \st & a - \iter a
+        \st - \iter \st & \act - \iter \act
     \end{bmatrix} \begin{bmatrix}
-        \nabla_{\st \st} c(\iter \st, \iter a) & \nabla_{\st \act} c(\iter \st, \iter a) \\
-        \nabla_{as} c(\iter \st, \iter a) & \nabla_{\act \act} c(\iter \st, \iter a)
+        \nabla_{\st \st} c(\iter \st, \iter \act) & \nabla_{\st \act} c(\iter \st, \iter \act) \\
+        \nabla_{\act \st} c(\iter \st, \iter \act) & \nabla_{\act \act} c(\iter \st, \iter \act)
     \end{bmatrix}
     \begin{bmatrix}
         \st - \iter \st \\
-        a - \iter a
-    \end{bmatrix}
+        \act - \iter \act
+    \end{bmatrix}.
 \end{align*}
 \endgroup
-Now let's use the time-dependent LQR solution to compute an optimal policy $\pi^i_0, \dots, \pi^i_{\hor-1}$. We can then generate a new sample trajectory by taking actions according to this optimal policy: \[
+
+\textbf{Step 2: Compute the optimal policy.}
+We can now solve the time-dependent LQR problem using the Riccati equation from \autoref{sec:time_dep_lqr} to compute the optimal policy $\pi^i_0, \dots, \pi^i_{\hor-1}$.
+
+\textbf{Step 3: Generate a new series of actions.}
+We can then generate a new sample trajectory by taking actions according to this optimal policy: \[
     \bar \st^{i+1}_0 = \bar \st_0, \qquad \tilde \act_\hi = \pi^i_\hi(\bar \st^{i+1}_\hi), \qquad \bar \st^{i+1}_{\hi+1} = f(\bar \st^{i+1}_\hi, \tilde \act_\hi).
 \]
-Note that the states are drawn by sampling from the \emph{true} dynamics,
-and also that we've denoted these actions as $\tilde \act_\hi$ and aren'\hi directly using them for the next iteration $\act^{i+1}_\hi$.
-Rather, we want to interpolate between them and the actions from the previous iteration $\bar \act^i_0, \dots, \bar \act^i_{\hor-1}$.
+Note that the states are sampled according to the \emph{true} dynamics, which we assume we have query access to.
+
+\textbf{Step 4: Compute a better candidate trajectory.},
+Note that we've denoted these actions as $\tilde \act_\hi$ and aren't directly using them for the next iteration $\bar \act^{i+1}_\hi$.
+Rather, we want to \emph{interpolate} between them and the actions from the previous iteration $\bar \act^i_0, \dots, \bar \act^i_{\hor-1}$.
 This is so that the cost will \emph{increase monotonically,} since if the new policy turns out to actually be worse, we can stay closer to the previous trajectory. (Can you think of an intuitive example where this might happen?)
-Formally, we want to find $\alpha \in [0, 1]$ to generate the next iteration of actions: \begin{align*}
+
+Formally, we want to find $\alpha \in [0, 1]$ to generate the next iteration of actions $\bar \act^{i+1}_0, \dots, \bar \act^{i+1}_{\hor-1}$ such that the cost is minimized:
+\begin{align*}
     \min_{\alpha \in [0, 1]} \quad & \sum_{\hi=0}^{\hor-1} c(\st_\hi, \bar \act^{i+1}_\hi) \\
     \text{where} \quad & \st_{\hi+1} = f(\st_\hi, \bar \act^{i+1}_\hi) \\
-    & \bar \act^{i+1}_\hi = \alpha \bar \act^i_\hi + (1-\alpha) \bar \act_\hi \\
+    & \bar \act^{i+1}_\hi = \alpha \bar \act^i_\hi + (1-\alpha) \tilde \act_\hi \\
     & \st_0 = \bar \st_0.
 \end{align*}
-Note that this is only optimizing over the closed interval $[0, 1]$, so by the Extreme Value Theorem it's guaranteed to have a global maximum.
+Note that this optimizes over the closed interval $[0, 1]$, so by the Extreme Value Theorem, it's guaranteed to have a global maximum.
 
 The final output of this algorithm is a policy $\pi^{n_\text{steps}}$ derived after $n_\text{steps}$ of the algorithm.
 Though the proof is somewhat complex, one can show that for many nonlinear control problems, this solution converges to a locally optimal solution (in the policy space).
 
-
+\iffalse
 \section{Programming and Implementation}
 
 Not sure how much to include here yet. WIP. Walk through a basic Python solution
@@ -784,7 +818,7 @@ Now that our LQR is set up, let's find the optimal policy.
 
 \end{enumerate}
 
-
+\fi
 
 \end{document}
 

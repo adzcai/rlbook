@@ -616,7 +616,7 @@ Once again, all optimal policies share the same \textbf{optimal value function} 
 
 \textbf{Exercise:} Verify this by modifying the proof \ref{th:optimal_greedy} from the finite-horizon case.
 
-So how can we compute such an optimal policy? We can't use the backwards DP approach from the finite-horizon case \eqref{df:pi_star_dp}) since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation \eqref{eq:bellman_consistency_infinite} for the optimal value function doesn't depend on any policy:
+So how can we compute such an optimal policy? We can't use the backwards DP approach from the finite-horizon case \eqref{df:pi_star_dp} since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation \eqref{eq:bellman_consistency_infinite} for the optimal value function doesn't depend on any policy:
 \[
     V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]
 \]
@@ -632,7 +632,7 @@ As before, thinking of the r.h.s. as an operator on value functions gives the \t
 
 Since the optimal policy is still a policy, our result that the Bellman operator is a contracting map still holds, and so we can repeatedly apply this operator to converge to the optimal value function! This algorithm is known as \textbf{value iteration}.
 
-\begin{definition}{Value iteration pseudocode}{value_pseudocode}
+\begin{definition}{Value iteration pseudocode}{value_iteration_pseudocode}
     \begin{algorithmic}
         \State $v^{(0)} \gets 0$
         \For{$t = 0, 1, 2, \dots, T-1$}
