@@ -1,6 +1,10 @@
+\providecommand{\main}{.}
+
 \documentclass[12pt,twoside,letterpaper,openany]{book}
 
 \input{preamble}
+
+\graphicspath{ {\main/assets/} }
 
 \setcounter{tocdepth}{4}
 
@@ -30,16 +34,16 @@
 
 \end{titlepage}
 
-\subfile{../0_frontmatter/frontmatter.tex}
+\subfile{\main/0_frontmatter/frontmatter.tex}
 
 \mainmatter
 
-\subfile{../1_bandits/bandits}
+\subfile{\main/1_bandits/bandits}
 
-\subfile{../2_mdps/mdps}
+\subfile{\main/2_mdps/mdps}
 
-\subfile{../3_control/control}
+\subfile{\main/3_control/control}
 
-\subfile{../4_pg/pg}
+\subfile{\main/4_pg/pg}
 
 \end{document}

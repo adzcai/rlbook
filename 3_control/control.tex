@@ -1,6 +1,6 @@
-\documentclass[../main/main]{subfiles}
+\providecommand{\main}{..}
 
-\graphicspath{ {../assets/} }
+\documentclass[\main/main]{subfiles}
 
 \setcounter{chapter}{2} % one before
 
@@ -138,7 +138,7 @@ wouldn't change the behavior of the system by much;
 namely, that the cost and dynamics were relatively \emph{continuous}.
 Can we use this continuous structure in other ways? This brings us to the topic of \textbf{Linear Quadratic Regulators,} a widely used and studied tool in control theory.
 
-\section{The Linear Quadratic Regulator Problem} \label{sec:lqr}
+\section{The Linear Quadratic Regulator} \label{sec:lqr}
 
 The optimal control problem stated above seems very difficult to solve.
 The cost function might not be convex, making optimization difficult,
