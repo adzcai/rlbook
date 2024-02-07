@@ -5,10 +5,13 @@
 \usepackage{graphicx, subcaption, hyperref, sidenotes, enumitem, tabularx, todonotes, listings, biblatex, tikz, algpseudocode, csquotes}
 
 \renewcommand{\familydefault}{\sfdefault}
+\raggedbottom
 
 \newenvironment{steps}
     {\begingroup \samepage \begin{enumerate}[label={\bfseries Step \arabic{*}.}]}
     {\end{enumerate} \endgroup}
+
+\newenvironment{exercise}{\textbf{Exercise:}}{}
 
 \newcommand{\rltable}[3]{\begin{center}
     \begin{tabular}{|c|c|c|c|}
@@ -22,7 +25,7 @@
 
 % ==================== HEADER STYLES ====================
 
-\usepackage{fancyhdr}
+\usepackage{fancyhdr, titlesec}
 
 \setlength{\headheight}{16pt}
 \pagestyle{fancy}
@@ -31,6 +34,13 @@
 \fancyhead[L]{\leftmark}
 \fancyhead[R]{\rightmark}
 \fancyfoot[RO, LE]{\thepage}
+
+\titleformat
+    {\section}
+    {\vspace{2em}\titlerule[2pt]\bfseries\Large}
+    {\thesection}
+    {2em}
+    {}
 
 
 
@@ -53,8 +63,8 @@
 \newcommand{\hor}{H}
 \newcommand{\lgr}{\mathcal{L}}
 \newcommand{\hi}{h}
-\newcommand{\st}{x}
-\newcommand{\act}{u}
+\newcommand{\st}{s}
+\newcommand{\act}{a}
 
 \renewcommand{\tilde}{\widetilde}
 
@@ -92,8 +102,8 @@
         }{#3}
 }
 
-\customtheorem{theorem}{Theorem}{th}{green!5}
-\customtheorem{definition}{Definition}{df}{blue!5}
-\customtheorem{remark}{Remark}{rm}{white}
-\customtheorem{example}{Example}{eg}{violet!5}
+\customtheorem{example}{Example}{eg}{violet!5}      % examples
+\customtheorem{derivation}{Derivation}{dr}{white}   % long calculations
+\customtheorem{definition}{Definition}{df}{blue!5}  % important new terms and algorithms
+\customtheorem{theorem}{Theorem}{th}{green!5}       % theorems
 

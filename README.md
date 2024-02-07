@@ -12,3 +12,15 @@ Run `git clean -iX` to remove extra files from LaTeX compilation.
 ## Overleaf notes
 
 Add the remote <https://git.overleaf.com/63e2a72f2cf8b91fc96f46a6> and push there to update the Overleaf.
+
+```
+git remote add overleaf https://git.overleaf.com/63e2a72f2cf8b91fc96f46a6
+git push overleaf main:master
+```
+
+## TODO
+
+### LQR
+
+- Infinite horizon LQR
+- add math appendix on Taylor expansion
