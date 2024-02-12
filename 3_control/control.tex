@@ -131,9 +131,14 @@ Is there a relevant simplification that we can analyze?
 Let us consider \emph{linear dynamics} and an \emph{upward-curved quadratic cost function} (in both arguments). We will also consider a time-homogenous cost function that targets $(s^\star, a^\star) = (0, 0)$. This model is called the \textbf{linear quadratic regulator} (LQR) and is a fundamental tool in control theory. Solving the LQR problem will additionally enable us to \emph{locally approximate} more complex setups using \emph{Taylor approximations}.
 
 \begin{definition}{The linear quadratic regulator}{lqr}
-    \textbf{Linear, time-homogeneous dynamics}: \[
-        \st_{\hi+1} = f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi
-    \]
+    \textbf{Linear, time-homogeneous dynamics}: for each timestep $h \in [H]$,
+    \begin{align*}
+        \st_{\hi+1} &= f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi \\
+        \text{where } w_\hi &\sim \mathcal{N}(0, \sigma^2 I).
+    \end{align*}
+    Here, $w_\hi$ is a spherical Gaussian \textbf{noise term} that makes the state transitions random.
+    Setting $\sigma = 0$ gives us \textbf{deterministic} state transitions.
+    We will find that the optimal policy actually \emph{does not depend on the noise}, although the optimal value function and Q-function do.
 
     \noindent \textbf{Upward-curved quadratic, time-homogeneous cost function}:
     % TODO Link to that video in the multivariable calculus series
@@ -144,14 +149,11 @@ Let us consider \emph{linear dynamics} and an \emph{upward-curved quadratic cost
         c(\st_\hi, \act_\hi) = \begin{cases}
             \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi & \hi < \hor \\
             \st_\hi^\top Q \st_\hi                            & \hi = \hor
-        \end{cases}
+        \end{cases}.
     \]
     We require $Q$ and $R$ to both be positive definite matrices so that $c$ has a well-defined unique minimum. We can furthermore assume without loss of generality that they are both symmetric (see exercise below).
 
     % Intuitively, the cost function punishes states and actions that are far away from the origin (i.e. both the state and action are zero vectors). More generally, we'll want to replace the origin with a \emph{goal} state and action $(\st^\star, \act^\star)$. This can easily be done by replacing $\st_\hi$ with $(\st_\hi - \st^\star)$ and $\act_\hi$ with $(\act_\hi - \act^\star)$ in the expression above.
-
-
-    \noindent \textbf{Spherical Gaussian noise:} \[ w_\hi \sim \mathcal{N}(0, \sigma^2 I) \quad \forall \hi \in [H] \]
 
     \noindent This results in the LQR optimization problem:
     \begin{align*}
@@ -239,12 +241,12 @@ These will be instrumental in constructing the optimal policy via \textbf{dynami
 
 \section{Optimality and the Riccati Equation} \label{sec:optimal_lqr}
 
-In this section, we'll compute the optimal value function $V^\star_h$, Q-function $Q^\star_h$, and policy $\pi^\star_h$ in the LQR setting using \textbf{dynamic programming} in a very similar way to the DP algorithms in the MDP setting \eqref{sec:dp}:
+In this section, we'll compute the optimal value function $V^\star_h$, Q-function $Q^\star_h$, and policy $\pi^\star_h$ in the LQR setting \eqref{df:lqr} using \textbf{dynamic programming} in a very similar way to the DP algorithms in the MDP setting \eqref{sec:dp}:
 \begin{enumerate}
     \item We'll compute $V_H^\star$ (at the end of the horizon) as our base case.
     \item Then we'll work backwards in time, using $V_{h+1}^\star$ to compute $Q_h^\star$, $\pi_{h}^\star$, and $V_h^\star$.
 \end{enumerate}
-Along the way, we will prove the striking fact that the solution has very simple structure: $V_h^\star$ and $Q^\star_h$ are \emph{upward-curved quadratics} and $\pi_h^\star$ is \emph{linear}.
+Along the way, we will prove the striking fact that the solution has very simple structure: $V_h^\star$ and $Q^\star_h$ are \emph{upward-curved quadratics} and $\pi_h^\star$ is \emph{linear} and furthermore does not depend on the noise!
 
 \begin{definition}[breakable=false]{Optimal value functions for LQR}{optimal_value_lqr}
     The \textbf{optimal value function} is the one that, at any time and in any state,
