@@ -78,7 +78,7 @@ inspired by Sutton and Barto and AJKS .
 |   $\gamma$    | A discount factor.        |
 |    $\tau$     | A trajectory.             |
 | $\mathcal{S}$ | A state space.            |
-|     $\A$      | An action space.          |
+|     $\mathcal{A}$      | An action space.          |
 
 ## Challenges of reinforcement learning
 

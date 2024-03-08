@@ -37,8 +37,7 @@ Let's suppose our policy can be *parameterized* by some parameters
 $\theta.$ For example, these might be a preferences over state-action
 pairs, or in a high-dimensional case, the weights and biases of a deep
 neural network. We'll talk more about possible parameterizations in
-[\[sec:parameterizations\]](#sec:parameterizations){reference-type="autoref"
-reference="sec:parameterizations"}
+{prf:ref}`sec:parameterizations`
 
 Remember that in reinforcement learning, the goal is to *maximize
 reward.* Specifically, we seek the parameters that maximize the expected
@@ -180,7 +179,7 @@ So far, our method is *unbiased,* meaning that its average is the true
 policy gradient. Can we find ways to reduce the variance of our
 estimator as well?
 
-We can instead subtract a **baseline function** $b_t : \S \to \R$ at
+We can instead subtract a **baseline function** $b_t : \mathcal{S} \to \mathbb{R}$ at
 each timestep $t.$ This modifies the policy gradient as follows:
 $$\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
         \sum_{t=0}^{H-1} \nabla \log \pi_\theta (a_t | s_t) \left(
@@ -208,8 +207,7 @@ given state-action pair is always nonpositive.)
 
 We can now express the policy gradient as follows. Note that the
 advantage function effectively replaces the $Q$-function from
-[\[eq:pg_with_q\]](#eq:pg_with_q){reference-type="autoref"
-reference="eq:pg_with_q"}:
+{prf:ref}`eq:pg_with_q`:
 $$\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
         \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_t | s_t) A^{\pi_\theta}_t (s_t, a_t)
         \right].
@@ -284,7 +282,7 @@ vanishes.
 ### Neural policies
 
 More generally, we could map states and actions to unnormalized scores
-via some parameterized function $f_\theta : \S \times \A \to \R,$ such
+via some parameterized function $f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},$ such
 as a neural network, and choose actions according to a softmax:
 $$\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.$$
 
@@ -293,7 +291,7 @@ $$\nabla \log \pi_\theta(a|s) = \nabla f_\theta(s, a) - \E_{a \sim \pi_\theta(s)
 
 ### Continuous action spaces
 
-Consider a continuous $n$-dimensional action space $\A = \R^n$. Then for
+Consider a continuous $n$-dimensional action space $\mathcal{A} = \mathbb{R}^n$. Then for
 a stochastic policy, we could use a function to predict the *mean*
 action and then add some random noise about it. For example, we could
 use a neural network to predict the mean action $\mu_\theta(s)$ and then
@@ -353,7 +351,7 @@ PI?
 
 Let's consider a single iteration of PI. Suppose the new policy
 $\tilde \pi$ chooses some action with a negative advantage w.r.t. $\pi$.
-Define $\Delta_\infty = \min_{s \in \S} A^{\pi}_h(s, \tilde \pi(s))$. If
+Define $\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_h(s, \tilde \pi(s))$. If
 this is negative, then the PDL shows that there may exist some state $s$
 and time $h$ such that
 $$V_h^{\tilde \pi}(s) \ge V_h^{\pi}(s) - H \cdot |\Delta_\infty|.$$ In
@@ -399,7 +397,7 @@ Also note that it is not symmetric.
 
 Additionally, rather than estimating the $Q$-function of the current
 policy, we can use the RHS of the Performance Difference Lemma
-[\[th:pdl\]](#th:pdl) as our
+{prf:ref}`pdl` as our
 optimization target.
 
 :::{prf:definition} Trust region policy optimization (exact)
@@ -526,11 +524,9 @@ $$\begin{aligned}
 ::: algorithmic
 Learning rate $\eta > 0$ Initialize $\theta^0$ Estimate the policy
 gradient $\hat g \approx \nabla_\theta J(\pi_{\theta^k})$ See
-[\[eq:pg_advantage\]](#eq:pg_advantage){reference-type="eqref"
-reference="eq:pg_advantage"} Estimate the Fisher information matrix
+{prf:ref}`eq:pg_advantage` Estimate the Fisher information matrix
 $\hat F \approx F_{\theta^k}$ See
-[\[eq:fisher_trajectory\]](#eq:fisher_trajectory){reference-type="eqref"
-reference="eq:fisher_trajectory"}
+{prf:ref}`eq:fisher_trajectory`
 $\theta^{k+1} \gets \theta^k + \eta \hat F^{-1} \hat g$ Natural gradient
 update
 :::
@@ -595,7 +591,7 @@ $\theta^K$
 :::
 
 Note that like the original TRPO algorithm
-[\[df:trpo\]](#df:trpo){reference-type="ref" reference="df:trpo"}, PPO
+{prf:ref}`trpo`{reference-type="ref" reference="df:trpo"}, PPO
 is not gradient-based; rather, at each step, we try to maximize local
 advantage relative to the current policy.
 :::
@@ -611,10 +607,8 @@ Expanding gives $$\begin{aligned}
 \end{aligned}$$ where $c$ is some constant relative to $\theta$.
 
 As we did for TRPO
-[\[df:trpo_implement\]](#df:trpo_implement){reference-type="eqref"
-reference="df:trpo_implement"}, we can use importance sampling
-[\[df:importance_sampling\]](#df:importance_sampling){reference-type="eqref"
-reference="df:importance_sampling"} to rewrite the inner expectation.
+{prf:ref}`df:trpo_implement`, we can use importance sampling
+{prf:ref}`df:importance_sampling` to rewrite the inner expectation.
 Combining the expectations together, this gives the (exact) objective
 $$\max_{\theta} \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_h \mid s_h)}{\pi^k(a_h \mid s_h)} A^{\pi^k}(s_h, a_h) - \lambda \log \frac{1}{\pi_\theta(a_h \mid s_h)} \right) \right]$$
 

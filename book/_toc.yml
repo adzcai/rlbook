@@ -9,7 +9,7 @@ chapters:
   - file: frontmatter
   - file: 1_bandits/bandits
   - file: 2_mdps/mdps
-# - file: control
+  - file: 3_control/control
 # - file: policy_gradient
 # - file: challenges
 # - file: appendix

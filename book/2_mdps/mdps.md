@@ -51,9 +51,9 @@ An interactive environment satisfies the **Markov property** if the
 probability of transitioning to a new state only depends on the current
 state and action:
 
-$$\P(s_{h+1} \mid s_0, a_0, \dots, s_h, a_h) = P(s_{h+1} \mid s_h, a_h)$$
+$$\P(s_{\hi+1} \mid s_0, a_0, \dots, s_\hi, a_\hi) = P(s_{\hi+1} \mid s_\hi, a_\hi)$$
 
-where $P : \S \times \A \to \Delta(\S)$ describes the state transitions.
+where $P : \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$ describes the state transitions.
 (We’ll elaborate on this notation later in the chapter.)
 :::
 
@@ -86,34 +86,36 @@ interactions in terms of individual timesteps.
 
 The components of a finite-horizon Markov decision process are:
 
-1.  The **state** that the agent interacts with. We use $\S$ to denote
+1.  The **state** that the agent interacts with. We use $\mathcal{S}$ to denote
     the set of possible states, called the **state space**.
 
-2.  The **actions** that the agent can take. We use $\A$ to denote the
+2.  The **actions** that the agent can take. We use $\mathcal{A}$ to denote the
     set of possible actions, called the **action space**.
 
-3.  Some **initial state distribution** $\mu \in \Delta(\S)$.
+3.  Some **initial state distribution** $\mu \in \Delta(\mathcal{S})$.
 
 4.  The **state transitions** (a.k.a. **dynamics**)
-    $P : \S \times \A \to \Delta(\S)$ that describe what state the agent
+    $P : \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$ that describe what state the agent
     transitions to after taking an action.
 
 5.  The **reward** signal. In this course we'll take it to be a
     deterministic function on state-action pairs,
-    $r : \S \times \A \to \mathbb{R}$, but in general many results will
+    $r : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$, but in general many results will
     extend to a *stochastic* reward signal.
 
 6.  A time horizon $H \in \mathbb{N}$ that specifies the number of
     interactions in an **episode**.
 
 Combined together, these objects specify a finite-horizon Markov
-decision process: $$M = (\S, \A, \mu, P, r, H).$$
+decision process:
+
+$$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, H).$$
 :::
 
 ```{code-cell} ipython3
 class FiniteMDP(NamedTuple):
-    S: int
-    A: int
+    S: int  # number of states
+    A: int  # number of actions
     μ: Float[np.ndarray, "S"]
     P: Float[np.ndarray, "S A S"]
     r: Float[np.ndarray, "S A"]
@@ -128,7 +130,7 @@ chapter: the task of keeping your room tidy!
 
 Your room has the possible states
 $\mathcal{S} = \{ \text{orderly}, \text{messy} \}$. You can take either
-of the actions $\A = \{ \text{tidy}, \text{ignore} \}$. The room starts
+of the actions $\mathcal{A} = \{ \text{tidy}, \text{ignore} \}$. The room starts
 off orderly.
 
 The state transitions are as follows: if you tidy the room, it becomes
@@ -178,7 +180,7 @@ inputs, and time-dependence. We'll discuss each of these in turn.
 3.  **Stationary or time-dependent.** A stationary policy remains the
     same function at all time steps, while a time-dependent policy
     $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$ specifies a different function
-    $\pi_h$ at each time step $h$.
+    $\pi_\hi$ at each time step $\hi$.
 :::
 
 A fascinating result is that every finite-horizon MDP has an optimal
@@ -194,11 +196,11 @@ Here are some possible policies for the tidying MDP {prf:ref}`tidy_mdp`:
 
 -   Always tidy: $\pi(s) = \text{tidy}$.
 
--   Only tidy on weekends: $\pi_h(s) = \text{tidy}$ if
-    $h \in \{ 5, 6 \}$ and $\pi_h(s) = \text{ignore}$ otherwise.
+-   Only tidy on weekends: $\pi_\hi(s) = \text{tidy}$ if
+    $\hi \in \{ 5, 6 \}$ and $\pi_\hi(s) = \text{ignore}$ otherwise.
 
--   Only tidy if the room is messy: $\pi_h(\text{messy}) = \text{tidy}$
-    and $\pi_h(\text{orderly}) = \text{ignore}$ for all $h$.
+-   Only tidy if the room is messy: $\pi_\hi(\text{messy}) = \text{tidy}$
+    and $\pi_\hi(\text{orderly}) = \text{ignore}$ for all $\hi$.
 :::
 
 ### Trajectories
@@ -211,9 +213,18 @@ A sequence of states, actions, and rewards is called a **trajectory**:
 $$\tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})$$
 
 where
-$r_h = r(s_h, a_h)$. (Note that sources differ as to whether to include
+$r_\hi = r(s_\hi, a_\hi)$. (Note that sources differ as to whether to include
 the reward at the final time step. This is a minor detail.)
 :::
+
+```{code-cell} ipython3
+class Transition(NamedTuple):
+    s: int
+    a: int
+    r: float
+
+type Trajectory = list[Transition]
+```
 
 Once we've chosen a policy, we can sample trajectories by repeatedly
 choosing actions according to the policy, transitioning according to the
@@ -244,12 +255,25 @@ an **autoregressive** way (i.e. one timestep at a time):
 $$\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})$$
 :::
 
+```{code-cell} ipython3
+def trajectory_log_likelihood(trajectory: Trajectory, mdp: FiniteMDP):
+    """
+    Compute the likelihood of a trajectory under a given MDP and policy.
+    """
+    total = np.log(mdp.μ[trajectory[0].s])
+    total += np.log(mdp.π[trajectory[0].s, trajectory[0].a])
+    for i in range(1, mdp.H):
+        total += np.log(mdp.P[trajectory[i-1].s, trajectory[i-1].a, trajectory[i].s])
+        total += np.log(mdp.π[trajectory[i].s, trajectory[i].a])
+    return total
+```
+
 :::{tip}
 How would you modify this to include stochastic rewards?
 :::
 
 For a deterministic policy $\pi$, we have that
-$\pi_h(a \mid s) = \mathbb{I}[a = \pi_h(s)]$; that is, the probability
+$\pi_\hi(a \mid s) = \mathbb{I}[a = \pi_\hi(s)]$; that is, the probability
 of taking an action is $1$ if it's the unique action prescribed by the
 policy for that state and $0$ otherwise. In this case, the only
 randomness in sampling trajectories comes from the initial state
@@ -262,35 +286,33 @@ reward $r_0 + \cdots + r_{H-1}$. (Note that this is a random variable
 that depends on the policy.) Let's introduce some notation for analyzing
 this quantity.
 
-A policy's **value function** is its expected total reward *starting in
-a given state at a given time*:
+A policy's **value function** at time $h$ is its expected remaining reward *from a given state*:
 
 :::{prf:definition} Value function
 :label: value
 
-$$V_h^\pi(s) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s]$$
+$$V_\hi^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s]$$
 :::
 
 Similarly, we can define the **action-value function** (aka the
-**Q-function**) as the expected total reward when starting in a given
-state and taking a given action:
+**Q-function**) at time $h$ as the expected remaining reward *from a given state and taking a given action*:
 
 :::{prf:definition} Action-value function
 :label: action_value
 
-$$Q_h^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s, a_h = a]$$
+$$Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a]$$
 :::
 
 Note that the value function is just the average action-value over
 actions drawn from the policy:
 
-$$V_h^\pi(s) = \E_{a \sim \pi_h(s)} [Q_h^\pi(s, a)]$$
+$$V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)]$$
 
 and the
 action-value can be expressed in terms of the value of the following
 state:
 
-$$Q_h^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{h+1}^\pi(s')]$$
+$$Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]$$
 
 ### The one-step (Bellman) consistency equation
 
@@ -303,12 +325,12 @@ who is credited with introducing dynamic programming in 1953.
 :::{prf:theorem} Bellman consistency equation for the value function
 :label: bellman_consistency
 
-$$V_h^\pi(s) = \E_{\substack{a \sim \pi_h(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{h+1}^\pi(s')]$$
+$$V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]$$
 :::
 
 :::{attention}
-Verify that this equation holds by expanding $V_h^\pi(s)$
-and $V_{h+1}^\pi(s')$.
+Verify that this equation holds by expanding $V_\hi^\pi(s)$
+and $V_{\hi+1}^\pi(s')$.
 :::
 
 One can analogously derive the Bellman consistency equation for the
@@ -317,7 +339,7 @@ action-value function:
 :::{prf:theorem} Bellman consistency equation for action-values
 :label: bellman_consistency_action
 
-$$Q_h^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{h+1}(s')}} [Q_{h+1}^\pi(s', a')]$$
+$$Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}(s')}} [Q_{\hi+1}^\pi(s', a')]$$
 :::
 
 :::{prf:remark} The Bellman consistency equation for deterministic policies
@@ -328,8 +350,8 @@ simplifies to
 
 $$
 \begin{aligned}
-        V_h^\pi(s) &= r(s, \pi_h(s)) + \E_{s' \sim P(s, \pi_h(s))} [V_{h+1}^\pi(s')] \\
-        Q_h^\pi(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [Q_{h+1}^\pi(s', \pi_{h+1}(s'))]
+        V_\hi^\pi(s) &= r(s, \pi_\hi(s)) + \E_{s' \sim P(s, \pi_\hi(s))} [V_{\hi+1}^\pi(s')] \\
+        Q_\hi^\pi(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [Q_{\hi+1}^\pi(s', \pi_{\hi+1}(s'))]
 \end{aligned}
 $$
 :::
@@ -338,13 +360,13 @@ $$
 ### The Bellman operator
 
 Fix a policy $\pi$. Consider the higher-order operator that takes in a
-"value function" $v : \S \to \R$ and returns the r.h.s. of the Bellman
+"value function" $v : \mathcal{S} \to \mathbb{R}$ and returns the r.h.s. of the Bellman
 equation for that "value function":
 
 :::{prf:definition} Bellman operator
 :label: bellman_operator
 
-$$[\bop^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].$$
+$$[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].$$
 :::
 
 ```{code-cell} ipython3
@@ -371,14 +393,14 @@ def bellman_operator(
     return np.sum(policy[:, :] * (mdp.r[:, :] + mdp.P[:, :, :] @ v[:]), axis=1)
 ```
 
-We'll call $\bop^\pi : (\S \to \R) \to (\S \to \R)$ the **Bellman
+We'll call $\mathcal{J}^\pi : (\mathcal{S} \to \mathbb{R}) \to (\mathcal{S} \to \mathbb{R})$ the **Bellman
 operator** of $\pi$. Note that it's defined on any "value function"
 mapping states to real numbers; $v$ doesn't have to be a well-defined
 value function for some policy (hence the lowercase notation). The
 Bellman operator also gives us a concise way to express the Bellman
 consistency equation {prf:ref}`bellman_consistency` for the value function:
 
-$$V_h^\pi = \bop^{\pi}(V_{h+1}^\pi)$$
+$$V_\hi^\pi = \mathcal{J}^{\pi}(V_{\hi+1}^\pi)$$
 
 Intuitively, the output of the Bellman operator, a new "value function",
 evaluates states as follows: from a given state, take one action
@@ -401,7 +423,7 @@ The Bellman consistency equation
 {prf:ref}`bellman_consistency`
 gives us a convenient algorithm for
 evaluating stationary policies: it expresses the value function at
-timestep $h$ as a function of the value function at timestep $h+1$. This
+timestep $\hi$ as a function of the value function at timestep $\hi+1$. This
 means we can start at the end of the time horizon, where the value is
 known, and work backwards in time, using the Bellman consistency
 equation to compute the value function at each time step.
@@ -413,11 +435,11 @@ def dp_eval_finite(mdp: FiniteMDP):
         V[h, :] = bellman_operator(V[h + 1, :], policy, mdp)
 ```
 
-This runs in time $O(H \cdot |\S|^2 \cdot |\A|)$ by counting the
+This runs in time $O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)$ by counting the
 loops.
 
 :::{attention}
-Do you see where we compute $Q^\pi_h$ along the way? Make
+Do you see where we compute $Q^\pi_\hi$ along the way? Make
 this step explicit.
 :::
 
@@ -471,20 +493,20 @@ history-dependent ones) in all situations:
 
 $$
 \begin{aligned}
-    V_h^{\pi^\star}(s) &= \E_{\tau \sim \rho^{\pi^{\star}}}[r_h + \cdots + r_{H-1} \mid s_h = s] \\
-    &\ge \E_{\tau \sim \rho^{\pi}}[r_h + \cdots + r_{H-1} \mid \tau_h] \quad \forall \pi, \tau_h, h \in [H]
+    V_\hi^{\pi^\star}(s) &= \E_{\tau \sim \rho^{\pi^{\star}}}[r_\hi + \cdots + r_{H-1} \mid s_\hi = s] \\
+    &\ge \E_{\tau \sim \rho^{\pi}}[r_\hi + \cdots + r_{H-1} \mid \tau_\hi] \quad \forall \pi, \tau_\hi, \hi \in [H]
 \end{aligned}
 $$
 
 where we condition on the
-trajectory up to time $h$, denoted
-$\tau_h = (s_0, a_0, r_0, \dots, s_h)$, where $s_h = s$.
+trajectory up to time $\hi$, denoted
+$\tau_\hi = (s_0, a_0, r_0, \dots, s_\hi)$, where $s_\hi = s$.
 :::
 
 Convince yourself that all optimal policies must have the same value
 function. We call this the **optimal value function** and denote it by
-$V_h^\star(s)$. The same goes for the action-value function
-$Q_h^\star(s, a)$.
+$V_\hi^\star(s)$. The same goes for the action-value function
+$Q_\hi^\star(s, a)$.
 
 It is a stunning fact that **every finite-horizon MDP has an optimal
 policy that is time-dependent and deterministic.** In particular, we can
@@ -495,39 +517,39 @@ action-value function:
 :::{prf:theorem} It is optimal to be greedy w.r.t. the optimal value function
 :label: optimal_greedy
 
-$$\pi_h^\star(s) = \arg\max_a Q_h^\star(s, a).$$
+$$\pi_\hi^\star(s) = \arg\max_a Q_\hi^\star(s, a).$$
 :::
 
 ::::{prf:proof} Proof of {prf:ref}`optimal_greedy`
 Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and
 action-value functions. Consider the greedy policy
-$$\hat \pi_h(s) := \arg\max_a Q_h^{\star}(s, a).$$ We aim to show that
+$$\hat \pi_\hi(s) := \arg\max_a Q_\hi^{\star}(s, a).$$ We aim to show that
 $\hat \pi$ is optimal; that is, $V^{\hat \pi} = V^{\star}$.
 
-Fix an arbitrary state $s \in \S$ and time $h \in [H]$.
+Fix an arbitrary state $s \in \mathcal{S}$ and time $\hi \in [H]$.
 
 Firstly, by the definition of $V^{\star}$, we already know
-$V_h^{\star}(s) \ge V_h^{\hat \pi}(s)$. So for equality to hold we just
-need to show that $V_h^{\star}(s) \le V_h^{\hat \pi}(s)$. We'll first
-show that the Bellman operator $\bop^{\hat \pi}$ never decreases
-$V_h^{\star}$. Then we'll apply this result recursively to show that
+$V_\hi^{\star}(s) \ge V_\hi^{\hat \pi}(s)$. So for equality to hold we just
+need to show that $V_\hi^{\star}(s) \le V_\hi^{\hat \pi}(s)$. We'll first
+show that the Bellman operator $\mathcal{J}^{\hat \pi}$ never decreases
+$V_\hi^{\star}$. Then we'll apply this result recursively to show that
 $V^{\star} = V^{\hat \pi}$.
 
 :::{prf:lemma} The Bellman operator never decreases the optimal value function
-$\bop^{\hat \pi}$ never decreases $V_h^{\star}$
+$\mathcal{J}^{\hat \pi}$ never decreases $V_\hi^{\star}$
 (elementwise):
 
-$$[\bop^{\hat \pi} (V_{h+1}^{\star})](s) \ge V_h^{\star}(s).$$
+$$[\mathcal{J}^{\hat \pi} (V_{\hi+1}^{\star})](s) \ge V_\hi^{\star}(s).$$
 
 **Proof:**
 
 $$
 \begin{aligned}
-    V_h^{\star}(s) &= \max_{\pi \in \Pi} V_h^{\pi}(s) \\
-    &= \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^\pi(s') \right] && \text{Bellman consistency} \\
-    &\le \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^{\star}(s') \right] && \text{definition of } V^\star \\
-    &= \max_{a} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^{\star}(s') \right] && \text{only depends on } \pi \text{ via } a \\
-    &= [\bop^{\hat \pi}(V_{h+1}^{\star})](s).    
+    V_\hi^{\star}(s) &= \max_{\pi \in \Pi} V_\hi^{\pi}(s) \\
+    &= \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{\hi+1}^\pi(s') \right] && \text{Bellman consistency} \\
+    &\le \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{\hi+1}^{\star}(s') \right] && \text{definition of } V^\star \\
+    &= \max_{a} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{\hi+1}^{\star}(s') \right] && \text{only depends on } \pi \text{ via } a \\
+    &= [\mathcal{J}^{\hat \pi}(V_{\hi+1}^{\star})](s).    
 \end{aligned}
 $$
 
@@ -546,12 +568,12 @@ notation to make it explicit that we're sampling a trajectory from it.)
 
 $$
 \begin{aligned}
-    V_{t}^{\star}(s) &\le [\bop^{\hat \pi}(V_{h+1}^{\star})](s) \\
-    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue} V_{h+1}^{\star}(s')} \right] \right] && \text{definition of } \bop^{\hat \pi} \\
-    &\le \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue}[ \bop^{\hat \pi} (V_{t+2}^{\star})] (s')} \right] \right] && \text{above lemma} \\
-    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)}{\color{blue} \left[ \mathop{\mathbb{E}}_{a' \sim \hat \pi}  r(s', a') + \mathop{\mathbb{E}}_{s''} V_{t+2}^{\star}(s'') \right]} \right] && \text{definition of } \bop^{\hat \pi} \\
+    V_{t}^{\star}(s) &\le [\mathcal{J}^{\hat \pi}(V_{\hi+1}^{\star})](s) \\
+    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue} V_{\hi+1}^{\star}(s')} \right] \right] && \text{definition of } \mathcal{J}^{\hat \pi} \\
+    &\le \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} \left[ {\color{blue}[ \mathcal{J}^{\hat \pi} (V_{t+2}^{\star})] (s')} \right] \right] && \text{above lemma} \\
+    &= \mathop{\mathbb{E}}_{a \sim \hat \pi(s)} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)}{\color{blue} \left[ \mathop{\mathbb{E}}_{a' \sim \hat \pi}  r(s', a') + \mathop{\mathbb{E}}_{s''} V_{t+2}^{\star}(s'') \right]} \right] && \text{definition of } \mathcal{J}^{\hat \pi} \\
     &\le \cdots && \text{apply at all timesteps} \\
-    &= \mathop{\mathbb{E}}_{\tau \sim \rho^{\hat \pi}} [G_{t} \mid s_h = s] && \text{rewrite expectation} \\
+    &= \mathop{\mathbb{E}}_{\tau \sim \rho^{\hat \pi}} [G_{t} \mid s_\hi = s] && \text{rewrite expectation} \\
     &= V_{t}^{\hat \pi}(s) && \text{definition}
 \end{aligned}
 $$
@@ -596,7 +618,7 @@ We can solve for the optimal policy in an finite-horizon MDP using
     
     $$
     \begin{aligned}
-                Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{h+1}(s')] \\
+                Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{\hi+1}(s')] \\
                 \pi^\star_{t}(s) &= \arg\max_a Q^\star_{t}(s, a) \\
                 V^\star_{t}(s) &= \max_a Q^\star_{t}(s, a)
             
@@ -625,9 +647,9 @@ def find_optimal_policy(mdp: FiniteMDP):
 ```
 
 At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of
-the $|\S| |\A|$ state-action pairs. Each computation takes $|\S|$
+the $|\mathcal{S}| |\mathcal{A}|$ state-action pairs. Each computation takes $|\mathcal{S}|$
 operations to evaluate the average value over $s'$. This gives a total
-computation time of $O(H |\S|^2 |\A|)$.
+computation time of $O(H |\mathcal{S}|^2 |\mathcal{A}|)$.
 
 Note that this algorithm is identical to the policy evaluation algorithm
 [`dp_eval_finite`](eval_dp), but instead of *averaging* over the
@@ -659,12 +681,12 @@ operator, for computing the optimal policy: **value iteration** and
 ### Discounted rewards
 
 First of all, note that maximizing the cumulative reward
-$r_h + r_{h+1} + r_{h+2} + \cdots$ is no longer a good idea since it
+$r_\hi + r_{\hi+1} + r_{\hi+2} + \cdots$ is no longer a good idea since it
 might blow up to infinity. Instead of a time horizon $H$, we now need a
 **discount factor** $\gamma \in [0, 1)$ such that rewards become less
 valuable the further into the future they are:
 
-$$r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{h+k}.$$
+$$r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{\hi+k}.$$
 
 We can think of $\gamma$ as measuring how much we care about the future:
 if it's close to $0$, we only care about the near-term rewards; it's
@@ -679,14 +701,14 @@ $\gamma$ is close to $1$, the trajectory will likely continue for a long
 time.
 
 :::{attention}
-Assuming that $r_h \in [0, 1]$ for all $h \in \mathbb{N}$,
+Assuming that $r_\hi \in [0, 1]$ for all $\hi \in \mathbb{N}$,
 what is the maximum **discounted** cumulative reward? You may find it
 useful to review geometric series.
 :::
 
 The other components of the MDP remain the same:
 
-$$M = (\S, \A, \mu, P, r, \gamma).$$
+$$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).$$
 
 ```{code-cell}
 class DiscountedMDP(NamedTuple):
@@ -703,7 +725,7 @@ The time-dependent policies from the finite-horizon case become
 difficult to handle in the infinite-horizon case. In particular, many of
 the DP approaches we saw required us to start at the end of the
 trajectory, which is no longer possible. We'll shift to **stationary**
-policies $\pi : \S \to \A$ (deterministic) or $\Delta(\A)$ (stochastic).
+policies $\pi : \mathcal{S} \to \mathcal{A}$ (deterministic) or $\Delta(\mathcal{A})$ (stochastic).
 
 :::{attention}
 Which of the policies in {prf:ref}`tidy_policy` are stationary?
@@ -711,8 +733,8 @@ Which of the policies in {prf:ref}`tidy_policy` are stationary?
 
 ### Value functions and Bellman consistency
 
-We also consider stationary value functions $V^\pi : \S \to \R$ and
-$Q^\pi : \S \times \A \to \R$. We need to insert a factor of $\gamma$
+We also consider stationary value functions $V^\pi : \mathcal{S} \to \mathbb{R}$ and
+$Q^\pi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$. We need to insert a factor of $\gamma$
 into the Bellman consistency equation {prf:ref}`bellman_consistency` to account for the discounting:
 
 :::{math}
@@ -720,9 +742,9 @@ into the Bellman consistency equation {prf:ref}`bellman_consistency` to account 
 
 $$
 \begin{aligned}
-    V^\pi(s) &= \E_{\tau \sim \rho^\pi} [r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} \cdots \mid s_h = s] && \text{for any } h \in \mathbb{N} \\
+    V^\pi(s) &= \E_{\tau \sim \rho^\pi} [r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} \cdots \mid s_\hi = s] && \text{for any } \hi \in \mathbb{N} \\
     &= \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma V^\pi(s')]\\
-    Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} + \cdots \mid s_h = s, a_h = a] && \text{for any } h \in \mathbb{N} \\
+    Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid s_\hi = s, a_\hi = a] && \text{for any } \hi \in \mathbb{N} \\
     &= r(s, a) + \gamma \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi(s')}} [Q^\pi(s', a')]
 \end{aligned}
 $$
@@ -737,16 +759,16 @@ time step we condition on when defining the value function?
 
 ### The Bellman operator is a contraction mapping
 
-Recall from [](bellman_operator) that the Bellman operator $\bop^{\pi}$
-for a policy $\pi$ takes in a "value function" $v : \S \to \R$ and
+Recall from [](bellman_operator) that the Bellman operator $\mathcal{J}^{\pi}$
+for a policy $\pi$ takes in a "value function" $v : \mathcal{S} \to \mathbb{R}$ and
 returns the r.h.s. of the Bellman equation for that "value function". In
 the infinite-horizon setting, this is
 
-$$[\bop^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma v(s')].$$
+$$[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma v(s')].$$
 
 The crucial property of the Bellman operator is that it is a
 **contraction mapping** for any policy. Intuitively, if we start with
-two "value functions" $v, u : \S \to \R$, if we repeatedly apply the
+two "value functions" $v, u : \mathcal{S} \to \mathbb{R}$, if we repeatedly apply the
 Bellman operator to each of them, they will get closer and closer
 together at an exponential rate.
 
@@ -785,17 +807,17 @@ to any starting point, we will eventually converge to $x^\star$:
 
 Let's return to the RL setting and apply this result to the Bellman
 operator. How can we measure the distance between two "value functions"
-$v, u : \S \to \R$? We'll take the **supremum norm** as our distance
-metric: $$\| v - u \|_{\infty} := \sup_{s \in \S} |v(s) - u(s)|,$$ i.e.
+$v, u : \mathcal{S} \to \mathbb{R}$? We'll take the **supremum norm** as our distance
+metric: $$\| v - u \|_{\infty} := \sup_{s \in \mathcal{S}} |v(s) - u(s)|,$$ i.e.
 we compare the "value functions" on the state that causes the biggest
 gap between them. Then {prf:ref}`contraction_convergence` implies that if we repeatedly
-apply $\bop^\pi$ to any starting "value function", we will eventually
+apply $\mathcal{J}^\pi$ to any starting "value function", we will eventually
 converge to $V^\pi$:
 
 :::{math}
 :label: bellman_convergence
 
-\|(\bop^\pi)^{(t)}(v) - V^\pi \|_{\infty} \le \gamma^{t} \| v - V^\pi\|_{\infty}.
+\|(\mathcal{J}^\pi)^{(t)}(v) - V^\pi \|_{\infty} \le \gamma^{t} \| v - V^\pi\|_{\infty}.
 :::
 
 We'll use this useful fact to prove the convergence of several
@@ -805,16 +827,16 @@ algorithms later on.
 :label: bellman_contraction
 
 $$
-\|\bop^{\pi} (v) - \bop^{\pi} (u) \|_{\infty} \le \gamma \|v - u \|_{\infty}.
+\|\mathcal{J}^{\pi} (v) - \mathcal{J}^{\pi} (u) \|_{\infty} \le \gamma \|v - u \|_{\infty}.
 $$
 :::
 
 :::{prf:proof} Proof of {prf:ref}`bellman_contraction`
-For all states $s \in \S$,
+For all states $s \in \mathcal{S}$,
 
 $$
 \begin{aligned}
-|[\bop^{\pi} (v)](s) - [\bop^{\pi} (u)](s)|&= \Big| \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[ r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} v(s') \right] \\
+|[\mathcal{J}^{\pi} (v)](s) - [\mathcal{J}^{\pi} (u)](s)|&= \Big| \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[ r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} v(s') \right] \\
 &\qquad - \mathop{\mathbb{E}}_{a \sim \pi(s)} \left[r(s, a) + \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)} u(s') \right] \Big| \\
 &= \gamma \left|\mathop{\mathbb{E}}_{s' \sim P(s, a)} [v(s') - u(s')] \right| \\
 &\le \gamma \mathop{\mathbb{E}}_{s' \sim P(s, a)}|v(s') - u(s')| \qquad \text{(Jensen's inequality)} \\
@@ -827,18 +849,18 @@ $$
 ### Tabular case (linear algebraic notation)
 
 When there are **finitely** many states and actions, i.e.
-$|\S|, |\A| < \infty$, we call the MDP **tabular** since we can express
+$|\mathcal{S}|, |\mathcal{A}| < \infty$, we call the MDP **tabular** since we can express
 the relevant quantities as vectors and matrices (i.e. *tables* of
 values):
 
 $$
 \begin{aligned}
-    r &\in \R^{|\S| \times |\A|} &
-    P &\in [0, 1]^{(|\S \times \A|) \times |\S|} &
-    \mu &\in [0, 1]^{|\S|} \\
-    \pi &\in [0, 1]^{|\A| \times |\S|} &
-    V^\pi &\in \R^{|\S|} &
-    Q^\pi &\in \R^{|\S| \times |\A|}.
+    r &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|} &
+    P &\in [0, 1]^{(|\mathcal{S} \times \mathcal{A}|) \times |\mathcal{S}|} &
+    \mu &\in [0, 1]^{|\mathcal{S}|} \\
+    \pi &\in [0, 1]^{|\mathcal{A}| \times |\mathcal{S}|} &
+    V^\pi &\in \mathbb{R}^{|\mathcal{S}|} &
+    Q^\pi &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}.
 \end{aligned}
 $$
 
@@ -852,8 +874,8 @@ for the rewards and state transitions:
 
 $$
 \begin{aligned}
-    r^{\pi} &\in \R^{|\S|} & P^{\pi} &\in [0, 1]^{|\S| \times |\S|} & \mu &\in [0, 1]^{|\S|} \\
-    \pi &\in \A^{|\S|} & V^\pi &\in \R^{|\S|} & Q^\pi &\in \R^{|\S| \times |\A|}.
+    r^{\pi} &\in \mathbb{R}^{|\mathcal{S}|} & P^{\pi} &\in [0, 1]^{|\mathcal{S}| \times |\mathcal{S}|} & \mu &\in [0, 1]^{|\mathcal{S}|} \\
+    \pi &\in \mathcal{A}^{|\mathcal{S}|} & V^\pi &\in \mathbb{R}^{|\mathcal{S}|} & Q^\pi &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}.
 \end{aligned}
 $$
 
@@ -864,7 +886,7 @@ transitioning from state $s$ to state $s'$ under policy $\pi$.
 :::{prf:example} Tidying MDP
 :label: tidy_tabular
 
-The tabular MDP from before has $|\S| = 2$ and $|\A| = 2$. Let's write
+The tabular MDP from before has $|\mathcal{S}| = 2$ and $|\mathcal{A}| = 2$. Let's write
 down the quantities for the policy $\pi$ that tidies if and only if the
 room is messy: $$r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad
         P^{\pi} = \begin{bmatrix} 0.7 & 0.3 \\ 1 & 0 \end{bmatrix}, \quad
@@ -934,7 +956,7 @@ lower than this.
 (iterative_pe)=
 #### Iterative policy evaluation
 
-The matrix inversion above takes roughly $O(|\S|^3)$ time. Can we trade
+The matrix inversion above takes roughly $O(|\mathcal{S}|^3)$ time. Can we trade
 off the requirement of finding the *exact* value function for a faster
 *approximate* algorithm?
 
@@ -943,10 +965,10 @@ computing the value function. We'll start with an initial guess
 $v^{(0)}$ with elements in $[0, 1/(1-\gamma)]$ and then iterate the
 Bellman operator:
 
-$$v^{(t+1)} = \bop^{\pi}(v^{(t)}) = r^{\pi} + \gamma P^{\pi} v^{(t)},$$
+$$v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}) = r^{\pi} + \gamma P^{\pi} v^{(t)},$$
 
-i.e. $v^{(t)} = (\bop^{\pi})^{(t)} (v^{(0)})$. Note that each iteration
-takes $O(|\S|^2)$ time for the matrix-vector multiplication.
+i.e. $v^{(t)} = (\mathcal{J}^{\pi})^{(t)} (v^{(0)})$. Note that each iteration
+takes $O(|\mathcal{S}|^2)$ time for the matrix-vector multiplication.
 
 Then, as we showed in {eq}`bellman_convergence`, by the Banach fixed-point theorem:
 
@@ -981,19 +1003,17 @@ $\log (1/x) \ge 1-x$.
 Now let's move on to solving for an optimal policy in the
 infinite-horizon case. As in the finite-horizon case {prf:ref}`optimal_policy_finite`, an **optimal policy** $\pi^\star$
 is one that does at least as well as any other policy in all situations.
-That is, for all policies $\pi$, states $s \in \S$, times
-$h \in \mathbb{N}$, and initial trajectories
-$\tau_h = (s_0, a_0, r_0, \dots, s_h)$ where $s_h = s$,
+That is, for all policies $\pi$, states $s \in \mathcal{S}$, times
+$\hi \in \mathbb{N}$, and initial trajectories
+$\tau_\hi = (s_0, a_0, r_0, \dots, s_\hi)$ where $s_\hi = s$,
 
 :::{math}
 :label: optimal_policy_infinite
 
-$$
 \begin{aligned}
-    V^{\pi^\star}(s) &= \E_{\tau \sim \rho^{\pi^{\star}}}[r_h + \gamma r_{h+1} + \gamma^2 r_{h+2}  + \cdots \mid s_h = s] \\
-    &\ge \E_{\tau \sim \rho^{\pi}}[r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} + \cdots \mid \tau_h]
+    V^{\pi^\star}(s) &= \E_{\tau \sim \rho^{\pi^{\star}}}[r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2}  + \cdots \mid s_\hi = s] \\
+    &\ge \E_{\tau \sim \rho^{\pi}}[r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid \tau_\hi]
 \end{aligned}
-$$
 :::
 
 
@@ -1021,7 +1041,7 @@ Bellman consistency equation.
 As before, thinking of the r.h.s. as an operator on value functions
 gives the **Bellman optimality operator**
 
-$$[\bop^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right].$$
+$$[\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right].$$
 
 #### Value iteration
 
@@ -1151,7 +1171,7 @@ function.
 :label: pi_iter
 
 ::: algorithmic
-$\pi^{(0)} : \S \to \A$ arbitrary
+$\pi^{(0)} : \mathcal{S} \to \mathcal{A}$ arbitrary
 $V^{\pi^{(t)}} \gets (I - \gamma P^{\pi^{(t)}})^{-1} r^{\pi^{(t)}}$
 (Exact) Policy Evaluation
 {eq}`matrix_inversion_pe`
@@ -1186,7 +1206,7 @@ showing that the policies improve monotonically:
 $$V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s).$$
 
 Then we'll use this to show
-$V^{\pi^{t+1}}(s) \ge [\bop^{\star}(V^{\pi^{t}})](s)$. Note that
+$V^{\pi^{t+1}}(s) \ge [\mathcal{J}^{\star}(V^{\pi^{t}})](s)$. Note that
 
 $$
 \begin{aligned}
@@ -1196,14 +1216,14 @@ $$
 $$
 
 Since
-$[\bop^{\star}(V^{\pi^{t}})](s) \ge V^{\pi^{t}}(s)$, we then have
+$[\mathcal{J}^{\star}(V^{\pi^{t}})](s) \ge V^{\pi^{t}}(s)$, we then have
 
 :::{math}
 :label: pi_iter_proof
 
 $$
 \begin{aligned}
-    V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &\ge V^{\pi^{t+1}}(s) - \bop^{\star} (V^{\pi^{t}})(s) \\
+    V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &\ge V^{\pi^{t+1}}(s) - \mathcal{J}^{\star} (V^{\pi^{t}})(s) \\
     &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right].
 \end{aligned}
 $$
@@ -1230,23 +1250,23 @@ to get the desired result:
 
 $$
 \begin{aligned}
-    V^{\pi^{t+1}}(s) - \bop^{\star} (V^{\pi^{t}})(s) &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right] \\
+    V^{\pi^{t+1}}(s) - \mathcal{J}^{\star} (V^{\pi^{t}})(s) &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right] \\
     &\ge 0 \\
-    V^{\pi^{t+1}}(s) &\ge [\bop^{\star}(V^{\pi^{t}})](s)
+    V^{\pi^{t+1}}(s) &\ge [\mathcal{J}^{\star}(V^{\pi^{t}})](s)
 \end{aligned}
 $$
 
 This means we can now apply the Bellman convergence result {eq}`bellman_convergence` to get
 
-$$\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\bop^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.$$
+$$\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\mathcal{J}^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.$$
 ::::
 
 ## Summary
 
 -   Markov decision processes (MDPs) are a framework for sequential
     decision making under uncertainty. They consist of a state space
-    $\S$, an action space $\A$, an initial state distribution
-    $\mu \in \Delta(\S)$, a transition function $P(s' \mid s, a)$, and a
+    $\mathcal{S}$, an action space $\mathcal{A}$, an initial state distribution
+    $\mu \in \Delta(\mathcal{S})$, a transition function $P(s' \mid s, a)$, and a
     reward function $r(s, a)$. They can be finite-horizon (ends after
     $H$ timesteps) or infinite-horizon (where rewards scale by
     $\gamma \in (0, 1)$ at each timestep).
@@ -1264,7 +1284,7 @@ $$\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\bop^{\star} (V^{\pi^{t}}) - V^{\s
     **state-action value function** $Q^\pi(s, a)$, which is the expected
     total reward starting from state $s$, taking action $a$, and then
     following policy $\pi$. In the finite-horizon setting, these also
-    depend on the timestep $h$.
+    depend on the timestep $\hi$.
 
 -   The **Bellman consistency equation** is an equation that the value
     function must satisfy. It can be used to solve for the value

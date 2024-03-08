@@ -35,6 +35,12 @@ sphinx:
         macros:
           "E"                 : "\\mathop{\\mathbb{E}}"
           "P"                 : "\\mathop{\\mathbb{P}}"
+
+          # for flexibility with different conventions
+          "hi"                : "h"
+          "hor"               : "H"
+          "st"                : "s"
+          "act"               : "a"
   extra_extensions:
     - sphinx_proof
 
