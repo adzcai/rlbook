@@ -186,8 +186,8 @@ MAB algorithms.
 
 ## Pure exploration (random guessing)
 
-A trivial strategy is to always choose arms at random (i.e. “pure
-exploration”).
+A trivial strategy is to always choose arms at random (i.e. "pure
+exploration").
 
 ```{code-cell}
 :label: pure_exploration
@@ -670,15 +670,22 @@ $\pi(\boldsymbol{\mu})$. For example, we might have $\pi$ be the Uniform
 distribution over the unit hypercube $[0, 1]^K$, that is,
 
 $$\pi(\boldsymbol{\mu}) = \begin{cases}
-            1 & \text{if } \boldsymbol{\mu}\in [0, 1]^K \\
-            0 & \text{otherwise}
-        \end{cases}$$
+    1 & \text{if } \boldsymbol{\mu}\in [0, 1]^K \\
+    0 & \text{otherwise}
+\end{cases}$$
 
-        Then, upon viewing some reward, we can exactly
+Then, upon viewing some reward, we can exactly
 calculate the **posterior** distribution of $\boldsymbol{\mu}$ using
 Bayes’s rule (i.e. the definition of conditional probability):
-\$\$
-\$\$ This is the PDF of the
+
+$$
+    \begin{align*}
+        \P(\muv \mid a_0, r_0) &\propto \P(r_0 \mid a_0, \muv) \P(a_0 \mid \muv) \P(\muv) \\
+        &\propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
+    \end{align*}
+$$
+
+This is the PDF of the
 $\text{Beta}(1 + r_0, 1 + (1 - r_0))$ distribution, which is a conjugate
 prior for the Bernoulli distribution. That is, if we start with a Beta
 prior on $\mu^k$ (note that $\text{Unif}([0, 1]) = \text{Beta}(1, 1)$),
@@ -690,7 +697,7 @@ the entire posterior distribution from scratch.
 :::
 
 It turns out that asymptotically, Thompson sampling is optimal in the
-following sense. Lai and Robbins \[@lai_asymptotically_1985\] prove an
+following sense. {cite}`lai_asymptotically_1985` prove an
 *instance-dependent* lower bound that says for *any* bandit algorithm,
 
 $$\liminf_{T \to \infty} \frac{\E[N_T^k]}{\ln(T)} \ge \frac{1}{\text{KL}(\mu^k \parallel \mu^\star)}$$
@@ -704,3 +711,6 @@ distribution with mean $\mu^k$ to the Bernoulli distribution with mean
 $\mu^\star$. It turns out that Thompson sampling achieves this lower
 bound with equality! That is, not only is the error *rate* optimal, but
 the *constant factor* is optimal as well.
+
+```{bibliography}
+```

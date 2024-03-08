@@ -399,7 +399,7 @@ Also note that it is not symmetric.
 
 Additionally, rather than estimating the $Q$-function of the current
 policy, we can use the RHS of the Performance Difference Lemma
-[\[th:pdl\]](#th:pdl){reference-type="eqref" reference="th:pdl"} as our
+[\[th:pdl\]](#th:pdl) as our
 optimization target.
 
 :::{prf:definition} Trust region policy optimization (exact)
@@ -407,7 +407,7 @@ optimization target.
 
 ::: algorithmic
 Trust region radius $\delta$ Initialize $\theta^0$
-$\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_h \E_{a_h \sim \pi_\theta(s_h)} A^{\pi^k}(s_h, a_h) \right]$
+$\theta^{k+1} \gets \arg\max_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_h \E_{a_h \sim \pi_\theta(s_h)} A^{\pi^k}(s_h, a_h) \right]$
 See below where $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}} \le \delta$
 $\pi^K$
 :::
@@ -468,7 +468,7 @@ follows:
 Initialize $\theta^0$ Sample $N$ trajectories from $\rho^k$ to learn a
 value estimator $\tilde b_h(s) \approx V^{\pi^k}_h(s)$ Sample $M$
 trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho^k$ $$\begin{gathered}
-            \theta^{k+1} \gets \argmax_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_h \mid s_h)}{\pi^k(a_h \mid s_h)} [ R_h(\tau_m) - \tilde b_h(s_h) ] \\
+            \theta^{k+1} \gets \arg\max_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_h \mid s_h)}{\pi^k(a_h \mid s_h)} [ R_h(\tau_m) - \tilde b_h(s_h) ] \\
             \text{where } \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \log \frac{\pi_k(a_h^m \mid s_h^m)}{\pi_\theta(a_h^m \mid s_h^m)} \le \delta
         
 \end{gathered}$$
@@ -590,7 +590,7 @@ constraint by incorporating it into the objective:
 
 ::: algorithmic
 Regularization parameter $\lambda$ Initialize $\theta^0$
-$\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_h \E_{a_h \sim \pi_\theta(s_h)} A^{\pi^k}(s_h, a_h) \right] - \lambda \kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$
+$\theta^{k+1} \gets \arg\max_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_h \E_{a_h \sim \pi_\theta(s_h)} A^{\pi^k}(s_h, a_h) \right] - \lambda \kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$
 $\theta^K$
 :::
 

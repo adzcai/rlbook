@@ -44,6 +44,12 @@ Some relevant parts of the Jupyter Book documentation and related software:
 - [Direct LaTeX Math](https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#direct-latex-math)
   - `equation, multline, gather, align, alignat, flalign, matrix, pmatrix, bmatrix, Bmatrix, vmatrix, Vmatrix, eqnarray` will be directly parsed (no dollar signs required) and will work inside markdown components but cannot be labelled (needs the `math` directive)
 - [Store code outputs and insert into content](https://jupyterbook.org/en/stable/content/executable/output-insert.html)
+- [Notebooks written entirely in Markdown](https://jupyterbook.org/en/stable/file-types/myst-notebooks.html)
+  - Converting Markdown to Jupytext:
+
+```bash
+jb myst init mymarkdownfile.md
+```
 
 ## Syntax
 
@@ -59,13 +65,15 @@ Some text that refers to [the header above](my-label) or also to [another file](
 
 And cites multiple papers like {cite}`silver_mastering_2016,mnih_playing_2013` using their citekeys from the BibTeX file
 
-Blocks need to have a `:name:` property:
+Figures and tables need to have a `:name:` property:
 
 ```{figure} ../path/to/image.jpg
 :name: fig-label
 
 This is the caption, which must exist in order for this figure to be referenced
 ```
+
+Images can't be referenced:
 
 ```{image} ../images/fun-fish.png
 :alt: fishy
@@ -90,7 +98,17 @@ Then I can refer to figures and tables using [the same syntax as before](fig-lab
 w^{t+1} = w^{t} - \nabla_w L(w^t)
 ```
 
-And then refer to these using {eq}`my-equation`
+And then refer to these using {eq}`my-equation` (note this uses the `eq` role)
+
+Proofs and theorems are under the `prf` directive:
+
+```{prf:theorem} My theorem
+:label: my-theorem
+
+This is the content of the theorem
+```
+
+And then refer to these using {prf:ref}`my-theorem` (note this uses the `prf:ref` role)
 ````
 
 

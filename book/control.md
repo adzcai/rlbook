@@ -231,7 +231,7 @@ $$\begin{split}
 
 In this section, we'll compute the optimal value function $V^\star_h$,
 Q-function $Q^\star_h$, and policy $\pi^\star_h$ in the LQR setting
-[\[df:lqr\]](#df:lqr){reference-type="eqref" reference="df:lqr"} using
+[\[df:lqr\]](#df:lqr) using
 **dynamic programming** in a very similar way to the DP algorithms in
 the MDP setting [\[sec:dp\]](#sec:dp){reference-type="eqref"
 reference="sec:dp"}:

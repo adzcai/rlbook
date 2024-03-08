@@ -1,3 +1,5 @@
+# Introduction
+
 Welcome to the study of reinforcement learning! This set of lecture
 notes accompanies the undergraduate course CS/STAT 184 and is intended
 to be a friendly yet rigorous introduction to this exciting and active
@@ -48,7 +50,7 @@ Here is a list of comparisons:
     use supervised learning to predict how valuable a given state is, or
     to predict the probability of transitioning to a given state.
 
-# Overview
+## Overview
 
 Chapter 1 introduces **Markov Decision Processes**, the dominant
 mathematical framework for studying RL. We'll discuss **dynamic
@@ -58,7 +60,7 @@ evaluation**, **policy iteration**, and **value iteration**.
 Chapter 2 then discusses **multi-armed bandits**, a simpler problem that
 is often used as a warm-up to RL.
 
-# Notation
+## Notation
 
 We will use the following notation throughout the book. This notation is
 inspired by Sutton and Barto and AJKS .
@@ -78,7 +80,7 @@ inspired by Sutton and Barto and AJKS .
 | $\mathcal{S}$ | A state space.            |
 |     $\A$      | An action space.          |
 
-# Challenges of reinforcement learning
+## Challenges of reinforcement learning
 
 **Exploration-exploitation tradeoff.** Should the agent try a new action or stick with the action that it knows
 is good?
@@ -89,7 +91,7 @@ pair.
 **Policy computation (control).** In a complex environment, even if the dynamics are known, it can still
 be challenging to compute the best policy.
 
-# Resources
+## Resources
 
 Inspired by the Stat 110 textbook and Stat 111 lecture notes.
 
