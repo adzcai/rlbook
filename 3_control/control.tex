@@ -37,7 +37,9 @@ Aside from the change in the state and action spaces, the general problem setup 
 This chapter introduces a fundamental tool to solve a simple class of continuous control problems: the \textbf{linear quadratic regulator}. We will then extend this basic method to more complex settings.
 
 
-\begin{example}{CartPole}{cart_pole}
+\begin{example}{CartPole}
+:name: cart_pole
+
     Try to balance a pencil on its point on a flat surface. It's much more difficult than it may first seem: the position of the pencil varies continuously, and the state transitions governing the system, i.e. the laws of physics, are highly complex.
     This task is equivalent to the classic control problem known as \emph{CartPole}:
 
@@ -80,7 +82,9 @@ Recall that an MDP is defined by its state space $\S$, action space $\A$, state 
 
 With all of these components, we can now formulate the \textbf{optimal control problem:} \emph{compute a policy to minimize the expected undiscounted cost over $\hor$ timesteps.} In this chapter, we will only consider \emph{deterministic, time-dependent} policies $\pi = (\pi_0, \dots, \pi_{H-1})$ where $\pi_h : \S \to \A$ for each $\hi \in [\hor]$.
 
-\begin{definition}{General optimal control problem}{optimal_control}
+\begin{definition}{General optimal control problem}
+:name: optimal_control
+
     \begin{equation}
         \begin{split}
             \min_{\pi_0, \dots, \pi_{\hor-1} : \S \to \A} \quad & \E \left[
@@ -130,7 +134,9 @@ Is there a relevant simplification that we can analyze?
 
 Let us consider \emph{linear dynamics} and an \emph{upward-curved quadratic cost function} (in both arguments). We will also consider a time-homogenous cost function that targets $(s^\star, a^\star) = (0, 0)$. This model is called the \textbf{linear quadratic regulator} (LQR) and is a fundamental tool in control theory. Solving the LQR problem will additionally enable us to \emph{locally approximate} more complex setups using \emph{Taylor approximations}.
 
-\begin{definition}{The linear quadratic regulator}{lqr}
+\begin{definition}{The linear quadratic regulator}
+:name: lqr
+
     \textbf{Linear, time-homogeneous dynamics}: for each timestep $h \in [H]$,
     \begin{align*}
         \st_{\hi+1} &= f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi \\
@@ -171,7 +177,9 @@ Let us consider \emph{linear dynamics} and an \emph{upward-curved quadratic cost
 
 \iffalse
     % TODO We went over this example in lecture, but I'm not sure where in the chapter to put it.
-    \begin{example}{Driving down a road}{road_lqr}
+    \begin{example}{Driving down a road}
+:name: road_lqr
+
         Suppose we're driving down a road. At each time step, we can choose an
         action $\act_\hi$: either we accelerate and apply a force forward ($\act_\hi > 0$),
         or reverse and apply a force backward ($\act_\hi < 0$).
@@ -216,7 +224,9 @@ Let us consider \emph{linear dynamics} and an \emph{upward-curved quadratic cost
 It will be helpful to reintroduce the \emph{value function} notation for a policy to denote the average cost it incurs.
 These will be instrumental in constructing the optimal policy via \textbf{dynamic programming}.
 
-\begin{definition}{Value functions for LQR}{value_lqr}
+\begin{definition}{Value functions for LQR}
+:name: value_lqr
+
     Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})$, we can define its
     value function $V^\pi_\hi : \S \to \R$ at time $\hi \in [\hor]$ as the average \textbf{cost-to-go} incurred by that policy:
     \[
@@ -259,7 +269,9 @@ Along the way, we will prove the striking fact that the solution has very simple
     \]
 \end{definition}
 
-\begin{theorem}{Optimal value function in LQR is a upward-curved quadratic}{optimal_value_lqr_quadratic}
+\begin{theorem}{Optimal value function in LQR is a upward-curved quadratic}
+:name: optimal_value_lqr_quadratic
+
     At each timestep $h \in [H]$,
     \[
         V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi
@@ -267,7 +279,9 @@ Along the way, we will prove the striking fact that the solution has very simple
     for some symmetric positive definite matrix $P_\hi \in \R^{n_\st \times n_\st}$ and vector $p_\hi \in \R^{n_\st}$.
 \end{theorem}
 
-\begin{theorem}{Optimal policy in LQR is linear}{optimal_policy_lqr_linear}
+\begin{theorem}{Optimal policy in LQR is linear}
+:name: optimal_policy_lqr_linear
+
     At each timestep $h \in [H]$,
     \[
         \pi^\star_\hi (\st) = - K_\hi \st
@@ -390,7 +404,9 @@ We can simplify the quadratic term by substituting in $K_\hi$.
 Notice that when we do this, the $(R+B^\top P_{\hi+1} B)$ term in
 the expression is cancelled out by its inverse, and the remaining terms combine to give the \textbf{Riccati equation}:
 
-\begin{definition}{Riccati equation}{riccati}
+\begin{definition}{Riccati equation}
+:name: riccati
+
     \[
         P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
     \]
@@ -474,7 +490,9 @@ Our analysis remains almost identical; in fact, we can simply add a time index t
 
 The modified problem is now defined as follows:
 
-\begin{definition}{Time-dependent LQR}{time_dependent_lqr}
+\begin{definition}{Time-dependent LQR}
+:name: time_dependent_lqr
+
     \begin{align*}
         \min_{\pi_{0}, \dots, \pi_{\hor-1}} \quad & \E \left[ \left( \sum_{\hi=0}^{\hor-1} (\st_\hi^\top Q_\hi \st_\hi) + \act_\hi^\top R_\hi \act_\hi \right) + \st_\hor^\top Q_\hor \st_\hor \right] \\
         \textrm{where} \quad                      & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + w_\hi                                                             \\
@@ -487,7 +505,9 @@ The modified problem is now defined as follows:
 The derivation of the optimal value functions and the optimal policy remains almost exactly the same,
 and we can modify the Riccati equation accordingly:
 
-\begin{definition}{Time-dependent Riccati Equation}{riccati_time_dependent}
+\begin{definition}{Time-dependent Riccati Equation}
+:name: riccati_time_dependent
+
     \[
         P_\hi = Q_\hi + A_\hi^\top P_{\hi+1} A_\hi - A_\hi^\top P_{\hi+1} B_\hi (R_\hi + B_\hi^\top P_{\hi+1} B_\hi)^{-1} B_\hi^\top P_{\hi+1} A_\hi.
     \]
@@ -561,7 +581,9 @@ Note that this punishes states and actions that are far from the intended trajec
     \begin{figure}[h]
         \centering
         \renewcommand{\arraystretch}{1.5}
-        \begin{tabularx}{\textwidth}{m{1in} | >{\centering\arraybackslash}X | >{\centering\arraybackslash}X}
+        \begin{tabularx}{\textwidth}
+:name: m{1in
+ | >{\centering\arraybackslash}X | >{\centering\arraybackslash}X}
                                                                             & \textbf{Control}                                                                                     & \textbf{Finite MDP}                                                                                         \\
             \hline
             \textbf{State and action spaces}                                & Continuous                                                                                           & Finite                                                                                                      \\
@@ -587,7 +609,9 @@ The dynamics (physics) aren't linear. How can we approximate this by an LQR prob
 
 Concretely, let's consider a \emph{noise-free} problem since, as we saw, the noise doesn't factor into the optimal policy. Let's assume the dynamics and cost function are stationary, and ignore the terminal state for simplicity:
 
-\begin{definition}{Nonlinear control problem}{nonlinear_control}
+\begin{definition}{Nonlinear control problem}
+:name: nonlinear_control
+
     \begin{align*}
         \min_{\pi_0, \dots, \pi_{\hor-1} : \S \to \A} \quad & \E_{\st_0} \left[ \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi) \right] \\
         \text{where} \quad                                  & \st_{\hi+1} = f(\st_\hi, \act_\hi)                                   \\
@@ -685,7 +709,9 @@ We'll see how to address this in the next section using the \textbf{iterative LQ
 To address these issues with local linearization, we'll use an iterative approach, where we repeatedly linearize around different points to create a \emph{time-dependent} approximation of the dynamics, and then solve the resulting time-dependent LQR problem to obtain a better policy.
 This is known as \textbf{iterative LQR} or \textbf{iLQR}:
 
-\begin{definition}{Iterative LQR (high-level)}{ilqr}
+\begin{definition}{Iterative LQR (high-level)}
+:name: ilqr
+
     For each iteration of the algorithm:
     \begin{steps}
         \item Form a time-dependent LQR problem around the current candidate trajectory using local linearization.

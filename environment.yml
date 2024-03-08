@@ -1,0 +1,9 @@
+name: rlbook
+dependencies:
+  - jupyter-book
+  - python 3.12.*
+  - gymnasium
+  - matplotlib
+  - jupytext 1.16.*
+  - pip:
+    - sphinx-proof

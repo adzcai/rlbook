@@ -20,11 +20,15 @@ The \textbf{multi-armed bandits} (MAB) setting is a simple but powerful setting 
 
 In particular, we'll spend a lot of time discussing the \textbf{Exploration-Exploitation Tradeoff}: should the agent choose new actions to learn more about the environment, or should it choose actions that it already knows to be good?
 
-\begin{example}{Online advertising}{advertising}
+\begin{example}{Online advertising}
+:name: advertising
+
     Let's suppose you, the agent, are an advertising company. You have $K$ different ads that you can show to users; For concreteness, let's suppose there's just a single user. You receive $1$ reward if the user clicks the ad, and $0$ otherwise. Thus, the unknown \emph{reward distribution} associated to each ad is a Bernoulli distribution defined by the probability that the user clicks on the ad. Your goal is to maximize the total number of clicks by the user.
 \end{example}
 
-\begin{example}{Clinical trials}{clinical_trials}
+\begin{example}{Clinical trials}
+:name: clinical_trials
+
     Suppose you're a pharmaceutical company, and you're testing a new drug. You have $K$ different dosages of the drug that you can administer to patients. You receive $1$ reward if the patient recovers, and $0$ otherwise. Thus, the unknown \emph{reward distribution} associated to each dosage is a Bernoulli distribution defined by the probability that the patient recovers. Your goal is to maximize the total number of patients that recover.
 \end{example}
 
@@ -32,7 +36,9 @@ In this chapter, we will introduce the multi-armed bandits setting, and discuss 
 
 \section{Introduction}
 
-\begin{remark}{Namesake}{multi-armed}
+\begin{remark}{Namesake}
+:name: multi-armed
+
     The name ``multi-armed bandits'' comes from slot machines in casinos, which are often called ``one-armed bandits'' since they have one arm (the lever) and take money from the player.
 \end{remark}
 
@@ -53,7 +59,9 @@ What's the \emph{optimal} strategy for the agent, i.e. the one that achieves the
 
 The goal, then, can be rephrased as to minimize the \textbf{regret}, defined below:
 
-\begin{definition}{Regret}{regret}
+\begin{definition}{Regret}
+:name: regret
+
     
 The agent's \textbf{regret} after $T$ timesteps is defined as
 \begin{equation}
@@ -77,7 +85,9 @@ The rest of the chapter comprises a series of increasingly sophisticated MAB alg
 \section{Pure exploration (random guessing)}
 
 A trivial strategy is to always choose arms at random (i.e. ``pure exploration'').
-\begin{definition}{Pure exploration}{pure_exploration}
+\begin{definition}{Pure exploration}
+:name: pure_exploration
+
 \begin{algorithmic}
 \For{$t \gets 0$ to $T-1$}
     \State Choose $a_t \sim \text{Unif}([K])$
@@ -98,7 +108,9 @@ This scales as $\Theta(T)$, i.e. \emph{linear} in the number of timesteps $T$. T
 
 How might we improve on pure exploration? Instead, we could try each arm once, and then commit to the one with the highest observed reward. We'll call this the \textbf{pure greedy} strategy.
 
-\begin{definition}{Pure greedy}{pure_greedy}
+\begin{definition}{Pure greedy}
+:name: pure_greedy
+
 \begin{algorithmic}
     \For{$k \gets 0$ to $K-1$}
         \Comment Exploration phase
@@ -128,7 +140,9 @@ Which is still $\Theta(T)$, the same as pure exploration! Can we do better?
 
 We can improve the pure greedy algorithm as follows:
 let's reduce the variance of the reward estimates by pulling each arm $\Nex > 1$ times before committing. This is called the \textbf{explore-then-commit} strategy.
-\begin{definition}{Explore-then-commit}{etc}
+\begin{definition}{Explore-then-commit}
+:name: etc
+
 \begin{algorithmic}
 \State \textbf{Input:} $\Nex \le T/K$
 \For{$k \gets 0$ to $K-1$}
@@ -161,7 +175,9 @@ So we'd like to bound $\mu^\star - \mu^{\hat k} = o(1)$ (as a function of $T$) i
 
 Let's define $\Delta^k = \hat \mu^k - \mu^k$ to denote how far the mean estimate for arm $k$ is from the true mean. How can we bound this quantity? We'll use the following useful inequality for i.i.d. bounded random variables:
 
-\begin{theorem}{Hoeffding's inequality}{hoeffding}
+\begin{theorem}{Hoeffding's inequality}
+:name: hoeffding
+
     Let $X_0, \dots, X_{n-1}$ be i.i.d. random variables with $X_i \in [0, 1]$ almost surely for each $i \in [n]$. Then for any $\delta > 0$,
     
     \begin{equation}
@@ -177,7 +193,9 @@ But note that we can't apply this to arm $\hat k$ directly since $\hat k$ is its
 
 The \textbf{union bound} provides a simple way to do this:
 
-\begin{theorem}{Union bound}{union_bound}
+\begin{theorem}{Union bound}
+:name: union_bound
+
     Consider a set of events $A_0, \dots, A_{n-1}$. Then \[
         \P(\exists i \in [n]. A_i) \le \sum_{i=0}^{n-1} \P(A_i).
     \]
@@ -221,7 +239,9 @@ The ETC algorithm is rather ``abrupt'' in that it switches from exploration to e
 
 Instead of doing all of the exploration and then all of the exploitation separately -- which additionally requires knowing the time horizon beforehand -- we can instead interleave exploration and exploitation by, at each timestep, choosing a random action with some probability. We call this the \textbf{epsilon-greedy} algorithm.
 
-\begin{definition}{Epsilon-greedy}{epsilon_greedy}
+\begin{definition}{Epsilon-greedy}
+:name: epsilon_greedy
+
 \begin{algorithmic}
 \State \textbf{Input:} $\epsilon : \mathbb{N} \to [0, 1]$
 \State $S^k \gets 0$ for each $k \in [K]$ \Comment{Total reward for arm $k$}
@@ -280,7 +300,9 @@ In particular, since $N^k_t \le t$, and $\tilde \mu^k_{N^k_t} = \hat \mu^k_t$ by
 \end{align*}
 This bound would then suffice for applying the UCB algorithm! That is, the upper confidence bound for arm $k$ would be \[ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}}, \] where we can choose $\delta'$ depending on how tight we want the interval to be. A smaller $\delta'$ would give us a larger yet higher-confidence interval, and vice versa. We can now use this to define the UCB algorithm.
 
-\begin{definition}{Upper Confidence Bound (UCB)}{ucb}
+\begin{definition}{Upper Confidence Bound (UCB)}
+:name: ucb
+
 \begin{algorithmic}
 \State \textbf{Input:} $\delta' \in (0, 1)$
 \For{$t \gets 0$ to $T-1$}
@@ -360,7 +382,9 @@ That is, if two arms have means that are within about $1/\sqrt{T}$, we won't be 
 So far, we've treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the reward distributions as \emph{fixed}. Instead, we can take a \textbf{Bayesian} approach where we treat them as random variables from some \textbf{prior distribution}. Then, upon pulling an arm and observing a reward, we can simply \emph{condition} on this observation to exactly describe the \textbf{posterior distribution} over the parameters. This fully describes the information we gain about the parameters from observing the reward.
 
 From this Bayesian perspective, the \textbf{Thompson sampling} algorithm follows naturally: just sample from the distribution of the optimal arm, given the observations!
-\begin{definition}{Thompson sampling}{thompson_sampling}
+\begin{definition}{Thompson sampling}
+:name: thompson_sampling
+
 \begin{algorithmic}
 \State \textbf{Input:} the prior distribution $\pi \in \Delta([0, 1]^K)$
 \For{$t \gets 0$ to $T-1$}
@@ -375,7 +399,9 @@ In other words, we sample each arm proportionally to how likely we think it is t
 This strikes a good exploration-exploitation tradeoff: we explore more for arms that we're less certain about, and exploit more for arms that we're more certain about.
 Thompson sampling is a simple yet powerful algorithm that achieves state-of-the-art performance in many settings.
 
-\begin{example}{Bayesian Bernoulli bandit}{bayesian_bernoulli}
+\begin{example}{Bayesian Bernoulli bandit}
+:name: bayesian_bernoulli
+
     We've often been working in the Bernoulli bandit setting, where arm $k$ yields a reward of $1$ with probability $\mu^k$ and no reward otherwise. The vector of success probabilities $\muv = (\mu^1, \dots, \mu^K)$ thus describes the entire MAB.
     
     Under the Bayesian perspective, we think of $\muv$ as a \emph{random} vector drawn from some prior distribution $\pi(\muv)$. For example, we might have $\pi$ be the Uniform distribution over the unit hypercube $[0, 1]^K$, that is, \[

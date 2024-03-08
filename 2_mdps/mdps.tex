@@ -30,7 +30,9 @@ Let's consider some examples of sequential decision problems to identify the key
 
 All of these fit into the RL framework. Furthermore, these are environments where the \textbf{state transitions}, the ``rules'' of the environment, only depend on the \emph{most recent} state and action. This is called the \textbf{Markov property}.
 
-\begin{definition}{Markov property}{markov}
+\begin{definition}{Markov property}
+:name: markov
+
     An interactive environment satisfies the \textbf{Markov property} if the probability of transitioning to a new state only depends on the current state and action:
     \[
         \P(s_{h+1} \mid s_0, a_0, \dots, s_h, a_h) = P(s_{h+1} \mid s_h, a_h)
@@ -50,7 +52,9 @@ In each setting, we'll describe how to evaluate different \textbf{policies} (str
 \section{Finite horizon MDPs}
 
 
-\begin{definition}{Finite-horizon Markov decision process}{finite_mdp}
+\begin{definition}{Finite-horizon Markov decision process}
+:name: finite_mdp
+
 The components of a finite-horizon Markov decision process are:
 
 \begin{enumerate}
@@ -68,7 +72,9 @@ Combined together, these objects specify a finite-horizon Markov decision proces
 \]
 \end{definition}
 
-\begin{example}{Tidying MDP}{tidy_mdp}
+\begin{example}{Tidying MDP}
+:name: tidy_mdp
+
     Let's consider an extremely simple decision problem throughout this chapter: the task of keeping your room tidy!
 
     Your room has the possible states $\mathcal{S} = \{ \text{orderly}, \text{messy} \}$. You can take either of the actions $\A = \{ \text{tidy}, \text{ignore} \}$. The room starts off orderly.
@@ -94,7 +100,9 @@ Combined together, these objects specify a finite-horizon Markov decision proces
 
 \subsection{Policies}
 
-\begin{definition}{Policies}{policy}
+\begin{definition}{Policies}
+:name: policy
+
     A \textbf{policy} $\pi$ describes the agent's strategy: which actions it takes in a given situation. A key goal of RL is to find the \textbf{optimal policy} that maximizes the total reward on average.
 
     There are three axes along which policies can vary: their outputs, inputs, and time-dependence. We'll discuss each of these in turn.
@@ -110,7 +118,9 @@ A fascinating result is that every finite-horizon MDP has an optimal determinist
 
 % \todo{Insert timeline diagram of policy}
 
-\begin{example}{Tidying policies}{tidy_policy}
+\begin{example}{Tidying policies}
+:name: tidy_policy
+
     Here are some possible policies for the tidying MDP \eqref{eg:tidy_mdp}:
 
     \begin{itemize}
@@ -122,7 +132,9 @@ A fascinating result is that every finite-horizon MDP has an optimal determinist
 
 \subsection{Trajectories}
 
-\begin{definition}{Trajectories}{trajectory}
+\begin{definition}{Trajectories}
+:name: trajectory
+
 A sequence of states, actions, and rewards is called a \textbf{trajectory}:
 \[
     \tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})
@@ -132,7 +144,9 @@ where $r_h = r(s_h, a_h)$. (Note that sources differ as to whether to include th
 
 Once we've chosen a policy, we can sample trajectories by repeatedly choosing actions according to the policy, transitioning according to the state transitions, and observing the rewards. That is, a policy induces a distribution $\rho^{\pi}$ over trajectories. (We assume that $\mu$ and $P$ are clear from context.)
 
-\begin{example}{Trajectories in the tidying environment}{tidy_traj}
+\begin{example}{Trajectories in the tidying environment}
+:name: tidy_traj
+
     Here is a possible trajectory for the tidying example:
 
     \begin{center}
@@ -150,7 +164,9 @@ Once we've chosen a policy, we can sample trajectories by repeatedly choosing ac
 
 Note that for a state-dependent policy, using the Markov property \eqref{df:markov}, we can specify this probability distribution in an \textbf{autoregressive} way (i.e. one timestep at a time):
 
-\begin{definition}{Autoregressive trajectory distribution}{autoregressive_trajectories}
+\begin{definition}{Autoregressive trajectory distribution}
+:name: autoregressive_trajectories
+
     \[
         \rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})
     \]
@@ -166,7 +182,9 @@ The main goal of RL is to find a policy that maximizes the average total reward 
 
 A policy's \textbf{value function} is its expected total reward \emph{starting in a given state at a given time}:
 
-\begin{definition}{Value function}{value}
+\begin{definition}{Value function}
+:name: value
+
     \[
         V_h^\pi(s) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s]
     \]
@@ -174,7 +192,9 @@ A policy's \textbf{value function} is its expected total reward \emph{starting i
 
 Similarly, we can define the \textbf{action-value function} (aka the \textbf{Q-function}) as the expected total reward when starting in a given state and taking a given action:
 
-\begin{definition}{Action-value function}{action_value}
+\begin{definition}{Action-value function}
+:name: action_value
+
     \[
         Q_h^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_h + \cdots + r_{H-1} \mid s_h = s, a_h = a]
     \]
@@ -193,7 +213,9 @@ and the action-value can be expressed in terms of the value of the following sta
 
 Note that by simply considering the cumulative reward as the sum of the \emph{current} reward and the \emph{future} cumulative reward, we can describe the value function recursively (in terms of itself). This is named the \textbf{Bellman consistency equation} after \textbf{Richard Bellman} (1920--1984), who is credited with introducing dynamic programming in 1953.
 
-\begin{definition}{Bellman consistency equation for the value function}{bellman_consistency}
+\begin{definition}{Bellman consistency equation for the value function}
+:name: bellman_consistency
+
 \begin{equation}
     V_h^\pi(s) = \E_{\substack{a \sim \pi_h(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{h+1}^\pi(s')] \label{eq:bellman_consistency}
 \end{equation}
@@ -205,13 +227,17 @@ Note that by simply considering the cumulative reward as the sum of the \emph{cu
 
 One can analogously derive the Bellman consistency equation for the action-value function:
 
-\begin{definition}{Bellman consistency equation for action-values}{bellman_consistency_action}
+\begin{definition}{Bellman consistency equation for action-values}
+:name: bellman_consistency_action
+
 \[
     Q_h^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{h+1}(s')}} [Q_{h+1}^\pi(s', a')]
 \]
 \end{definition}
 
-\begin{remark}{The Bellman consistency equation for deterministic policies}{bellman_det}
+\begin{remark}{The Bellman consistency equation for deterministic policies}
+:name: bellman_det
+
     Note that for deterministic policies, the Bellman consistency equation simplifies to
     \begin{align*}
         V_h^\pi(s) &= r(s, \pi_h(s)) + \E_{s' \sim P(s, \pi_h(s))} [V_{h+1}^\pi(s')] \\
@@ -224,7 +250,9 @@ One can analogously derive the Bellman consistency equation for the action-value
 
 Fix a policy $\pi$. Consider the higher-order operator that takes in a ``value function'' $v : \S \to \R$ and returns the r.h.s. of the Bellman equation for that ``value function'':
 
-\begin{definition}{Bellman operator}{bellman_operator}
+\begin{definition}{Bellman operator}
+:name: bellman_operator
+
 \[
     [\bop^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].
 \]
@@ -248,7 +276,9 @@ How can we actually compute the value function of a given policy? This is the ta
 
 The Bellman consistency equation \eqref{eq:bellman_consistency} gives us a convenient algorithm for evaluating stationary policies: it expresses the value function at timestep $h$ as a function of the value function at timestep $h+1$. This means we can start at the end of the time horizon, where the value is known, and work backwards in time, using the Bellman consistency equation to compute the value function at each time step.
 
-\begin{definition}{Dynamic programming for policy evaluation}{dp_eval_finite}
+\begin{definition}{Dynamic programming for policy evaluation}
+:name: dp_eval_finite
+
     \begin{algorithmic}
 \State $V_h(s) \gets 0$ for all $t \in \{ 0, \dots, H \}, s \in S$
 \For{$t = H-1, \dots, 0$}
@@ -264,7 +294,9 @@ This clearly runs in time $O(H \cdot |\S|^2 \cdot |\A|)$ by counting the loops.
 \textbf{Exercise:} Do you see where we compute $Q^\pi_h$ along the way? Make this step explicit.
 
 
-\begin{example}{Tidying policy evaluation}{tidy_eval_finite}
+\begin{example}{Tidying policy evaluation}
+:name: tidy_eval_finite
+
     Let's evaluate the policy from \ref{eg:tidy_policy} that tidies if and only if the room is messy. We'll use the Bellman consistency equation to compute the value function at each time step.
     \begin{align*}
         V_{H-1}^\pi(\text{orderly}) &= r(\text{orderly}, \text{ignore}) \\
@@ -293,7 +325,9 @@ This clearly runs in time $O(H \cdot |\S|^2 \cdot |\A|)$ by counting the loops.
 
 We've just seen how to \emph{evaluate} a given policy. But how can we find the \textbf{optimal policy} for a given environment?
 
-\begin{definition}{Optimal policies}{optimal_policy}
+\begin{definition}{Optimal policies}
+:name: optimal_policy
+
     We call a policy optimal, and denote it by $\pi^\star$, if it does at least as well as \emph{any} other policy $\pi$ (including stochastic and history-dependent ones) in all situations:
     \begin{equation}
         \begin{aligned}
@@ -312,7 +346,9 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
     \pi_h^\star(s) = \argmax_a Q_h^\star(s, a).
 \]
 
-\begin{theorem}{It is optimal to be greedy w.r.t. the optimal value function}{optimal_greedy}
+\begin{theorem}{It is optimal to be greedy w.r.t. the optimal value function}
+:name: optimal_greedy
+
     Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and action-value functions. Consider the greedy policy
     \[
         \hat \pi_h(s) := \argmax_a Q_h^{\star}(s, a).
@@ -362,7 +398,9 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
 
 Now that we've shown this particular greedy policy is optimal, all we need to do is compute the optimal value function and optimal policy. We can do this by working backwards in time using \textbf{dynamic programming} (DP).
 
-\begin{definition}{DP for optimal policy}{pi_star_dp}
+\begin{definition}{DP for optimal policy}
+:name: pi_star_dp
+
     We can solve for the optimal policy in an finite-horizon MDP using \textbf{dynamic programming}.
     
     \begin{itemize}
@@ -397,7 +435,9 @@ At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of the $|\S| 
 
 Note that this algorithm is identical to the policy evaluation algorithm \ref{df:dp_eval_finite}, but instead of \emph{averaging} over the actions chosen by a policy, we instead simply take a \emph{maximum} over the action-values. We'll see this relationship between \textbf{policy evaluation} and \textbf{optimal policy computation} show up again in the infinite-horizon setting.
 
-\begin{example}{Optimal policy for the tidying MDP}{tidy_dp}
+\begin{example}{Optimal policy for the tidying MDP}
+:name: tidy_dp
+
     Left as an exercise.
 \end{example}
 
@@ -459,7 +499,9 @@ Recall from \ref{sec:bellman_operator} that the Bellman operator $\bop^{\pi}$ fo
 
 The crucial property of the Bellman operator is that it is a \textbf{contraction mapping} for any policy. Intuitively, if we start with two ``value functions'' $v, u : \S \to \R$, if we repeatedly apply the Bellman operator to each of them, they will get closer and closer together at an exponential rate.
 
-\begin{definition}{Contraction mapping}{contraction}
+\begin{definition}{Contraction mapping}
+:name: contraction
+
     Let $X$ be some space with a norm $\|\cdot\|$. We call an operator $f: X \to X$ a \textbf{contraction mapping} if for any $x, y \in X$,
     \[
         \|f(x) - f(y)\| \le \gamma \|x - y\|
@@ -489,7 +531,9 @@ Then \eqref{eq:contraction_convergence} implies that if we repeatedly apply $\bo
 \end{equation}
 We'll use this useful fact to prove the convergence of several algorithms later on.
 
-\begin{theorem}{The Bellman operator is a contraction mapping}{bellman_contraction}
+\begin{theorem}{The Bellman operator is a contraction mapping}
+:name: bellman_contraction
+
 
 We aim to show that
 \[
@@ -527,7 +571,9 @@ Note that when the policy $\pi$ is deterministic, the actions can be determined 
 \end{align*}
 For $P^\pi$, we'll treat the rows as the states and the columns as the next states. Then $P^\pi_{s, s'}$ is the probability of transitioning from state $s$ to state $s'$ under policy $\pi$.
 
-\begin{example}{Tidying MDP}{tidy_tabular}
+\begin{example}{Tidying MDP}
+:name: tidy_tabular
+
     The tabular MDP from before has $|\S| = 2$ and $|\A| = 2$. Let's write down the quantities for the policy $\pi$ that tidies if and only if the room is messy:
     \[
         r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad
@@ -558,7 +604,9 @@ Note we've assumed that $I - \gamma P^\pi$ is invertible. Can you see why this i
 
 (Recall that a linear operator, i.e. a square matrix, is invertible if and only if its null space is trivial; that is, it doesn't map any nonzero vector to zero. In this case, we can see that $I - \gamma P^\pi$ is invertible because it maps any nonzero vector to a vector with at least one nonzero element.)
 
-\begin{example}{Tidying policy evaluation}{tidy_eval_infinite}
+\begin{example}{Tidying policy evaluation}
+:name: tidy_eval_infinite
+
     Let's use the same policy $\pi$ that tidies if and only if the room is messy.
     Setting $\gamma = 0.95$, we must invert
     \[
@@ -634,7 +682,9 @@ As before, thinking of the r.h.s. as an operator on value functions gives the \t
 
 Since the optimal policy is still a policy, our result that the Bellman operator is a contracting map still holds, and so we can repeatedly apply this operator to converge to the optimal value function! This algorithm is known as \textbf{value iteration}.
 
-\begin{definition}{Value iteration pseudocode}{value_iteration_pseudocode}
+\begin{definition}{Value iteration pseudocode}
+:name: value_iteration_pseudocode
+
     \begin{algorithmic}
         \State $v^{(0)} \gets 0$
         \For{$t = 0, 1, 2, \dots, T-1$}
@@ -655,7 +705,9 @@ We must be careful, though: the value function of this greedy policy, $V^{\hat \
 
 The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\star\|_{\infty} \le \epsilon$, then the greedy policy $\hat \pi$ satisfies $\|V^{\hat \pi} - V^\star\|_{\infty} \le \frac{2\gamma}{1-\gamma} \epsilon$, which might potentially be very large.
 
-\begin{theorem}{Greedy policy value worsening}{greedy_worsen}
+\begin{theorem}{Greedy policy value worsening}
+:name: greedy_worsen
+
     We aim to show that
     \[
         \|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}
@@ -707,7 +759,9 @@ iterations to achieve an $\epsilon$-accurate estimate of the optimal value funct
 
 Can we mitigate this ``greedy worsening''? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function \emph{together}? This is the idea behind \textbf{policy iteration}. In each step, we simply set the policy to act greedily with respect to its own value function.
 
-\begin{definition}{Policy Iteration}{pi_iter}
+\begin{definition}{Policy Iteration}
+:name: pi_iter
+
 \begin{algorithmic}
 \State $\pi^{(0)} : \S \to \A$ arbitrary
 \For{$t = 0, \dots, T-1$}
@@ -722,7 +776,9 @@ Can we mitigate this ``greedy worsening''? What if instead of approximating the 
 
 Although PI appears more complex than VI, we'll use the same contraction property \eqref{th:bellman_contraction} to show convergence. This will give us the same runtime bound as value iteration and iterative policy evaluation for an $\epsilon$-optimal value function \eqref{eq:iterations_vi}, although in practice, PI often converges much faster.
 
-\begin{theorem}{Policy Iteration runtime and convergence}{pi_iter_analysis}
+\begin{theorem}{Policy Iteration runtime and convergence}
+:name: pi_iter_analysis
+
 We aim to show that the number of iterations required for an $\epsilon$-accurate estimate of the optimal value function is
 \[
     T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \right).

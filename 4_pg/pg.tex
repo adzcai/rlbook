@@ -159,7 +159,9 @@ We can now express the policy gradient as follows. Note that the advantage funct
     \label{eq:pg_advantage}
 \end{equation}
 Note that to avoid correlations between the gradient estimator and the value estimator (i.e. baseline), we must estimate them with independently sampled trajectories:
-\begin{definition}{Policy gradient with a learned baseline}{pg_baseline}
+\begin{definition}{Policy gradient with a learned baseline}
+:name: pg_baseline
+
     \begin{algorithmic}
         \Require Learning rate $\eta_0, \dots, \eta_{K-1}$
         \Require Initialization $\theta^0$
@@ -246,7 +248,9 @@ What advantages does the policy gradient algorithm have over policy iteration? B
 
 To analyze the difference between them, we'll make use of the \textbf{performance difference lemma}.
 
-\begin{theorem}{Performance difference lemma}{pdl}
+\begin{theorem}{Performance difference lemma}
+:name: pdl
+
     Let $\rho_{\pi, s}$ denote the distribution induced by the policy $\pi$ over trajectories starting in state $s$.
 
     Given two policies $\pi, \tilde pi$, the PDL allows us to express the difference between their value functions as follows:
@@ -288,7 +292,9 @@ TRPO is another iterative algorithm for policy optimization. It is similar to po
 
 To formalize ``close to'', we typically use the \textbf{Kullback-Leibler divergence (KLD)}:
 
-\begin{definition}{Kullback-Leibler divergence}{kld}
+\begin{definition}{Kullback-Leibler divergence}
+:name: kld
+
     For two PDFs $p, q$,
     \begin{equation}
         \kl{p}{q} := \E_{x \sim p} \left[ \log \frac{p(x)}{q(x)} \right]
@@ -303,7 +309,9 @@ To formalize ``close to'', we typically use the \textbf{Kullback-Leibler diverge
 
 Additionally, rather than estimating the $Q$-function of the current policy, we can use the RHS of the Performance Difference Lemma \eqref{th:pdl} as our optimization target.
 
-\begin{definition}{Trust region policy optimization (exact)}{trpo}
+\begin{definition}{Trust region policy optimization (exact)}
+:name: trpo
+
     \begin{algorithmic}
         \Require Trust region radius $\delta$
         \State Initialize $\theta^0$
@@ -327,7 +335,9 @@ As before, we can do this by taking an empirical average over samples from the t
 However, the inner expectation over $a_h \sim \pi_{\theta}$ involves the optimizing variable $\theta$, and we'd like an expression that has a closed form in terms of $\theta$ to make optimization tractable. Otherwise, we'd need to resample many times each time we made an update to $\theta$.
 To address this, we'll use a common technique known as \textbf{importance sampling}.
 
-\begin{definition}{Importance sampling}{importance_sampling}
+\begin{definition}{Importance sampling}
+:name: importance_sampling
+
     Suppose we want to estimate $\E_{x \sim \tilde p}[f(x)]$.
     However, $\tilde p$ is difficult to sample from, so we can't take an empirical average directly. Instead, there is some other distribution $p$ that is easier to sample from, e.g. we could draw samples from an existing dataset, as in the case of \textbf{offline RL}.
 
@@ -346,7 +356,9 @@ To address this, we'll use a common technique known as \textbf{importance sampli
 
 Applying importance sampling allows us to estimate the TRPO objective as follows:
 
-\begin{definition}{Trust region policy optimization (implementation)}{trpo_implement}
+\begin{definition}{Trust region policy optimization (implementation)}
+:name: trpo_implement
+
     \begin{algorithmic}
         \State Initialize $\theta^0$
         \For{$k = 0, \dots, K-1$}
@@ -371,7 +383,9 @@ Instead, we can solve an approximation to the TRPO optimization problem. This wi
     \label{npg_optimization}
 \end{equation}
 where $F_{\theta^k}$ is the \textbf{Fisher information matrix} defined below.
-\begin{definition}{Fisher information matrix}{fisher_matrix}
+\begin{definition}{Fisher information matrix}
+:name: fisher_matrix
+
     Let $p_\theta$ denote a parameterized distribution. Its Fisher information matrix $F_\theta$ can be defined equivalently as:
     \begin{align*}
         F_{\theta} & = \E_{x \sim p_\theta} \left[ (\nabla_\theta \log p_\theta(x)) (\nabla_\theta \log p_\theta(x))^\top \right] & \text{covariance matrix of the Fisher score}          \\
@@ -397,7 +411,9 @@ This is a convex optimization problem, and so we can find the global optima by s
     \text{where } \eta                     & = \sqrt{\frac{\delta}{\nabla_\theta J(\pi_{\theta^k})^\top F_{\theta^k} \nabla_\theta J(\pi_{\theta^k})}}
 \end{align*}
 
-\begin{definition}{Natural policy gradient}{npg}
+\begin{definition}{Natural policy gradient}
+:name: npg
+
     \begin{algorithmic}
         \Require Learning rate $\eta > 0$
         \State Initialize $\theta^0$
@@ -420,7 +436,9 @@ This is a convex optimization problem, and so we can find the global optima by s
 
 For some intuition: The typical gradient descent algorithm treats the parameter space as ``flat'', treating the objective function as some black box value. However, in the case here where the parameters map to a \emph{distribution}, using the natural gradient update is equivalent to optimizing over distribution space rather than distribution space.
 
-\begin{example}{Natural gradient on a simple problem}{natural_simple}
+\begin{example}{Natural gradient on a simple problem}
+:name: natural_simple
+
     Let's step away from reinforcement learning specifically and consider the following optimization problem over Bernoulli distributions $\pi \in \Delta(\{ 0, 1 \})$:
     \begin{align*}
         J(\pi) & = 100 \cdot \pi(1) + 1 \cdot \pi(0)
@@ -454,7 +472,9 @@ Can we improve on the computational efficiency of the above methods?
 We can relax the TRPO objective in a different way: Rather than imposing a hard constraint on the KL distance, we can instead impose a \emph{soft} constraint by incorporating it into the objective:
 
 
-\begin{definition}{Proximal policy optimization (exact)}{ppo}
+\begin{definition}{Proximal policy optimization (exact)}
+:name: ppo
+
     \begin{algorithmic}
         \Require Regularization parameter $\lambda$
         \State Initialize $\theta^0$

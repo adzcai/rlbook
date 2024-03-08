@@ -1,0 +1,15 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: index
+options:
+  numbered: true
+chapters:
+- file: frontmatter
+- file: 1_bandits/bandits
+# - file: mdps
+# - file: control
+# - file: policy_gradient
+# - file: challenges
+# - file: appendix
