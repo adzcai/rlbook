@@ -21,6 +21,9 @@ Create a new [mamba](https://mamba.readthedocs.io/en/latest/index.html) environm
 
 ```
 mamba create -f environment.yml
+mamba activate rlbook
+jb build book
+open book/_build/html/index.html
 ```
 
 [_config.yml](_config.yml) contains project configuration.
@@ -51,7 +54,7 @@ Some relevant parts of the Jupyter Book documentation and related software:
 jb myst init mymarkdownfile.md
 ```
 
-## Syntax
+## Markdown syntax
 
 [Docs](https://jupyterbook.org/en/stable/content/references.html#content-references)
 
@@ -111,5 +114,9 @@ This is the content of the theorem
 And then refer to these using {prf:ref}`my-theorem` (note this uses the `prf:ref` role)
 ````
 
+
+## Code syntax
+
+- We use [Plotly Express](https://plotly.com/python/plotly-express/) for plotting.
 
 

@@ -2,7 +2,7 @@
 
 Welcome to the study of reinforcement learning! This set of lecture
 notes accompanies the undergraduate course CS/STAT 184 and is intended
-to be a friendly yet rigorous introduction to this exciting and active
+to be a friendly yet rigorous introduction to this active
 subfield of machine learning. Here are some questions you might have
 before embarking on this journey:
 
@@ -20,20 +20,20 @@ to ChatGPT, are built on top of RL.
 algebra, and probability. For Harvard undergraduates, this would be
 fulfilled by Math 21a, Math 21b, and Stat 110. Stat 111 is strongly
 recommended but not required. Here is a non-comprehensive list of topics
-of which this book will assume knowledge:
+you should be familiar with before starting this book:
 
--   **Linear Algebra:** Vectors, matrices, matrix multiplication, matrix
+-   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
     inversion, eigenvalues and eigenvectors, and the Gram-Schmidt
     process.
 
--   **Multivariable Calculus:** Partial derivatives, gradient,
-    directional derivative, and the chain rule.
+-   **Multivariable Calculus:** Partial derivatives, gradients,
+    directional derivatives, the chain rule, Taylor series.
 
 -   **Probability:** Random variables, probability distributions,
-    expectation, variance, covariance, conditional probability, Bayes'
-    rule, and the law of total probability.
+    expectation, the law of iterated expectations (Adam's rule), variance, covariance,
+    conditional probability, Bayes's rule, and the law of total probability.
 
-How does reinforcement learning differ from other machine learning **paradigms** 
+How does reinforcement learning differ from other machine learning paradigms?
 Here is a list of comparisons:
 
 -   **Supervised learning.** Supervised learning concerns itself with
@@ -50,22 +50,43 @@ Here is a list of comparisons:
     use supervised learning to predict how valuable a given state is, or
     to predict the probability of transitioning to a given state.
 
+-  **Unsupervised learning.** Unsupervised learning deals with learning the
+    structure of data without the use of labels.
+
 ## Overview
 
-Chapter 1 introduces **Markov Decision Processes**, the dominant
-mathematical framework for studying RL. We'll discuss **dynamic
-programming** algorithms for solving MDPs, including **policy
-evaluation**, **policy iteration**, and **value iteration**.
+[Chapter 2](sec@bandits) discusses **multi-armed bandits**, a simple model for
+reinforcement learning. In this setting, there are multiple arms, each with their
+own reward distribution. The agent must decide which arm to pull at each time step.
 
-Chapter 2 then discusses **multi-armed bandits**, a simpler problem that
-is often used as a warm-up to RL.
+[Chapter 3](sec@mdps) introduces (finite) **Markov Decision Processes**, the dominant
+mathematical framework for studying RL. This general framework models an agent
+interacting with a environment that in responds to its actions. Certain states
+and actions will be rewarded, and the agent's goal is to maximize its total reward.
+
+[Chapter 4](sec@fitted_dp) introduces **fitted dynamic programming** algorithms
+for solving MDPs when the state space is too large to be enumerated. These algorithms
+borrow ideas from supervised learning to approximate the value function (discussed in {ref}`sec@mdps`).
+
+[Chapter 5](sec@lqr) is a standalone chapter on the **linear quadratic regulator**,
+an important tool for *continuous control*, in which the state space is no longer
+finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_\st}$).
+
+
+| Chapter | States | Actions | Rewards (or costs) |
+|:-------:|:------:|:-------:|:-------:|
+| {ref}`sec@bandits` | N/A | Finite | Stochastic |
+| {ref}`sec@mdps` | Finite | Finite | Deterministic |
+| {ref}`sec@fitted_dp` | Large or continuous | Finite | Deterministic |
+| {ref}`sec@lqr` | Continuous | Continuous | Deterministic |
+
 
 ## Notation
 
 We will use the following notation throughout the book. This notation is
 inspired by Sutton and Barto and AJKS .
 
-|               |                           |
+| Notation      | Definition                |
 |:-------------:|:--------------------------|
 |      $s$      | A state.                  |
 |      $a$      | An action.                |
@@ -78,7 +99,7 @@ inspired by Sutton and Barto and AJKS .
 |   $\gamma$    | A discount factor.        |
 |    $\tau$     | A trajectory.             |
 | $\mathcal{S}$ | A state space.            |
-|     $\mathcal{A}$      | An action space.          |
+| $\mathcal{A}$ | An action space.          |
 
 ## Challenges of reinforcement learning
 
@@ -91,9 +112,15 @@ pair.
 **Policy computation (control).** In a complex environment, even if the dynamics are known, it can still
 be challenging to compute the best policy.
 
-## Resources
 
-Inspired by the Stat 110 textbook and Stat 111 lecture notes.
+## Programming
 
-This book seeks to provide an intuitive understanding before technical
-treatment.
+This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html).
+
+It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for
+numerical computing.
+JAX was chosen for the clarity of its functional style
+and due to its extensive RL ecosystem.
+
+We use the standard [Gymnasium](https://gymnasium.farama.org/) library for
+interfacing with RL environments.

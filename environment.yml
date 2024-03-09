@@ -1,9 +1,13 @@
 name: rlbook
+channels:
+  - conda-forge
+  - plotly
 dependencies:
   - jupyter-book
   - python 3.12.*
   - gymnasium
-  - matplotlib
+  - plotly
+  - jax
   - jupytext 1.16.*
   - pip:
     - sphinx-proof
