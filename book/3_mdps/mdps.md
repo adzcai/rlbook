@@ -15,12 +15,18 @@ kernelspec:
 (sec@mdps)=
 # Finite Markov Decision Processes
 
+```{contents}
+:local:
+```
+
 ```{code-cell} ipython3
 :tags: ["hide-input"]
 
 from typing import NamedTuple, Optional
 from jaxtyping import Float, Int, Array
 import jax.numpy as np
+from jax import vmap
+from functools import partial
 ```
 
 The field of RL studies how an agent can learn to make sequential
@@ -80,9 +86,9 @@ the **optimal policy** for a given MDP. We’ll introduce the **Bellman
 consistency condition**, which allows us to analyze the whole series of
 interactions in terms of individual timesteps.
 
-## Finite horizon MDPs
+## Finite-horizon MDPs
 
-:::{prf:definition} Finite-horizon Markov decision process
+::::{prf:definition} Finite-horizon Markov decision process
 :label: finite_mdp
 
 The components of a finite-horizon Markov decision process are:
@@ -111,7 +117,24 @@ Combined together, these objects specify a finite-horizon Markov
 decision process:
 
 $$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, H).$$
+
+When there are **finitely** many states and actions, i.e.
+$|\mathcal{S}|, |\mathcal{A}| < \infty$, we can express
+the relevant quantities as vectors and matrices (i.e. *tables* of
+values):
+
+$$
+\begin{aligned}
+    r &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|} &
+    P &\in [0, 1]^{(|\mathcal{S} \times \mathcal{A}|) \times |\mathcal{S}|} &
+    \mu &\in [0, 1]^{|\mathcal{S}|}
+\end{aligned}
+$$
+
+:::{attention}
+Verify that these types make sense!
 :::
+::::
 
 ```{code-cell} ipython3
 class MDP(NamedTuple):
@@ -215,9 +238,15 @@ inputs, and time-dependence. We'll discuss each of these in turn.
     $\pi_\hi$ at each time step $\hi$.
 :::
 
+Note that for finite state and action spaces,
+we can represent a randomized mapping $\mathcal{S} \to \Delta(\mathcal{A})$
+as a matrix $\pi \in [0, 1]^{\mathcal{S}, \mathcal{A}}$ where each row describes
+the policy's distribution over actions for the corresponding state.
+
 ```{code-cell} ipython3
 # In code, we use the `Policy` type to represent a randomized mapping from states to actions.
-# In the finite-horizon case, an array of `H` of these would constitute a time-dependent policy.
+# In the finite-horizon case, an array of `H` of these, one for at each time step,
+# would constitute a time-dependent policy.
 type Policy = Float[Array, "S A"]
 ```
 
@@ -382,6 +411,8 @@ def v_to_q(
     """
     # the discount factor is relevant later
     return mdp.r + mdp.γ * mdp.P @ v
+
+v_ary_to_q_ary = vmap(v_to_q, in_axes=(None, 0))
 ```
 
 #### Greedy policies
@@ -396,7 +427,7 @@ def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
     """
     return np.eye(q.shape[1])[np.argmax(q, axis=1)]
 
-def v_to_greedy(v: Float[Array, "S"], mdp: MDP) -> Float[Array, "S A"]:
+def v_to_greedy(mdp: MDP, v: Float[Array, "S"]) -> Float[Array, "S A"]:
     """Get the (deterministic) greedy policy w.r.t. a value function."""
     return q_to_greedy(v_to_q(mdp, v))
 ```
@@ -416,7 +447,7 @@ $$V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) +
 :::
 
 ```{code-cell} ipython3
-def check_bellman_consistency(
+def check_bellman_consistency_v(
     mdp: MDP,
     policy: Float[Array, "H S A"],
     v_ary: Float[Array, "H S"],
@@ -426,8 +457,13 @@ def check_bellman_consistency(
     satisfies the Bellman consistency equation.
     """
     return all(
-        np.allclose(v_ary[hi], bellman_operator(mdp, policy[hi], v_ary[hi + 1]))
-        for hi in range(mdp.H - 1)
+        np.allclose(
+            # lhs
+            v_ary[h],
+            # rhs
+            np.sum(policy[h] * (mdp.r + mdp.γ * mdp.P @ v_ary[h + 1]), axis=1),
+        )
+        for h in range(mdp.H - 1)
     )
 ```
 
@@ -445,6 +481,10 @@ action-value function:
 $$Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}(s')}} [Q_{\hi+1}^\pi(s', a')]$$
 :::
 
+:::{attention}
+Write a `check_bellman_consistency_q` function for the action-value function.
+:::
+
 :::{prf:remark} The Bellman consistency equation for deterministic policies
 :label: bellman_det
 
@@ -460,7 +500,7 @@ $$
 :::
 
 (bellman_operator)=
-### The Bellman operator
+### The one-step Bellman operator
 
 Fix a policy $\pi$. Consider the higher-order operator that takes in a
 "value function" $v : \mathcal{S} \to \mathbb{R}$ and returns the r.h.s. of the Bellman
@@ -475,7 +515,7 @@ $$[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} 
 ```{code-cell} ipython3
 :tags: ["hide-input"]
 
-def bellman_operator_finite(
+def bellman_operator(
     mdp: MDP,
     policy: Float[Array, "S A"],
     v: Float[Array, "S"],
@@ -493,7 +533,7 @@ def bellman_operator_finite(
 ```
 
 ```{code-cell} ipython3
-def bellman_operator_finite(
+def bellman_operator(
     mdp: MDP,
     policy: Float[Array, "S A"],
     v: Float[Array, "S"],
@@ -521,13 +561,17 @@ When we discuss infinite-horizon MDPs, the Bellman operator will turn
 out to be more than just a notational convenience: We'll use it to
 construct algorithms for computing the optimal policy.
 
-### Policy evaluation
+
+(sec@finite_horizon_mdps)=
+## Solving finite-horizon MDPs
+
+(eval_dp)=
+### Policy evaluation in finite-horizon MDPs
 
 How can we actually compute the value function of a given policy? This
 is the task of **policy evaluation**.
 
-(eval_dp)=
-#### Dynamic programming
+:::{prf:algorithm} DP algorithm to evaluate a policy in a finite-horizon MDP
 
 The Bellman consistency equation
 {prf:ref}`bellman_consistency`
@@ -537,14 +581,15 @@ timestep $\hi$ as a function of the value function at timestep $\hi+1$. This
 means we can start at the end of the time horizon, where the value is
 known, and work backwards in time, using the Bellman consistency
 equation to compute the value function at each time step.
+:::
 
 ```{code-cell} ipython3
 def dp_eval_finite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "H S"]:
     """Evaluate a policy using dynamic programming."""
-    V = np.zeros((mdp.H, mdp.S))
-    for h in range(mdp.H - 1, -1, -1):
-        V[h, :] = bellman_operator_finite(V[h + 1, :], policy, mdp)
-    return V
+    V_ary = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
+    for h in range(mdp.H-1, -1, -1):
+        V_ary[h] = bellman_operator(mdp, policy[h], V_ary[h+1])
+    return np.stack(V_ary[:-1])
 ```
 
 This runs in time $O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)$ by counting the
@@ -591,7 +636,13 @@ etc. You may wish to repeat this computation for the
 other policies to get a better sense of this algorithm.
 :::
 
-### Optimal policies
+```{code-cell} ipython3
+V_messy = dp_eval_finite(tidy_mdp, tidy_policy_messy_only)
+V_messy
+```
+
+(opt_dynamic_programming)=
+### Optimal policies in finite-horizon MDPs
 
 We've just seen how to *evaluate* a given policy. But how can we find
 the **optimal policy** for a given environment?
@@ -632,10 +683,13 @@ action-value function:
 $$\pi_\hi^\star(s) = \arg\max_a Q_\hi^\star(s, a).$$
 :::
 
-::::{prf:proof} Proof of {prf:ref}`optimal_greedy`
+::::{prf:proof} Proof
 Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and
 action-value functions. Consider the greedy policy
-$$\hat \pi_\hi(s) := \arg\max_a Q_\hi^{\star}(s, a).$$ We aim to show that
+
+$$\hat \pi_\hi(s) := \arg\max_a Q_\hi^{\star}(s, a).$$
+
+We aim to show that
 $\hat \pi$ is optimal; that is, $V^{\hat \pi} = V^{\star}$.
 
 Fix an arbitrary state $s \in \mathcal{S}$ and time $\hi \in [H]$.
@@ -693,75 +747,66 @@ $$
 And so we have $V^{\star} = V^{\hat \pi}$, making $\hat \pi$ optimal.
 ::::
 
-(opt_dynamic_programming)=
-#### Dynamic programming
-
 Now that we've shown this particular greedy policy is optimal, all we
 need to do is compute the optimal value function and optimal policy. We
 can do this by working backwards in time using **dynamic programming**
 (DP).
 
-:::{prf:algorithm} DP for optimal policy
+:::{prf:algorithm} DP algorithm to compute an optimal policy in a finite-horizon MDP
 :label: pi_star_dp
 
-We can solve for the optimal policy in an finite-horizon MDP using
-**dynamic programming**.
+**Base case.** At the end of the episode (time step $H-1$), we can't
+take any more actions, so the $Q$-function is simply the reward that
+we obtain:
 
--   *Base case.* At the end of the episode (time step $H-1$), we can't
-    take any more actions, so the $Q$-function is simply the reward that
-    we obtain:
-    
-    $$Q^\star_{H-1}(s, a) = r(s, a)$$
-    
-    so the best thing to do
-    is just act greedily and get as much reward as we can!
+$$Q^\star_{H-1}(s, a) = r(s, a)$$
 
-    $$\pi^\star_{H-1}(s) = \arg\max_a Q^\star_{H-1}(s, a)$$
-    
-    Then
-    $V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
-    trajectory, is simply whatever action gives the most reward.
-    
-    $$V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)$$
+so the best thing to do
+is just act greedily and get as much reward as we can!
 
--   *Recursion.* Then, we can work backwards in time, starting from the
-    end, using our consistency equations! i.e. for each
-    $t = H-2, \dots, 0$, we set
-    
-    $$
-    \begin{aligned}
-                Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{\hi+1}(s')] \\
-                \pi^\star_{t}(s) &= \arg\max_a Q^\star_{t}(s, a) \\
-                V^\star_{t}(s) &= \max_a Q^\star_{t}(s, a)
-            
-    \end{aligned}
-    $$
+$$\pi^\star_{H-1}(s) = \arg\max_a Q^\star_{H-1}(s, a)$$
+
+Then
+$V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
+trajectory, is simply whatever action gives the most reward.
+
+$$V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)$$
+
+**Recursion.** Then, we can work backwards in time, starting from the
+end, using our consistency equations! i.e. for each
+$t = H-2, \dots, 0$, we set
+
+$$
+\begin{aligned}
+    Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{\hi+1}(s')] \\
+    \pi^\star_{t}(s) &= \arg\max_a Q^\star_{t}(s, a) \\
+    V^\star_{t}(s) &= \max_a Q^\star_{t}(s, a)
+\end{aligned}
+$$
 :::
 
 ```{code-cell} ipython3
 def find_optimal_policy(mdp: MDP):
-    Q = np.zeros((mdp.H, mdp.S, mdp.A))
-    V = np.zeros((mdp.H, mdp.S))
-    π = np.zeros((mdp.H, mdp.S), dtype=int)  # deterministic policy
+    Q = [None] * mdp.H
+    π = [None] * mdp.H
+    V = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
 
-    # Base case
-    Q[mdp.H - 1, :, :] = mdp.r
-    π[mdp.H - 1, :] = np.argmax(Q[mdp.H - 1, :, :], axis=1)
-    V[mdp.H - 1, :] = np.max(Q[mdp.H - 1, :, :], axis=1)
+    for h in range(mdp.H - 1, -1, -1):
+        Q[h] = mdp.r + mdp.P @ V[h + 1]
+        π[h] = np.eye(mdp.S)[np.argmax(Q[h], axis=1)]  # one-hot
+        V[h] = np.max(Q[h], axis=1)
+    
+    Q = np.stack(Q)
+    π = np.stack(π)
+    V = np.stack(V[:-1])
 
-    # Recursion
-    for h in range(mdp.H - 2, -1, -1):
-        Q[h, :, :] = mdp.r[:, :] + mdp.P[:, :, :] @ V[h + 1, :]
-        π[h, :] = np.argmax(Q[h, :, :], axis=1)
-        V[h, :] = np.max(Q[h, :, :], axis=1)
-
-    return π, V
+    return π, V, Q
 ```
 
 At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of
 the $|\mathcal{S}| |\mathcal{A}|$ state-action pairs. Each computation takes $|\mathcal{S}|$
 operations to evaluate the average value over $s'$. This gives a total
-computation time of $O(H |\mathcal{S}|^2 |\mathcal{A}|)$.
+computation time of $O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)$.
 
 Note that this algorithm is identical to the policy evaluation algorithm
 [`dp_eval_finite`](eval_dp), but instead of *averaging* over the
@@ -770,13 +815,15 @@ action-values. We'll see this relationship between **policy evaluation**
 and **optimal policy computation** show up again in the infinite-horizon
 setting.
 
-:::{prf:example} Optimal policy for the tidying MDP
-:label: tidy_dp
+```{code-cell} ipython3
+π_opt, V_opt, Q_opt = find_optimal_policy(tidy_mdp)
+assert np.allclose(π_opt, tidy_policy_messy_only)
+assert np.allclose(V_opt, V_messy)
+assert np.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
+"Assertions passed (the 'tidy when messy' policy is optimal)"
+```
 
-Left as an exercise.
-:::
-
-## Infinite horizon MDPs
+## Infinite-horizon MDPs
 
 What happens if a trajectory is allowed to continue forever (i.e.
 $H = \infty$)? This is the setting of **infinite horizon** MDPs.
@@ -822,13 +869,10 @@ The other components of the MDP remain the same:
 
 $$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).$$
 
-```{code-cell}
-class MDP(NamedTuple):
-    S: int  # number of states
-    A: int  # number of actions
-    P: Float[Array, "S A S"]  # state transition probabilities
-    r: Float[Array, "S A"]  # rewards
-    γ: float  # discount factor
+Code-wise, we can reuse the `MDP` class from before {prf:ref}`finite_mdp` and set `mdp.H = float('inf')`.
+
+```{code-cell} ipython3
+tidy_mdp_inf = tidy_mdp._replace(H=float('inf'), γ=0.95)
 ```
 
 ### Stationary policies
@@ -852,14 +896,12 @@ into the Bellman consistency equation {prf:ref}`bellman_consistency` to account 
 :::{math}
 :label: bellman_consistency_infinite
 
-$$
 \begin{aligned}
     V^\pi(s) &= \E_{\tau \sim \rho^\pi} [r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} \cdots \mid s_\hi = s] && \text{for any } \hi \in \mathbb{N} \\
     &= \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma V^\pi(s')]\\
     Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid s_\hi = s, a_\hi = a] && \text{for any } \hi \in \mathbb{N} \\
     &= r(s, a) + \gamma \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi(s')}} [Q^\pi(s', a')]
 \end{aligned}
-$$
 :::
 
 :::{attention}
@@ -867,7 +909,7 @@ Heuristically speaking, why does it no longer matter which
 time step we condition on when defining the value function?
 :::
 
-## Solving MDPs
+## Solving infinite-horizon MDPs
 
 ### The Bellman operator is a contraction mapping
 
@@ -947,7 +989,8 @@ $$
 $$
 :::
 
-:::{prf:proof} Proof of {prf:ref}`bellman_contraction`
+:::{dropdown} Proof of {prf:ref}`bellman_contraction`
+
 For all states $s \in \mathcal{S}$,
 
 $$
@@ -962,27 +1005,18 @@ $$
 $$
 :::
 
-### Tabular case (linear algebraic notation)
+### Policy evaluation in infinite-horizon MDPs
 
-When there are **finitely** many states and actions, i.e.
-$|\mathcal{S}|, |\mathcal{A}| < \infty$, we call the MDP **tabular** since we can express
-the relevant quantities as vectors and matrices (i.e. *tables* of
-values):
+The backwards DP technique we used in [the finite-horizon case](eval_dp) no
+longer works since there is no "final timestep" to start from. We'll
+need another approach to policy evaluation.
 
-$$
-\begin{aligned}
-    r &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|} &
-    P &\in [0, 1]^{(|\mathcal{S} \times \mathcal{A}|) \times |\mathcal{S}|} &
-    \mu &\in [0, 1]^{|\mathcal{S}|} \\
-    \pi &\in [0, 1]^{|\mathcal{A}| \times |\mathcal{S}|} &
-    V^\pi &\in \mathbb{R}^{|\mathcal{S}|} &
-    Q^\pi &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}.
-\end{aligned}
-$$
+The Bellman consistency conditions yield a system of equations we can
+solve to evaluate a deterministic policy *exactly*. For a faster approximate solution,
+we can iterate the policy's Bellman operator, since we know that it has
+a unique fixed point at the true value function.
 
-:::{attention}
-Verify that these types make sense!
-:::
+#### Matrix inversion for deterministic policies
 
 Note that when the policy $\pi$ is deterministic, the actions can be
 determined from the states, and so we can chop off the action dimension
@@ -1004,24 +1038,15 @@ transitioning from state $s$ to state $s'$ under policy $\pi$.
 
 The tabular MDP from before has $|\mathcal{S}| = 2$ and $|\mathcal{A}| = 2$. Let's write
 down the quantities for the policy $\pi$ that tidies if and only if the
-room is messy: $$r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad
+room is messy:
+
+$$r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad
         P^{\pi} = \begin{bmatrix} 0.7 & 0.3 \\ 1 & 0 \end{bmatrix}, \quad
-        \mu = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$$ We'll see how to
+        \mu = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$$
+        
+We'll see how to
 evaluate this policy in the next section.
 :::
-
-### Policy evaluation
-
-The backwards DP technique we used in [the finite-horizon case](eval_dp) no
-longer works since there is no "final timestep" to start from. We'll
-need another approach to policy evaluation.
-
-The Bellman consistency conditions yield a system of equations we can
-solve to evaluate a policy *exactly*. For a faster approximate solution,
-we can iterate the policy's Bellman operator, since we know that it has
-a unique fixed point at the true value function.
-
-#### Tabular case for deterministic policies
 
 The Bellman consistency equation for a deterministic policy can be
 written in tabular notation as
@@ -1038,6 +1063,7 @@ inversion:
 V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.
 :::
 
+:::{attention}
 Note we've assumed that $I - \gamma P^\pi$ is invertible. Can you see
 why this is the case?
 
@@ -1046,6 +1072,15 @@ and only if its null space is trivial; that is, it doesn't map any
 nonzero vector to zero. In this case, we can see that $I - \gamma P^\pi$
 is invertible because it maps any nonzero vector to a vector with at
 least one nonzero element.)
+:::
+
+```{code-cell} ipython3
+def eval_deterministic_infinite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "S"]:
+    π = np.argmax(policy, axis=1)  # un-one-hot
+    P_π = mdp.P[np.arange(mdp.S), π]
+    r_π = mdp.r[np.arange(mdp.S), π]
+    return np.linalg.solve(np.eye(mdp.S) - mdp.γ * P_π, r_π)
+```
 
 :::{prf:example} Tidying policy evaluation
 :label: tidy_eval_infinite
@@ -1069,26 +1104,55 @@ $1/(1-\gamma) = 20$. We see that the value function is indeed slightly
 lower than this.
 :::
 
+```{code-cell} ipython3
+eval_deterministic_infinite(tidy_mdp_inf, tidy_policy_messy_only[0])
+```
+
 (iterative_pe)=
 #### Iterative policy evaluation
 
-The matrix inversion above takes roughly $O(|\mathcal{S}|^3)$ time. Can we trade
-off the requirement of finding the *exact* value function for a faster
-*approximate* algorithm?
+The matrix inversion above takes roughly $O(|\mathcal{S}|^3)$ time.
+It also only works for deterministic policies.
+Can we trade off the requirement of finding the *exact* value function for a faster
+*approximate* algorithm that will also extend to stochastic policies?
 
 Let's use the Bellman operator to define an iterative algorithm for
 computing the value function. We'll start with an initial guess
 $v^{(0)}$ with elements in $[0, 1/(1-\gamma)]$ and then iterate the
 Bellman operator:
 
-$$v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}) = r^{\pi} + \gamma P^{\pi} v^{(t)},$$
+$$v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}),$$
 
 i.e. $v^{(t)} = (\mathcal{J}^{\pi})^{(t)} (v^{(0)})$. Note that each iteration
 takes $O(|\mathcal{S}|^2)$ time for the matrix-vector multiplication.
 
+```{code-cell} ipython3
+def supremum_norm(v):
+    return np.max(np.abs(v))  # same as np.linalg.norm(v, np.inf)
+
+def loop_until_convergence(op, v, ε=1e-6):
+    """Repeatedly apply op to v until convergence (in supremum norm)."""
+    while True:
+        v_new = op(v)
+        if supremum_norm(v_new - v) < ε:
+            return v_new
+        v = v_new
+
+def iterative_evaluation(mdp: MDP, π: Float[Array, "S A"], ε=1e-6) -> Float[Array, "S"]:
+    op = partial(bellman_operator, mdp, π)
+    return loop_until_convergence(op, np.zeros(mdp.S), ε)
+```
+
 Then, as we showed in {eq}`bellman_convergence`, by the Banach fixed-point theorem:
 
 $$\|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.$$
+
+```{code-cell} ipython3
+iterative_evaluation(tidy_mdp_inf, tidy_policy_messy_only[0])
+```
+
+::::{prf:remark} Convergence of iterative policy evaluation
+:label: iterations_vi
 
 How many iterations do we need for an $\epsilon$-accurate estimate? We
 can work backwards to solve for $t$:
@@ -1104,20 +1168,20 @@ $$
 and so the number of iterations required for an
 $\epsilon$-accurate estimate is
 
-:::{math}
-:label: iterations_vi
-
+$$
 T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \right).
-:::
+$$
 
 Note that we've applied the inequalities
 $\|v^{(0)} - V^\pi\|_{\infty} \le 1/(1-\gamma)$ and
 $\log (1/x) \ge 1-x$.
+::::
 
-### Optimal policies
+(optimal_policy_finite)=
+### Optimal policies in infinite-horizon MDPs
 
 Now let's move on to solving for an optimal policy in the
-infinite-horizon case. As in the finite-horizon case {prf:ref}`optimal_policy_finite`, an **optimal policy** $\pi^\star$
+infinite-horizon case. As in {prf:ref}`the finite-horizon case <optimal_policy_finite>`, an **optimal policy** $\pi^\star$
 is one that does at least as well as any other policy in all situations.
 That is, for all policies $\pi$, states $s \in \mathcal{S}$, times
 $\hi \in \mathbb{N}$, and initial trajectories
@@ -1133,8 +1197,7 @@ $\tau_\hi = (s_0, a_0, r_0, \dots, s_\hi)$ where $s_\hi = s$,
 :::
 
 
-Once again, all optimal policies share the same **optimal value
-function** $V^\star$, and the greedy policy w.r.t. this value function
+Once again, all optimal policies share the same **optimal value function** $V^\star$, and the greedy policy w.r.t. this value function
 is optimal.
 
 :::{attention}
@@ -1147,26 +1210,35 @@ from. Instead, we'll exploit the fact that the Bellman consistency
 equation {eq}`bellman_consistency_infinite` for the optimal value
 function doesn't depend on any policy:
 
-$$V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]$$
+:::{math}
+:label: bellman_optimality
+
+V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]
+:::
 
 :::{attention}
 Verify this by substituting the greedy policy into the
 Bellman consistency equation.
 :::
 
-As before, thinking of the r.h.s. as an operator on value functions
+As before, thinking of the r.h.s. of {eq}`bellman_optimality` as an operator on value functions
 gives the **Bellman optimality operator**
 
-$$[\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right].$$
+:::{math}
+:label: bellman_optimality_operator
+
+[\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right]
+:::
 
 ```{code-cell} ipython3
-def bellman_optimality_operator(v: Float[Array, "S"], mdp: MDP) -> Float[Array, "S"]:
+def bellman_optimality_operator(mdp: MDP, v: Float[Array, "S"]) -> Float[Array, "S"]:
     return np.max(mdp.r + mdp.γ * mdp.P @ v, axis=1)
 
 def check_optimal(v: Float[Array, "S"], mdp: MDP):
     return np.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
+(sec@value_iteration)=
 #### Value iteration
 
 Since the optimal policy is still a policy, our result that the Bellman
@@ -1175,17 +1247,14 @@ apply this operator to converge to the optimal value function! This
 algorithm is known as **value iteration**.
 
 ```{code-cell} ipython3
-def supremum_norm(v):
-    return np.max(np.abs(v))  # same as np.linalg.norm(v, np.inf)
+def value_iteration(mdp: MDP, ε: float = 1e-6) -> Float[Array, "S"]:
+    """Iterate the Bellman optimality operator until convergence."""
+    op = partial(bellman_optimality_operator, mdp)
+    return loop_until_convergence(op, np.zeros(mdp.S), ε)
+```
 
-def value_iteration(mdp: MDP, epsilon: float = 1e-6) -> Float[Array, "S"]:
-    v = np.zeros(S)
-    while True:
-        v_new = bellman_optimality_operator(v, mdp)
-        if supremum_norm(v_new - v) < epsilon:
-            return v_new
-        v = v_new
-
+```{code-cell} ipython3
+value_iteration(tidy_mdp_inf)
 ```
 
 Note that the runtime analysis for an $\epsilon$-optimal value function
@@ -1198,12 +1267,6 @@ $\hat \pi$, we can simply act greedily w.r.t. the final iteration
 $v^{(T)}$ of our above algorithm:
 
 $$\hat \pi(s) = \arg\max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v^{(T)}(s') \right].$$
-
-```{code-cell} ipython3
-def v_to_greedy(v: Float[Array, "S"], mdp: MDP) -> Int[Array, "S"]:
-    """Get the (deterministic) greedy policy w.r.t. a value function."""
-    return np.argmax(mdp.r + mdp.γ * mdp.P @ v, axis=1)
-```
 
 We must be careful, though: the value function of this greedy policy,
 $V^{\hat \pi}$, is *not* the same as $v^{(T)}$, which need not even be a
@@ -1285,12 +1348,13 @@ $\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
 
 $$\|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.$$
 
-This means, using {eq}`iterations_vi`, we need to run value iteration for
+This means, using {prf:ref}`iterations_vi`, we need to run value iteration for
 
 $$T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)$$
 
 iterations to achieve an $\epsilon$-accurate estimate of the optimal
 value function.
+
 
 #### Policy iteration
 
@@ -1301,25 +1365,24 @@ at the very end, we iteratively improve the policy and value function
 we simply set the policy to act greedily with respect to its own value
 function.
 
-:::{prf:definition} Policy Iteration
-:label: pi_iter
+```{code-cell} ipython3
+def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
+    """Iteratively improve the policy and value function."""
+    op = lambda π: v_to_greedy(mdp, eval_deterministic_infinite(mdp, π))
+    π_init = np.ones((mdp.S, mdp.A)) / mdp.A  # uniform random policy
+    return loop_until_convergence(op, π_init, ε)
+```
 
-::: algorithmic
-$\pi^{(0)} : \mathcal{S} \to \mathcal{A}$ arbitrary
-$V^{\pi^{(t)}} \gets (I - \gamma P^{\pi^{(t)}})^{-1} r^{\pi^{(t)}}$
-(Exact) Policy Evaluation
-{eq}`matrix_inversion_pe`
-$Q^{\pi^{(t)}}(s, a) \gets r(s, a) + \gamma \E_{s' \sim P(s, a)} [V^{\pi^{(t)}} (s')]$
-$\pi^{(t+1)}(s) \gets \arg\max_a Q^{\pi^{(t)}} (s, a)$ Policy Improvement
-:::
-:::
+```{code-cell} ipython3
+policy_iteration(tidy_mdp_inf)
+```
 
 Although PI appears more complex than VI, we'll use the same contraction
 property
 {prf:ref}`bellman_contraction` to show convergence. This will give
 us the same runtime bound as value iteration and iterative policy
 evaluation for an $\epsilon$-optimal value function
-{eq}`iterations_vi`, although in practice, PI often converges
+{prf:ref}`iterations_vi`, although in practice, PI often converges
 much faster.
 
 ::::{prf:theorem} Policy Iteration runtime and convergence
