@@ -237,11 +237,14 @@ def get_y(
 ```
 
 ```{code-cell} ipython3
-get_X(trajectories[:1])
+s, a, h = get_X(trajectories[:1])
+print("states:", s[:5])
+print("actions:", a[:5])
+print("timesteps:", h[:5])
 ```
 
 ```{code-cell} ipython3
-get_y(trajectories[:1])
+get_y(trajectories[:1])[:5]
 ```
 
 Then we can use empirical risk minimization to find a function $\hat f$ that approximates the optimal Q-function.
