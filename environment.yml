@@ -15,6 +15,7 @@ dependencies:
   - jupyterlab
   - jupytext 1.16.*
   - swig
+  - ghp-import
   - pip:
     - "gymnasium[box2d]"
     - sphinx-proof
