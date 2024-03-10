@@ -3,12 +3,18 @@ channels:
   - conda-forge
   - plotly
 dependencies:
+  # code dependencies
   - python 3.11.*
-  - gymnasium 0.29.*
   - jax 0.4.*
+  - equinox 0.11.*
+  # visualization dependencies
+  - plotly
+  - tqdm
+  # book dependencies
   - jupyter-book
   - jupyterlab
-  - plotly
   - jupytext 1.16.*
+  - swig
   - pip:
+    - "gymnasium[box2d]"
     - sphinx-proof

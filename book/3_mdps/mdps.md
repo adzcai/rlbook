@@ -247,7 +247,7 @@ the policy's distribution over actions for the corresponding state.
 # In code, we use the `Policy` type to represent a randomized mapping from states to actions.
 # In the finite-horizon case, an array of `H` of these, one for at each time step,
 # would constitute a time-dependent policy.
-type Policy = Float[Array, "S A"]
+Policy = Float[Array, "S A"]
 ```
 
 A fascinating result is that every finite-horizon MDP has an optimal
@@ -297,7 +297,7 @@ class Transition(NamedTuple):
     a: int
     r: float
 
-type Trajectory = list[Transition]
+Trajectory = list[Transition]
 ```
 
 Once we've chosen a policy, we can sample trajectories by repeatedly

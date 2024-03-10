@@ -115,7 +115,7 @@ be challenging to compute the best policy.
 
 ## Programming
 
-This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html).
+This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html). It uses [Python 3.11](https://docs.python.org/3.11/contents.html).
 
 It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for
 numerical computing.

@@ -25,34 +25,48 @@ This closely follows [these lecture slides](https://shamulent.github.io/RL_2023/
 We borrow these definitions from the {ref}`mdps` chapter:
 
 ```{code-cell} ipython3
+:tags: [hide-input]
+
 from typing import NamedTuple, Callable, Optional
 from jaxtyping import Float, Int, Array
 import jax.numpy as np
-from jax import grad
+from jax import grad, vmap, tree_map
+import jax.random as rand
 from functools import partial
+from tqdm import tqdm
+import gymnasium as gym
+
+key = rand.PRNGKey(184)
+
 
 class Transition(NamedTuple):
     s: int
     a: int
     r: float
 
-type Trajectory = list[Transition]
+
+Trajectory = list[Transition]
+
 
 def get_num_actions(trajectories: list[Trajectory]) -> int:
     """Get the number of actions in the dataset. Assumes actions range from 0 to A-1."""
     return max(max(t.a for t in τ) for τ in trajectories) + 1
 
-type State = Float[Array, "..."]  # arbitrary shape
+
+State = Float[Array, "..."]  # arbitrary shape
 
 # assume finite `A` actions and f outputs an array of Q-values
-type QFunction = Callable[[State, int], Float[Array, "A"]]
+QFunction = Callable[[State, int], Float[Array, "A"]]
+
 
 def Q_zero(A: int) -> QFunction:
     """A Q-function that always returns zero."""
     return lambda s, a: np.zeros(A)
 
+
 # a deterministic time-dependent policy
-type Policy = Callable[[State, int], int]
+Policy = Callable[[State, int], int]
+
 
 def q_to_greedy(Q: QFunction) -> Policy:
     return lambda s, h: np.argmax(Q(s, h))
@@ -168,40 +182,73 @@ x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \ma
 $$
 
 ```{code-cell} ipython3
-def transform_data(
+def collect_data(
+    env: gym.Env, N: int, H: int, key: rand.PRNGKey, π: Optional[Policy] = None
+) -> list[Trajectory]:
+    """Collect a dataset of trajectories from the given policy (or a random one)."""
+    trajectories = []
+    keys = rand.split(key, N)
+    for i in tqdm(range(N)):
+        τ = []
+        s, _ = env.reset(seed=rand.bits(keys[i]).item())
+        for h in range(H):
+            # sample from a random policy
+            a = π(s, h) if π else env.action_space.sample()
+            s_next, r, terminated, truncated, _ = env.step(a)
+            τ.append(Transition(s, a, r))
+            if terminated or truncated:
+                break
+            s = s_next
+        trajectories.append(τ)
+    return trajectories
+```
+
+```{code-cell} ipython3
+env = gym.make("LunarLander-v2")
+trajectories = collect_data(env, 100, 300, key)
+trajectories[0][:5]  # show first five transitions from first trajectory
+```
+
+```{code-cell} ipython3
+def get_X(trajectories: list[Trajectory]):
+    rows = [(τ[h].s, τ[h].a, h) for τ in trajectories for h in range(len(τ))]
+    return [np.stack(ary) for ary in zip(*rows)]
+
+
+def get_y(
     trajectories: list[Trajectory],
-    compute_label: Callable[[State, int, float], float],
+    f: Optional[QFunction] = None,
+    π: Optional[Policy] = None,
 ):
     """
     Transform the dataset of trajectories into a dataset for supervised learning.
+    If `π` is None, instead estimates the optimal Q function.
+    Otherwise, estimates the Q function of π.
     """
-    X = []
+    f = f or Q_zero(get_num_actions(trajectories))
     y = []
     for τ in trajectories:
-        for h in range(len(τ)-1):
+        for h in range(len(τ) - 1):
             s, a, r = τ[h]
-            label = compute_label(s, a, r)
-            X.append((s, a, h))
-            y.append(label)
-        # Add the last state of this trajectory to the dataset
-        X.append((τ[-1].s, τ[-1].a, len(τ)-1))
+            Q_values = f(s, h + 1)
+            y.append(r + (Q_values[π(s, h + 1)] if π else Q_values.max()))
         y.append(τ[-1].r)
-    return X, y
+    return np.array(y)
+```
 
-def compute_label_optimal(f: QFunction, s: State, a: int, r: float):
-    return r + f(s, h+1).max()
+```{code-cell} ipython3
+get_X(trajectories[:1])
+```
 
-def compute_label_from_policy(f: QFunction, π: Policy, s: State, a: int, r: float):
-    return r + f(s, h+1)[π(s, h+1)]
+```{code-cell} ipython3
+get_y(trajectories[:1])
 ```
 
 Then we can use empirical risk minimization to find a function $\hat f$ that approximates the optimal Q-function.
 
 ```{code-cell} ipython3
-def fit(X: Float[Array, "N D"], y: Float[Array, "N"]) -> QFunction:
-    # Use your favorite empirical risk minimization algorithm here
-    # We will see some examples in the next section
-    pass
+# We will see some examples in the next section
+FittingMethod = Callable[[Float[Array, "N D"], Float[Array, "N"]], QFunction]
 ```
 
 But notice that the definition of $y_{i \hi}$ depends on the Q-function itself!
@@ -212,33 +259,52 @@ We can apply the same strategy here, using the $\hat f$ from the previous iterat
 and then using this to get the next iterate.
 
 ```{code-cell} ipython3
-def fitted_q_iteration(trajectories: list[Trajectory], epochs: int, Q_init: Optional[QFunction] = None) -> QFunction:
+def fitted_q_iteration(
+    trajectories: list[Trajectory],
+    fit: FittingMethod,
+    epochs: int,
+    Q_init: Optional[QFunction] = None,
+) -> QFunction:
     """
     Run fitted Q-function iteration using the given dataset.
     Returns an estimate of the optimal Q-function.
     """
     Q_hat = Q_init or Q_zero(get_num_actions(trajectories))
-    for _ in range(epochs):
+    for _ in tqdm(range(epochs)):
         X, y = transform_data(trajectories, partial(compute_label_optimal, Q_hat))
         Q_hat = fit(X, y)
     return Q_hat
 
-def fitted_evaluation(trajectories: list[Trajectory], π: Policy, epochs: int, Q_init: Optional[QFunction] = None) -> QFunction:
+
+def fitted_evaluation(
+    trajectories: list[Trajectory],
+    fit: FittingMethod,
+    π: Policy,
+    epochs: int,
+    Q_init: Optional[QFunction] = None,
+) -> QFunction:
     """
     Run fitted policy evaluation using the given dataset.
     Returns an estimate of the Q-function of the given policy.
     """
     Q_hat = Q_init or Q_zero(get_num_actions(trajectories))
-    for _ in range(epochs):
-        X, y = transform_data(trajectories, partial(compute_label_from_policy, Q_hat, π))
+    for _ in tqdm(range(epochs)):
+        X, y = transform_data(trajectories, Q_hat, π)
         Q_hat = fit(X, y)
     return Q_hat
 
-def fitted_policy_iteration(trajectories: list[Trajectory], epochs: int, π_init: Optional[Policy] = None):
+
+def fitted_policy_iteration(
+    trajectories: list[Trajectory],
+    fit: FittingMethod,
+    epochs: int,
+    evaluation_epochs: int,
+    π_init: Optional[Policy] = None,
+):
     """Run fitted policy iteration using the given dataset."""
     π = π_init or (lambda s, h: 0)  # constant zero policy
-    for _ in range(epochs):
-        Q_hat = fitted_evaluation(trajectories, π)
+    for _ in tqdm(range(epochs)):
+        Q_hat = fitted_evaluation(trajectories, fit, π, evaluation_epochs)
         π = q_to_greedy(Q_hat)
     return π
 ```
@@ -282,7 +348,8 @@ where $\eta > 0$ is the **learning rate**.
 :::
 
 ```{code-cell} ipython3
-type Params = Float[Array, "D"]
+Params = Float[Array, "D"]
+
 
 def gradient_descent(
     loss: Callable[[Params], float],
@@ -308,16 +375,17 @@ $$
 \mathcal{F} = \{ x \mapsto \theta^\top x \mid \theta \in \mathbb{R}^D \}
 $$
 
-```{code-cell} ipython3
-def fit_linear(X: Float[Array, "N D"], y: Float[Array, "N"]):
-    """Fit a linear model to the given dataset using ordinary least squares."""
-    θ = np.linalg.lstsq(X, y, rcond=None)[0]
-    return lambda x: np.dot(x, θ)
-```
-
 This function class is extremely simple and only contains linear functions.
 To expand its expressivity, we can _transform_ the input $x$ using some feature function $\phi$,
 i.e. $\widetilde x = \phi(x)$, and then fit a linear model in the transformed space instead.
+
+```{code-cell} ipython3
+def fit_linear(X: Float[Array, "N D"], y: Float[Array, "N"], φ=lambda x: x):
+    """Fit a linear model to the given dataset using ordinary least squares."""
+    X = vmap(φ)(X)
+    θ = np.linalg.lstsq(X, y, rcond=None)[0]
+    return lambda x: np.dot(φ(x), θ)
+```
 
 ### Neural networks
 
@@ -328,4 +396,20 @@ $$
 $$
 
 where $W_i \in \mathbb{R}^{D_{i+1} \times D_i}$ and $b_i \in \mathbb{R}^{D_{i+1}}$ are the parameters of the $i$-th layer, and $\sigma$ is the activation function.
+
+This function class is much more expressive and contains many more parameters.
+This makes it more susceptible to overfitting on smaller datasets,
+but also allows it to represent more complex functions.
+In practice, however, neural networks exhibit interesting phenomena during training,
+and are often able to generalize well even with many parameters.
+
+Another reason for their popularity is the efficient **backpropagation** algorithm
+for computing the gradient of the empirical risk with respect to the parameters.
+Essentially, the hierarchical structure of the neural network, i.e. computing the
+output of the network as a composition of functions, allows us to use the chain rule
+to compute the gradient of the output with respect to the parameters of each layer.
+
+{cite}`nielsen_neural_2015` provides a comprehensive introduction to neural networks and backpropagation.
+
+
 
