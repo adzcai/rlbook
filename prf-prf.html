@@ -1,0 +1,850 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proof Index &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'prf-prf';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+
+    <script>
+      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
+    </script>
+
+
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/184.png" class="logo__image only-light" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>
+    <script>document.write(`<img src="_static/184.png" class="logo__image only-dark" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_intro/intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_bandits/bandits.html">2. Bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_fitted_dp/fitted_dp.html">4. Fitted dynamic programming algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_control/control.html">5. Linear Quadratic Regulators</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+   <h1>Proof Index</h1>
+
+   <div class="modindex-jumpbox">
+   <a href="#cap-action_value"><strong>action_value</strong></a> | 
+   <a href="#cap-advertising"><strong>advertising</strong></a> | 
+   <a href="#cap-algorithm-14"><strong>algorithm-14</strong></a> | 
+   <a href="#cap-algorithm-3"><strong>algorithm-3</strong></a> | 
+   <a href="#cap-autoregressive_trajectories"><strong>autoregressive_trajectories</strong></a> | 
+   <a href="#cap-bayesian_bernoulli"><strong>bayesian_bernoulli</strong></a> | 
+   <a href="#cap-bellman_consistency"><strong>bellman_consistency</strong></a> | 
+   <a href="#cap-bellman_consistency_action"><strong>bellman_consistency_action</strong></a> | 
+   <a href="#cap-bellman_consistency_optimal"><strong>bellman_consistency_optimal</strong></a> | 
+   <a href="#cap-bellman_contraction"><strong>bellman_contraction</strong></a> | 
+   <a href="#cap-bellman_det"><strong>bellman_det</strong></a> | 
+   <a href="#cap-bellman_operator"><strong>bellman_operator</strong></a> | 
+   <a href="#cap-cart_pole"><strong>cart_pole</strong></a> | 
+   <a href="#cap-clinical_trials"><strong>clinical_trials</strong></a> | 
+   <a href="#cap-conditional_expectation_minimizes_mse"><strong>conditional_expectation_minimizes_mse</strong></a> | 
+   <a href="#cap-contraction"><strong>contraction</strong></a> | 
+   <a href="#cap-empirical_risk_minimization"><strong>empirical_risk_minimization</strong></a> | 
+   <a href="#cap-epsilon_greedy"><strong>epsilon_greedy</strong></a> | 
+   <a href="#cap-finite_mdp"><strong>finite_mdp</strong></a> | 
+   <a href="#cap-greedy_worsen"><strong>greedy_worsen</strong></a> | 
+   <a href="#cap-hoeffding"><strong>hoeffding</strong></a> | 
+   <a href="#cap-ilqr"><strong>ilqr</strong></a> | 
+   <a href="#cap-iterations_vi"><strong>iterations_vi</strong></a> | 
+   <a href="#cap-lemma-18"><strong>lemma-18</strong></a> | 
+   <a href="#cap-lqr"><strong>lqr</strong></a> | 
+   <a href="#cap-markov"><strong>markov</strong></a> | 
+   <a href="#cap-multi-armed"><strong>multi-armed</strong></a> | 
+   <a href="#cap-nonlinear_control"><strong>nonlinear_control</strong></a> | 
+   <a href="#cap-optimal_control"><strong>optimal_control</strong></a> | 
+   <a href="#cap-optimal_greedy"><strong>optimal_greedy</strong></a> | 
+   <a href="#cap-optimal_policy_finite"><strong>optimal_policy_finite</strong></a> | 
+   <a href="#cap-optimal_policy_lqr_linear"><strong>optimal_policy_lqr_linear</strong></a> | 
+   <a href="#cap-optimal_value_lqr"><strong>optimal_value_lqr</strong></a> | 
+   <a href="#cap-optimal_value_lqr_quadratic"><strong>optimal_value_lqr_quadratic</strong></a> | 
+   <a href="#cap-parameterized_empirical_risk_minimization"><strong>parameterized_empirical_risk_minimization</strong></a> | 
+   <a href="#cap-pi_iter_analysis"><strong>pi_iter_analysis</strong></a> | 
+   <a href="#cap-pi_star_dp"><strong>pi_star_dp</strong></a> | 
+   <a href="#cap-policy"><strong>policy</strong></a> | 
+   <a href="#cap-regret"><strong>regret</strong></a> | 
+   <a href="#cap-riccati"><strong>riccati</strong></a> | 
+   <a href="#cap-riccati_time_dependent"><strong>riccati_time_dependent</strong></a> | 
+   <a href="#cap-thompson_sampling"><strong>thompson_sampling</strong></a> | 
+   <a href="#cap-tidy_eval_finite"><strong>tidy_eval_finite</strong></a> | 
+   <a href="#cap-tidy_eval_infinite"><strong>tidy_eval_infinite</strong></a> | 
+   <a href="#cap-tidy_mdp"><strong>tidy_mdp</strong></a> | 
+   <a href="#cap-tidy_policy"><strong>tidy_policy</strong></a> | 
+   <a href="#cap-tidy_tabular"><strong>tidy_tabular</strong></a> | 
+   <a href="#cap-tidy_traj"><strong>tidy_traj</strong></a> | 
+   <a href="#cap-time_dependent_lqr"><strong>time_dependent_lqr</strong></a> | 
+   <a href="#cap-trajectory"><strong>trajectory</strong></a> | 
+   <a href="#cap-ucb"><strong>ucb</strong></a> | 
+   <a href="#cap-union_bound"><strong>union_bound</strong></a> | 
+   <a href="#cap-value"><strong>value</strong></a> | 
+   <a href="#cap-value_lqr"><strong>value_lqr</strong></a>
+   </div>
+
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-action_value"><td></td><td>
+       <strong>action_value</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#action_value"><code class="xref">action_value</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-advertising"><td></td><td>
+       <strong>advertising</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#advertising"><code class="xref">advertising</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-algorithm-14"><td></td><td>
+       <strong>algorithm-14</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#algorithm-14"><code class="xref">algorithm-14</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>algorithm</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-algorithm-3"><td></td><td>
+       <strong>algorithm-3</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="4_fitted_dp/fitted_dp.html#algorithm-3"><code class="xref">algorithm-3</code></a> <em>(4_fitted_dp/fitted_dp)</em></td><td>
+       <em>algorithm</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-autoregressive_trajectories"><td></td><td>
+       <strong>autoregressive_trajectories</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#autoregressive_trajectories"><code class="xref">autoregressive_trajectories</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-bayesian_bernoulli"><td></td><td>
+       <strong>bayesian_bernoulli</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#bayesian_bernoulli"><code class="xref">bayesian_bernoulli</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-bellman_consistency"><td></td><td>
+       <strong>bellman_consistency</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#bellman_consistency"><code class="xref">bellman_consistency</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-bellman_consistency_action"><td></td><td>
+       <strong>bellman_consistency_action</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#bellman_consistency_action"><code class="xref">bellman_consistency_action</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-bellman_consistency_optimal"><td></td><td>
+       <strong>bellman_consistency_optimal</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#bellman_consistency_optimal"><code class="xref">bellman_consistency_optimal</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>corollary</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-bellman_contraction"><td></td><td>
+       <strong>bellman_contraction</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#bellman_contraction"><code class="xref">bellman_contraction</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-bellman_det"><td></td><td>
+       <strong>bellman_det</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#bellman_det"><code class="xref">bellman_det</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>remark</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-bellman_operator"><td></td><td>
+       <strong>bellman_operator</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#bellman_operator"><code class="xref">bellman_operator</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-cart_pole"><td></td><td>
+       <strong>cart_pole</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#cart_pole"><code class="xref">cart_pole</code></a> <em>(5_control/control)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-clinical_trials"><td></td><td>
+       <strong>clinical_trials</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#clinical_trials"><code class="xref">clinical_trials</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-conditional_expectation_minimizes_mse"><td></td><td>
+       <strong>conditional_expectation_minimizes_mse</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="4_fitted_dp/fitted_dp.html#conditional_expectation_minimizes_mse"><code class="xref">conditional_expectation_minimizes_mse</code></a> <em>(4_fitted_dp/fitted_dp)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-contraction"><td></td><td>
+       <strong>contraction</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#contraction"><code class="xref">contraction</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-empirical_risk_minimization"><td></td><td>
+       <strong>empirical_risk_minimization</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="4_fitted_dp/fitted_dp.html#empirical_risk_minimization"><code class="xref">empirical_risk_minimization</code></a> <em>(4_fitted_dp/fitted_dp)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-epsilon_greedy"><td></td><td>
+       <strong>epsilon_greedy</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#epsilon_greedy"><code class="xref">epsilon_greedy</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-finite_mdp"><td></td><td>
+       <strong>finite_mdp</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#finite_mdp"><code class="xref">finite_mdp</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-greedy_worsen"><td></td><td>
+       <strong>greedy_worsen</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#greedy_worsen"><code class="xref">greedy_worsen</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-hoeffding"><td></td><td>
+       <strong>hoeffding</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#hoeffding"><code class="xref">hoeffding</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-ilqr"><td></td><td>
+       <strong>ilqr</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#ilqr"><code class="xref">ilqr</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-iterations_vi"><td></td><td>
+       <strong>iterations_vi</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#iterations_vi"><code class="xref">iterations_vi</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>remark</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-lemma-18"><td></td><td>
+       <strong>lemma-18</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#lemma-18"><code class="xref">lemma-18</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>lemma</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-lqr"><td></td><td>
+       <strong>lqr</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#lqr"><code class="xref">lqr</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-markov"><td></td><td>
+       <strong>markov</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#markov"><code class="xref">markov</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-multi-armed"><td></td><td>
+       <strong>multi-armed</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#multi-armed"><code class="xref">multi-armed</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>remark</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-nonlinear_control"><td></td><td>
+       <strong>nonlinear_control</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#nonlinear_control"><code class="xref">nonlinear_control</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-optimal_control"><td></td><td>
+       <strong>optimal_control</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#optimal_control"><code class="xref">optimal_control</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-optimal_greedy"><td></td><td>
+       <strong>optimal_greedy</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#optimal_greedy"><code class="xref">optimal_greedy</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-optimal_policy_finite"><td></td><td>
+       <strong>optimal_policy_finite</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#optimal_policy_finite"><code class="xref">optimal_policy_finite</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-optimal_policy_lqr_linear"><td></td><td>
+       <strong>optimal_policy_lqr_linear</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#optimal_policy_lqr_linear"><code class="xref">optimal_policy_lqr_linear</code></a> <em>(5_control/control)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-optimal_value_lqr"><td></td><td>
+       <strong>optimal_value_lqr</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#optimal_value_lqr"><code class="xref">optimal_value_lqr</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-optimal_value_lqr_quadratic"><td></td><td>
+       <strong>optimal_value_lqr_quadratic</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#optimal_value_lqr_quadratic"><code class="xref">optimal_value_lqr_quadratic</code></a> <em>(5_control/control)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-parameterized_empirical_risk_minimization"><td></td><td>
+       <strong>parameterized_empirical_risk_minimization</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="4_fitted_dp/fitted_dp.html#parameterized_empirical_risk_minimization"><code class="xref">parameterized_empirical_risk_minimization</code></a> <em>(4_fitted_dp/fitted_dp)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pi_iter_analysis"><td></td><td>
+       <strong>pi_iter_analysis</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#pi_iter_analysis"><code class="xref">pi_iter_analysis</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pi_star_dp"><td></td><td>
+       <strong>pi_star_dp</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#pi_star_dp"><code class="xref">pi_star_dp</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>algorithm</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-policy"><td></td><td>
+       <strong>policy</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#policy"><code class="xref">policy</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-regret"><td></td><td>
+       <strong>regret</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#regret"><code class="xref">regret</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-riccati"><td></td><td>
+       <strong>riccati</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#riccati"><code class="xref">riccati</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-riccati_time_dependent"><td></td><td>
+       <strong>riccati_time_dependent</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#riccati_time_dependent"><code class="xref">riccati_time_dependent</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-thompson_sampling"><td></td><td>
+       <strong>thompson_sampling</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#thompson_sampling"><code class="xref">thompson_sampling</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-tidy_eval_finite"><td></td><td>
+       <strong>tidy_eval_finite</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#tidy_eval_finite"><code class="xref">tidy_eval_finite</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-tidy_eval_infinite"><td></td><td>
+       <strong>tidy_eval_infinite</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#tidy_eval_infinite"><code class="xref">tidy_eval_infinite</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-tidy_mdp"><td></td><td>
+       <strong>tidy_mdp</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#tidy_mdp"><code class="xref">tidy_mdp</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-tidy_policy"><td></td><td>
+       <strong>tidy_policy</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#tidy_policy"><code class="xref">tidy_policy</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-tidy_tabular"><td></td><td>
+       <strong>tidy_tabular</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#tidy_tabular"><code class="xref">tidy_tabular</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-tidy_traj"><td></td><td>
+       <strong>tidy_traj</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#tidy_traj"><code class="xref">tidy_traj</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-time_dependent_lqr"><td></td><td>
+       <strong>time_dependent_lqr</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#time_dependent_lqr"><code class="xref">time_dependent_lqr</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-trajectory"><td></td><td>
+       <strong>trajectory</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#trajectory"><code class="xref">trajectory</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-ucb"><td></td><td>
+       <strong>ucb</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#ucb"><code class="xref">ucb</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-union_bound"><td></td><td>
+       <strong>union_bound</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="2_bandits/bandits.html#union_bound"><code class="xref">union_bound</code></a> <em>(2_bandits/bandits)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-value"><td></td><td>
+       <strong>value</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="3_mdps/mdps.html#value"><code class="xref">value</code></a> <em>(3_mdps/mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-value_lqr"><td></td><td>
+       <strong>value_lqr</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="5_control/control.html#value_lqr"><code class="xref">value_lqr</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+   </table>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander D. Cai
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,632 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>1. Introduction &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"E": "\\mathop{\\mathbb{E}}", "P": "\\mathop{\\mathbb{P}}", "hi": "h", "hor": "H", "st": "s", "act": "a"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '1_intro/intro';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. Bandits" href="../2_bandits/bandits.html" />
+    <link rel="prev" title="Introduction" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/184.png" class="logo__image only-light" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>
+    <script>document.write(`<img src="../_static/184.png" class="logo__image only-dark" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_bandits/bandits.html">2. Bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_fitted_dp/fitted_dp.html">4. Fitted dynamic programming algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_control/control.html">5. Linear Quadratic Regulators</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/1_intro/intro.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Introduction</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">1.1. Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notation">1.2. Notation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#challenges-of-reinforcement-learning">1.3. Challenges of reinforcement learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#programming">1.4. Programming</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="introduction">
+<h1><span class="section-number">1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h1>
+<p>Welcome to the study of reinforcement learning! This set of lecture
+notes accompanies the undergraduate course CS/STAT 184 and is intended
+to be a friendly yet rigorous introduction to this active
+subfield of machine learning. Here are some questions you might have
+before embarking on this journey:</p>
+<p><strong>What is reinforcement learning (RL)?</strong> Broadly speaking, RL is a subfield of machine learning that studies how
+an agent can learn to make sequential decisions in an environment.</p>
+<p><strong>Why study RL?</strong> RL provides a powerful framework for attacking a wide variety of
+problems, including robotic control, video games and board games,
+resource management, language modelling, and more. It also provides an
+interdisciplinary paradigm for studying animal and human behavior. Many
+of the most stunning results in machine learning, ranging from AlphaGo
+to ChatGPT, are built on top of RL.</p>
+<p><strong>Is this book for me?</strong> This book assumes familiarity with multivariable calculus, linear
+algebra, and probability. For Harvard undergraduates, this would be
+fulfilled by Math 21a, Math 21b, and Stat 110. Stat 111 is strongly
+recommended but not required. Here is a non-comprehensive list of topics
+you should be familiar with before starting this book:</p>
+<ul class="simple">
+<li><p><strong>Linear Algebra:</strong> Vectors and matrices, matrix multiplication, matrix
+inversion, eigenvalues and eigenvectors, and the Gram-Schmidt
+process.</p></li>
+<li><p><strong>Multivariable Calculus:</strong> Partial derivatives, gradients,
+directional derivatives, the chain rule, Taylor series.</p></li>
+<li><p><strong>Probability:</strong> Random variables, probability distributions,
+expectation, the law of iterated expectations (Adam’s rule), variance, covariance,
+conditional probability, Bayes’s rule, and the law of total probability.</p></li>
+</ul>
+<p>How does reinforcement learning differ from other machine learning paradigms?
+Here is a list of comparisons:</p>
+<ul>
+<li><p><strong>Supervised learning.</strong> Supervised learning concerns itself with
+learning a mapping from inputs to outputs (e.g. image
+classification). Typically the data takes the form of input-output
+pairs that are assumed to be sampled independently from some
+generating distribution. In RL, however, the data is generated by
+the agent interacting with the environment, meaning the observations
+depend on the agent’s behaviour and are not independent from each
+other. This requires a more general set of tools.</p>
+<p>Conversely, supervised learning is a well-studied field that
+provides many useful tools for RL. For example, it may be useful to
+use supervised learning to predict how valuable a given state is, or
+to predict the probability of transitioning to a given state.</p>
+</li>
+<li><p><strong>Unsupervised learning.</strong> Unsupervised learning deals with learning the
+structure of data without the use of labels.</p></li>
+</ul>
+<section id="overview">
+<h2><span class="section-number">1.1. </span>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="../2_bandits/bandits.html#bandits"><span class="std std-ref">Chapter 2</span></a> discusses <strong>multi-armed bandits</strong>, a simple model for
+reinforcement learning. In this setting, there are multiple arms, each with their
+own reward distribution. The agent must decide which arm to pull at each time step.</p>
+<p><a class="reference internal" href="../3_mdps/mdps.html#mdps"><span class="std std-ref">Chapter 3</span></a> introduces (finite) <strong>Markov Decision Processes</strong>, the dominant
+mathematical framework for studying RL. This general framework models an agent
+interacting with a environment that in responds to its actions. Certain states
+and actions will be rewarded, and the agent’s goal is to maximize its total reward.</p>
+<p><a class="reference internal" href="../4_fitted_dp/fitted_dp.html#fitted-dp"><span class="std std-ref">Chapter 4</span></a> introduces <strong>fitted dynamic programming</strong> algorithms
+for solving MDPs when the state space is too large to be enumerated. These algorithms
+borrow ideas from supervised learning to approximate the value function (discussed in <a class="reference internal" href="../3_mdps/mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a>).</p>
+<p><a class="reference internal" href="../5_control/control.html#lqr"><span class="std std-ref">Chapter 5</span></a> is a standalone chapter on the <strong>linear quadratic regulator</strong>,
+an important tool for <em>continuous control</em>, in which the state space is no longer
+finite (i.e. <span class="math notranslate nohighlight">\(|\S| &lt; \infty\)</span>) but rather continuous (i.e. <span class="math notranslate nohighlight">\(|\mathcal{S}| = \mathbb{R}^{n_\st}\)</span>).</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Chapter</p></th>
+<th class="head text-center"><p>States</p></th>
+<th class="head text-center"><p>Actions</p></th>
+<th class="head text-center"><p>Rewards (or costs)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><a class="reference internal" href="../2_bandits/bandits.html#bandits"><span class="std std-ref">Bandits</span></a></p></td>
+<td class="text-center"><p>N/A</p></td>
+<td class="text-center"><p>Finite</p></td>
+<td class="text-center"><p>Stochastic</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><a class="reference internal" href="../3_mdps/mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a></p></td>
+<td class="text-center"><p>Finite</p></td>
+<td class="text-center"><p>Finite</p></td>
+<td class="text-center"><p>Deterministic</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><a class="reference internal" href="../4_fitted_dp/fitted_dp.html#fitted-dp"><span class="std std-ref">Fitted dynamic programming algorithms</span></a></p></td>
+<td class="text-center"><p>Large or continuous</p></td>
+<td class="text-center"><p>Finite</p></td>
+<td class="text-center"><p>Deterministic</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><a class="reference internal" href="../5_control/control.html#lqr"><span class="std std-ref">The Linear Quadratic Regulator</span></a></p></td>
+<td class="text-center"><p>Continuous</p></td>
+<td class="text-center"><p>Continuous</p></td>
+<td class="text-center"><p>Deterministic</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="notation">
+<h2><span class="section-number">1.2. </span>Notation<a class="headerlink" href="#notation" title="Link to this heading">#</a></h2>
+<p>We will use the following notation throughout the book. This notation is
+inspired by Sutton and Barto and AJKS .</p>
+<table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Notation</p></th>
+<th class="head text-left"><p>Definition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(s\)</span></p></td>
+<td class="text-left"><p>A state.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(a\)</span></p></td>
+<td class="text-left"><p>An action.</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(r\)</span></p></td>
+<td class="text-left"><p>A reward.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(p\)</span></p></td>
+<td class="text-left"><p>A probability.</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(\pi\)</span></p></td>
+<td class="text-left"><p>A policy.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(V\)</span></p></td>
+<td class="text-left"><p>A value function.</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(Q\)</span></p></td>
+<td class="text-left"><p>An action-value function.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(A\)</span></p></td>
+<td class="text-left"><p>An advantage function.</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(\gamma\)</span></p></td>
+<td class="text-left"><p>A discount factor.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(\tau\)</span></p></td>
+<td class="text-left"><p>A trajectory.</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><span class="math notranslate nohighlight">\(\mathcal{S}\)</span></p></td>
+<td class="text-left"><p>A state space.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><span class="math notranslate nohighlight">\(\mathcal{A}\)</span></p></td>
+<td class="text-left"><p>An action space.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="challenges-of-reinforcement-learning">
+<h2><span class="section-number">1.3. </span>Challenges of reinforcement learning<a class="headerlink" href="#challenges-of-reinforcement-learning" title="Link to this heading">#</a></h2>
+<p><strong>Exploration-exploitation tradeoff.</strong> Should the agent try a new action or stick with the action that it knows
+is good?</p>
+<p><strong>Prediction.</strong> The agent might want to predict the value of a state or state-action
+pair.</p>
+<p><strong>Policy computation (control).</strong> In a complex environment, even if the dynamics are known, it can still
+be challenging to compute the best policy.</p>
+</section>
+<section id="programming">
+<h2><span class="section-number">1.4. </span>Programming<a class="headerlink" href="#programming" title="Link to this heading">#</a></h2>
+<p>This is an interactive book built with <a class="reference external" href="https://jupyterbook.org/en/stable/intro.html">Jupyter Book</a>. It uses <a class="reference external" href="https://docs.python.org/3.11/contents.html">Python 3.11</a>.</p>
+<p>It uses the <a class="reference external" href="https://jax.readthedocs.io/en/latest/index.html">JAX</a> library for
+numerical computing.
+JAX was chosen for the clarity of its functional style
+and due to its extensive RL ecosystem.</p>
+<p>We use the standard <a class="reference external" href="https://gymnasium.farama.org/">Gymnasium</a> library for
+interfacing with RL environments.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./1_intro"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Introduction</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../2_bandits/bandits.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">2. </span>Bandits</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">1.1. Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notation">1.2. Notation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#challenges-of-reinforcement-learning">1.3. Challenges of reinforcement learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#programming">1.4. Programming</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander D. Cai
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

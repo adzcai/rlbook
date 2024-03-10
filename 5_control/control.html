@@ -1,0 +1,1298 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>5. Linear Quadratic Regulators &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"E": "\\mathop{\\mathbb{E}}", "P": "\\mathop{\\mathbb{P}}", "hi": "h", "hor": "H", "st": "s", "act": "a"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '5_control/control';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="4. Fitted dynamic programming algorithms" href="../4_fitted_dp/fitted_dp.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/184.png" class="logo__image only-light" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>
+    <script>document.write(`<img src="../_static/184.png" class="logo__image only-dark" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1_intro/intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_bandits/bandits.html">2. Bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_fitted_dp/fitted_dp.html">4. Fitted dynamic programming algorithms</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Linear Quadratic Regulators</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/5_control/control.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Linear Quadratic Regulators</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-control">5.1. Optimal control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-discretization">5.1.1. A first attempt: Discretization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-quadratic-regulator">5.2. The Linear Quadratic Regulator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimality-and-the-riccati-equation">5.3. Optimality and the Riccati Equation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-state-at-time-hi">5.3.1. Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions">5.4. Extensions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-dependent-dynamics-and-cost-function">5.4.1. Time-dependent dynamics and cost function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-general-quadratic-cost-functions">5.4.2. More general quadratic cost functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracking-a-predefined-trajectory">5.4.3. Tracking a predefined trajectory</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approximating-nonlinear-dynamics">5.5. Approximating nonlinear dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-linearization">5.5.1. Local linearization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-differencing">5.5.2. Finite differencing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-convexification">5.5.3. Local convexification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-lqr">5.5.4. Iterative LQR</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="linear-quadratic-regulators">
+<span id="lqr-chapter"></span><h1><span class="section-number">5. </span>Linear Quadratic Regulators<a class="headerlink" href="#linear-quadratic-regulators" title="Link to this heading">#</a></h1>
+<p>Up to this point, we have considered decision problems with finitely
+many states and actions. However, in many applications, states and
+actions may take on continuous values. For example, consider autonomous
+driving, controlling a robot’s joints, and automated manufacturing. How
+can we teach computers to solve these kinds of problems? This is the
+task of <strong>continuous control</strong>.</p>
+<figure class="align-default" id="control-examples">
+<img alt="../_images/rubiks_cube.jpg" src="../_images/rubiks_cube.jpg" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.1 </span><span class="caption-text">Solving a Rubik’s Cube with a robot hand.</span><a class="headerlink" href="#control-examples" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="robot-hand">
+<img alt="../_images/boston_dynamics.jpg" src="../_images/boston_dynamics.jpg" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.2 </span><span class="caption-text">Boston Dynamics’s Spot robot.</span><a class="headerlink" href="#robot-hand" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Aside from the change in the state and action spaces, the general
+problem setup remains the same: we seek to construct an <em>optimal policy</em>
+that outputs actions to solve the desired task. We will see that many
+key ideas and algorithms, in particular dynamic programming algorithms,
+carry over to this new setting.</p>
+<p>This chapter introduces a fundamental tool to solve a simple class of
+continuous control problems: the <strong>linear quadratic regulator</strong>. We will
+then extend this basic method to more complex settings.</p>
+<div class="proof example admonition" id="cart_pole">
+<p class="admonition-title"><span class="caption-number">Example 5.1 </span> (CartPole)</p>
+<section class="example-content" id="proof-content">
+<p>Try to balance a pencil on its point on a flat surface. It’s much more
+difficult than it may first seem: the position of the pencil varies
+continuously, and the state transitions governing the system, i.e. the
+laws of physics, are highly complex. This task is equivalent to the
+classic control problem known as <em>CartPole</em>:</p>
+<a class="reference internal image-reference" href="../_images/cart_pole.png"><img alt="../_images/cart_pole.png" src="../_images/cart_pole.png" style="width: 40%;" /></a>
+<p>The state <span class="math notranslate nohighlight">\(\st \in \mathbb{R}^4\)</span> can be described by:</p>
+<ol class="arabic simple">
+<li><p>the position of the cart;</p></li>
+<li><p>the velocity of the cart;</p></li>
+<li><p>the angle of the pole;</p></li>
+<li><p>the angular velocity of the pole.</p></li>
+</ol>
+<p>We can <em>control</em> the cart by applying a horizontal force <span class="math notranslate nohighlight">\(\act \in \mathbb{R}\)</span>.</p>
+<p><strong>Goal:</strong> Stabilize the cart around an ideal state and action
+<span class="math notranslate nohighlight">\((\st^\star, \act^\star)\)</span>.</p>
+</section>
+</div><section id="optimal-control">
+<h2><span class="section-number">5.1. </span>Optimal control<a class="headerlink" href="#optimal-control" title="Link to this heading">#</a></h2>
+<p>Recall that an MDP is defined by its state space <span class="math notranslate nohighlight">\(\mathcal{S}\)</span>, action space
+<span class="math notranslate nohighlight">\(\mathcal{A}\)</span>, state transitions <span class="math notranslate nohighlight">\(P\)</span>, reward function <span class="math notranslate nohighlight">\(r\)</span>, and discount factor
+<span class="math notranslate nohighlight">\(\gamma\)</span> or time horizon <span class="math notranslate nohighlight">\(\hor\)</span>. These have equivalents in the control
+setting:</p>
+<ul class="simple">
+<li><p>The state and action spaces are <em>continuous</em> rather than finite.
+That is, <span class="math notranslate nohighlight">\(\mathcal{S} \subseteq \mathbb{R}^{n_\st}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A} \subseteq \mathbb{R}^{n_\act}\)</span>,
+where <span class="math notranslate nohighlight">\(n_\st\)</span> and <span class="math notranslate nohighlight">\(n_\act\)</span> are the corresponding dimensions of these
+spaces, i.e. the number of coordinates to specify a single state or
+action respectively.</p></li>
+<li><p>We call the state transitions the <strong>dynamics</strong> of the system. In the
+most general case, these might change across timesteps and also
+include some stochastic <strong>noise</strong> <span class="math notranslate nohighlight">\(w_\hi\)</span> at each timestep. We
+denote these dynamics as the function <span class="math notranslate nohighlight">\(f_\hi\)</span> such that
+<span class="math notranslate nohighlight">\(\st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi)\)</span>. Of course, we can
+simplify to cases where the dynamics are <em>deterministic/noise-free</em>
+(no <span class="math notranslate nohighlight">\(w_\hi\)</span> term) and/or <em>time-homogeneous</em> (the same function <span class="math notranslate nohighlight">\(f\)</span>
+across timesteps).</p></li>
+<li><p>Instead of maximizing the reward function, we seek to minimize the
+<strong>cost function</strong> <span class="math notranslate nohighlight">\(c_\hi: \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span>. Often, the cost
+function describes <em>how far away</em> we are from a <strong>target
+state-action pair</strong> <span class="math notranslate nohighlight">\((\st^\star, \act^\star)\)</span>. An important special
+case is when the cost is <em>time-homogeneous</em>; that is, it remains the
+same function <span class="math notranslate nohighlight">\(c\)</span> at each timestep <span class="math notranslate nohighlight">\(h\)</span>.</p></li>
+<li><p>We seek to minimize the <em>undiscounted</em> cost within a <em>finite time
+horizon</em> <span class="math notranslate nohighlight">\(\hor\)</span>. Note that we end an episode at the final state
+<span class="math notranslate nohighlight">\(\st_\hor\)</span> – there is no <span class="math notranslate nohighlight">\(\act_\hor\)</span>, and so we denote the cost for
+the final state as <span class="math notranslate nohighlight">\(c_\hor(\st_\hor)\)</span>.</p></li>
+</ul>
+<p>With all of these components, we can now formulate the <strong>optimal control
+problem:</strong> <em>compute a policy to minimize the expected undiscounted cost
+over <span class="math notranslate nohighlight">\(\hor\)</span> timesteps.</em> In this chapter, we will only consider
+<em>deterministic, time-dependent</em> policies
+<span class="math notranslate nohighlight">\(\pi = (\pi_0, \dots, \pi_{H-1})\)</span> where <span class="math notranslate nohighlight">\(\pi_h : \mathcal{S} \to \mathcal{A}\)</span> for each
+<span class="math notranslate nohighlight">\(\hi \in [\hor]\)</span>.</p>
+<div class="proof definition admonition" id="optimal_control">
+<p class="admonition-title"><span class="caption-number">Definition 5.1 </span> (General optimal control problem)</p>
+<section class="definition-content" id="proof-content">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}
+            \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad &amp; \E \left[
+                \left( \sum_{\hi=0}^{\hor-1} c_\hi(\st_\hi, \act_\hi) \right) + c_\hor(\st_\hor)
+                \right] \\
+            \text{where} \quad &amp; \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi), \\
+            &amp; \act_\hi = \pi_\hi(\st_\hi) \\
+            &amp; \st_0 \sim \mu_0 \\
+            &amp; w_\hi \sim \text{noise}
+        \end{split}
+        
+        \end{split}\]</div>
+</section>
+</div><section id="a-first-attempt-discretization">
+<h3><span class="section-number">5.1.1. </span>A first attempt: Discretization<a class="headerlink" href="#a-first-attempt-discretization" title="Link to this heading">#</a></h3>
+<p>Can we solve this problem using tools from the finite MDP setting? If
+<span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> were finite, then we’d be able to work backwards using the
+DP algorithm for computing the optimal policy in an MDP
+<a class="reference internal" href="../3_mdps/mdps.html#pi_star_dp">Algorithm 3.2</a>. This inspires us to try <em>discretizing</em> the
+problem.</p>
+<p>Suppose <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> are bounded, that is,
+<span class="math notranslate nohighlight">\(\max_{\st \in \mathcal{S}} \|\st\| \le B_\st\)</span> and
+<span class="math notranslate nohighlight">\(\max_{\act \in \mathcal{A}} \|\act\| \le B_\act\)</span>. To make <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> finite,
+let’s choose some small positive <span class="math notranslate nohighlight">\(\epsilon\)</span>, and simply round each
+coordinate to the nearest multiple of <span class="math notranslate nohighlight">\(\epsilon\)</span>. For example, if
+<span class="math notranslate nohighlight">\(\epsilon = 0.01\)</span>, then we round each element of <span class="math notranslate nohighlight">\(\st\)</span> and <span class="math notranslate nohighlight">\(\act\)</span> to two
+decimal spaces.</p>
+<p>However, the discretized <span class="math notranslate nohighlight">\(\widetilde{\mathcal{S}}\)</span> and <span class="math notranslate nohighlight">\(\widetilde{\mathcal{A}}\)</span> may be finite, but
+they may be infeasibly large: we must divide <em>each dimension</em> into
+intervals of length <span class="math notranslate nohighlight">\(\varepsilon\)</span>, resulting in
+<span class="math notranslate nohighlight">\(|\widetilde{\mathcal{S}}| = (B_\st/\varepsilon)^{n_\st}\)</span> and
+<span class="math notranslate nohighlight">\(|\widetilde{\mathcal{A}}| = (B_\act/\varepsilon)^{n_\act}\)</span>. To get a sense of how
+quickly this grows, consider <span class="math notranslate nohighlight">\(\varepsilon = 0.01, n_\st = n_\act = 10\)</span>.
+Then the number of elements in the transition matrix would be
+<span class="math notranslate nohighlight">\(|\widetilde{\mathcal{S}}|^2 |\widetilde{\mathcal{A}}| = (100^{10})^2 (100^{10}) = 10^{60}\)</span>! (That’s
+a trillion trillion trillion trillion trillion.)</p>
+<p>What properties of the problem could we instead make use of? Note that
+by discretizing the state and action spaces, we implicitly assumed that
+rounding each state or action vector by some tiny amount <span class="math notranslate nohighlight">\(\varepsilon\)</span>
+wouldn’t change the behavior of the system by much; namely, that the
+cost and dynamics were relatively <em>continuous</em>. Can we use this
+continuous structure in other ways? This leads us to the <strong>linear
+quadratic regulator</strong>.</p>
+</section>
+</section>
+<section id="the-linear-quadratic-regulator">
+<span id="lqr"></span><h2><span class="section-number">5.2. </span>The Linear Quadratic Regulator<a class="headerlink" href="#the-linear-quadratic-regulator" title="Link to this heading">#</a></h2>
+<p>The optimal control problem
+<a class="reference internal" href="#optimal_control">Definition 5.1</a> seems highly complex in its general
+case. Is there a relevant simplification that we can analyze?</p>
+<p>Let us consider <em>linear dynamics</em> and an <em>upward-curved quadratic cost
+function</em> (in both arguments). We will also consider a time-homogenous
+cost function that targets <span class="math notranslate nohighlight">\((s^\star, a^\star) = (0, 0)\)</span>. This model is
+called the <strong>linear quadratic regulator</strong> (LQR) and is a fundamental
+tool in control theory. Solving the LQR problem will additionally enable
+us to <em>locally approximate</em> more complex setups using <em>Taylor
+approximations</em>.</p>
+<div class="proof definition admonition" id="lqr">
+<p class="admonition-title"><span class="caption-number">Definition 5.2 </span> (The linear quadratic regulator)</p>
+<section class="definition-content" id="proof-content">
+<p><strong>Linear, time-homogeneous dynamics</strong>: for each timestep <span class="math notranslate nohighlight">\(h \in [H]\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+        \st_{\hi+1} &amp;= f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi \\
+        \text{where } w_\hi &amp;\sim \mathcal{N}(0, \sigma^2 I).
+    
+\end{aligned}\end{split}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(w_\hi\)</span> is a spherical Gaussian <strong>noise term</strong>
+that makes the state transitions random. Setting <span class="math notranslate nohighlight">\(\sigma = 0\)</span> gives us
+<strong>deterministic</strong> state transitions. We will find that the optimal
+policy actually <em>does not depend on the noise</em>, although the optimal
+value function and Q-function do.</p>
+<p><strong>Upward-curved quadratic, time-homogeneous cost function</strong>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c(\st_\hi, \act_\hi) = \begin{cases}
+            \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi &amp; \hi &lt; \hor \\
+            \st_\hi^\top Q \st_\hi                            &amp; \hi = \hor
+        \end{cases}.
+        
+        \end{split}\]</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>     We require $Q$ and $R$ to both be positive
+</pre></div>
+</div>
+<p>definite matrices so that <span class="math notranslate nohighlight">\(c\)</span> has a well-defined unique minimum. We can
+furthermore assume without loss of generality that they are both
+symmetric (see exercise below).</p>
+<p>This results in the LQR optimization problem:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+        \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad &amp; \E \left[ \left( \sum_{\hi=0}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \right] \\
+        \textrm{where} \quad                                &amp; \st_{\hi+1} = A \st_\hi + B \act_\hi + w_\hi                                                                                        \\
+                                                            &amp; \act_\hi = \pi_\hi (\st_\hi)                                                                                                        \\
+                                                            &amp; w_\hi \sim \mathcal{N}(0, \sigma^2 I)                                                                                               \\
+                                                            &amp; \st_0 \sim \mu_0.
+    
+\end{aligned}\end{split}\]</div>
+</section>
+</div><div class="exercise docutils">
+<p>We’ve set <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(R\)</span> to be <em>symmetric</em> positive definite (SPD)
+matrices. Here we’ll show that the symmetry condition can be imposed
+without loss of generality. Show that replacing <span class="math notranslate nohighlight">\(Q\)</span> with
+<span class="math notranslate nohighlight">\((Q + Q^\top) / 2\)</span> (which is symmetric) yields the same cost function.</p>
+</div>
+<p>It will be helpful to reintroduce the <em>value function</em> notation for a
+policy to denote the average cost it incurs. These will be instrumental
+in constructing the optimal policy via <strong>dynamic programming</strong>.</p>
+<div class="proof definition admonition" id="value_lqr">
+<p class="admonition-title"><span class="caption-number">Definition 5.3 </span> (Value functions for LQR)</p>
+<section class="definition-content" id="proof-content">
+<p>Given a policy <span class="math notranslate nohighlight">\(\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})\)</span>, we can
+define its value function <span class="math notranslate nohighlight">\(V^\pi_\hi : \mathcal{S} \to \mathbb{R}\)</span> at time
+<span class="math notranslate nohighlight">\(\hi \in [\hor]\)</span> as the average <strong>cost-to-go</strong> incurred by that policy:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}
+            V^\pi_\hi (\st) &amp;= \E \left[ \left( \sum_{i=\hi}^{\hor-1} c(\st_i, \act_i) \right) + c(\st_\hor) \mid \st_\hi = \st,  \act_i = \pi_i(\st_i) \quad \forall \hi \le i &lt; H \right] \\
+            &amp;= \E \left[ \left( \sum_{i=\hi}^{\hor-1} \st_i^\top Q \st_i + \act_i^\top R \act_i \right) + \st_\hor^\top Q \st_\hor \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall \hi \le i &lt; H \right] \\
+        \end{split}
+        
+        \end{split}\]</div>
+<p>The Q-function additionally conditions on the first action we take:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}
+            Q^\pi_\hi (\st, \act) &amp;= \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} c(\st_i, \act_i) \right) + c(\st_\hor) \\
+                &amp;\qquad\qquad \mid  (\st_\hi, \act_\hi) = (\st, \act), \act_i = \pi_i(\st_i) \quad \forall \hi \le i &lt; H \bigg] \\
+            &amp;= \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_i^\top Q \st_i + \act_i^\top R \act_i \right) + \st_\hor^\top Q \st_\hor \\
+                &amp;\qquad\qquad \mid (\st_\hi, \act_\hi) = (\st, \act), \act_i = \pi_i(\st_i) \quad \forall \hi \le i &lt; H \bigg] \\
+        \end{split}
+        
+        \end{split}\]</div>
+</section>
+</div></section>
+<section id="optimality-and-the-riccati-equation">
+<span id="optimal-lqr"></span><h2><span class="section-number">5.3. </span>Optimality and the Riccati Equation<a class="headerlink" href="#optimality-and-the-riccati-equation" title="Link to this heading">#</a></h2>
+<p>In this section, we’ll compute the optimal value function <span class="math notranslate nohighlight">\(V^\star_h\)</span>,
+Q-function <span class="math notranslate nohighlight">\(Q^\star_h\)</span>, and policy <span class="math notranslate nohighlight">\(\pi^\star_h\)</span> in the LQR setting
+<a class="reference internal" href="#lqr">Definition 5.2</a> using
+<strong>dynamic programming</strong> in a very similar way to the DP algorithms <a class="reference internal" href="../3_mdps/mdps.html#eval-dp"><span class="std std-ref">in the MDP setting</span></a>:</p>
+<ol class="arabic simple">
+<li><p>We’ll compute <span class="math notranslate nohighlight">\(V_H^\star\)</span> (at the end of the horizon) as our base
+case.</p></li>
+<li><p>Then we’ll work backwards in time, using <span class="math notranslate nohighlight">\(V_{h+1}^\star\)</span> to compute
+<span class="math notranslate nohighlight">\(Q_h^\star\)</span>, <span class="math notranslate nohighlight">\(\pi_{h}^\star\)</span>, and <span class="math notranslate nohighlight">\(V_h^\star\)</span>.</p></li>
+</ol>
+<p>Along the way, we will prove the striking fact that the solution has
+very simple structure: <span class="math notranslate nohighlight">\(V_h^\star\)</span> and <span class="math notranslate nohighlight">\(Q^\star_h\)</span> are <em>upward-curved
+quadratics</em> and <span class="math notranslate nohighlight">\(\pi_h^\star\)</span> is <em>linear</em> and furthermore does not
+depend on the noise!</p>
+<div class="proof definition admonition" id="optimal_value_lqr">
+<p class="admonition-title"><span class="caption-number">Definition 5.4 </span> (Optimal value functions for LQR)</p>
+<section class="definition-content" id="proof-content">
+<p>The <strong>optimal value
+function</strong> is the one that, at any time and in any state, achieves
+<em>minimum cost</em> across <em>all policies</em>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}
+    V^\star_\hi(\st) &amp;= \min_{\pi_\hi, \dots, \pi_{\hor-1}} V^\pi_\hi(\st) \\
+    &amp;= \min_{\pi_{\hi}, \dots, \pi_{\hor-1}} \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \\
+        &amp;\hspace{8em} \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall \hi \le i &lt; H \bigg] \\
+\end{split}\end{split}\]</div>
+</section>
+</div><div class="proof theorem admonition" id="optimal_value_lqr_quadratic">
+<p class="admonition-title"><span class="caption-number">Theorem 5.1 </span> (Optimal value function in LQR is a upward-curved quadratic)</p>
+<section class="theorem-content" id="proof-content">
+<p>At each timestep <span class="math notranslate nohighlight">\(h \in [H]\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi\]</div>
+<p>for some symmetric
+positive definite matrix <span class="math notranslate nohighlight">\(P_\hi \in \mathbb{R}^{n_\st \times n_\st}\)</span> and vector
+<span class="math notranslate nohighlight">\(p_\hi \in \mathbb{R}^{n_\st}\)</span>.</p>
+</section>
+</div><div class="proof theorem admonition" id="optimal_policy_lqr_linear">
+<p class="admonition-title"><span class="caption-number">Theorem 5.2 </span> (Optimal policy in LQR is linear)</p>
+<section class="theorem-content" id="proof-content">
+<p>At each timestep <span class="math notranslate nohighlight">\(h \in [H]\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\pi^\star_\hi (\st) = - K_\hi \st\]</div>
+<p>for
+some <span class="math notranslate nohighlight">\(K_\hi \in \mathbb{R}^{n_\act \times n_\st}\)</span>. (The negative is due to
+convention.)</p>
+</section>
+</div><p><strong>Base case:</strong> At the final timestep, there are no possible actions to
+take, and so <span class="math notranslate nohighlight">\(V^\star_\hor(\st) = c(\st) = \st^\top Q \st\)</span>. Thus
+<span class="math notranslate nohighlight">\(V_\hor^\star(\st) = \st^\top P_\hi \st + p_\hi\)</span> where <span class="math notranslate nohighlight">\(P_\hor = Q\)</span> and
+<span class="math notranslate nohighlight">\(p_\hor\)</span> is the zero vector.</p>
+<p><strong>Inductive hypothesis:</strong> We seek to show that the inductive step holds
+for both theorems: If <span class="math notranslate nohighlight">\(V^\star_{\hi+1}(\st)\)</span> is a upward-curved
+quadratic, then <span class="math notranslate nohighlight">\(V^\star_\hi(\st)\)</span> must also be a upward-curved
+quadratic, and <span class="math notranslate nohighlight">\(\pi^\star_\hi(\st)\)</span> must be linear. We’ll break this
+down into the following steps:</p>
+<div class="steps docutils">
+<p>Show that <span class="math notranslate nohighlight">\(Q^\star_\hi(\st, \act)\)</span> is a upward-curved quadratic (in both
+<span class="math notranslate nohighlight">\(\st\)</span> and <span class="math notranslate nohighlight">\(\act\)</span>).</p>
+<p>Derive the optimal policy
+<span class="math notranslate nohighlight">\(\pi^\star_\hi(\st) = \arg \min_\act Q^\star_\hi(\st, \act)\)</span> and show
+that it’s linear.</p>
+<p>Show that <span class="math notranslate nohighlight">\(V^\star_\hi(\st)\)</span> is a upward-curved quadratic.</p>
+</div>
+<p>We first assume the inductive hypothesis that our theorems are true at
+time <span class="math notranslate nohighlight">\(\hi+1\)</span>. That is,</p>
+<div class="math notranslate nohighlight">
+\[V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \mathcal{S}.\]</div>
+<p><strong>Step 1.</strong> We aim to show that <span class="math notranslate nohighlight">\(Q^\star_\hi(\st)\)</span> is a upward-curved
+quadratic. Recall that the definition of
+<span class="math notranslate nohighlight">\(Q^\star_\hi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} [V^\star_{\hi+1}(\st')].\]</div>
+<p>Recall <span class="math notranslate nohighlight">\(c(\st, \act) = \st^\top Q \st + \act^\top R \act\)</span>. Let’s
+consider the average value over the next timestep. The only randomness
+in the dynamics comes from the noise
+<span class="math notranslate nohighlight">\(w_{\hi+1} \sim \cN(0, \sigma^2 I)\)</span>, so we can write out this expected
+value as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+            &amp; \E_{\st'} [V^\star_{\hi+1}(\st')]                                                                                                         \\
+    {} = {} &amp; \E_{w_{\hi+1}} [V^\star_{\hi+1}(A \st + B \act + w_{\hi+1})]                                             &amp;  &amp; \text{definition of } f     \\
+    {} = {} &amp; \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. &amp;  &amp; \text{inductive hypothesis}
+\end{aligned}\end{split}\]</div>
+<p>Summing and combining like terms, we get</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    Q^\star_\hi(\st, \act) &amp; = \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
+                           &amp; = \st^\top (Q + A^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act                       \\
+                           &amp; \qquad + \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] + p_{\hi+1}.
+\end{aligned}\end{split}\]</div>
+<p>Note that the terms that are linear in <span class="math notranslate nohighlight">\(w_\hi\)</span> have mean
+zero and vanish. Now consider the remaining expectation over the noise.
+By expanding out the product and using linearity of expectation, we can
+write this out as</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+    \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] &amp; = \sum_{i=1}^d \sum_{j=1}^d (P_{\hi+1})_{ij} \E_{w_{\hi+1}} [(w_{\hi+1})_i (w_{\hi+1})_j].
+\end{aligned}\]</div>
+<p>When dealing with these <em>quadratic forms</em>, it’s often
+helpful to consider the terms on the diagonal (<span class="math notranslate nohighlight">\(i = j\)</span>) separately from
+those off the diagonal. On the diagonal, the expectation becomes</p>
+<div class="math notranslate nohighlight">
+\[(P_{\hi+1})_{ii} \E (w_{\hi+1})_i^2 = \sigma^2 (P_{\hi+1})_{ii}.\]</div>
+<p>Off
+the diagonal, since the elements of <span class="math notranslate nohighlight">\(w_{\hi+1}\)</span> are independent, the
+expectation factors, and since each element has mean zero, the term
+disappears:</p>
+<div class="math notranslate nohighlight">
+\[(P_{\hi+1})_{ij} \E [(w_{\hi+1})_i] \E [(w_{\hi+1})_j] = 0.\]</div>
+<p>Thus,
+the only terms left are the ones on the diagonal, so the sum of these
+can be expressed as the trace of <span class="math notranslate nohighlight">\(\sigma^2 P_{\hi+1}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] = \mathrm{Tr}(\sigma^2 P_{\hi+1}).\]</div>
+<p>Substituting this back into the expression for <span class="math notranslate nohighlight">\(Q^\star_\hi\)</span>, we have:</p>
+<div class="math notranslate nohighlight" id="equation-q-star-lqr">
+<span class="eqno">(5.1)<a class="headerlink" href="#equation-q-star-lqr" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+    Q^\star_\hi(\st, \act) &amp; = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
+    + 2\st^\top A^\top P_{\hi+1} B \act                                                                        \\
+                            &amp; \qquad + \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
+\end{aligned}\end{split}\]</div>
+<p>As we hoped, this expression is quadratic in <span class="math notranslate nohighlight">\(\st\)</span> and <span class="math notranslate nohighlight">\(\act\)</span>.
+Furthermore, we’d like to show that it also has <em>positive curvature</em>
+with respect to <span class="math notranslate nohighlight">\(\act\)</span> so that its minimum with respect to <span class="math notranslate nohighlight">\(\act\)</span> is
+well-defined. We can do this by proving that the <strong>Hessian matrix</strong> of
+second derivatives is positive definite:</p>
+<div class="math notranslate nohighlight">
+\[\nabla_{\act \act} Q_\hi^\star(\st, \act) = R + B^\top P_{\hi+1} B\]</div>
+<p>This
+is fairly straightforward: recall that in our definition of LQR, we
+assumed that <span class="math notranslate nohighlight">\(R\)</span> is SPD (see
+<a class="reference internal" href="#lqr">Definition 5.2</a>).
+Also note that since <span class="math notranslate nohighlight">\(P_{\hi+1}\)</span> is SPD (by the inductive hypothesis),
+so too must be <span class="math notranslate nohighlight">\(B^\top P_{\hi+1} B\)</span>. (If this isn’t clear, try proving
+it as an exercise.) Since the sum of two SPD matrices is also SPD, we
+have that <span class="math notranslate nohighlight">\(R + B^\top P_{\hi+1} B\)</span> is SPD, and so <span class="math notranslate nohighlight">\(Q^\star_\hi\)</span> is
+indeed a upward-curved quadratic with respect to <span class="math notranslate nohighlight">\(\act\)</span>.</p>
+<p><strong>Step 2.</strong> Now we aim to show that <span class="math notranslate nohighlight">\(\pi^\star_\hi\)</span> is linear. Since
+<span class="math notranslate nohighlight">\(Q^\star_\hi\)</span> is a upward-curved quadratic, finding its minimum over
+<span class="math notranslate nohighlight">\(\act\)</span> is easy: we simply set the gradient with respect to <span class="math notranslate nohighlight">\(\act\)</span> equal
+to zero and solve for <span class="math notranslate nohighlight">\(\act\)</span>. First, we calculate the gradient:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    \nabla_\act Q^\star_\hi(\st, \act) &amp; = \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
+                                       &amp; = 2 (R + B^\top P_{\hi+1} B) \act + 2 (\st^\top A^\top P_{\hi+1} B)^\top
+\end{aligned}\end{split}\]</div>
+<p>Setting this to zero, we get</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    0                  &amp; = (R + B^\top P_{\hi+1} B) \pi^\star_\hi(\st) + B^\top P_{\hi+1} A \st \nonumber \\
+    \pi^\star_\hi(\st) &amp; = (R + B^\top P_{\hi+1} B)^{-1} (-B^\top P_{\hi+1} A \st) \nonumber              \\
+                       &amp; = - K_\hi \st,
+\end{aligned}\end{split}\]</div>
+<p>where
+<span class="math notranslate nohighlight">\(K_\hi = (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A\)</span>. Note that
+this optimal policy doesn’t depend on the starting distribution <span class="math notranslate nohighlight">\(\mu_0\)</span>.
+It’s also fully <strong>deterministic</strong> and isn’t affected by the noise terms
+<span class="math notranslate nohighlight">\(w_0, \dots, w_{\hor-1}\)</span>.</p>
+<p><strong>Step 3.</strong> To complete our inductive proof, we must show that the
+inductive hypothesis is true at time <span class="math notranslate nohighlight">\(\hi\)</span>; that is, we must prove that
+<span class="math notranslate nohighlight">\(V^\star_\hi(\st)\)</span> is a upward-curved quadratic. Using the identity
+<span class="math notranslate nohighlight">\(V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))\)</span>, we have:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    V^\star_\hi(\st) &amp; = Q^\star_\hi(\st, \pi^\star(\st))                                                                \\
+                     &amp; = \st^\top (Q + A^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
+    + 2\st^\top A^\top P_{\hi+1} B (-K_\hi \st)                                                                          \\
+                     &amp; \qquad + \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}
+\end{aligned}\end{split}\]</div>
+<p>Note that with respect to <span class="math notranslate nohighlight">\(\st\)</span>, this is the sum of a
+quadratic term and a constant, which is exactly what we were aiming for!
+The constant term is clearly
+<span class="math notranslate nohighlight">\(p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}\)</span>. We can simplify the
+quadratic term by substituting in <span class="math notranslate nohighlight">\(K_\hi\)</span>. Notice that when we do this,
+the <span class="math notranslate nohighlight">\((R+B^\top P_{\hi+1} B)\)</span> term in the expression is cancelled out by
+its inverse, and the remaining terms combine to give the <strong>Riccati
+equation</strong>:</p>
+<div class="proof definition admonition" id="riccati">
+<p class="admonition-title"><span class="caption-number">Definition 5.5 </span> (Riccati equation)</p>
+<section class="definition-content" id="proof-content">
+<div class="math notranslate nohighlight">
+\[P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.\]</div>
+</section>
+</div><p>There are several nice properties to note about the Riccati equation:</p>
+<ol class="arabic simple">
+<li><p>It’s defined <strong>recursively.</strong> Given the dynamics defined by <span class="math notranslate nohighlight">\(A\)</span> and
+<span class="math notranslate nohighlight">\(B\)</span>, and the state cost matrix <span class="math notranslate nohighlight">\(Q\)</span>, we can recursively calculate
+<span class="math notranslate nohighlight">\(P_\hi\)</span> across all timesteps starting from <span class="math notranslate nohighlight">\(P_\hor = Q\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(P_\hi\)</span> often appears in calculations surrounding optimality, such
+as <span class="math notranslate nohighlight">\(V^\star_\hi, Q^\star_\hi\)</span>, and <span class="math notranslate nohighlight">\(\pi^\star_\hi\)</span>.</p></li>
+<li><p>Together with the dynamics given by <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>, and the action
+coefficients <span class="math notranslate nohighlight">\(R\)</span>, it fully defines the optimal policy.</p></li>
+</ol>
+<p>Now we’ve shown that <span class="math notranslate nohighlight">\(V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi\)</span>,
+which is a upward-curved quadratic, and this concludes our proof. 0◻</p>
+<p>In summary, we just demonstrated that at each timestep <span class="math notranslate nohighlight">\(\hi \in \hor\)</span>,
+the optimal value function <span class="math notranslate nohighlight">\(V^\star_\hi\)</span> and optimal Q-function
+<span class="math notranslate nohighlight">\(Q^\star_\hi\)</span> are both upward-curved quadratics and the optimal policy
+<span class="math notranslate nohighlight">\(\pi^\star_\hi\)</span> is linear. We also showed that all of these quantities
+can be calculated using a sequence of symmetric matrices
+<span class="math notranslate nohighlight">\(P_0, \dots, P_H\)</span> that can be defined recursively using the Riccati
+equation <a class="reference internal" href="#riccati">Definition 5.5</a>.</p>
+<p>Before we move on to some extensions of LQR, let’s consider how the
+state at time <span class="math notranslate nohighlight">\(\hi\)</span> behaves when we act according to this optimal
+policy.</p>
+<section id="expected-state-at-time-hi">
+<h3><span class="section-number">5.3.1. </span>Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span><a class="headerlink" href="#expected-state-at-time-hi" title="Link to this heading">#</a></h3>
+<p>How can we compute the expected state at time <span class="math notranslate nohighlight">\(\hi\)</span> when acting
+according to the optimal policy? Let’s first express <span class="math notranslate nohighlight">\(\st_\hi\)</span> in a
+cleaner way in terms of the history. Note that having linear dynamics
+makes it easy to expand terms backwards in time:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    \st_\hi &amp; = A \st_{\hi-1} + B \act_{\hi-1} + w_{\hi-1}                                 \\
+            &amp; = A (A\st_{\hi-2} + B \act_{\hi-2} + w_{\hi-2}) + B \act_{\hi-1} + w_{\hi-1} \\
+            &amp; = \cdots                                                                     \\
+            &amp; = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i (B \act_{\hi-i-1} + w_{\hi-i-1}).
+\end{aligned}\end{split}\]</div>
+<p>Let’s consider the <em>average state</em> at this time, given all the past
+states and actions. Since we assume that <span class="math notranslate nohighlight">\(\E [w_\hi] = 0\)</span> (this is the
+zero vector in <span class="math notranslate nohighlight">\(d\)</span> dimensions), when we take an expectation, the <span class="math notranslate nohighlight">\(w_\hi\)</span>
+term vanishes due to linearity, and so we’re left with</p>
+<div class="math notranslate nohighlight">
+\[\E [\st_\hi \mid \st_{0:(\hi-1)}, \act_{0:(\hi-1)}] = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i B \act_{\hi-i-1}.\]</div>
+<p>If we choose actions according to our optimal policy, this becomes</p>
+<div class="math notranslate nohighlight">
+\[\E [\st_\hi \mid \st_0, \act_i = - K_i \st_i \quad \forall i \le \hi] = \left( \prod_{i=0}^{\hi-1} (A - B K_i) \right) \st_0.\]</div>
+<p><strong>Exercise:</strong> Verify this.</p>
+<p>This introdces the quantity <span class="math notranslate nohighlight">\(A - B K_i\)</span>, which shows up frequently in
+control theory. For example, one important question is: will <span class="math notranslate nohighlight">\(\st_\hi\)</span>
+remain bounded, or will it go to infinity as time goes on? To answer
+this, let’s imagine for simplicity that these <span class="math notranslate nohighlight">\(K_i\)</span>s are equal (call
+this matrix <span class="math notranslate nohighlight">\(K\)</span>). Then the expression above becomes <span class="math notranslate nohighlight">\((A-BK)^\hi \st_0\)</span>.
+Now consider the maximum eigenvalue <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span> of <span class="math notranslate nohighlight">\(A - BK\)</span>. If
+<span class="math notranslate nohighlight">\(|\lambda_{\max}| &gt; 1\)</span>, then there’s some nonzero initial state
+<span class="math notranslate nohighlight">\(\bar \st_0\)</span>, the corresponding eigenvector, for which</p>
+<div class="math notranslate nohighlight">
+\[\lim_{\hi \to \infty} (A - BK)^\hi \bar \st_0
+    = \lim_{\hi \to \infty} \lambda_{\max}^\hi \bar \st_0
+    = \infty.
+    
+    \]</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span> Otherwise, if $|\lambda_{\max}| &lt; 1$, then it&#39;s
+</pre></div>
+</div>
+<p>impossible for your original state to explode as dramatically.</p>
+</section>
+</section>
+<section id="extensions">
+<h2><span class="section-number">5.4. </span>Extensions<a class="headerlink" href="#extensions" title="Link to this heading">#</a></h2>
+<p>We’ve now formulated an optimal solution for the time-homogeneous LQR
+and computed the expected state under the optimal policy. However, real
+world tasks rarely have such simple dynamics, and we may wish to design
+more complex cost functions. In this section, we’ll consider more
+general extensions of LQR where some of the assumptions we made above
+are relaxed. Specifically, we’ll consider:</p>
+<ol class="arabic simple">
+<li><p><strong>Time-dependency</strong>, where the dynamics and cost function might
+change depending on the timestep.</p></li>
+<li><p><strong>General quadratic cost</strong>, where we allow for linear terms and a
+constant term.</p></li>
+<li><p><strong>Tracking a goal trajectory</strong> rather than aiming for a single goal
+state-action pair.</p></li>
+</ol>
+<p>Combining these will allow us to use the LQR solution to solve more
+complex setups by taking <em>Taylor approximations</em> of the dynamics and
+cost functions.</p>
+<section id="time-dependent-dynamics-and-cost-function">
+<span id="time-dep-lqr"></span><h3><span class="section-number">5.4.1. </span>Time-dependent dynamics and cost function<a class="headerlink" href="#time-dependent-dynamics-and-cost-function" title="Link to this heading">#</a></h3>
+<p>So far, we’ve considered the <em>time-homogeneous</em> case, where the dynamics
+and cost function stay the same at every timestep. However, this might
+not always be the case. As an example, in many sports, the rules and
+scoring system might change during an overtime period. To address these
+sorts of problems, we can loosen the time-homogeneous restriction, and
+consider the case where the dynamics and cost function are
+<em>time-dependent.</em> Our analysis remains almost identical; in fact, we can
+simply add a time index to the matrices <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> that determine the
+dynamics and the matrices <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(R\)</span> that determine the cost.</p>
+<div class="exercise docutils">
+<p>Walk through the above derivation to verify this claim.</p>
+</div>
+<p>The modified problem is now defined as follows:</p>
+<div class="proof definition admonition" id="time_dependent_lqr">
+<p class="admonition-title"><span class="caption-number">Definition 5.6 </span> (Time-dependent LQR)</p>
+<section class="definition-content" id="proof-content">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+        \min_{\pi_{0}, \dots, \pi_{\hor-1}} \quad &amp; \E \left[ \left( \sum_{\hi=0}^{\hor-1} (\st_\hi^\top Q_\hi \st_\hi) + \act_\hi^\top R_\hi \act_\hi \right) + \st_\hor^\top Q_\hor \st_\hor \right] \\
+        \textrm{where} \quad                      &amp; \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + w_\hi                                                             \\
+                                                  &amp; \st_0 \sim \mu_0                                                                                                                                   \\
+                                                  &amp; \act_\hi = \pi_\hi (\st_\hi)                                                                                                                       \\
+                                                  &amp; w_\hi \sim \mathcal{N}(0, \sigma^2 I).
+    
+\end{aligned}\end{split}\]</div>
+</section>
+</div><p>The derivation of the optimal value functions and the optimal policy
+remains almost exactly the same, and we can modify the Riccati equation
+accordingly:</p>
+<div class="proof definition admonition" id="riccati_time_dependent">
+<p class="admonition-title"><span class="caption-number">Definition 5.7 </span> (Time-dependent Riccati Equation)</p>
+<section class="definition-content" id="proof-content">
+<div class="math notranslate nohighlight">
+\[P_\hi = Q_\hi + A_\hi^\top P_{\hi+1} A_\hi - A_\hi^\top P_{\hi+1} B_\hi (R_\hi + B_\hi^\top P_{\hi+1} B_\hi)^{-1} B_\hi^\top P_{\hi+1} A_\hi.\]</div>
+<p>Note that this is just the time-homogeneous Riccati equation
+(<a class="reference internal" href="#riccati">Definition 5.5</a>), but with the time index added to each of the
+relevant matrices.</p>
+</section>
+</div><p>Additionally, by allowing the dynamics to vary across time, we gain the
+ability to <em>locally approximate</em> nonlinear dynamics at each timestep.
+We’ll discuss this later in the chapter.</p>
+</section>
+<section id="more-general-quadratic-cost-functions">
+<h3><span class="section-number">5.4.2. </span>More general quadratic cost functions<a class="headerlink" href="#more-general-quadratic-cost-functions" title="Link to this heading">#</a></h3>
+<p>Our original cost function had only second-order terms with respect to
+the state and action, incentivizing staying as close as possible to
+<span class="math notranslate nohighlight">\((\st^\star, \act^\star) = (0, 0)\)</span>. We can also consider more general
+quadratic cost functions that also have first-order terms and a constant
+term. Combining this with time-dependent dynamics results in the
+following expression, where we introduce a new matrix <span class="math notranslate nohighlight">\(M_\hi\)</span> for the
+cross term, linear coefficients <span class="math notranslate nohighlight">\(q_\hi\)</span> and <span class="math notranslate nohighlight">\(r_\hi\)</span> for the state and
+action respectively, and a constant term <span class="math notranslate nohighlight">\(c_\hi\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-general-quadratic-cost">
+<span class="eqno">(5.2)<a class="headerlink" href="#equation-general-quadratic-cost" title="Link to this equation">#</a></span>\[c_\hi(\st_\hi, \act_\hi) = ( \st_\hi^\top Q_\hi \st_\hi + \st_\hi^\top M_\hi \act_\hi + \act_\hi^\top R_\hi \act_\hi ) + (\st_\hi^\top q_\hi + \act_\hi^\top r_\hi) + c_\hi.\]</div>
+<p>Similarly, we can also include a
+constant term <span class="math notranslate nohighlight">\(v_\hi \in \mathbb{R}^{n_\st}\)</span> in the dynamics (note that this is
+<em>deterministic</em> at each timestep, unlike the stochastic noise <span class="math notranslate nohighlight">\(w_\hi\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[\st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + v_\hi + w_\hi.\]</div>
+<div class="exercise docutils">
+<p>Derive the optimal solution. (You will need to slightly modify the above
+proof.)</p>
+</div>
+</section>
+<section id="tracking-a-predefined-trajectory">
+<h3><span class="section-number">5.4.3. </span>Tracking a predefined trajectory<a class="headerlink" href="#tracking-a-predefined-trajectory" title="Link to this heading">#</a></h3>
+<p>Consider applying LQR to a task like autonomous driving, where the
+target state-action pair changes over time. We might want the vehicle to
+follow a predefined <em>trajectory</em> of states and actions
+<span class="math notranslate nohighlight">\((\st_\hi^\star, \act_\hi^\star)_{\hi=0}^{\hor-1}\)</span>. To express this as a
+control problem, we’ll need a corresponding time-dependent cost
+function:</p>
+<div class="math notranslate nohighlight">
+\[c_\hi(\st_\hi, \act_\hi) = (\st_\hi - \st^\star_\hi)^\top Q (\st_\hi - \st^\star_\hi) + (\act_\hi - \act^\star_\hi)^\top R (\act_\hi - \act^\star_\hi).\]</div>
+<p>Note that this punishes states and actions that are far from the
+intended trajectory. By expanding out these multiplications, we can see
+that this is actually a special case of the more general quadratic cost
+function above
+(<a class="reference internal" href="#equation-general-quadratic-cost">(5.2)</a>):</p>
+<div class="math notranslate nohighlight">
+\[M_\hi = 0, \qquad q_\hi = -2Q \st^\star_\hi, \qquad r_\hi = -2R \act^\star_\hi, \qquad c_\hi = (\st^\star_\hi)^\top Q (\st^\star_\hi) + (\act^\star_\hi)^\top R (\act^\star_\hi).\]</div>
+</section>
+</section>
+<section id="approximating-nonlinear-dynamics">
+<span id="approx-nonlinear"></span><h2><span class="section-number">5.5. </span>Approximating nonlinear dynamics<a class="headerlink" href="#approximating-nonlinear-dynamics" title="Link to this heading">#</a></h2>
+<p>The LQR algorithm solves for the optimal policy when the dynamics are
+<em>linear</em> and the cost function is an <em>upward-curved quadratic</em>. However,
+real settings are rarely this simple! Let’s return to the CartPole
+example from the start of the chapter
+(<a class="reference internal" href="#cart_pole">Example 5.1</a>). The dynamics (physics) aren’t linear. How
+can we approximate this by an LQR problem?</p>
+<p>Concretely, let’s consider a <em>noise-free</em> problem since, as we saw, the
+noise doesn’t factor into the optimal policy. Let’s assume the dynamics
+and cost function are stationary, and ignore the terminal state for
+simplicity:</p>
+<div class="proof definition admonition" id="nonlinear_control">
+<p class="admonition-title"><span class="caption-number">Definition 5.8 </span> (Nonlinear control problem)</p>
+<section class="definition-content" id="proof-content">
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+        \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad &amp; \E_{\st_0} \left[ \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi) \right] \\
+        \text{where} \quad                                  &amp; \st_{\hi+1} = f(\st_\hi, \act_\hi)                                   \\
+                                                            &amp; \act_\hi = \pi_\hi(\st_\hi)                                          \\
+                                                            &amp; \st_0 \sim \mu_0                                                     \\
+                                                            &amp; c(\st, \act) = d(\st, \st^\star) + d(\act, \act^\star).
+    
+\end{aligned}\end{split}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(d\)</span> denotes a function that measures the
+“distance” between its two arguments.</p>
+</section>
+</div><p>This is now only slightly simplified from the general optimal control
+problem (see
+<a class="reference internal" href="#optimal_control">Definition 5.1</a>). Here, we don’t know an analytical form
+for the dynamics <span class="math notranslate nohighlight">\(f\)</span> or the cost function <span class="math notranslate nohighlight">\(c\)</span>, but we assume that we’re
+able to <em>query/sample/simulate</em> them to get their values at a given
+state and action. To clarify, consider the case where the dynamics are
+given by real world physics. We can’t (yet) write down an expression for
+the dynamics that we can differentiate or integrate analytically.
+However, we can still <em>simulate</em> the dynamics and cost function by
+running a real-world experiment and measuring the resulting states and
+costs. How can we adapt LQR to this more general nonlinear case?</p>
+<section id="local-linearization">
+<h3><span class="section-number">5.5.1. </span>Local linearization<a class="headerlink" href="#local-linearization" title="Link to this heading">#</a></h3>
+<p>How can we apply LQR when the dynamics are nonlinear or the cost
+function is more complex? We’ll exploit the useful fact that we can take
+a function that’s <em>locally continuous</em> around <span class="math notranslate nohighlight">\((s^\star, a^\star)\)</span> and
+approximate it nearby with low-order polynomials (i.e. its Taylor
+approximation). In particular, as long as the dynamics <span class="math notranslate nohighlight">\(f\)</span> are
+differentiable around <span class="math notranslate nohighlight">\((\st^\star, \act^\star)\)</span> and the cost function
+<span class="math notranslate nohighlight">\(c\)</span> is twice differentiable at <span class="math notranslate nohighlight">\((\st^\star, \act^\star)\)</span>, we can take a
+linear approximation of <span class="math notranslate nohighlight">\(f\)</span> and a quadratic approximation of <span class="math notranslate nohighlight">\(c\)</span> to
+bring us back to the regime of LQR.</p>
+<p>Linearizing the dynamics around <span class="math notranslate nohighlight">\((\st^\star, \act^\star)\)</span> gives:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{gathered}
+    f(\st, \act) \approx f(\st^\star, \act^\star) + \nabla_\st f(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act f(\st^\star, \act^\star) (\act - \act^\star) \\
+    (\nabla_\st f(\st, \act))_{ij} = \frac{d f_i(\st, \act)}{d \st_j}, \quad i, j \le n_\st \qquad (\nabla_\act f(\st, \act))_{ij} = \frac{d f_i(\st, \act)}{d \act_j}, \quad i \le n_\st, j \le n_\act
+\end{gathered}\end{split}\]</div>
+<p>and quadratizing the cost function around
+<span class="math notranslate nohighlight">\((\st^\star, \act^\star)\)</span> gives:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    c(\st, \act) &amp; \approx c(\st^\star, \act^\star) \quad \text{constant term}                                                                                      \\
+                 &amp; \qquad + \nabla_\st c(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act c(\st^\star, \act^\star) (a - \act^\star) \quad \text{linear terms} \\
+                 &amp; \left. \begin{aligned}
+                               &amp; \qquad + \frac{1}{2} (\st - \st^\star)^\top \nabla_{\st \st} c(\st^\star, \act^\star) (\st - \st^\star)       \\
+                               &amp; \qquad + \frac{1}{2} (\act - \act^\star)^\top \nabla_{\act \act} c(\st^\star, \act^\star) (\act - \act^\star) \\
+                               &amp; \qquad + (\st - \st^\star)^\top \nabla_{\st \act} c(\st^\star, \act^\star) (\act - \act^\star)
+                          \end{aligned} \right\} \text{quadratic terms}
+\end{aligned}\end{split}\]</div>
+<p>where the gradients and Hessians are defined as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    (\nabla_\st c(\st, \act))_{i}         &amp; = \frac{d c(\st, \act)}{d \st_i}, \quad i \le n_\st
+                                          &amp; (\nabla_\act c(\st, \act))_{i}                                               &amp; = \frac{d c(\st, \act)}{d \act_i}, \quad i \le n_\act               \\
+    (\nabla_{\st \st} c(\st, \act))_{ij}  &amp; = \frac{d^2 c(\st, \act)}{d \st_i d \st_j}, \quad i, j \le n_\st
+                                          &amp; (\nabla_{\act \act} c(\st, \act))_{ij}                                       &amp; = \frac{d^2 c(\st, \act)}{d \act_i d \act_j}, \quad i, j \le n_\act \\
+    (\nabla_{\st \act} c(\st, \act))_{ij} &amp; = \frac{d^2 c(\st, \act)}{d \st_i d \act_j}. \quad i \le n_\st, j \le n_\act
+\end{aligned}\end{split}\]</div>
+<p><strong>Exercise:</strong> Note that this cost can be expressed in the general
+quadratic form seen in
+<a class="reference internal" href="#equation-general-quadratic-cost">(5.2)</a>. Derive the corresponding
+quantities <span class="math notranslate nohighlight">\(Q, R, M, q, r, c\)</span>.</p>
+</section>
+<section id="finite-differencing">
+<h3><span class="section-number">5.5.2. </span>Finite differencing<a class="headerlink" href="#finite-differencing" title="Link to this heading">#</a></h3>
+<p>To calculate these gradients and Hessians in practice, we use a method
+known as <strong>finite differencing</strong> for numerically computing derivatives.
+Namely, we can simply use the limit definition of the derivative, and
+see how the function changes as we add or subtract a tiny <span class="math notranslate nohighlight">\(\delta\)</span> to
+the input.</p>
+<div class="math notranslate nohighlight">
+\[\frac{d}{dx} f(x) = \lim_{\delta \to 0} \frac{f(x + \delta) - f(x)}{\delta}\]</div>
+<p>Note that this only requires us to be able to <em>query</em> the function, not
+to have an analytical expression for it, which is why it’s so useful in
+practice.</p>
+</section>
+<section id="local-convexification">
+<h3><span class="section-number">5.5.3. </span>Local convexification<a class="headerlink" href="#local-convexification" title="Link to this heading">#</a></h3>
+<p>However, simply taking the second-order approximation of the cost
+function is insufficient, since for the LQR setup we required that the
+<span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(R\)</span> matrices were positive definite, i.e. that all of their
+eigenvalues were positive.</p>
+<p>One way to naively <em>force</em> some symmetric matrix <span class="math notranslate nohighlight">\(D\)</span> to be positive
+definite is to set any non-positive eigenvalues to some small positive
+value <span class="math notranslate nohighlight">\(\varepsilon &gt; 0\)</span>. Recall that any real symmetric matrix
+<span class="math notranslate nohighlight">\(D \in \mathbb{R}^{n \times n}\)</span> has an basis of eigenvectors <span class="math notranslate nohighlight">\(u_1, \dots, u_n\)</span>
+with corresponding eigenvalues <span class="math notranslate nohighlight">\(\lambda_1, \dots, \lambda_n\)</span> such that
+<span class="math notranslate nohighlight">\(D u_i = \lambda_i u_i\)</span>. Then we can construct the positive definite
+approximation by</p>
+<div class="math notranslate nohighlight">
+\[\widetilde{D} = \left( \sum_{i=1, \dots, n \mid \lambda_i &gt; 0} \lambda_i u_i u_i^\top \right) + \varepsilon I.\]</div>
+<p><strong>Exercise:</strong> Convince yourself that <span class="math notranslate nohighlight">\(\widetilde{D}\)</span> is indeed positive
+definite.</p>
+<p>Note that Hessian matrices are generally symmetric, so we can apply this
+process to <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(R\)</span> to obtain the positive definite approximations
+<span class="math notranslate nohighlight">\(\widetilde{Q}\)</span> and <span class="math notranslate nohighlight">\(\widetilde{R}\)</span>. Now that we have a upward-curved
+quadratic approximation to the cost function, and a linear approximation
+to the state transitions, we can simply apply the time-homogenous LQR
+methods from <a class="reference internal" href="#optimal-lqr"><span class="std std-ref">Optimality and the Riccati Equation</span></a>.</p>
+<p>But what happens when we enter states far away from <span class="math notranslate nohighlight">\(\st^\star\)</span> or want
+to use actions far from <span class="math notranslate nohighlight">\(\act^\star\)</span>? A Taylor approximation is only
+accurate in a <em>local</em> region around the point of linearization, so the
+performance of our LQR controller will degrade as we move further away.
+We’ll see how to address this in the next section using the <strong>iterative LQR</strong> algorithm.</p>
+<figure class="align-default" id="id1">
+<img alt="../_images/log_taylor.png" src="../_images/log_taylor.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 5.3 </span><span class="caption-text">Local linearization might only be accurate in a small region around the
+point of linearization.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="iterative-lqr">
+<h3><span class="section-number">5.5.4. </span>Iterative LQR<a class="headerlink" href="#iterative-lqr" title="Link to this heading">#</a></h3>
+<p>To address these issues with local linearization, we’ll use an iterative
+approach, where we repeatedly linearize around different points to
+create a <em>time-dependent</em> approximation of the dynamics, and then solve
+the resulting time-dependent LQR problem to obtain a better policy. This
+is known as <strong>iterative LQR</strong> or <strong>iLQR</strong>:</p>
+<div class="proof definition admonition" id="ilqr">
+<p class="admonition-title"><span class="caption-number">Definition 5.9 </span> (Iterative LQR (high-level))</p>
+<section class="definition-content" id="proof-content">
+<p>For each iteration of the algorithm:</p>
+<div class="steps docutils">
+<p>Form a time-dependent LQR problem around the current candidate
+trajectory using local linearization.</p>
+<p>Compute the optimal policy using <a class="reference internal" href="#time-dep-lqr"><span class="std std-ref">Time-dependent dynamics and cost function</span></a>.</p>
+<p>Generate a new series of actions using this policy.</p>
+<p>Compute a better candidate trajectory by interpolating between the
+current and proposed actions.</p>
+</div>
+</section>
+</div><div class="docutils">
+<p>Now let’s go through the details of each step. We’ll use superscripts to
+denote the iteration of the algorithm. We’ll also denote
+<span class="math notranslate nohighlight">\(\bar \st_0 = \E_{\st_0 \sim \mu_0} [\st_0]\)</span> as the expected initial
+state.</p>
+<p>At iteration <span class="math notranslate nohighlight">\(i\)</span> of the algorithm, we begin with a <strong>candidate</strong>
+trajectory
+<span class="math notranslate nohighlight">\(\bar \tau^i = (\bar \st^i_0, \bar \act^i_0, \dots, \bar \st^i_{\hor-1}, \bar \act^i_{\hor-1})\)</span>.</p>
+<p><strong>Step 1: Form a time-dependent LQR problem.</strong> At each timestep
+<span class="math notranslate nohighlight">\(\hi \in [\hor]\)</span>, we use the techniques from
+<a class="reference internal" href="#approx-nonlinear"><span class="std std-ref">Approximating nonlinear dynamics</span></a> to linearize the dynamics and
+quadratize the cost function around <span class="math notranslate nohighlight">\((\bar \st^i_\hi, \bar \act^i_\hi)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    f_\hi(\st, \act) &amp; \approx f(\bar {\st}^i_\hi, \bar {\act}^i_\hi) + \nabla_{\st } f(\bar {\st}^i_\hi, \bar {\act}^i_\hi)(\st - \bar {\st}^i_\hi) + \nabla_{\act } f(\bar {\st}^i_\hi, \bar {\act}^i_\hi)(\act - \bar {\act}^i_\hi)                         \\
+    c_\hi(\st, \act) &amp; \approx c(\bar {\st}^i_\hi, \bar {\act}^i_\hi) + \begin{bmatrix}
+                                                              \st - \bar {\st }^i_\hi&amp; \act - \bar {\act}^i_\hi
+                                                          \end{bmatrix} \begin{bmatrix}
+                                                                            \nabla_{\st } c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)\\
+                                                                            \nabla_{\act} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)
+                                                                        \end{bmatrix}                                                      \\
+                     &amp; \qquad + \frac{1}{2} \begin{bmatrix}
+                                                \st - \bar {\st }^i_\hi&amp; \act - \bar {\act}^i_\hi
+                                            \end{bmatrix} \begin{bmatrix}
+                                                              \nabla_{\st \st} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)  &amp; \nabla_{\st \act} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)  \\
+                                                              \nabla_{\act \st} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi) &amp; \nabla_{\act \act} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)
+                                                          \end{bmatrix}
+    \begin{bmatrix}
+        \st - \bar {\st }^i_\hi\\
+        \act - \bar {\act}^i_\hi
+    \end{bmatrix}.
+\end{aligned}\end{split}\]</div>
+<p><strong>Step 2: Compute the optimal policy.</strong> We can now solve the
+time-dependent LQR problem using the Riccati equation from
+<a class="reference internal" href="#time-dep-lqr"><span class="std std-ref">Time-dependent dynamics and cost function</span></a> to compute the optimal policy
+<span class="math notranslate nohighlight">\(\pi^i_0, \dots, \pi^i_{\hor-1}\)</span>.</p>
+<p><strong>Step 3: Generate a new series of actions.</strong> We can then generate a new
+sample trajectory by taking actions according to this optimal policy:</p>
+<div class="math notranslate nohighlight">
+\[\bar \st^{i+1}_0 = \bar \st_0, \qquad \widetilde \act_\hi = \pi^i_\hi(\bar \st^{i+1}_\hi), \qquad \bar \st^{i+1}_{\hi+1} = f(\bar \st^{i+1}_\hi, \widetilde \act_\hi).\]</div>
+<p>Note that the states are sampled according to the <em>true</em> dynamics, which
+we assume we have query access to.</p>
+<p><strong>Step 4: Compute a better candidate trajectory.</strong>, Note that we’ve
+denoted these actions as <span class="math notranslate nohighlight">\(\widetilde \act_\hi\)</span> and aren’t directly using
+them for the next iteration <span class="math notranslate nohighlight">\(\bar \act^{i+1}_\hi\)</span>. Rather, we want to
+<em>interpolate</em> between them and the actions from the previous iteration
+<span class="math notranslate nohighlight">\(\bar \act^i_0, \dots, \bar \act^i_{\hor-1}\)</span>. This is so that the cost
+will <em>increase monotonically,</em> since if the new policy turns out to
+actually be worse, we can stay closer to the previous trajectory. (Can
+you think of an intuitive example where this might happen?)</p>
+<p>Formally, we want to find <span class="math notranslate nohighlight">\(\alpha \in [0, 1]\)</span> to generate the next
+iteration of actions
+<span class="math notranslate nohighlight">\(\bar \act^{i+1}_0, \dots, \bar \act^{i+1}_{\hor-1}\)</span> such that the cost
+is minimized:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+    \min_{\alpha \in [0, 1]} \quad &amp; \sum_{\hi=0}^{\hor-1} c(\st_\hi, \bar \act^{i+1}_\hi)                     \\
+    \text{where} \quad             &amp; \st_{\hi+1} = f(\st_\hi, \bar \act^{i+1}_\hi)                             \\
+                                   &amp; \bar \act^{i+1}_\hi = \alpha \bar \act^i_\hi + (1-\alpha) \widetilde \act_\hi \\
+                                   &amp; \st_0 = \bar \st_0.
+\end{aligned}\end{split}\]</div>
+<p>Note that this optimizes over the closed interval
+<span class="math notranslate nohighlight">\([0, 1]\)</span>, so by the Extreme Value Theorem, it’s guaranteed to have a
+global maximum.</p>
+<p>The final output of this algorithm is a policy <span class="math notranslate nohighlight">\(\pi^{n_\text{steps}}\)</span>
+derived after <span class="math notranslate nohighlight">\(n_\text{steps}\)</span> of the algorithm. Though the proof is
+somewhat complex, one can show that for many nonlinear control problems,
+this solution converges to a locally optimal solution (in the policy
+space).</p>
+<h2 class="rubric" id="summary">Summary</h2>
+<p>This chapter introduced some approaches to solving different variants of
+the optimal control problem
+<a class="reference internal" href="#optimal_control">Definition 5.1</a>. We began with the simple case of linear
+dynamics and an upward-curved quadratic cost. This model is called the
+LQR and we solved for the optimal policy using dynamic programming. We
+then extended these results to the more general nonlinear case via local
+linearization. We finally saw the iterative LQR algorithm for solving
+nonlinear control problems.</p>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./5_control"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../4_fitted_dp/fitted_dp.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">4. </span>Fitted dynamic programming algorithms</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-control">5.1. Optimal control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-discretization">5.1.1. A first attempt: Discretization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-quadratic-regulator">5.2. The Linear Quadratic Regulator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimality-and-the-riccati-equation">5.3. Optimality and the Riccati Equation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-state-at-time-hi">5.3.1. Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions">5.4. Extensions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-dependent-dynamics-and-cost-function">5.4.1. Time-dependent dynamics and cost function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-general-quadratic-cost-functions">5.4.2. More general quadratic cost functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracking-a-predefined-trajectory">5.4.3. Tracking a predefined trajectory</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approximating-nonlinear-dynamics">5.5. Approximating nonlinear dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-linearization">5.5.1. Local linearization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-differencing">5.5.2. Finite differencing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-convexification">5.5.3. Local convexification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-lqr">5.5.4. Iterative LQR</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander D. Cai
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

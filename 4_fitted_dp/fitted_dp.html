@@ -1,0 +1,958 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>4. Fitted dynamic programming algorithms &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"E": "\\mathop{\\mathbb{E}}", "P": "\\mathop{\\mathbb{P}}", "hi": "h", "hor": "H", "st": "s", "act": "a"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '4_fitted_dp/fitted_dp';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Linear Quadratic Regulators" href="../5_control/control.html" />
+    <link rel="prev" title="3. Finite Markov Decision Processes" href="../3_mdps/mdps.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/184.png" class="logo__image only-light" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>
+    <script>document.write(`<img src="../_static/184.png" class="logo__image only-dark" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1_intro/intro.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2_bandits/bandits.html">2. Bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">4. Fitted dynamic programming algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_control/control.html">5. Linear Quadratic Regulators</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/4_fitted_dp/fitted_dp.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Fitted dynamic programming algorithms</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">4.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">4.2. Fitted value iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supervised-learning">4.3. Supervised learning</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.3.1. Linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.3.2. Neural networks</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="fitted-dynamic-programming-algorithms">
+<span id="fitted-dp"></span><h1><span class="section-number">4. </span>Fitted dynamic programming algorithms<a class="headerlink" href="#fitted-dynamic-programming-algorithms" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id3">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#fitted-value-iteration" id="id4">Fitted value iteration</a></p></li>
+<li><p><a class="reference internal" href="#supervised-learning" id="id5">Supervised learning</a></p>
+<ul>
+<li><p><a class="reference internal" href="#linear-regression" id="id6">Linear regression</a></p></li>
+<li><p><a class="reference internal" href="#neural-networks" id="id7">Neural networks</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>This closely follows <a class="reference external" href="https://shamulent.github.io/RL_2023/Lectures/fitteddp_annotated.pdf">these lecture slides</a>.</p>
+<p>We borrow these definitions from the <a class="reference internal" href="../3_mdps/mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a> chapter:</p>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">jaxtyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Array</span>
+<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">grad</span><span class="p">,</span> <span class="n">vmap</span><span class="p">,</span> <span class="n">tree_map</span>
+<span class="kn">import</span> <span class="nn">jax.random</span> <span class="k">as</span> <span class="nn">rand</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">gymnasium</span> <span class="k">as</span> <span class="nn">gym</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">rand</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">184</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Transition</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">s</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">r</span><span class="p">:</span> <span class="nb">float</span>
+
+
+<span class="n">Trajectory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">Transition</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">get_num_actions</span><span class="p">(</span><span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Trajectory</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the number of actions in the dataset. Assumes actions range from 0 to A-1.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">a</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">τ</span><span class="p">)</span> <span class="k">for</span> <span class="n">τ</span> <span class="ow">in</span> <span class="n">trajectories</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="n">State</span> <span class="o">=</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;...&quot;</span><span class="p">]</span>  <span class="c1"># arbitrary shape</span>
+
+<span class="c1"># assume finite `A` actions and f outputs an array of Q-values</span>
+<span class="n">QFunction</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">State</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">]]</span>
+
+
+<span class="k">def</span> <span class="nf">Q_zero</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Q-function that always returns zero.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+
+<span class="c1"># a deterministic time-dependent policy</span>
+<span class="n">Policy</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">State</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">q_to_greedy</span><span class="p">(</span><span class="n">Q</span><span class="p">:</span> <span class="n">QFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Policy</span><span class="p">:</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<section id="introduction">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">4.1. </span>Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="../3_mdps/mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a> chapter discussed the case of <strong>finite</strong> MDPs, where the state and action spaces <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> were finite.
+This allowed us to compute the value function for a given policy exactly.
+In this chapter, we consider the case of <strong>large</strong> or <strong>continuous</strong> state spaces, where the state space is too large to be enumerated.
+In this case, we need to <em>approximate</em> the value function and Q-function using methods from <strong>supervised learning</strong>.</p>
+</section>
+<section id="fitted-value-iteration">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">4.2. </span>Fitted value iteration</a><a class="headerlink" href="#fitted-value-iteration" title="Link to this heading">#</a></h2>
+<p>So far, how have we computed the optimal value function in MDPs with finite state spaces?</p>
+<p>In a <a class="reference internal" href="../3_mdps/mdps.html#id1"><span class="std std-ref">finite-horizon MDP</span></a>, we can use <a class="reference internal" href="../3_mdps/mdps.html#pi_star_dp">a DP algorithm</a>, working backwards from the end of the time horizon, to compute the optimal value function exactly.</p>
+<p>In a <a class="reference internal" href="../3_mdps/mdps.html#infinite-horizon-mdps"><span class="std std-ref">infinite-horizon MDP</span></a>, we can use the <a class="reference internal" href="../3_mdps/mdps.html#value-iteration"><span class="std std-ref">value iteration</span></a> algorithm, which iterates the Bellman optimality operator <a class="reference internal" href="../3_mdps/mdps.html#equation-bellman-optimality-operator">(3.7)</a> to approximately compute the optimal value function.</p>
+<p>Our existing approaches represent the value function, and the MDP itself,
+in matrix notation. But what happens if the state space is extremely large, or even infinite (e.g. real-valued)?
+Then computing a weighted sum over all possible next states, which is required to compute the Bellman operator,
+becomes intractable.</p>
+<p>Instead, we will need to use <em>function approximation</em> methods to represent the value function in an
+alternative way. To approximate the value function and Q-function, we will turn to techniques from <em>supervised learning</em>,
+another branch of machine learning that focuses on learning patterns from labelled data.</p>
+<p>In particular, suppose we have a dataset of <span class="math notranslate nohighlight">\(N\)</span> trajectories <span class="math notranslate nohighlight">\(\tau_1, \dots, \tau_N \sim \rho_{\pi}\)</span> from some policy <span class="math notranslate nohighlight">\(\pi\)</span>.
+Let us indicate the trajectory index in the superscript, so that</p>
+<div class="math notranslate nohighlight">
+\[
+\tau_i = \{ s_0^i, a_0^i, r_0^i, s_1^i, a_1^i, r_1^i, \dots, s_{\hor-1}^i, a_{\hor-1}^i, r_{\hor-1}^i \}.
+\]</div>
+<p>We want to <em>learn</em> the optimal value function from this dataset.
+Recall that the <a class="reference internal" href="../3_mdps/mdps.html#bellman_consistency_optimal">Bellman consistency equations for the optimal policy</a>
+don’t depend on an actual policy:</p>
+<div class="math notranslate nohighlight">
+\[
+Q_\hi^\star(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [\max_{a'} Q_{\hi+1}^\star(s', a')]
+\]</div>
+<p>Our goal is to use the dataset to find a Q-function that satisfies these equations.</p>
+<p>Let’s reframe the problem to make the connection to supervised learning more clear.
+We can think of the arguments to the Q-function – i.e. the current state, action, and timestep <span class="math notranslate nohighlight">\(\hi\)</span> –
+as the inputs <span class="math notranslate nohighlight">\(x\)</span>, and the r.h.s. of the above equation as the label <span class="math notranslate nohighlight">\(f(x)\)</span>. Note that the r.h.s. can also be expressed as a <strong>conditional expectation</strong>:</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = \E [y \mid x] \quad \text{where} \quad y = r(s_\hi, a_\hi) + \max_{a'} Q^\star_{\hi + 1}(s', a').
+\]</div>
+<p>This is precisely the kind of supervised learning problem we can solve using a dataset of labelled samples.
+In particular, we’ll use the following fact:</p>
+<div class="proof theorem admonition" id="conditional_expectation_minimizes_mse">
+<p class="admonition-title"><span class="caption-number">Theorem 4.1 </span> (Conditional expectation minimizes mean squared error)</p>
+<section class="theorem-content" id="proof-content">
+<div class="math notranslate nohighlight">
+\[
+\arg\min_{f} \E[(y - f(x))^2] = (x \mapsto \E[y \mid x])
+\]</div>
+</section>
+</div><div class="proof admonition" id="proof">
+<p>Proof. We can decompose the mean squared error as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\E[(y - f(x))^2] &amp;= \E[ (y - \E[y \mid x] + \E[y \mid x] - f(x))^2 ] \\
+&amp;= \E[ (y - \E[y \mid x])^2 ] + \E[ (\E[y \mid x] - f(x))^2 ] + 2 \E[ (y - \E[y \mid x])(\E[y \mid x] - f(x)) ] \\
+\end{aligned}
+\end{split}\]</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Use the law of iterated expectations to show that the last term is zero.</p>
+</div>
+<p>So the first term is the irreducible error, and the second term is the error due to the approximation,
+which is minimized at <span class="math notranslate nohighlight">\(0\)</span> when <span class="math notranslate nohighlight">\(f(x) = \E[y \mid x]\)</span>.</p>
+</div>
+<p>Thus a natural approach for approximating the conditional expectation
+is to draw <span class="math notranslate nohighlight">\(N\)</span> samples <span class="math notranslate nohighlight">\((x_i, y_i)\)</span> from the joint distribution of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>,
+and use the <em>sample average</em> <span class="math notranslate nohighlight">\(\sum_{i=1}^N (y_i - f(x_i))^2 / N\)</span> to approximate the mean squared error.
+Then we use a <em>fitting method</em> to find a function that minimizes this objective
+and thus approximates the conditional expectation.
+This approach is called <strong>empirical risk minimization</strong>.</p>
+<div class="proof definition admonition" id="empirical_risk_minimization">
+<p class="admonition-title"><span class="caption-number">Definition 4.1 </span> (Empirical risk minimization)</p>
+<section class="definition-content" id="proof-content">
+<p>Given a dataset of samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span>, empirical risk minimization seeks to find a function <span class="math notranslate nohighlight">\(f\)</span> (from some class of functions <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>) that minimizes the empirical risk:</p>
+<div class="math notranslate nohighlight">
+\[
+\hat f = \arg\min_{f \in \mathcal{F}} \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2
+\]</div>
+<p>We will cover the details of the minimization process in <a class="reference internal" href="#supervised-learning"><span class="std std-ref">the next section</span></a>.</p>
+</section>
+</div><div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Why is it important that we constrain our search to a class of functions <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>?</p>
+<p>Hint: Consider the function <span class="math notranslate nohighlight">\(f(x) = \sum_{i=1}^N y_i \mathbb{1}_{\{ x = x_i \}}\)</span>. What is the empirical risk of this function? Would you consider it a good approximation of the conditional expectation?</p>
+</div>
+<p>Our above dataset would give us <span class="math notranslate nohighlight">\(N \cdot \hor\)</span> samples in the dataset:</p>
+<div class="math notranslate nohighlight">
+\[
+x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \max_{a'} Q^\star_{\hi + 1}(s_{\hi + 1}^i, a')
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">collect_data</span><span class="p">(</span>
+    <span class="n">env</span><span class="p">:</span> <span class="n">gym</span><span class="o">.</span><span class="n">Env</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">H</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">rand</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">,</span> <span class="n">π</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Policy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Trajectory</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect a dataset of trajectories from the given policy (or a random one).&quot;&quot;&quot;</span>
+    <span class="n">trajectories</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">rand</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)):</span>
+        <span class="n">τ</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">rand</span><span class="o">.</span><span class="n">bits</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+            <span class="c1"># sample from a random policy</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">π</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="k">if</span> <span class="n">π</span> <span class="k">else</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+            <span class="n">s_next</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">terminated</span><span class="p">,</span> <span class="n">truncated</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">τ</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Transition</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">terminated</span> <span class="ow">or</span> <span class="n">truncated</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s_next</span>
+        <span class="n">trajectories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">τ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">trajectories</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&quot;LunarLander-v2&quot;</span><span class="p">)</span>
+<span class="n">trajectories</span> <span class="o">=</span> <span class="n">collect_data</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+<span class="n">trajectories</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span>  <span class="c1"># show first five transitions from first trajectory</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|                                                  | 0/100 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1%|▍                                         | 1/100 [00:00&lt;00:18,  5.40it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 13%|█████▎                                   | 13/100 [00:00&lt;00:01, 54.72it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 24%|█████████▊                               | 24/100 [00:00&lt;00:01, 75.33it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 35%|██████████████▎                          | 35/100 [00:00&lt;00:00, 87.15it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 51%|████████████████████▍                   | 51/100 [00:00&lt;00:00, 110.20it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 63%|█████████████████████████▏              | 63/100 [00:00&lt;00:00, 110.63it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 75%|██████████████████████████████          | 75/100 [00:00&lt;00:00, 110.03it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 87%|██████████████████████████████████▊     | 87/100 [00:00&lt;00:00, 109.41it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 99%|████████████████████████████████████████▌| 99/100 [00:01&lt;00:00, 91.40it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|████████████████████████████████████████| 100/100 [00:01&lt;00:00, 89.74it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Transition(s=array([-0.00767412,  1.4020356 , -0.77731264, -0.39489663,  0.00889908,
+         0.17607279,  0.        ,  0.        ], dtype=float32), a=2, r=0.4116697539428856),
+ Transition(s=array([-0.015343  ,  1.3934507 , -0.7757339 , -0.3816226 ,  0.0176519 ,
+         0.17507371,  0.        ,  0.        ], dtype=float32), a=0, r=-1.181199177339181),
+ Transition(s=array([-0.02301216,  1.3842664 , -0.7757621 , -0.4083301 ,  0.0263996 ,
+         0.17496987,  0.        ,  0.        ], dtype=float32), a=0, r=-1.1873972491266045),
+ Transition(s=array([-0.03068152,  1.3744828 , -0.77578783, -0.4350041 ,  0.03514615,
+         0.17494743,  0.        ,  0.        ], dtype=float32), a=0, r=-1.19267238717822),
+ Transition(s=array([-0.03835125,  1.3641002 , -0.77581346, -0.46167746,  0.04389133,
+         0.17491983,  0.        ,  0.        ], dtype=float32), a=0, r=-1.1954577755183209)]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_X</span><span class="p">(</span><span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Trajectory</span><span class="p">]):</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[(</span><span class="n">τ</span><span class="p">[</span><span class="n">h</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="n">h</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">τ</span> <span class="ow">in</span> <span class="n">trajectories</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">τ</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">ary</span><span class="p">)</span> <span class="k">for</span> <span class="n">ary</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">rows</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">get_y</span><span class="p">(</span>
+    <span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Trajectory</span><span class="p">],</span>
+    <span class="n">f</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QFunction</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">π</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Policy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transform the dataset of trajectories into a dataset for supervised learning.</span>
+<span class="sd">    If `π` is None, instead estimates the optimal Q function.</span>
+<span class="sd">    Otherwise, estimates the Q function of π.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">f</span> <span class="ow">or</span> <span class="n">Q_zero</span><span class="p">(</span><span class="n">get_num_actions</span><span class="p">(</span><span class="n">trajectories</span><span class="p">))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">τ</span> <span class="ow">in</span> <span class="n">trajectories</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">τ</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">τ</span><span class="p">[</span><span class="n">h</span><span class="p">]</span>
+            <span class="n">Q_values</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="n">Q_values</span><span class="p">[</span><span class="n">π</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">if</span> <span class="n">π</span> <span class="k">else</span> <span class="n">Q_values</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">τ</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">get_X</span><span class="p">(</span><span class="n">trajectories</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;states:&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;actions:&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;timesteps:&quot;</span><span class="p">,</span> <span class="n">h</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>states: [[-0.00767412  1.4020356  -0.77731264 -0.39489663  0.00889908  0.17607279
+   0.          0.        ]
+ [-0.015343    1.3934507  -0.7757339  -0.3816226   0.0176519   0.17507371
+   0.          0.        ]
+ [-0.02301216  1.3842664  -0.7757621  -0.4083301   0.0263996   0.17496987
+   0.          0.        ]
+ [-0.03068152  1.3744828  -0.77578783 -0.4350041   0.03514615  0.17494743
+   0.          0.        ]
+ [-0.03835125  1.3641002  -0.77581346 -0.46167746  0.04389133  0.17491983
+   0.          0.        ]]
+actions: [2 0 0 0 0]
+timesteps: [0 1 2 3 4]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">get_y</span><span class="p">(</span><span class="n">trajectories</span><span class="p">[:</span><span class="mi">1</span><span class="p">])[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([ 0.41166976, -1.1811992 , -1.1873972 , -1.1926724 , -1.1954578 ],      dtype=float32)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then we can use empirical risk minimization to find a function <span class="math notranslate nohighlight">\(\hat f\)</span> that approximates the optimal Q-function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We will see some examples in the next section</span>
+<span class="n">FittingMethod</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;N D&quot;</span><span class="p">],</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">]],</span> <span class="n">QFunction</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>But notice that the definition of <span class="math notranslate nohighlight">\(y_{i \hi}\)</span> depends on the Q-function itself!
+How might we address this?
+Recall that we faced the same issue when trying to use the Bellman consistency equations in the infinite-horizon case <a class="reference internal" href="../3_mdps/mdps.html#equation-bellman-consistency-infinite">(3.1)</a>.
+There, we used <em>fixed point iteration</em> to compute the desired value function.
+We can apply the same strategy here, using the <span class="math notranslate nohighlight">\(\hat f\)</span> from the previous iteration to compute the <span class="math notranslate nohighlight">\(y_{i \hi}\)</span>,
+and then using this to get the next iterate.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fitted_q_iteration</span><span class="p">(</span>
+    <span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Trajectory</span><span class="p">],</span>
+    <span class="n">fit</span><span class="p">:</span> <span class="n">FittingMethod</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">Q_init</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QFunction</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run fitted Q-function iteration using the given dataset.</span>
+<span class="sd">    Returns an estimate of the optimal Q-function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Q_hat</span> <span class="o">=</span> <span class="n">Q_init</span> <span class="ow">or</span> <span class="n">Q_zero</span><span class="p">(</span><span class="n">get_num_actions</span><span class="p">(</span><span class="n">trajectories</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">)):</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">trajectories</span><span class="p">,</span> <span class="n">partial</span><span class="p">(</span><span class="n">compute_label_optimal</span><span class="p">,</span> <span class="n">Q_hat</span><span class="p">))</span>
+        <span class="n">Q_hat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Q_hat</span>
+
+
+<span class="k">def</span> <span class="nf">fitted_evaluation</span><span class="p">(</span>
+    <span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Trajectory</span><span class="p">],</span>
+    <span class="n">fit</span><span class="p">:</span> <span class="n">FittingMethod</span><span class="p">,</span>
+    <span class="n">π</span><span class="p">:</span> <span class="n">Policy</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">Q_init</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QFunction</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QFunction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run fitted policy evaluation using the given dataset.</span>
+<span class="sd">    Returns an estimate of the Q-function of the given policy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Q_hat</span> <span class="o">=</span> <span class="n">Q_init</span> <span class="ow">or</span> <span class="n">Q_zero</span><span class="p">(</span><span class="n">get_num_actions</span><span class="p">(</span><span class="n">trajectories</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">)):</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">transform_data</span><span class="p">(</span><span class="n">trajectories</span><span class="p">,</span> <span class="n">Q_hat</span><span class="p">,</span> <span class="n">π</span><span class="p">)</span>
+        <span class="n">Q_hat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Q_hat</span>
+
+
+<span class="k">def</span> <span class="nf">fitted_policy_iteration</span><span class="p">(</span>
+    <span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Trajectory</span><span class="p">],</span>
+    <span class="n">fit</span><span class="p">:</span> <span class="n">FittingMethod</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">evaluation_epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">π_init</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Policy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run fitted policy iteration using the given dataset.&quot;&quot;&quot;</span>
+    <span class="n">π</span> <span class="o">=</span> <span class="n">π_init</span> <span class="ow">or</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># constant zero policy</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">)):</span>
+        <span class="n">Q_hat</span> <span class="o">=</span> <span class="n">fitted_evaluation</span><span class="p">(</span><span class="n">trajectories</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">π</span><span class="p">,</span> <span class="n">evaluation_epochs</span><span class="p">)</span>
+        <span class="n">π</span> <span class="o">=</span> <span class="n">q_to_greedy</span><span class="p">(</span><span class="n">Q_hat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">π</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="supervised-learning">
+<span id="id1"></span><h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">4.3. </span>Supervised learning</a><a class="headerlink" href="#supervised-learning" title="Link to this heading">#</a></h2>
+<p>This section will cover the details of implementing the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function above:
+That is, how to use a dataset of labelled samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span> to find a function <span class="math notranslate nohighlight">\(f\)</span> that minimizes the empirical risk.
+This requires two ingredients:</p>
+<ol class="arabic simple">
+<li><p>A <strong>function class</strong> <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> to search over</p></li>
+<li><p>A <strong>fitting method</strong> for minimizing the empirical risk over this class</p></li>
+</ol>
+<p>The two main function classes we will cover are <strong>linear models</strong> and <strong>neural networks</strong>.
+Both of these function classes are <em>parameterized</em> by some parameters <span class="math notranslate nohighlight">\(\theta\)</span>,
+and the fitting method will search over these parameters to minimize the empirical risk:</p>
+<div class="proof definition admonition" id="parameterized_empirical_risk_minimization">
+<p class="admonition-title"><span class="caption-number">Definition 4.2 </span> (Parameterized empirical risk minimization)</p>
+<section class="definition-content" id="proof-content">
+<p>Given a dataset of samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span> and a class of functions <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> parameterized by <span class="math notranslate nohighlight">\(\theta\)</span>,
+we to find a parameter (vector) <span class="math notranslate nohighlight">\(\hat \theta\)</span> that minimizes the empirical risk:</p>
+<div class="math notranslate nohighlight">
+\[
+\hat \theta = \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^N (y_i - f_\theta(x_i))^2
+\]</div>
+</section>
+</div><p>The most common fitting method for parameterized models is <strong>gradient descent</strong>.</p>
+<div class="proof algorithm admonition" id="algorithm-3">
+<p class="admonition-title"><span class="caption-number">Algorithm 4.1 </span> (Gradient descent)</p>
+<section class="algorithm-content" id="proof-content">
+<p>Letting <span class="math notranslate nohighlight">\(L(\theta) \in \mathbb{R}\)</span> denote the empirical risk in terms of the parameters,
+the gradient descent algorithm updates the parameters according to the rule</p>
+<div class="math notranslate nohighlight">
+\[
+\theta^{t+1} = \theta^t - \eta \nabla_\theta L(\theta^t)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong>.</p>
+</section>
+</div><div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Params</span> <span class="o">=</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">gradient_descent</span><span class="p">(</span>
+    <span class="n">loss</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Params</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">θ_init</span><span class="p">:</span> <span class="n">Params</span><span class="p">,</span>
+    <span class="n">η</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run gradient descent to minimize the given loss function</span>
+<span class="sd">    (expressed in terms of the parameters).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="n">θ</span> <span class="o">=</span> <span class="n">θ</span> <span class="o">-</span> <span class="n">η</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">)(</span><span class="n">θ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">θ</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="linear-regression">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">4.3.1. </span>Linear regression</a><a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h3>
+<p>In linear regression, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is linear in the parameters:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{F} = \{ x \mapsto \theta^\top x \mid \theta \in \mathbb{R}^D \}
+\]</div>
+<p>This function class is extremely simple and only contains linear functions.
+To expand its expressivity, we can <em>transform</em> the input <span class="math notranslate nohighlight">\(x\)</span> using some feature function <span class="math notranslate nohighlight">\(\phi\)</span>,
+i.e. <span class="math notranslate nohighlight">\(\widetilde x = \phi(x)\)</span>, and then fit a linear model in the transformed space instead.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit_linear</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;N D&quot;</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">],</span> <span class="n">φ</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit a linear model to the given dataset using ordinary least squares.&quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">vmap</span><span class="p">(</span><span class="n">φ</span><span class="p">)(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">φ</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">θ</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="neural-networks">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">4.3.2. </span>Neural networks</a><a class="headerlink" href="#neural-networks" title="Link to this heading">#</a></h3>
+<p>In neural networks, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is a composition of linear functions (represented by matrices <span class="math notranslate nohighlight">\(W_i\)</span>) and non-linear activation functions (denoted by <span class="math notranslate nohighlight">\(\sigma\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{F} = \{ x \mapsto \sigma(W_L \sigma(W_{L-1} \dots \sigma(W_1 x + b_1) \dots + b_{L-1}) + b_L) \}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(W_i \in \mathbb{R}^{D_{i+1} \times D_i}\)</span> and <span class="math notranslate nohighlight">\(b_i \in \mathbb{R}^{D_{i+1}}\)</span> are the parameters of the <span class="math notranslate nohighlight">\(i\)</span>-th layer, and <span class="math notranslate nohighlight">\(\sigma\)</span> is the activation function.</p>
+<p>This function class is much more expressive and contains many more parameters.
+This makes it more susceptible to overfitting on smaller datasets,
+but also allows it to represent more complex functions.
+In practice, however, neural networks exhibit interesting phenomena during training,
+and are often able to generalize well even with many parameters.</p>
+<p>Another reason for their popularity is the efficient <strong>backpropagation</strong> algorithm
+for computing the gradient of the empirical risk with respect to the parameters.
+Essentially, the hierarchical structure of the neural network, i.e. computing the
+output of the network as a composition of functions, allows us to use the chain rule
+to compute the gradient of the output with respect to the parameters of each layer.</p>
+<p><span id="id2">[<a class="reference internal" href="../2_bandits/bandits.html#id6" title="Michael A. Nielsen. Neural Networks and Deep Learning. Determination Press, 2015. URL: http://neuralnetworksanddeeplearning.com/ (visited on 2024-03-10).">Nielsen, 2015</a>]</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./4_fitted_dp"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../3_mdps/mdps.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">3. </span>Finite Markov Decision Processes</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../5_control/control.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">5. </span>Linear Quadratic Regulators</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">4.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">4.2. Fitted value iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supervised-learning">4.3. Supervised learning</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.3.1. Linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.3.2. Neural networks</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander D. Cai
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

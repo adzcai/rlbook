@@ -1,0 +1,1144 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>2. Bandits &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"E": "\\mathop{\\mathbb{E}}", "P": "\\mathop{\\mathbb{P}}", "hi": "h", "hor": "H", "st": "s", "act": "a"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '2_bandits/bandits';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3. Finite Markov Decision Processes" href="../3_mdps/mdps.html" />
+    <link rel="prev" title="1. Introduction" href="../1_intro/intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/184.png" class="logo__image only-light" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>
+    <script>document.write(`<img src="../_static/184.png" class="logo__image only-dark" alt="CS/STAT 184: Introduction to Reinforcement Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1_intro/intro.html">1. Introduction</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4_fitted_dp/fitted_dp.html">4. Fitted dynamic programming algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5_control/control.html">5. Linear Quadratic Regulators</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/2_bandits/bandits.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Bandits</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">2.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">2.2. Pure exploration (random guessing)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">2.3. Pure greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">2.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">2.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">2.4.1.1. Exploration phase.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">2.4.1.2. Exploitation phase.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">2.5. Epsilon-greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">2.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">2.6.1. UCB regret analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">2.6.2. Lower bound on regret (intuition)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">2.7. Thompson sampling and Bayesian bandits</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="bandits">
+<span id="id1"></span><h1><span class="section-number">2. </span>Bandits<a class="headerlink" href="#bandits" title="Link to this heading">#</a></h1>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jaxtyping</span> <span class="kn">import</span> <span class="n">Float</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>  <span class="c1"># &quot;Abstract Base Class&quot;</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<p>The <strong>multi-armed bandits</strong> (MAB) setting is a simple but powerful
+setting for studying the basic challenges of RL. In this setting, an
+agent repeatedly chooses from a fixed set of actions, called <strong>arms</strong>,
+each of which has an associated reward distribution. The agent’s goal is
+to maximize the total reward it receives over some time period.</p>
+<p>In particular, we’ll spend a lot of time discussing the
+<strong>Exploration-Exploitation Tradeoff</strong>: should the agent choose new
+actions to learn more about the environment, or should it choose actions
+that it already knows to be good?</p>
+<div class="proof example admonition" id="advertising">
+<p class="admonition-title"><span class="caption-number">Example 2.1 </span> (Online advertising)</p>
+<section class="example-content" id="proof-content">
+<p>Let’s suppose you, the agent, are an advertising company. You have <span class="math notranslate nohighlight">\(K\)</span>
+different ads that you can show to users; For concreteness, let’s
+suppose there’s just a single user. You receive <span class="math notranslate nohighlight">\(1\)</span> reward if the user
+clicks the ad, and <span class="math notranslate nohighlight">\(0\)</span> otherwise. Thus, the unknown <em>reward
+distribution</em> associated to each ad is a Bernoulli distribution defined
+by the probability that the user clicks on the ad. Your goal is to
+maximize the total number of clicks by the user.</p>
+</section>
+</div><div class="proof example admonition" id="clinical_trials">
+<p class="admonition-title"><span class="caption-number">Example 2.2 </span> (Clinical trials)</p>
+<section class="example-content" id="proof-content">
+<p>Suppose you’re a pharmaceutical company, and you’re testing a new drug.
+You have <span class="math notranslate nohighlight">\(K\)</span> different dosages of the drug that you can administer to
+patients. You receive <span class="math notranslate nohighlight">\(1\)</span> reward if the patient recovers, and <span class="math notranslate nohighlight">\(0\)</span>
+otherwise. Thus, the unknown <em>reward distribution</em> associated to each
+dosage is a Bernoulli distribution defined by the probability that the
+patient recovers. Your goal is to maximize the total number of patients
+that recover.</p>
+</section>
+</div><p>In this chapter, we will introduce the multi-armed bandits setting, and
+discuss some of the challenges that arise when trying to solve problems
+in this setting. We will also introduce some of the key concepts that we
+will use throughout the book, such as regret and
+exploration-exploitation tradeoffs.</p>
+<section id="introduction">
+<h2><span class="section-number">2.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<div class="proof remark admonition" id="multi-armed">
+<p class="admonition-title"><span class="caption-number">Remark 2.1 </span> (Namesake)</p>
+<section class="remark-content" id="proof-content">
+<p>The name “multi-armed bandits” comes from slot machines in casinos,
+which are often called “one-armed bandits” since they have one arm (the
+lever) and take money from the player.</p>
+</section>
+</div><p>Let <span class="math notranslate nohighlight">\(K\)</span> denote the number of arms. We’ll label them <span class="math notranslate nohighlight">\(0, \dots, K-1\)</span> and
+use <em>superscripts</em> to indicate the arm index; since we seldom need to
+raise a number to a power, this hopefully won’t cause much confusion.
+For simplicity, we’ll assume rewards are <em>bounded</em> between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(1\)</span>.
+Then each arm has an unknown reward distribution
+<span class="math notranslate nohighlight">\(\nu^k \in \Delta([0, 1])\)</span> with mean <span class="math notranslate nohighlight">\(\mu^k = \E_{r \sim \nu^k} [r]\)</span>.</p>
+<p>In pseudocode, the agent’s interaction with the MAB environment can be
+described by the following process:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mab_loop</span><span class="p">(</span><span class="n">mab</span><span class="p">:</span> <span class="s2">&quot;MAB&quot;</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="s2">&quot;Agent&quot;</span><span class="p">):</span>
+    <span class="n">agent</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">mab</span><span class="o">.</span><span class="n">K</span><span class="p">,</span> <span class="n">mab</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mab</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">arm</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">choose_arm</span><span class="p">()</span>  <span class="c1"># in 0, ..., K-1</span>
+        <span class="n">reward</span> <span class="o">=</span> <span class="n">mab</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">arm</span><span class="p">)</span>
+        <span class="n">agent</span><span class="o">.</span><span class="n">update_history</span><span class="p">(</span><span class="n">arm</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>where we define the <code class="docutils literal notranslate"><span class="pre">MAB</span></code> and <code class="docutils literal notranslate"><span class="pre">Agent</span></code> classes as follows:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BernoulliMAB</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">μ</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">],</span> <span class="n">T</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The Bernoulli multi-armed bandit environment.</span>
+<span class="sd">        The mean (i.e. success probability) of the `k`-th arm is `μ[k]`.</span>
+
+<span class="sd">        :param μ: the means of the reward distributions for each arm</span>
+<span class="sd">        :param T: the time horizon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">μ</span> <span class="o">=</span> <span class="n">μ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">T</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">K</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">μ</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pull the `k`-th arm and return the reward.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">μ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">Agent</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The MAB agent that decides how to choose an arm given the past history.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">K</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">mab</span><span class="o">.</span><span class="n">K</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Choose an arm of the MAB. Algorithm-specific.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">update_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arm</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reward</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">arm</span><span class="p">,</span> <span class="o">+</span><span class="n">reward</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>What’s the <em>optimal</em> strategy for the agent, i.e. the one that achieves
+the highest expected reward? Convince yourself that the agent should try
+to always pull the arm with the highest expected reward
+<span class="math notranslate nohighlight">\(\mu^\star := \max_{k \in [K]} \mu^k\)</span>.</p>
+<p>The goal, then, can be rephrased as to minimize the <strong>regret</strong>, defined
+below:</p>
+<div class="proof definition admonition" id="regret">
+<p class="admonition-title"><span class="caption-number">Definition 2.1 </span> (Regret)</p>
+<section class="definition-content" id="proof-content">
+<p>The agent’s <strong>regret</strong> after <span class="math notranslate nohighlight">\(T\)</span> timesteps is defined as</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Regret}_T := \sum_{t=0}^{T-1} \mu^\star - \mu^{a_t}.
+\]</div>
+<p>Note that this depends on the <em>true means</em> of the pulled arms, <em>not</em> the actual
+observed rewards.
+We typically think of this as a random variable where
+the randomness comes from the agent’s strategy (i.e. the sequence of
+actions <span class="math notranslate nohighlight">\(a_0, \dots, a_{T-1}\)</span>).</p>
+<p>Throughout the chapter, we will try to upper bound the regret of various
+algorithms in two different senses:</p>
+<ol class="arabic simple">
+<li><p>Upper bound the <em>expected</em> regret, i.e. show
+<span class="math notranslate nohighlight">\(\E[\text{Regret}_T] \le M_T\)</span>.</p></li>
+<li><p>Find a high-probability upper bound on the regret, i.e. show
+<span class="math notranslate nohighlight">\(\P(\text{Regret}_T \le M_{T, \delta}) \ge 1-\delta\)</span>.</p></li>
+</ol>
+<p>Note that these two different approaches say very different things about
+the regret. The first approach says that the <em>average</em> regret is at most
+<span class="math notranslate nohighlight">\(M_T\)</span>. However, the agent might still achieve higher regret on many
+runs. The second approach says that, <em>with high probability</em>, the agent
+will achieve regret at most <span class="math notranslate nohighlight">\(M_{T, \delta}\)</span>. However, it doesn’t say
+anything about the regret in the remaining <span class="math notranslate nohighlight">\(\delta\)</span> fraction of runs,
+which might be arbitrarily high.</p>
+</section>
+</div><p>We’d like to achieve <strong>sublinear regret</strong> in expectation, i.e.
+<span class="math notranslate nohighlight">\(\E[\text{Regret}_T] = o(T)\)</span>. That is, as we learn more about the
+environment, we’d like to be able to exploit that knowledge to achieve
+higher rewards.</p>
+<p>The rest of the chapter comprises a series of increasingly sophisticated
+MAB algorithms.</p>
+</section>
+<section id="pure-exploration-random-guessing">
+<h2><span class="section-number">2.2. </span>Pure exploration (random guessing)<a class="headerlink" href="#pure-exploration-random-guessing" title="Link to this heading">#</a></h2>
+<p>A trivial strategy is to always choose arms at random (i.e. “pure
+exploration”).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PureExploration</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Choose an arm uniformly at random.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that</p>
+<div class="math notranslate nohighlight">
+\[
+\E_{a_t \sim \text{Unif}([K])}[\mu^{a_t}] = \bar \mu = \frac{1}{K} \sum_{k=1}^K \mu^k
+\]</div>
+<p>so the expected regret is simply</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \E[\text{Regret}_T] &amp;= \sum_{t=0}^{T-1} \E[\mu^\star - \mu^{a_t}] \\
+    &amp;= T (\mu^\star - \bar \mu) &gt; 0.
+\end{align}
+\end{split}\]</div>
+<p>This scales as <span class="math notranslate nohighlight">\(\Theta(T)\)</span>, i.e. <em>linear</em> in the number
+of timesteps <span class="math notranslate nohighlight">\(T\)</span>. There’s no learning here: the agent doesn’t use any
+information about the environment to improve its strategy.</p>
+</section>
+<section id="pure-greedy">
+<h2><span class="section-number">2.3. </span>Pure greedy<a class="headerlink" href="#pure-greedy" title="Link to this heading">#</a></h2>
+<p>How might we improve on pure exploration? Instead, we could try each arm
+once, and then commit to the one with the highest observed reward. We’ll
+call this the <strong>pure greedy</strong> strategy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PureGreedy</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Choose the arm with the highest observed reward.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">:</span>
+            <span class="c1"># first K steps: choose each arm once</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">:</span>
+            <span class="c1"># after the first K steps: choose the arm with the highest observed reward</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">greedy_arm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">greedy_arm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note we’ve used superscripts <span class="math notranslate nohighlight">\(r^k\)</span> during the exploration phase to
+indicate that we observe exactly one reward for each arm. Then we use
+subscripts <span class="math notranslate nohighlight">\(r_t\)</span> during the exploitation phase to indicate that we
+observe a sequence of rewards from the chosen greedy arm <span class="math notranslate nohighlight">\(\hat k\)</span>.</p>
+<p>How does the expected regret of this strategy compare to that of pure
+exploration? We’ll do a more general analysis in the following section.
+Now, for intuition, suppose there’s just <span class="math notranslate nohighlight">\(K=2\)</span> arms, with Bernoulli
+reward distributions with means <span class="math notranslate nohighlight">\(\mu^0 &gt; \mu^1\)</span>.</p>
+<p>Let’s let <span class="math notranslate nohighlight">\(r^0\)</span> be the random reward from the first arm and <span class="math notranslate nohighlight">\(r^1\)</span> be the
+random reward from the second. If <span class="math notranslate nohighlight">\(r^0 &gt; r^1\)</span>, then we achieve zero
+regret. Otherwise, we achieve regret <span class="math notranslate nohighlight">\(T(\mu^0 - \mu^1)\)</span>. Thus, the
+expected regret is simply:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \E[\text{Regret}_T] &amp;= \P(r^0 &lt; r^1) \cdot T(\mu^0 - \mu^1) + c \\
+    &amp;= (1 - \mu^0) \mu^1 \cdot T(\mu^0 - \mu^1) + c
+\end{align}
+\end{split}\]</div>
+<p>Which is still <span class="math notranslate nohighlight">\(\Theta(T)\)</span>, the same as pure exploration! Can we do
+better?</p>
+</section>
+<section id="explore-then-commit">
+<h2><span class="section-number">2.4. </span>Explore-then-commit<a class="headerlink" href="#explore-then-commit" title="Link to this heading">#</a></h2>
+<p>We can improve the pure greedy algorithm as follows: let’s reduce the
+variance of the reward estimates by pulling each arm
+<span class="math notranslate nohighlight">\(N_{\text{explore}}&gt; 1\)</span> times before committing. This is called the
+<strong>explore-then-commit</strong> strategy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExploreThenCommit</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">N_explore</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_explore</span> <span class="o">=</span> <span class="n">N_explore</span>
+
+    <span class="k">def</span> <span class="nf">choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_explore</span><span class="p">:</span>
+            <span class="c1"># exploration phase: choose each arm N_explore times</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_explore</span>
+
+        <span class="c1"># exploitation phase: choose the arm with the highest observed reward</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_explore</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">greedy_arm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">greedy_arm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>(Note that the “pure greedy” strategy is just the special case where
+<span class="math notranslate nohighlight">\(N_{\text{explore}}= 1\)</span>.)</p>
+<section id="etc-regret-analysis">
+<span id="id2"></span><h3><span class="section-number">2.4.1. </span>ETC regret analysis<a class="headerlink" href="#etc-regret-analysis" title="Link to this heading">#</a></h3>
+<p>Let’s analyze the expected regret of this strategy by splitting it up
+into the exploration and exploitation phases.</p>
+<section id="exploration-phase">
+<h4><span class="section-number">2.4.1.1. </span>Exploration phase.<a class="headerlink" href="#exploration-phase" title="Link to this heading">#</a></h4>
+<p>This phase takes <span class="math notranslate nohighlight">\(N_{\text{explore}}K\)</span> timesteps. Since at each step we
+incur at most <span class="math notranslate nohighlight">\(1\)</span> regret, the total regret is at most
+<span class="math notranslate nohighlight">\(N_{\text{explore}}K\)</span>.</p>
+</section>
+<section id="exploitation-phase">
+<h4><span class="section-number">2.4.1.2. </span>Exploitation phase.<a class="headerlink" href="#exploitation-phase" title="Link to this heading">#</a></h4>
+<p>This will take a bit more effort. We’ll prove that for any total time
+<span class="math notranslate nohighlight">\(T\)</span>, we can choose <span class="math notranslate nohighlight">\(N_{\text{explore}}\)</span> such that with arbitrarily high
+probability, the regret is sublinear. We know the regret from the
+exploitation phase is</p>
+<div class="math notranslate nohighlight">
+\[T_{\text{exploit}} (\mu^\star - \mu^{\hat k}) \qquad \text{where} \qquad T_{\text{exploit}} := T - N_{\text{explore}}K.\]</div>
+<p>So we’d like to bound <span class="math notranslate nohighlight">\(\mu^\star - \mu^{\hat k} = o(1)\)</span> (as a function
+of <span class="math notranslate nohighlight">\(T\)</span>) in order to achieve sublinear regret. How can we do this?</p>
+<p>Let’s define <span class="math notranslate nohighlight">\(\Delta^k = \hat \mu^k - \mu^k\)</span> to denote how far the mean
+estimate for arm <span class="math notranslate nohighlight">\(k\)</span> is from the true mean. How can we bound this
+quantity? We’ll use the following useful inequality for i.i.d. bounded
+random variables:</p>
+<div class="proof theorem admonition" id="hoeffding">
+<p class="admonition-title"><span class="caption-number">Theorem 2.1 </span> (Hoeffding’s inequality)</p>
+<section class="theorem-content" id="proof-content">
+<p>Let <span class="math notranslate nohighlight">\(X_0, \dots, X_{n-1}\)</span> be i.i.d. random variables with
+<span class="math notranslate nohighlight">\(X_i \in [0, 1]\)</span> almost surely for each <span class="math notranslate nohighlight">\(i \in [n]\)</span>. Then for any
+<span class="math notranslate nohighlight">\(\delta &gt; 0\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\P\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| &gt; \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.\]</div>
+</section>
+</div><p>(The proof of this inequality is beyond the scope of this book.) We can
+apply this directly to the rewards for a given arm <span class="math notranslate nohighlight">\(k\)</span>, since the
+rewards from that arm are i.i.d.:</p>
+<div class="math notranslate nohighlight" id="equation-hoeffding-etc">
+<span class="eqno">(2.1)<a class="headerlink" href="#equation-hoeffding-etc" title="Link to this equation">#</a></span>\[\P\left(|\Delta^k | &gt; \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta.\]</div>
+<p>But note that we can’t apply this to arm <span class="math notranslate nohighlight">\(\hat k\)</span> directly since
+<span class="math notranslate nohighlight">\(\hat k\)</span> is itself a random variable. Instead, we need to “uniform-ize”
+this bound across <em>all</em> the arms, i.e. bound the error across all the
+arms simultaneously, so that the resulting bound will apply <em>no matter
+what</em> <span class="math notranslate nohighlight">\(\hat k\)</span> “crystallizes” to.</p>
+<p>The <strong>union bound</strong> provides a simple way to do this:</p>
+<div class="proof theorem admonition" id="union_bound">
+<p class="admonition-title"><span class="caption-number">Theorem 2.2 </span> (Union bound)</p>
+<section class="theorem-content" id="proof-content">
+<p>Consider a set of events <span class="math notranslate nohighlight">\(A_0, \dots, A_{n-1}\)</span>. Then</p>
+<div class="math notranslate nohighlight">
+\[\P(\exists i \in [n]. A_i) \le \sum_{i=0}^{n-1} \P(A_i).\]</div>
+<p>In
+particular, if <span class="math notranslate nohighlight">\(\P(A_i) \ge 1 - \delta\)</span> for each <span class="math notranslate nohighlight">\(i \in [n]\)</span>, we have</p>
+<div class="math notranslate nohighlight">
+\[\P(\forall i \in [n]. A_i) \ge 1 - n \delta.\]</div>
+</section>
+</div><p><strong>Exercise:</strong> Prove the second statement above.</p>
+<p>Applying the union bound across the arms for the l.h.s. event of <a class="reference internal" href="#equation-hoeffding-etc">(2.1)</a>, we have</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align}
+    \P\left( \forall k \in [K], |\Delta^k | \le \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) &amp;\ge 1-K\delta
+\end{align}
+\]</div>
+<p>Then to apply this bound to <span class="math notranslate nohighlight">\(\hat k\)</span> in particular, we
+can apply the useful trick of “adding zero”:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \mu^{k^\star} - \mu^{\hat k} &amp;= \mu^{k^\star} - \mu^{\hat k} + (\hat \mu^{k^\star} - \hat \mu^{k^\star}) + (\hat \mu^{\hat k} - \hat \mu^{\hat k}) \\
+    &amp;= \Delta^{\hat k} - \Delta^{k^*} + \underbrace{(\hat \mu^{k^\star} - \hat \mu^{\hat k})}_{\le 0 \text{ by definition of } \hat k} \\
+    &amp;\le 2 \sqrt{\frac{\ln(2K/\delta')}{2N_{\text{explore}}}} \text{ with probability at least } 1-\delta'
+\end{align}
+\end{split}\]</div>
+<p>where we’ve set <span class="math notranslate nohighlight">\(\delta' = K\delta\)</span>. Putting this all
+together, we’ve shown that, with probability <span class="math notranslate nohighlight">\(1 - \delta'\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\text{Regret}_T \le N_{\text{explore}}K + T_{\text{exploit}} \cdot \sqrt{\frac{2\ln(2K/\delta')}{N_{\text{explore}}}}.\]</div>
+<p>Note that it suffices for <span class="math notranslate nohighlight">\(N_{\text{explore}}\)</span> to be on the order of
+<span class="math notranslate nohighlight">\(\sqrt{T}\)</span> to achieve sublinear regret. In particular, we can find the
+optimal <span class="math notranslate nohighlight">\(N_{\text{explore}}\)</span> by setting the derivative of the r.h.s. to
+zero:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    0 &amp;= K - T_{\text{exploit}} \cdot \frac{1}{2} \sqrt{\frac{2\ln(2K/\delta')}{N_{\text{explore}}^3}} \\
+    N_{\text{explore}}&amp;= \left( T_{\text{exploit}} \cdot \frac{\sqrt{\ln(2K/\delta')/2}}{K} \right)^{2/3}
+\end{align}
+\end{split}\]</div>
+<p>Plugging this into the expression for the regret, we
+have (still with probability <span class="math notranslate nohighlight">\(1-\delta'\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \text{Regret}_T &amp;\le 3 T^{2/3} \sqrt[3]{K \ln(2K/\delta') / 2} \\
+    &amp;= \tilde{O}(T^{2/3} K^{1/3}).
+\end{align}
+\end{split}\]</div>
+<p>The ETC algorithm is rather “abrupt” in that it switches from
+exploration to exploitation after a fixed number of timesteps. In
+practice, it’s often better to use a more gradual transition, which
+brings us to the <em>epsilon-greedy</em> algorithm.</p>
+</section>
+</section>
+</section>
+<section id="epsilon-greedy">
+<h2><span class="section-number">2.5. </span>Epsilon-greedy<a class="headerlink" href="#epsilon-greedy" title="Link to this heading">#</a></h2>
+<p>Instead of doing all of the exploration and then all of the exploitation
+separately – which additionally requires knowing the time horizon
+beforehand – we can instead interleave exploration and exploitation by,
+at each timestep, choosing a random action with some probability. We
+call this the <strong>epsilon-greedy</strong> algorithm.</p>
+<div class="proof definition admonition" id="epsilon_greedy">
+<p class="admonition-title"><span class="caption-number">Definition 2.2 </span> (Epsilon-greedy)</p>
+<section class="definition-content" id="proof-content">
+<p><strong>Input:</strong> <span class="math notranslate nohighlight">\(\epsilon : \mathbb{N} \to [0, 1]\)</span> <span class="math notranslate nohighlight">\(S^k \gets 0\)</span> for each
+<span class="math notranslate nohighlight">\(k \in [K]\)</span> <span class="math notranslate nohighlight">\(N^k \gets 0\)</span> for each <span class="math notranslate nohighlight">\(k \in [K]\)</span> <span class="math notranslate nohighlight">\(k \sim \text{Unif}([K])\)</span>
+<span class="math notranslate nohighlight">\(k \gets \arg \max_k \left(\frac{S^k}{N^k}\right)\)</span> <span class="math notranslate nohighlight">\(r_t \sim \nu^k\)</span>
+<span class="math notranslate nohighlight">\(S^k \gets S^k + r_t\)</span> <span class="math notranslate nohighlight">\(N^k \gets N^k + 1\)</span></p>
+</section>
+</div><p>Note that we let <span class="math notranslate nohighlight">\(\epsilon\)</span> vary over time. In particular we might want
+to gradually <em>decrease</em> <span class="math notranslate nohighlight">\(\epsilon\)</span> as we learn more about the reward
+distributions over time.</p>
+<p>It turns out that setting <span class="math notranslate nohighlight">\(\epsilon_t = \sqrt[3]{K \ln(t)/t}\)</span> also
+achieves a regret of <span class="math notranslate nohighlight">\(\tilde O(t^{2/3} K^{1/3})\)</span> (ignoring the
+logarithmic factors). (We will not prove this here.)</p>
+<p>In ETC, we had to set <span class="math notranslate nohighlight">\(N_{\text{explore}}\)</span> based on the total number of
+timesteps <span class="math notranslate nohighlight">\(T\)</span>. But the epsilon-greedy algorithm actually handles the
+exploration <em>automatically</em>: the regret rate holds for <em>any</em> <span class="math notranslate nohighlight">\(t\)</span>, and
+doesn’t depend on the final horizon <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<p>But the way these algorithms explore is rather naive: we’ve been
+exploring <em>uniformly</em> across all the arms. But what if we could be
+smarter about it, and explore <em>more</em> for arms that we’re less certain
+about?</p>
+</section>
+<section id="upper-confidence-bound-ucb">
+<h2><span class="section-number">2.6. </span>Upper Confidence Bound (UCB)<a class="headerlink" href="#upper-confidence-bound-ucb" title="Link to this heading">#</a></h2>
+<p>To quantify how <em>certain</em> we are about the mean of each arm, we’ll
+compute <em>confidence intervals</em> for our estimators, and then choose the
+arm with the highest <em>upper confidence bound</em>. This operates on the
+principle of <strong>the benefit of the doubt (i.e. optimism in the face of
+uncertainty)</strong>: we’ll choose the arm that we’re most optimistic about.</p>
+<p>In particular, for each arm <span class="math notranslate nohighlight">\(k\)</span> at time <span class="math notranslate nohighlight">\(t\)</span>, we’d like to compute some
+upper confidence bound <span class="math notranslate nohighlight">\(M^k_t\)</span> such that <span class="math notranslate nohighlight">\(\hat \mu^k_t \le M^k_t\)</span> with
+high probability, and then choose <span class="math notranslate nohighlight">\(a_t := \arg \max_{k \in [K]} M^k_t\)</span>.
+But how should we compute <span class="math notranslate nohighlight">\(M^k_t\)</span>?</p>
+<p>In <a class="reference internal" href="#etc-regret-analysis"><span class="std std-ref">ETC regret analysis</span></a>, we were able to compute this bound
+using Hoeffding’s inequality, which assumes that the number of samples
+is <em>fixed</em>. This was the case in ETC (where we pull each arm
+<span class="math notranslate nohighlight">\(N_{\text{explore}}\)</span> times), but in UCB, the number of times we pull
+each arm depends on the agent’s actions, which in turn depend on the
+random rewards and are therefore stochastic. So we <em>can’t</em> use
+Hoeffding’s inequality directly.</p>
+<p>Instead, we’ll apply the same trick we used in the ETC analysis: we’ll
+use the <strong>union bound</strong> to compute a <em>looser</em> bound that holds
+<em>uniformly</em> across all timesteps and arms. Let’s introduce some notation
+to discuss this.</p>
+<p>Let <span class="math notranslate nohighlight">\(N^k_t\)</span> denote the (random) number of times arm <span class="math notranslate nohighlight">\(k\)</span> has been pulled
+within the first <span class="math notranslate nohighlight">\(t\)</span> timesteps, and <span class="math notranslate nohighlight">\(\hat \mu^k_t\)</span> denote the sample
+average of those pulls. That is,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    N^k_t &amp;:= \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} \\
+    \hat \mu^k_t &amp;:= \frac{1}{N^k_t} \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} r_\tau.
+\end{align}
+\end{split}\]</div>
+<p>To achieve the “fixed sample size” assumption, we’ll
+need to shift our index from <em>time</em> to <em>number of samples from each
+arm</em>. In particular, we’ll define <span class="math notranslate nohighlight">\(\tilde r^k_n\)</span> to be the <span class="math notranslate nohighlight">\(n\)</span>th sample
+from arm <span class="math notranslate nohighlight">\(k\)</span>, and <span class="math notranslate nohighlight">\(\tilde \mu^k_n\)</span> to be the sample average of the first
+<span class="math notranslate nohighlight">\(n\)</span> samples from arm <span class="math notranslate nohighlight">\(k\)</span>. Then, for a fixed <span class="math notranslate nohighlight">\(n\)</span>, this satisfies the
+“fixed sample size” assumption, and we can apply Hoeffding’s inequality
+to get a bound on <span class="math notranslate nohighlight">\(\tilde \mu^k_n\)</span>.</p>
+<p>So how can we extend our bound on <span class="math notranslate nohighlight">\(\tilde\mu^k_n\)</span> to <span class="math notranslate nohighlight">\(\hat \mu^k_t\)</span>?
+Well, we know <span class="math notranslate nohighlight">\(N^k_t \le t\)</span> (where equality would be the case if and
+only if we had pulled arm <span class="math notranslate nohighlight">\(k\)</span> every time). So we can apply the same
+trick as last time, where we uniform-ize across all possible values of
+<span class="math notranslate nohighlight">\(N^k_t\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align}
+    \P\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) &amp;\ge 1-t\delta.
+\end{align}
+\]</div>
+<p>In particular, since <span class="math notranslate nohighlight">\(N^k_t \le t\)</span>, and
+<span class="math notranslate nohighlight">\(\tilde \mu^k_{N^k_t} = \hat \mu^k_t\)</span> by definition, we have</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{align}
+    \P\left( |\hat \mu^k_t - \mu^k | \le \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}} \right) &amp;\ge 1-\delta' \text{ where } \delta' := t \delta.
+\end{align}
+\]</div>
+<p>This bound would then suffice for applying the UCB
+algorithm! That is, the upper confidence bound for arm <span class="math notranslate nohighlight">\(k\)</span> would be
+$<span class="math notranslate nohighlight">\(M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},\)</span><span class="math notranslate nohighlight">\( where
+we can choose \)</span>\delta’<span class="math notranslate nohighlight">\( depending on how tight we want the interval to
+be. A smaller \)</span>\delta’$ would give us a larger yet higher-confidence
+interval, and vice versa. We can now use this to define the UCB
+algorithm.</p>
+<div class="proof definition admonition" id="ucb">
+<p class="admonition-title"><span class="caption-number">Definition 2.3 </span> (Upper Confidence Bound (UCB))</p>
+<section class="definition-content" id="proof-content">
+<p><strong>Input:</strong> <span class="math notranslate nohighlight">\(\delta' \in (0, 1)\)</span>
+<span class="math notranslate nohighlight">\(k \gets \arg \max_{k' \in [K]} \frac{S^{k'}}{N^{k'}} + \sqrt{\frac{\ln(2t/\delta')}{2 N^{k'}}}\)</span>
+<span class="math notranslate nohighlight">\(r_t \sim \nu^k\)</span> <span class="math notranslate nohighlight">\(S^k \gets S^k + r_t\)</span> <span class="math notranslate nohighlight">\(N^k \gets N^k + 1\)</span></p>
+</section>
+</div><p><strong>Exercise:</strong> As written, this ignores the issue that we divide by
+<span class="math notranslate nohighlight">\(N^k = 0\)</span> for all arms at the beginning. How should we resolve this
+issue?</p>
+<p>Intuitively, UCB prioritizes arms where:</p>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(\hat \mu^k_t\)</span> is large, i.e. the arm has a high sample average, and
+we’d choose it for <em>exploitation</em>, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sqrt{\frac{\ln(2t/\delta')}{2N^k_t}}\)</span> is large, i.e. we’re still
+uncertain about the arm, and we’d choose it for <em>exploration</em>.</p></li>
+</ol>
+<p>As desired, this explores in a smarter, <em>adaptive</em> way compared to the
+previous algorithms. Does it achieve lower regret?</p>
+<section id="ucb-regret-analysis">
+<h3><span class="section-number">2.6.1. </span>UCB regret analysis<a class="headerlink" href="#ucb-regret-analysis" title="Link to this heading">#</a></h3>
+<p>First we’ll bound the regret incurred at each timestep. Then we’ll bound
+the <em>total</em> regret across timesteps.</p>
+<p>For the sake of analysis, we’ll use a slightly looser bound that applies
+across the whole time horizon and across all arms. We’ll omit the
+derivation since it’s very similar to the above (walk through it
+yourself for practice).</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \P\left(\forall k \le K, t &lt; T. |\hat \mu^k_t - \mu^k | \le B^k_t \right) &amp;\ge 1-\delta'' \\
+    \text{where} \quad B^k_t &amp;:= \sqrt{\frac{\ln(2TK/\delta'')}{2N^k_t}}.
+\end{align}
+\end{split}\]</div>
+<p>Intuitively, <span class="math notranslate nohighlight">\(B^k_t\)</span> denotes the <em>width</em> of the CI for arm <span class="math notranslate nohighlight">\(k\)</span> at time
+<span class="math notranslate nohighlight">\(t\)</span>. Then, assuming the above uniform bound holds (which occurs with
+probability <span class="math notranslate nohighlight">\(1-\delta''\)</span>), we can bound the regret at each timestep as
+follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \mu^\star - \mu^{a_t} &amp;\le \hat \mu^{k^*}_t + B_t^{k^*} - \mu^{a_t} &amp;&amp; \text{applying UCB to arm } k^\star \\
+    &amp;\le \hat \mu^{a_t}_t + B^{a_t}_t - \mu^{a_t} &amp;&amp; \text{since UCB chooses } a_t = \arg \max_{k \in [K]} \hat \mu^k_t + B_t^{k} \\
+    &amp;\le 2 B^{a_t}_t &amp;&amp; \text{since } \hat \mu^{a_t}_t - \mu^{a_t} \le B^{a_t}_t \text{ by definition of } B^{a_t}_t \\
+\end{align}
+\end{split}\]</div>
+<p>Summing this across timesteps gives</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \text{Regret}_T &amp;\le \sum_{t=0}^{T-1} 2 B^{a_t}_t \\
+    &amp;= \sqrt{2\ln(2TK/\delta'')} \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} \\
+    \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} &amp;= \sum_{t=0}^{T-1} \sum_{k=1}^K \mathbf{1}\{ a_t = k \} (N^k_t)^{-1/2} \\
+    &amp;= \sum_{k=1}^K \sum_{n=1}^{N_T^k} n^{-1/2} \\
+    &amp;\le K \sum_{n=1}^T n^{-1/2} \\
+    \sum_{n=1}^T n^{-1/2} &amp;\le 1 + \int_1^T x^{-1/2} \ \mathrm{d}x \\
+    &amp;= 1 + (2 \sqrt{x})_1^T \\
+    &amp;= 2 \sqrt{T} - 1 \\
+    &amp;\le 2 \sqrt{T} \\
+\end{align}
+\end{split}\]</div>
+<p>Putting everything together gives</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+    \text{Regret}_T &amp;\le 2 K \sqrt{2T \ln(2TK/\delta'')} &amp;&amp; \text{with probability } 1-\delta'' \\
+    &amp;= \tilde O(K\sqrt{T})
+\end{align}
+\end{split}\]</div>
+<p>In fact, we can do a more sophisticated analysis to trim off a factor of
+<span class="math notranslate nohighlight">\(\sqrt{K}\)</span> and show <span class="math notranslate nohighlight">\(\text{Regret}_T = \tilde O(\sqrt{TK})\)</span>.</p>
+</section>
+<section id="lower-bound-on-regret-intuition">
+<h3><span class="section-number">2.6.2. </span>Lower bound on regret (intuition)<a class="headerlink" href="#lower-bound-on-regret-intuition" title="Link to this heading">#</a></h3>
+<p>Is it possible to do better than <span class="math notranslate nohighlight">\(\Omega(\sqrt{T})\)</span> in general? In fact,
+no! We can show that any algorithm must incur <span class="math notranslate nohighlight">\(\Omega(\sqrt{T})\)</span> regret
+in the worst case. We won’t rigorously prove this here, but the
+intuition is as follows.</p>
+<p>The Central Limit Theorem tells us that with <span class="math notranslate nohighlight">\(T\)</span> i.i.d. samples from
+some distribution, we can only learn the mean of the distribution to
+within <span class="math notranslate nohighlight">\(\Omega(1/\sqrt{T})\)</span> (the standard deviation). Then, since we get
+<span class="math notranslate nohighlight">\(T\)</span> samples spread out across the arms, we can only learn each arm’s
+mean to an even looser degree.</p>
+<p>That is, if two arms have means that are within about <span class="math notranslate nohighlight">\(1/\sqrt{T}\)</span>, we
+won’t be able to confidently tell them apart, and will sample them about
+equally. But then we’ll incur regret
+$<span class="math notranslate nohighlight">\(\Omega((T/2) \cdot (1/\sqrt{T})) = \Omega(\sqrt{T}).\)</span>$</p>
+</section>
+</section>
+<section id="thompson-sampling-and-bayesian-bandits">
+<h2><span class="section-number">2.7. </span>Thompson sampling and Bayesian bandits<a class="headerlink" href="#thompson-sampling-and-bayesian-bandits" title="Link to this heading">#</a></h2>
+<p>So far, we’ve treated the parameters <span class="math notranslate nohighlight">\(\mu^0, \dots, \mu^{K-1}\)</span> of the
+reward distributions as <em>fixed</em>. Instead, we can take a <strong>Bayesian</strong>
+approach where we treat them as random variables from some <strong>prior
+distribution</strong>. Then, upon pulling an arm and observing a reward, we can
+simply <em>condition</em> on this observation to exactly describe the
+<strong>posterior distribution</strong> over the parameters. This fully describes the
+information we gain about the parameters from observing the reward.</p>
+<p>From this Bayesian perspective, the <strong>Thompson sampling</strong> algorithm
+follows naturally: just sample from the distribution of the optimal arm,
+given the observations!</p>
+<div class="proof definition admonition" id="thompson_sampling">
+<p class="admonition-title"><span class="caption-number">Definition 2.4 </span> (Thompson sampling)</p>
+<section class="definition-content" id="proof-content">
+<p><strong>Input:</strong> the prior distribution <span class="math notranslate nohighlight">\(\pi \in \Delta([0, 1]^K)\)</span>
+<span class="math notranslate nohighlight">\(\boldsymbol{\mu}\sim \pi(\cdot \mid a_0, r_0, \dots, a_{t-1}, r_{t-1})\)</span>
+<span class="math notranslate nohighlight">\(a_t \gets \arg \max_{k \in [K]} \mu^k\)</span> <span class="math notranslate nohighlight">\(r_t \sim \nu^{a_t}\)</span></p>
+</section>
+</div><p>In other words, we sample each arm proportionally to how likely we think
+it is to be optimal, given the observations so far. This strikes a good
+exploration-exploitation tradeoff: we explore more for arms that we’re
+less certain about, and exploit more for arms that we’re more certain
+about. Thompson sampling is a simple yet powerful algorithm that
+achieves state-of-the-art performance in many settings.</p>
+<div class="proof example admonition" id="bayesian_bernoulli">
+<p class="admonition-title"><span class="caption-number">Example 2.3 </span> (Bayesian Bernoulli bandit)</p>
+<section class="example-content" id="proof-content">
+<p>We’ve often been working in the Bernoulli bandit setting, where arm <span class="math notranslate nohighlight">\(k\)</span>
+yields a reward of <span class="math notranslate nohighlight">\(1\)</span> with probability <span class="math notranslate nohighlight">\(\mu^k\)</span> and no reward otherwise.
+The vector of success probabilities
+<span class="math notranslate nohighlight">\(\boldsymbol{\mu}= (\mu^1, \dots, \mu^K)\)</span> thus describes the entire MAB.</p>
+<p>Under the Bayesian perspective, we think of <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span> as a
+<em>random</em> vector drawn from some prior distribution
+<span class="math notranslate nohighlight">\(\pi(\boldsymbol{\mu})\)</span>. For example, we might have <span class="math notranslate nohighlight">\(\pi\)</span> be the Uniform
+distribution over the unit hypercube <span class="math notranslate nohighlight">\([0, 1]^K\)</span>, that is,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\pi(\boldsymbol{\mu}) = \begin{cases}
+    1 &amp; \text{if } \boldsymbol{\mu}\in [0, 1]^K \\
+    0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<p>Then, upon viewing some reward, we can exactly
+calculate the <strong>posterior</strong> distribution of <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span> using
+Bayes’s rule (i.e. the definition of conditional probability):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+    \begin{align*}
+        \P(\muv \mid a_0, r_0) &amp;\propto \P(r_0 \mid a_0, \muv) \P(a_0 \mid \muv) \P(\muv) \\
+        &amp;\propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
+    \end{align*}
+\end{split}\]</div>
+<p>This is the PDF of the
+<span class="math notranslate nohighlight">\(\text{Beta}(1 + r_0, 1 + (1 - r_0))\)</span> distribution, which is a conjugate
+prior for the Bernoulli distribution. That is, if we start with a Beta
+prior on <span class="math notranslate nohighlight">\(\mu^k\)</span> (note that <span class="math notranslate nohighlight">\(\text{Unif}([0, 1]) = \text{Beta}(1, 1)\)</span>),
+then the posterior, after conditioning on samples from
+<span class="math notranslate nohighlight">\(\text{Bern}(\mu^k)\)</span>, will also be Beta. This is a very convenient
+property, since it means we can simply update the parameters of the Beta
+distribution upon observing a reward, rather than having to recompute
+the entire posterior distribution from scratch.</p>
+</section>
+</div><p>It turns out that asymptotically, Thompson sampling is optimal in the
+following sense. <span id="id3">[<a class="reference internal" href="#id5" title="T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. Advances in Applied Mathematics, 6(1):4–22, 1985. URL: https://www.sciencedirect.com/science/article/pii/0196885885900028 (visited on 2023-10-23), doi:10.1016/0196-8858(85)90002-8.">Lai and Robbins, 1985</a>]</span> prove an
+<em>instance-dependent</em> lower bound that says for <em>any</em> bandit algorithm,</p>
+<div class="math notranslate nohighlight">
+\[\liminf_{T \to \infty} \frac{\E[N_T^k]}{\ln(T)} \ge \frac{1}{\text{KL}(\mu^k \parallel \mu^\star)}\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[\text{KL}(\mu^k \parallel \mu^\star) = \mu^k \ln \frac{\mu^k}{\mu^\star} + (1 - \mu^k) \ln \frac{1 - \mu^k}{1 - \mu^\star}\]</div>
+<p>measures the <strong>Kullback-Leibler divergence</strong> from the Bernoulli
+distribution with mean <span class="math notranslate nohighlight">\(\mu^k\)</span> to the Bernoulli distribution with mean
+<span class="math notranslate nohighlight">\(\mu^\star\)</span>. It turns out that Thompson sampling achieves this lower
+bound with equality! That is, not only is the error <em>rate</em> optimal, but
+the <em>constant factor</em> is optimal as well.</p>
+<div class="docutils container" id="id4">
+<div role="list" class="citation-list">
+<div class="citation" id="id5" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">LR85</a><span class="fn-bracket">]</span></span>
+<p>T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. <em>Advances in Applied Mathematics</em>, 6(1):4–22, 1985. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/0196885885900028">https://www.sciencedirect.com/science/article/pii/0196885885900028</a> (visited on 2023-10-23), <a class="reference external" href="https://doi.org/10.1016/0196-8858(85)90002-8">doi:10.1016/0196-8858(85)90002-8</a>.</p>
+</div>
+<div class="citation" id="id6" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>Nie15<span class="fn-bracket">]</span></span>
+<p>Michael A. Nielsen. <em>Neural Networks and Deep Learning</em>. Determination Press, 2015. URL: <a class="reference external" href="http://neuralnetworksanddeeplearning.com/">http://neuralnetworksanddeeplearning.com/</a> (visited on 2024-03-10).</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./2_bandits"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../1_intro/intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">1. </span>Introduction</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../3_mdps/mdps.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">3. </span>Finite Markov Decision Processes</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">2.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">2.2. Pure exploration (random guessing)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">2.3. Pure greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">2.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">2.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">2.4.1.1. Exploration phase.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">2.4.1.2. Exploitation phase.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">2.5. Epsilon-greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">2.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">2.6.1. UCB regret analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">2.6.2. Lower bound on regret (intuition)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">2.7. Thompson sampling and Bayesian bandits</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander D. Cai
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
