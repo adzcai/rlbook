@@ -1,4 +1,4 @@
-(sec@lqr)=
+(lqr_chapter)=
 # Linear Quadratic Regulators
 
 Up to this point, we have considered decision problems with finitely

@@ -12,7 +12,7 @@ kernelspec:
   name: python3
 ---
 
-(sec@bandits)=
+(bandits)=
 # Bandits
 
 ```{code-cell}

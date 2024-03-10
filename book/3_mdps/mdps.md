@@ -12,7 +12,7 @@ kernelspec:
   name: python3
 ---
 
-(sec@mdps)=
+(mdps)=
 # Finite Markov Decision Processes
 
 ```{contents}
@@ -432,6 +432,7 @@ def v_to_greedy(mdp: MDP, v: Float[Array, "S"]) -> Float[Array, "S A"]:
     return q_to_greedy(v_to_q(mdp, v))
 ```
 
+(bellman_consistency)=
 ### The one-step (Bellman) consistency equation
 
 Note that by simply considering the cumulative reward as the sum of the
@@ -562,7 +563,7 @@ out to be more than just a notational convenience: We'll use it to
 construct algorithms for computing the optimal policy.
 
 
-(sec@finite_horizon_mdps)=
+(finite_horizon_mdps)=
 ## Solving finite-horizon MDPs
 
 (eval_dp)=
@@ -683,7 +684,7 @@ action-value function:
 $$\pi_\hi^\star(s) = \arg\max_a Q_\hi^\star(s, a).$$
 :::
 
-::::{prf:proof} Proof
+::::{dropdown} Proof
 Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and
 action-value functions. Consider the greedy policy
 
@@ -745,6 +746,19 @@ $$
 $$
 
 And so we have $V^{\star} = V^{\hat \pi}$, making $\hat \pi$ optimal.
+::::
+
+Note that this also gives simplified forms of the [Bellman consistency](bellman_consistency) equations for the optimal policy:
+
+::::{prf:corollary} Bellman consistency equations for the optimal policy
+:label: bellman_consistency_optimal
+
+$$
+\begin{aligned}
+    V_\hi^\star(s) &= \max_a Q_\hi^\star(s, a) \\
+    Q_\hi^\star(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\star(s')]
+\end{aligned}
+$$
 ::::
 
 Now that we've shown this particular greedy policy is optimal, all we
@@ -823,6 +837,7 @@ assert np.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
 "Assertions passed (the 'tidy when messy' policy is optimal)"
 ```
 
+(infinite_horizon_mdps)=
 ## Infinite-horizon MDPs
 
 What happens if a trajectory is allowed to continue forever (i.e.
@@ -1238,7 +1253,7 @@ def check_optimal(v: Float[Array, "S"], mdp: MDP):
     return np.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
-(sec@value_iteration)=
+(value_iteration)=
 #### Value iteration
 
 Since the optimal policy is still a policy, our result that the Bellman
@@ -1281,15 +1296,15 @@ which might potentially be very large.
 :::{prf:theorem} Greedy policy value worsening
 :label: greedy_worsen
 
-We aim to show that
-
 $$\|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}$$
 
 where $\hat \pi(s) = \arg\max_a q(s, a)$ is the greedy policy w.r.t.
 
 $$q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s').$$
+:::
 
-**Proof:** We first have
+:::{dropdown} Proof
+We first have
 
 $$
 \begin{aligned}
@@ -1356,6 +1371,7 @@ iterations to achieve an $\epsilon$-accurate estimate of the optimal
 value function.
 
 
+(policy_iteration)=
 #### Policy iteration
 
 Can we mitigate this "greedy worsening"? What if instead of

@@ -37,7 +37,7 @@ Let's suppose our policy can be *parameterized* by some parameters
 $\theta.$ For example, these might be a preferences over state-action
 pairs, or in a high-dimensional case, the weights and biases of a deep
 neural network. We'll talk more about possible parameterizations in
-{prf:ref}`sec:parameterizations`
+{prf:ref}`parameterizations`
 
 Remember that in reinforcement learning, the goal is to *maximize
 reward.* Specifically, we seek the parameters that maximize the expected
@@ -234,7 +234,8 @@ supervised learning algorithm. Note that the gradient estimator will be
 unbiased regardless of the baseline.
 :::
 
-## Example policy parameterizations {#sec:parameterizations}
+(parameterizations)=
+## Example policy parameterizations
 
 What are some different ways we could parameterize our policy?
 

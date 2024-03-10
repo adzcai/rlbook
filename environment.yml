@@ -3,11 +3,12 @@ channels:
   - conda-forge
   - plotly
 dependencies:
+  - python 3.11.*
+  - gymnasium 0.29.*
+  - jax 0.4.*
   - jupyter-book
-  - python 3.12.*
-  - gymnasium
+  - jupyterlab
   - plotly
-  - jax
   - jupytext 1.16.*
   - pip:
     - sphinx-proof

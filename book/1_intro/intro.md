@@ -55,30 +55,30 @@ Here is a list of comparisons:
 
 ## Overview
 
-[Chapter 2](sec@bandits) discusses **multi-armed bandits**, a simple model for
+[Chapter 2](bandits) discusses **multi-armed bandits**, a simple model for
 reinforcement learning. In this setting, there are multiple arms, each with their
 own reward distribution. The agent must decide which arm to pull at each time step.
 
-[Chapter 3](sec@mdps) introduces (finite) **Markov Decision Processes**, the dominant
+[Chapter 3](mdps) introduces (finite) **Markov Decision Processes**, the dominant
 mathematical framework for studying RL. This general framework models an agent
 interacting with a environment that in responds to its actions. Certain states
 and actions will be rewarded, and the agent's goal is to maximize its total reward.
 
-[Chapter 4](sec@fitted_dp) introduces **fitted dynamic programming** algorithms
+[Chapter 4](fitted_dp) introduces **fitted dynamic programming** algorithms
 for solving MDPs when the state space is too large to be enumerated. These algorithms
-borrow ideas from supervised learning to approximate the value function (discussed in {ref}`sec@mdps`).
+borrow ideas from supervised learning to approximate the value function (discussed in {ref}`mdps`).
 
-[Chapter 5](sec@lqr) is a standalone chapter on the **linear quadratic regulator**,
+[Chapter 5](lqr) is a standalone chapter on the **linear quadratic regulator**,
 an important tool for *continuous control*, in which the state space is no longer
 finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_\st}$).
 
 
 | Chapter | States | Actions | Rewards (or costs) |
 |:-------:|:------:|:-------:|:-------:|
-| {ref}`sec@bandits` | N/A | Finite | Stochastic |
-| {ref}`sec@mdps` | Finite | Finite | Deterministic |
-| {ref}`sec@fitted_dp` | Large or continuous | Finite | Deterministic |
-| {ref}`sec@lqr` | Continuous | Continuous | Deterministic |
+| {ref}`bandits` | N/A | Finite | Stochastic |
+| {ref}`mdps` | Finite | Finite | Deterministic |
+| {ref}`fitted_dp` | Large or continuous | Finite | Deterministic |
+| {ref}`lqr` | Continuous | Continuous | Deterministic |
 
 
 ## Notation
