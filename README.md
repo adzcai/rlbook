@@ -54,6 +54,12 @@ Some relevant parts of the Jupyter Book documentation and related software:
 jb myst init mymarkdownfile.md
 ```
 
+- [Publish your book online with GitHub Pages](https://jupyterbook.org/en/stable/start/publish.html#publish-your-book-online-with-github-pages)
+
+```bash
+ghp-import -n -p -f book/_build/html
+```
+
 ## Markdown syntax
 
 [Docs](https://jupyterbook.org/en/stable/content/references.html#content-references)
