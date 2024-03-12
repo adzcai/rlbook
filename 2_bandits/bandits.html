@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -177,6 +177,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../4_fitted_dp/fitted_dp.html">4. Fitted dynamic programming algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../5_control/control.html">5. Linear Quadratic Regulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">6. Bibliography</a></li>
 </ul>
 
     </div>
@@ -978,7 +979,7 @@ distribution upon observing a reward, rather than having to recompute
 the entire posterior distribution from scratch.</p>
 </section>
 </div><p>It turns out that asymptotically, Thompson sampling is optimal in the
-following sense. <span id="id3">[<a class="reference internal" href="#id5" title="T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. Advances in Applied Mathematics, 6(1):4–22, 1985. URL: https://www.sciencedirect.com/science/article/pii/0196885885900028 (visited on 2023-10-23), doi:10.1016/0196-8858(85)90002-8.">Lai and Robbins, 1985</a>]</span> prove an
+following sense. <span id="id3">[<a class="reference internal" href="../bibliography.html#id2" title="T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. Advances in Applied Mathematics, 6(1):4–22, 1985. URL: https://www.sciencedirect.com/science/article/pii/0196885885900028 (visited on 2023-10-23), doi:10.1016/0196-8858(85)90002-8.">Lai and Robbins, 1985</a>]</span> prove an
 <em>instance-dependent</em> lower bound that says for <em>any</em> bandit algorithm,</p>
 <div class="math notranslate nohighlight">
 \[\liminf_{T \to \infty} \frac{\E[N_T^k]}{\ln(T)} \ge \frac{1}{\text{KL}(\mu^k \parallel \mu^\star)}\]</div>
@@ -990,18 +991,6 @@ distribution with mean <span class="math notranslate nohighlight">\(\mu^k\)</spa
 <span class="math notranslate nohighlight">\(\mu^\star\)</span>. It turns out that Thompson sampling achieves this lower
 bound with equality! That is, not only is the error <em>rate</em> optimal, but
 the <em>constant factor</em> is optimal as well.</p>
-<div class="docutils container" id="id4">
-<div role="list" class="citation-list">
-<div class="citation" id="id5" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">LR85</a><span class="fn-bracket">]</span></span>
-<p>T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. <em>Advances in Applied Mathematics</em>, 6(1):4–22, 1985. URL: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/0196885885900028">https://www.sciencedirect.com/science/article/pii/0196885885900028</a> (visited on 2023-10-23), <a class="reference external" href="https://doi.org/10.1016/0196-8858(85)90002-8">doi:10.1016/0196-8858(85)90002-8</a>.</p>
-</div>
-<div class="citation" id="id6" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Nie15<span class="fn-bracket">]</span></span>
-<p>Michael A. Nielsen. <em>Neural Networks and Deep Learning</em>. Determination Press, 2015. URL: <a class="reference external" href="http://neuralnetworksanddeeplearning.com/">http://neuralnetworksanddeeplearning.com/</a> (visited on 2024-03-10).</p>
-</div>
-</div>
-</div>
 </section>
 </section>
 
