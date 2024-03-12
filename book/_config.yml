@@ -41,6 +41,14 @@ sphinx:
           "hor"               : "H"
           "st"                : "s"
           "act"               : "a"
+
+          # \let\P\undefined
+          # \DeclareMathOperator{\E}{\mathop{\mathbb{E}}}
+          # \DeclareMathOperator{\P}{\mathop{\mathbb{P}}}
+          # \newcommand{\hi}{h}
+          # \newcommand{\hor}{H}
+          # \newcommand{\st}{s}
+          # \newcommand{\act}{a}
   extra_extensions:
     - sphinx_proof
 
