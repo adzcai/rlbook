@@ -15,7 +15,7 @@ kernelspec:
 (bandits)=
 # Bandits
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: ["hide-input"]
 
 from jaxtyping import Float
@@ -84,7 +84,7 @@ $\nu^k \in \Delta([0, 1])$ with mean $\mu^k = \E_{r \sim \nu^k} [r]$.
 In pseudocode, the agent’s interaction with the MAB environment can be
 described by the following process:
 
-```{code-cell}
+```{code-cell} ipython3
 def mab_loop(mab: "MAB", agent: "Agent"):
     agent.init(mab.K, mab.T)
     for t in range(mab.T):
@@ -95,7 +95,7 @@ def mab_loop(mab: "MAB", agent: "Agent"):
 
 where we define the `MAB` and `Agent` classes as follows:
 
-```{code-cell}
+```{code-cell} ipython3
 class BernoulliMAB:
     def __init__(self, μ: Float[np.ndarray, "K"], T: int):
         """
@@ -190,7 +190,7 @@ MAB algorithms.
 A trivial strategy is to always choose arms at random (i.e. "pure
 exploration").
 
-```{code-cell}
+```{code-cell} ipython3
 :label: pure_exploration
 
 class PureExploration(Agent):
@@ -224,7 +224,7 @@ How might we improve on pure exploration? Instead, we could try each arm
 once, and then commit to the one with the highest observed reward. We’ll
 call this the **pure greedy** strategy.
 
-```{code-cell}
+```{code-cell} ipython3
 :label: pure_greedy
 
 class PureGreedy(Agent):
@@ -273,7 +273,7 @@ variance of the reward estimates by pulling each arm
 $N_{\text{explore}}> 1$ times before committing. This is called the
 **explore-then-commit** strategy.
 
-```{code-cell}
+```{code-cell} ipython3
 :label: etc
 
 class ExploreThenCommit(Agent):
@@ -712,6 +712,3 @@ distribution with mean $\mu^k$ to the Bernoulli distribution with mean
 $\mu^\star$. It turns out that Thompson sampling achieves this lower
 bound with equality! That is, not only is the error *rate* optimal, but
 the *constant factor* is optimal as well.
-
-```{bibliography}
-```

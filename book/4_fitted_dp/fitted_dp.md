@@ -20,8 +20,6 @@ kernelspec:
 :local:
 ```
 
-This closely follows [these lecture slides](https://shamulent.github.io/RL_2023/Lectures/fitteddp_annotated.pdf).
-
 We borrow these definitions from the {ref}`mdps` chapter:
 
 ```{code-cell} ipython3
@@ -56,6 +54,7 @@ def get_num_actions(trajectories: list[Trajectory]) -> int:
 State = Float[Array, "..."]  # arbitrary shape
 
 # assume finite `A` actions and f outputs an array of Q-values
+# i.e. Q(s, a, h) is implemented as f(s, h)[a]
 QFunction = Callable[[State, int], Float[Array, "A"]]
 
 
@@ -69,60 +68,34 @@ Policy = Callable[[State, int], int]
 
 
 def q_to_greedy(Q: QFunction) -> Policy:
+    """Get the greedy policy for the given state-action value function."""
     return lambda s, h: np.argmax(Q(s, h))
 ```
 
 ## Introduction
 
 The {ref}`mdps` chapter discussed the case of **finite** MDPs, where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite.
-This allowed us to compute the value function for a given policy exactly.
+This gave us a closed-form expression for computing the r.h.s. of {prf:ref}`the Bellman one-step consistency equation <bellman_consistency>`.
 In this chapter, we consider the case of **large** or **continuous** state spaces, where the state space is too large to be enumerated.
 In this case, we need to *approximate* the value function and Q-function using methods from **supervised learning**.
 
-## Fitted value iteration
+We will first take a quick detour to introduce the _empirical risk minimization_ framework for function approximation.
+We will then see its application to _fitted_ RL algorithms,
+which attempt to learn the optimal value function (and the optimal policy) from a dataset of trajectories.
 
-So far, how have we computed the optimal value function in MDPs with finite state spaces?
+(erm)=
+## Empirical risk minimization
 
-In a {ref}`finite-horizon MDP <finite_horizon_mdps>`, we can use {prf:ref}`a DP algorithm <pi_star_dp>`, working backwards from the end of the time horizon, to compute the optimal value function exactly.
-
-In a {ref}`infinite-horizon MDP <infinite_horizon_mdps>`, we can use the {ref}`value iteration <value_iteration>` algorithm, which iterates the Bellman optimality operator {eq}`bellman_optimality_operator` to approximately compute the optimal value function.
-
-Our existing approaches represent the value function, and the MDP itself,
-in matrix notation. But what happens if the state space is extremely large, or even infinite (e.g. real-valued)?
-Then computing a weighted sum over all possible next states, which is required to compute the Bellman operator,
-becomes intractable.
-
-Instead, we will need to use *function approximation* methods to represent the value function in an
-alternative way. To approximate the value function and Q-function, we will turn to techniques from *supervised learning*,
-another branch of machine learning that focuses on learning patterns from labelled data.
-
-In particular, suppose we have a dataset of $N$ trajectories $\tau_1, \dots, \tau_N \sim \rho_{\pi}$ from some policy $\pi$.
-Let us indicate the trajectory index in the superscript, so that
+The **supervised learning** task is as follows: We seek to learn the relationship
+between some "input variables" $x$ and some output variable $y$.
+Precisely, we want to find a function $\hat f : x \mapsto y$ that minimizes the
+_squared error_ of the prediction:
 
 $$
-\tau_i = \{ s_0^i, a_0^i, r_0^i, s_1^i, a_1^i, r_1^i, \dots, s_{\hor-1}^i, a_{\hor-1}^i, r_{\hor-1}^i \}.
+\hat f = \arg\min_{f} \E[(y - f(x))^2]
 $$
 
-We want to _learn_ the optimal value function from this dataset.
-Recall that the {prf:ref}`Bellman consistency equations for the optimal policy <bellman_consistency_optimal>`
-don't depend on an actual policy:
-
-$$
-Q_\hi^\star(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [\max_{a'} Q_{\hi+1}^\star(s', a')]
-$$
-
-Our goal is to use the dataset to find a Q-function that satisfies these equations.
-
-Let's reframe the problem to make the connection to supervised learning more clear.
-We can think of the arguments to the Q-function -- i.e. the current state, action, and timestep $\hi$ --
-as the inputs $x$, and the r.h.s. of the above equation as the label $f(x)$. Note that the r.h.s. can also be expressed as a **conditional expectation**:
-
-$$
-f(x) = \E [y \mid x] \quad \text{where} \quad y = r(s_\hi, a_\hi) + \max_{a'} Q^\star_{\hi + 1}(s', a').
-$$
-
-This is precisely the kind of supervised learning problem we can solve using a dataset of labelled samples.
-In particular, we'll use the following fact:
+An equivalent framing is that we seek to approximate the *conditional expectation* of $y$ given $x$:
 
 :::{prf:theorem} Conditional expectation minimizes mean squared error
 :label: conditional_expectation_minimizes_mse
@@ -146,14 +119,15 @@ $$
 Use the law of iterated expectations to show that the last term is zero.
 :::
 
-So the first term is the irreducible error, and the second term is the error due to the approximation,
+The first term is the irreducible error, and the second term is the error due to the approximation,
 which is minimized at $0$ when $f(x) = \E[y \mid x]$.
 ::::
 
-Thus a natural approach for approximating the conditional expectation
-is to draw $N$ samples $(x_i, y_i)$ from the joint distribution of $x$ and $y$,
-and use the _sample average_ $\sum_{i=1}^N (y_i - f(x_i))^2 / N$ to approximate the mean squared error.
-Then we use a _fitting method_ to find a function that minimizes this objective
+In most applications, the joint distribution of $x, y$ is unknown or extremely complex, and so we can't
+analytically evaluate $\E [y \mid x]$.
+Instead, our strategy is to draw $N$ samples $(x_i, y_i)$ from the joint distribution of $x$ and $y$,
+and then use the _sample average_ $\sum_{i=1}^N (y_i - f(x_i))^2 / N$ to approximate the mean squared error.
+Then we use a _fitting method_ to find a function $\hat f$ that minimizes this objective
 and thus approximates the conditional expectation.
 This approach is called **empirical risk minimization**.
 
@@ -175,10 +149,29 @@ Why is it important that we constrain our search to a class of functions $\mathc
 Hint: Consider the function $f(x) = \sum_{i=1}^N y_i \mathbb{1}_{\{ x = x_i \}}$. What is the empirical risk of this function? Would you consider it a good approximation of the conditional expectation?
 :::
 
-Our above dataset would give us $N \cdot \hor$ samples in the dataset:
+## Fitted value iteration
+
+Let us apply ERM to the RL problem of computing the optimal policy / value function.
+
+How did we compute the optimal value function in MDPs with _finite_ state and action spaces?
+
+- In a {ref}`finite-horizon MDP <finite_horizon_mdps>`, we can use {prf:ref}`dynamic programming <pi_star_dp>`, working backwards from the end of the time horizon, to compute the optimal value function exactly.
+
+- In an {ref}`infinite-horizon MDP <infinite_horizon_mdps>`, we can use {ref}`value iteration <value_iteration>`, which iterates the Bellman optimality operator {eq}`bellman_optimality_operator` to approximately compute the optimal value function.
+
+Our existing approaches represent the value function, and the MDP itself,
+in matrix notation.
+But what happens if the state space is extremely large, or even infinite (e.g. real-valued)?
+Then computing a weighted sum over all possible next states, which is required to compute the Bellman operator,
+becomes intractable.
+
+Instead, we will need to use *function approximation* methods from supervised learning to solve for the value function in an alternative way.
+
+In particular, suppose we have a dataset of $N$ trajectories $\tau_1, \dots, \tau_N \sim \rho_{\pi}$ from some policy $\pi$ (called the **data collection policy**) acting in the MDP of interest.
+Let us indicate the trajectory index in the superscript, so that
 
 $$
-x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \max_{a'} Q^\star_{\hi + 1}(s_{\hi + 1}^i, a')
+\tau_i = \{ s_0^i, a_0^i, r_0^i, s_1^i, a_1^i, r_1^i, \dots, s_{\hor-1}^i, a_{\hor-1}^i, r_{\hor-1}^i \}.
 $$
 
 ```{code-cell} ipython3
@@ -209,8 +202,36 @@ trajectories = collect_data(env, 100, 300, key)
 trajectories[0][:5]  # show first five transitions from first trajectory
 ```
 
+We want to _learn_ the optimal value function (or Q-function) from this dataset.
+Recall that we can characterize the optimal Q-function using the {prf:ref}`Bellman optimality equations <bellman_consistency_optimal>`,
+which don't depend on an actual policy:
+
+$$
+Q_\hi^\star(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [\max_{a'} Q_{\hi+1}^\star(s', a')]
+$$
+
+Can we view the dataset of trajectories as a "labelled dataset" in order to apply supervised learning to approximate the optimal Q-function? Yes!
+We can think of the arguments to the Q-function -- i.e. the current state, action, and timestep $\hi$ --
+as the inputs $x$, and the r.h.s. of the above equation as the label $f(x)$. Note that the r.h.s. can also be expressed as a **conditional expectation**:
+
+$$
+f(x) = \E [y \mid x] \quad \text{where} \quad y = r(s_\hi, a_\hi) + \max_{a'} Q^\star_{\hi + 1}(s', a').
+$$
+
+Approximating the conditional expectation is precisely the task that [empirical risk minimization](erm) is suited for!
+
+Our above dataset would give us $N \cdot \hor$ samples in the dataset:
+
+$$
+x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \max_{a'} Q^\star_{\hi + 1}(s_{\hi + 1}^i, a')
+$$
+
 ```{code-cell} ipython3
 def get_X(trajectories: list[Trajectory]):
+    """
+    We pass the state and timestep as input to the Q-function
+    and return an array of Q-values.
+    """
     rows = [(τ[h].s, τ[h].a, h) for τ in trajectories for h in range(len(τ))]
     return [np.stack(ary) for ary in zip(*rows)]
 
@@ -250,16 +271,26 @@ get_y(trajectories[:1])[:5]
 Then we can use empirical risk minimization to find a function $\hat f$ that approximates the optimal Q-function.
 
 ```{code-cell} ipython3
-# We will see some examples in the next section
+# We will see some examples of fitting methods in the next section
 FittingMethod = Callable[[Float[Array, "N D"], Float[Array, "N"]], QFunction]
 ```
 
 But notice that the definition of $y_{i \hi}$ depends on the Q-function itself!
-How might we address this?
-Recall that we faced the same issue when trying to use the Bellman consistency equations in the infinite-horizon case {eq}`bellman_consistency_infinite`.
-There, we used *fixed point iteration* to compute the desired value function.
-We can apply the same strategy here, using the $\hat f$ from the previous iteration to compute the $y_{i \hi}$,
-and then using this to get the next iterate.
+How can we resolve this circular dependency?
+Recall that we faced the same issue [when evaluating a policy in an infinite-horizon MDP](iterative_pe). There, we iterated the {prf:ref}`Bellman operator <bellman_operator>` since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
+We can apply the same strategy here, using the $\hat f$ from the previous iteration to compute the labels $y_{i \hi}$,
+and then using this new dataset to fit the next iterate.
+
+:::{prf:algorithm} Fitted Q-function iteration
+:label: fitted_q_iteration
+
+1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
+2. Iterate the following:
+   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the Bellman optimality operator {eq}`bellman_optimality_operator`
+   2. Set $\hat f$ to the function that minimizes the empirical risk:
+   
+      $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
+:::
 
 ```{code-cell} ipython3
 def fitted_q_iteration(
@@ -273,12 +304,31 @@ def fitted_q_iteration(
     Returns an estimate of the optimal Q-function.
     """
     Q_hat = Q_init or Q_zero(get_num_actions(trajectories))
-    for _ in tqdm(range(epochs)):
-        X, y = transform_data(trajectories, partial(compute_label_optimal, Q_hat))
+    X = get_X(trajectories)
+    for _ in range(epochs):
+        y = get_y(trajectories, Q_hat)
         Q_hat = fit(X, y)
     return Q_hat
+```
 
+We can also use this fixed-point interation to *evaluate* a policy using the dataset (not necessarily the one used to generate the trajectories):
 
+:::{prf:algorithm} Fitted policy evaluation
+:label: fitted_evaluation
+
+**Input:** Policy $\pi : \mathcal{S} \times [H] \to \Delta(\mathcal{A})$ to be evaluated.
+
+**Output:** An approximation of the value function $Q^\pi$ of the policy.
+
+1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
+2. Iterate the following:
+   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the {prf:ref}`Bellman consistency equation <bellman_consistency>` for the given policy.
+   2. Set $\hat f$ to the function that minimizes the empirical risk:
+   
+      $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
+:::
+
+```{code-cell} ipython3
 def fitted_evaluation(
     trajectories: list[Trajectory],
     fit: FittingMethod,
@@ -291,22 +341,31 @@ def fitted_evaluation(
     Returns an estimate of the Q-function of the given policy.
     """
     Q_hat = Q_init or Q_zero(get_num_actions(trajectories))
+    X = get_X(trajectories)
     for _ in tqdm(range(epochs)):
-        X, y = transform_data(trajectories, Q_hat, π)
+        y = get_y(trajectories, Q_hat, π)
         Q_hat = fit(X, y)
     return Q_hat
+```
 
+:::{attention}
+Spot the difference between `fitted_evaluation` and `fitted_q_iteration`. (See the definition of `get_y`.)
+How would you modify this algorithm to evaluate the data collection policy?
+:::
 
+We can use this policy evaluation algorithm to adapt the {ref}`policy iteration algorithm <policy_iteration>` to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted_evaluation` algorithm.
+
+```{code-cell} ipython3
 def fitted_policy_iteration(
     trajectories: list[Trajectory],
     fit: FittingMethod,
     epochs: int,
     evaluation_epochs: int,
-    π_init: Optional[Policy] = None,
+    π_init: Optional[Policy] = lambda s, h: 0,  # constant zero policy
 ):
     """Run fitted policy iteration using the given dataset."""
-    π = π_init or (lambda s, h: 0)  # constant zero policy
-    for _ in tqdm(range(epochs)):
+    π = π_init
+    for _ in range(epochs):
         Q_hat = fitted_evaluation(trajectories, fit, π, evaluation_epochs)
         π = q_to_greedy(Q_hat)
     return π
@@ -413,6 +472,3 @@ output of the network as a composition of functions, allows us to use the chain 
 to compute the gradient of the output with respect to the parameters of each layer.
 
 {cite}`nielsen_neural_2015` provides a comprehensive introduction to neural networks and backpropagation.
-
-
-
