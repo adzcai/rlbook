@@ -1,4 +1,4 @@
-/book/_build/
+_build/
 .DS_Store
 .ipynb_checkpoints/
 
@@ -11,3 +11,5 @@
 *.log
 *.out
 *.run.xml
+*.synctex.gz
+*.toc

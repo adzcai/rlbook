@@ -341,6 +341,7 @@ rewards from that arm are i.i.d.:
 
 :::{math}
 :label: "hoeffding-etc"
+
 \P\left(|\Delta^k | > \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta.
 :::
 

@@ -24,35 +24,20 @@ binder:
   text                        : "Launch binder"
 
 bibtex_bibfiles:
-  - references.bib
+  - "shared/references.bib"
 
 sphinx:
   config:
+    latex_elements:
+      preamble                : "\\usepackage{rlbook}"
+    latex_additional_files:
+      - "shared/rlbook.sty"
     bibtex_reference_style    : "author_year"
     mathjax_path              : "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-    mathjax3_config:
-      tex:
-        macros:
-          "E"                 : "\\mathop{\\mathbb{E}}"
-          "P"                 : "\\mathop{\\mathbb{P}}"
-
-          # for flexibility with different conventions
-          "hi"                : "h"
-          "hor"               : "H"
-          "st"                : "s"
-          "act"               : "a"
-
-          # \let\P\undefined
-          # \DeclareMathOperator{\E}{\mathop{\mathbb{E}}}
-          # \DeclareMathOperator{\P}{\mathop{\mathbb{P}}}
-          # \newcommand{\hi}{h}
-          # \newcommand{\hor}{H}
-          # \newcommand{\st}{s}
-          # \newcommand{\act}{a}
   extra_extensions:
     - sphinx_proof
 
 latex:
-  latex_engine                : "xelatex"
+  latex_engine                : "pdflatex"
   latex_documents:
     targetname: book.tex

@@ -70,7 +70,7 @@ borrow ideas from supervised learning to approximate the value function (discuss
 
 [Chapter 5](lqr) is a standalone chapter on the **linear quadratic regulator**,
 an important tool for *continuous control*, in which the state space is no longer
-finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_\st}$).
+finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_s}$).
 
 
 | Chapter | States | Actions | Rewards (or costs) |
