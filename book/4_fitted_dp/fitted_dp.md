@@ -86,8 +86,9 @@ which attempt to learn the optimal value function (and the optimal policy) from 
 (erm)=
 ## Empirical risk minimization
 
-The **supervised learning** task is as follows: We seek to learn the relationship
-between some "input variables" $x$ and some output variable $y$.
+The **supervised learning** task is as follows:
+We seek to learn the relationship between some input variables $x$ and some output variable $y$
+(drawn from their joint distribution).
 Precisely, we want to find a function $\hat f : x \mapsto y$ that minimizes the
 _squared error_ of the prediction:
 
@@ -202,7 +203,7 @@ trajectories = collect_data(env, 100, 300, key)
 trajectories[0][:5]  # show first five transitions from first trajectory
 ```
 
-We want to _learn_ the optimal value function (or Q-function) from this dataset.
+Can we view the dataset of trajectories as a "labelled dataset" in order to apply supervised learning to approximate the optimal Q-function? Yes!
 Recall that we can characterize the optimal Q-function using the {prf:ref}`Bellman optimality equations <bellman_consistency_optimal>`,
 which don't depend on an actual policy:
 
@@ -210,7 +211,6 @@ $$
 Q_\hi^\star(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [\max_{a'} Q_{\hi+1}^\star(s', a')]
 $$
 
-Can we view the dataset of trajectories as a "labelled dataset" in order to apply supervised learning to approximate the optimal Q-function? Yes!
 We can think of the arguments to the Q-function -- i.e. the current state, action, and timestep $\hi$ --
 as the inputs $x$, and the r.h.s. of the above equation as the label $f(x)$. Note that the r.h.s. can also be expressed as a **conditional expectation**:
 
@@ -472,3 +472,5 @@ output of the network as a composition of functions, allows us to use the chain 
 to compute the gradient of the output with respect to the parameters of each layer.
 
 {cite}`nielsen_neural_2015` provides a comprehensive introduction to neural networks and backpropagation.
+
+

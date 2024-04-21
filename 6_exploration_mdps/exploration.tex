@@ -1,0 +1,42 @@
+\providecommand{\main}{..}
+
+\documentclass[\main/main]{subfiles}
+
+\setcounter{chapter}{4}
+
+\begin{document}
+
+\tableofcontents
+
+\chapter{Exploration in MDPs}
+
+\section{Introduction}
+
+In Chapter \ref{ch:fitted_dp}, we explored algorithms for finding the optimal value and policy in an MDP when the transition and reward functions are unknown.
+However, we swept the issue of \emph{exploration} under the hood.
+Namely, our algorithms might easily \emph{overfit} to certain areas of the state space,
+missing out on possible better paths.
+This issue is especially relevant in \textbf{sparse reward} problems where reward might not be achieved until after many steps,
+and algorithms which do not \emph{systematically} explore new states may entirely fail to learn anything meaningful.
+
+For example, policy gradient algorithms require \emph{signal} in the gradient to learn. In other words, if we never observe any reward, the gradient will always be zero, and the policy will never improve.
+
+\begin{example}{Sparse Reward MDP}{sparse_reward_mdp}
+    Here's a simple example of an MDP with sparse reward:
+
+    \begin{center}
+        \includegraphics{sparse_reward_mdp}
+    \end{center}
+
+    The agent starts in the leftmost state. There are three possible actions, two of which move the agent left and one which moves the agent right.
+\end{example}
+
+We also explored this issue in Chapter \ref{ch:1_bandits}.
+With multi-armed bandits, we also had to explore the tradeoff between exploration and exploitation.
+One algorithm that struck this balance well was the \textbf{upper confidence bound} 
+
+
+
+\end{document}
+
+

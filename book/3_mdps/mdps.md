@@ -277,6 +277,7 @@ tidy_policy_weekends = np.zeros((7, 2, 2)).at[5:7, :, 1].set(1.0).at[0:5, :, 0].
 tidy_policy_messy_only = np.zeros((7, 2, 2)).at[:, 1, 1].set(1.0).at[:, 0, 0].set(1.0)
 ```
 
+(trajectories)=
 ### Trajectories
 
 :::{prf:definition} Trajectories

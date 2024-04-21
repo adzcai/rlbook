@@ -11,7 +11,7 @@ chapters:
   - file: 3_mdps/mdps
   - file: 4_fitted_dp/fitted_dp
   - file: 5_control/control
-  # - file: 6_pg/pg
+  - file: 6_pg/pg
 # - file: challenges
 # - file: appendix
   - file: bibliography
