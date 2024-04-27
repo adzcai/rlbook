@@ -12,6 +12,7 @@
     {\end{enumerate} \endgroup}
 
 \newenvironment{exercise}{\textbf{Exercise:}}{}
+\newenvironment{remark}{\textbf{Remark:}}{}
 
 \newcommand{\rltable}[3]{\begin{center}
     \begin{tabular}{|c|c|c|c|}
@@ -22,6 +23,8 @@
         \hline
     \end{tabular}
 \end{center}}
+
+\addbibresource{\main/main.bib}
 
 % ==================== HEADER STYLES ====================
 
@@ -65,10 +68,14 @@
 \newcommand{\hi}{h}
 \newcommand{\st}{s}
 \newcommand{\act}{a}
+\newcommand{\Vopt}{V^\star}
+\newcommand{\Qopt}{Q^\star}
 
 \renewcommand{\tilde}{\widetilde}
+\renewcommand{\hat}{\widehat}
 
 \DeclareMathOperator*{\E}{\mathbb{E}}
+\DeclareMathOperator*{\argmin}{\textrm{arg\ min}}
 \DeclareMathOperator*{\argmax}{\textrm{arg\ max}}
 \DeclareMathOperator*{\var}{\textrm{Var}}
 \DeclareMathOperator*{\tr}{\textrm{Tr}}

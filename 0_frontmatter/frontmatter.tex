@@ -1,4 +1,6 @@
-\documentclass[../main/main]{subfiles}
+\providecommand{\main}{..}
+
+\documentclass[\main/main]{subfiles}
 
 
 \begin{document}
@@ -35,21 +37,32 @@ Chapter 2 then discusses \textbf{multi-armed bandits}, a simpler problem that is
 
 We will use the following notation throughout the book. This notation is inspired by Sutton and Barto \todo{cite} and AJKS \todo{cite}.
 
+We will use \emph{lowercase letters} to index over \emph{uppercase letters}.
+
 \todo{Add notation.}
 
+\subsection{Multi-Armed Bandits}
+
 \begin{tabular}{cl}
-    $s$ & A state. \\
-    $a$ & An action. \\
-    $r$ & A reward. \\
-    $p$ & A probability. \\
-    $\pi$ & A policy. \\
-    $V$ & A value function. \\
-    $Q$ & An action-value function. \\
-    $A$ & An advantage function. \\
-    $\gamma$ & A discount factor. \\
-    $\tau$ & A trajectory. \\
-    $\mathcal{S}$ & A state space. \\
-    $\A$ & An action space.
+    $[N]$ & The set $\{0, 1, \dots, N-1\}$. \\
+    $K$ & The number of arms \\
+    $T$ & The number of time steps (i.e. algorithm iterations). \\
+\end{tabular}
+
+\subsection{MDPs}
+
+\begin{tabular}{cl}
+$\S$ & The state space. \\
+$\A$ & The action space. \\
+$s \in \S$ & A state. \\
+$a \in \A$ & An action. \\
+$r : \S \times \A \to \R$ & The reward function. \\
+$P : \S times \A \to \triangle(\S)$ & The transition probabilities. \\
+$\gamma \in (0, 1)$ & The discount factor. \\
+$\pi : \S \to \A$ & A policy. \\
+$V^\pi(s) \in \R$ & The value function of policy $\pi$. \\
+$Q^\pi(s, a) \in \R$ & The action-value function of policy $\pi$. \\
+$\pi^\star, \Vopt, \Qopt$ & The optimal policy, value function, and action-value function. \\
 \end{tabular}
 
 
