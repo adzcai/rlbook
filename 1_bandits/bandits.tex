@@ -8,7 +8,7 @@
 \begin{document}
 
 \tableofcontents
-    
+
 \chapter{Bandits}
 
 
@@ -37,12 +37,12 @@ Let $K$ denote the number of arms. We'll label them $0, \dots, K-1$ and use \emp
 In pseudocode, the agent's interaction with the MAB environment can be described by the following process:
 
 \begin{algorithmic}
-% \Comment multi-armed bandits
-\For{$t = 0, \dots, T$}
+    % \Comment multi-armed bandits
+    \For{$t = 0, \dots, T$}
     \State Agent chooses $a_t \in [K]$
     \State Agent receives $r_t \sim \nu^{a_t}$
     \State Agent updates its internal state
-\EndFor
+    \EndFor
 \end{algorithmic}
 
 What's the \emph{optimal} strategy for the agent, i.e. the one that achieves the highest expected reward? Convince yourself that the agent should try to always pull the arm with the highest expected reward $\mu^\star := \max_{k \in [K]} \mu^k$.
@@ -50,19 +50,19 @@ What's the \emph{optimal} strategy for the agent, i.e. the one that achieves the
 The goal, then, can be rephrased as to minimize the \textbf{regret}, defined below:
 
 \begin{definition}{Regret}{regret}
-    
-The agent's \textbf{regret} after $T$ timesteps is defined as
-\begin{equation}
-    \text{Regret}_T := \sum_{t=0}^{T-1} \mu^\star - \mu^{a_t}
-\end{equation}
-Note that this depends on the \emph{true means} of the pulled arms, \emph{not} the actual observed rewards. We typically think of this as a random variable where the randomness comes from the agent's strategy (i.e. the sequence of actions $a_0, \dots, a_{T-1}$).
 
-Throughout the chapter, we will try to upper bound the regret of various algorithms in two different senses:
-\begin{enumerate}
-    \item Upper bound the \emph{expected} regret, i.e. show $\E[\text{Regret}_T] \le M_T$.
-    \item Find a high-probability upper bound on the regret, i.e. show $\P(\text{Regret}_T \le M_{T, \delta}) \ge 1-\delta$.
-\end{enumerate}
-Note that these two different approaches say very different things about the regret. The first approach says that the \emph{average} regret is at most $M_T$. However, the agent might still achieve higher regret on many runs. The second approach says that, \emph{with high probability}, the agent will achieve regret at most $M_{T, \delta}$. However, it doesn't say anything about the regret in the remaining $\delta$ fraction of runs, which might be arbitrarily high.
+    The agent's \textbf{regret} after $T$ timesteps is defined as
+    \begin{equation}
+        \text{Regret}_T := \sum_{t=0}^{T-1} \mu^\star - \mu^{a_t}
+    \end{equation}
+    Note that this depends on the \emph{true means} of the pulled arms, \emph{not} the actual observed rewards. We typically think of this as a random variable where the randomness comes from the agent's strategy (i.e. the sequence of actions $a_0, \dots, a_{T-1}$).
+
+    Throughout the chapter, we will try to upper bound the regret of various algorithms in two different senses:
+    \begin{enumerate}
+        \item Upper bound the \emph{expected} regret, i.e. show $\E[\text{Regret}_T] \le M_T$.
+        \item Find a high-probability upper bound on the regret, i.e. show $\P(\text{Regret}_T \le M_{T, \delta}) \ge 1-\delta$.
+    \end{enumerate}
+    Note that these two different approaches say very different things about the regret. The first approach says that the \emph{average} regret is at most $M_T$. However, the agent might still achieve higher regret on many runs. The second approach says that, \emph{with high probability}, the agent will achieve regret at most $M_{T, \delta}$. However, it doesn't say anything about the regret in the remaining $\delta$ fraction of runs, which might be arbitrarily high.
 
 \end{definition}
 
@@ -74,19 +74,19 @@ The rest of the chapter comprises a series of increasingly sophisticated MAB alg
 
 A trivial strategy is to always choose arms at random (i.e. ``pure exploration'').
 \begin{definition}{Pure exploration}{pure_exploration}
-\begin{algorithmic}
-\For{$t \gets 0$ to $T-1$}
-    \State Choose $a_t \sim \text{Unif}([K])$
-    \State Observe $r_t \sim \nu^{a_t}$
-\EndFor
-\end{algorithmic}
+    \begin{algorithmic}
+        \For{$t \gets 0$ to $T-1$}
+        \State Choose $a_t \sim \text{Unif}([K])$
+        \State Observe $r_t \sim \nu^{a_t}$
+        \EndFor
+    \end{algorithmic}
 \end{definition}
 Note that \[
     \E_{a_t \sim \text{Unif}([K])}[\mu^{a_t}] = \bar \mu = \frac{1}{K} \sum_{k=1}^K \mu^k
 \] so the expected regret is simply
 \begin{align*}
-    \E[\text{Regret}_T] &= \sum_{t=0}^{T-1} \E[\mu^\star - \mu^{a_t}] \\
-    &= T (\mu^\star - \bar \mu) > 0.
+    \E[\text{Regret}_T] & = \sum_{t=0}^{T-1} \E[\mu^\star - \mu^{a_t}] \\
+                        & = T (\mu^\star - \bar \mu) > 0.
 \end{align*}
 This scales as $\Theta(T)$, i.e. \emph{linear} in the number of timesteps $T$. There's no learning here: the agent doesn't use any information about the environment to improve its strategy.
 
@@ -95,18 +95,18 @@ This scales as $\Theta(T)$, i.e. \emph{linear} in the number of timesteps $T$. T
 How might we improve on pure exploration? Instead, we could try each arm once, and then commit to the one with the highest observed reward. We'll call this the \textbf{pure greedy} strategy.
 
 \begin{definition}{Pure greedy}{pure_greedy}
-\begin{algorithmic}
-    \For{$k \gets 0$ to $K-1$}
+    \begin{algorithmic}
+        \For{$k \gets 0$ to $K-1$}
         \Comment Exploration phase
         \State Observe $r^k \sim \nu^k$
-    \EndFor
-    \State $\hat k \gets \argmax_{k \in [K]} r^k$
-    \For{$t \gets K$ to $T-1$}
+        \EndFor
+        \State $\hat k \gets \argmax_{k \in [K]} r^k$
+        \For{$t \gets K$ to $T-1$}
         \Comment Exploitation phase
         \State Observe $r_t \sim \nu^{\hat k}$
-    \EndFor
-\end{algorithmic}
-Note we've used superscripts $r^k$ during the exploration phase to indicate that we observe exactly one reward for each arm. Then we use subscripts $r_t$ during the exploitation phase to indicate that we observe a sequence of rewards from the chosen greedy arm $\hat k$.
+        \EndFor
+    \end{algorithmic}
+    Note we've used superscripts $r^k$ during the exploration phase to indicate that we observe exactly one reward for each arm. Then we use subscripts $r_t$ during the exploitation phase to indicate that we observe a sequence of rewards from the chosen greedy arm $\hat k$.
 \end{definition}
 
 How does the expected regret of this strategy compare to that of pure exploration? We'll do a more general analysis in the following section. Now, for intuition, suppose there's just $K=2$ arms, with Bernoulli reward distributions with means $\mu^0 > \mu^1$.
@@ -114,8 +114,8 @@ How does the expected regret of this strategy compare to that of pure exploratio
 Let's let $r^0$ be the random reward from the first arm and $r^1$ be the random reward from the second. If $r^0 > r^1$, then we achieve zero regret. Otherwise, we achieve regret $T(\mu^0 - \mu^1)$. Thus, the expected regret is simply:
 
 \begin{align*}
-    \E[\text{Regret}_T] &= \P(r^0 < r^1) \cdot T(\mu^0 - \mu^1) + c \\
-    &= (1 - \mu^0) \mu^1 \cdot T(\mu^0 - \mu^1) + c
+    \E[\text{Regret}_T] & = \P(r^0 < r^1) \cdot T(\mu^0 - \mu^1) + c     \\
+                        & = (1 - \mu^0) \mu^1 \cdot T(\mu^0 - \mu^1) + c
 \end{align*}
 
 Which is still $\Theta(T)$, the same as pure exploration! Can we do better?
@@ -125,21 +125,21 @@ Which is still $\Theta(T)$, the same as pure exploration! Can we do better?
 We can improve the pure greedy algorithm as follows:
 let's reduce the variance of the reward estimates by pulling each arm $\Nex > 1$ times before committing. This is called the \textbf{explore-then-commit} strategy.
 \begin{definition}{Explore-then-commit}{etc}
-\begin{algorithmic}
-\State \textbf{Input:} $\Nex \le T/K$
-\For{$k \gets 0$ to $K-1$}
-    \Comment Exploration phase
-    \For{$i \gets 0$ to $\Nex-1$}
+    \begin{algorithmic}
+        \State \textbf{Input:} $\Nex \le T/K$
+        \For{$k \gets 0$ to $K-1$}
+        \Comment Exploration phase
+        \For{$i \gets 0$ to $\Nex-1$}
         \State $r^k_i \sim \nu^k$
-    \EndFor
-    \State $\hat \mu^k \gets \frac{1}{\Nex} \sum_{i=0}^{\Nex-1} r^k_i$
-\EndFor
-\State $\hat k \gets \argmax_k (\hat \mu^k)$
-\For{$t \gets \Nex K$ to $T-1$}
-    \Comment Exploitation phase
-    \State $r_t \sim \nu^{\hat k}$
-\EndFor
-\end{algorithmic}
+        \EndFor
+        \State $\hat \mu^k \gets \frac{1}{\Nex} \sum_{i=0}^{\Nex-1} r^k_i$
+        \EndFor
+        \State $\hat k \gets \argmax_k (\hat \mu^k)$
+        \For{$t \gets \Nex K$ to $T-1$}
+        \Comment Exploitation phase
+        \State $r_t \sim \nu^{\hat k}$
+        \EndFor
+    \end{algorithmic}
 \end{definition}
 (Note that the ``pure greedy'' strategy is just the special case where $\Nex = 1$.)
 
@@ -159,7 +159,7 @@ Let's define $\Delta^k = \hat \mu^k - \mu^k$ to denote how far the mean estimate
 
 \begin{theorem}{Hoeffding's inequality}{hoeffding}
     Let $X_0, \dots, X_{n-1}$ be i.i.d. random variables with $X_i \in [0, 1]$ almost surely for each $i \in [n]$. Then for any $\delta > 0$,
-    
+
     \begin{equation}
         \P\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| > \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.
     \end{equation}
@@ -186,13 +186,13 @@ The \textbf{union bound} provides a simple way to do this:
 
 Applying the union bound across the arms for the l.h.s. event of \ref*{eq:hoeffding-etc}, we have
 \begin{align*}
-    \P\left( \forall k \in [K], |\Delta^k | \le \sqrt{\frac{\ln(2/\delta)}{2\Nex}} \right) &\ge 1-K\delta
+    \P\left( \forall k \in [K], |\Delta^k | \le \sqrt{\frac{\ln(2/\delta)}{2\Nex}} \right) & \ge 1-K\delta
 \end{align*}
 Then to apply this bound to $\hat k$ in particular, we can apply the useful trick of ``adding zero'':
 \begin{align*}
-    \mu^{k^\star} - \mu^{\hat k} &= \mu^{k^\star} - \mu^{\hat k} + (\hat \mu^{k^\star} - \hat \mu^{k^\star}) + (\hat \mu^{\hat k} - \hat \mu^{\hat k}) \\
-    &= \Delta^{\hat k} - \Delta^{k^*} + \underbrace{(\hat \mu^{k^\star} - \hat \mu^{\hat k})}_{\le 0 \text{ by definition of } \hat k} \\
-    &\le 2 \sqrt{\frac{\ln(2K/\delta')}{2\Nex}} \text{ with probability at least } 1-\delta'
+    \mu^{k^\star} - \mu^{\hat k} & = \mu^{k^\star} - \mu^{\hat k} + (\hat \mu^{k^\star} - \hat \mu^{k^\star}) + (\hat \mu^{\hat k} - \hat \mu^{\hat k})              \\
+                                 & = \Delta^{\hat k} - \Delta^{k^*} + \underbrace{(\hat \mu^{k^\star} - \hat \mu^{\hat k})}_{\le 0 \text{ by definition of } \hat k} \\
+                                 & \le 2 \sqrt{\frac{\ln(2K/\delta')}{2\Nex}} \text{ with probability at least } 1-\delta'
 \end{align*}
 where we've set $\delta' = K\delta$.
 Putting this all together, we've shown that, with probability $1 - \delta'$,
@@ -202,13 +202,13 @@ Putting this all together, we've shown that, with probability $1 - \delta'$,
 
 Note that it suffices for $\Nex$ to be on the order of $\sqrt{T}$ to achieve sublinear regret. In particular, we can find the optimal $\Nex$ by setting the derivative of the r.h.s. to zero:
 \begin{align*}
-    0 &= K - T_{\text{exploit}} \cdot \frac{1}{2} \sqrt{\frac{2\ln(2K/\delta')}{\Nex^3}} \\
-    \Nex &= \left( T_{\text{exploit}} \cdot \frac{\sqrt{\ln(2K/\delta')/2}}{K} \right)^{2/3}
+    0    & = K - T_{\text{exploit}} \cdot \frac{1}{2} \sqrt{\frac{2\ln(2K/\delta')}{\Nex^3}}  \\
+    \Nex & = \left( T_{\text{exploit}} \cdot \frac{\sqrt{\ln(2K/\delta')/2}}{K} \right)^{2/3}
 \end{align*}
 Plugging this into the expression for the regret, we have (still with probability $1-\delta'$)
 \begin{align*}
-    \text{Regret}_T &\le 3 T^{2/3} \sqrt[3]{K \ln(2K/\delta') / 2} \\
-    &= \tilde{O}(T^{2/3} K^{1/3}).
+    \text{Regret}_T & \le 3 T^{2/3} \sqrt[3]{K \ln(2K/\delta') / 2} \\
+                    & = \tilde{O}(T^{2/3} K^{1/3}).
 \end{align*}
 
 The ETC algorithm is rather ``abrupt'' in that it switches from exploration to exploitation after a fixed number of timesteps. In practice, it's often better to use a more gradual transition, which brings us to the \emph{epsilon-greedy} algorithm.
@@ -218,23 +218,23 @@ The ETC algorithm is rather ``abrupt'' in that it switches from exploration to e
 Instead of doing all of the exploration and then all of the exploitation separately -- which additionally requires knowing the time horizon beforehand -- we can instead interleave exploration and exploitation by, at each timestep, choosing a random action with some probability. We call this the \textbf{epsilon-greedy} algorithm.
 
 \begin{definition}{Epsilon-greedy}{epsilon_greedy}
-\begin{algorithmic}
-\State \textbf{Input:} $\epsilon : \mathbb{N} \to [0, 1]$
-\State $S^k \gets 0$ for each $k \in [K]$ \Comment{Total reward for arm $k$}
-\State $N^k \gets 0$ for each $k \in [K]$ \Comment{Number of pulls for arm $k$}
-\For{$t \gets 1$ to $T$}
-    \If{$\text{random}() < \epsilon(t)$}
+    \begin{algorithmic}
+        \State \textbf{Input:} $\epsilon : \mathbb{N} \to [0, 1]$
+        \State $S^k \gets 0$ for each $k \in [K]$ \Comment{Total reward for arm $k$}
+        \State $N^k \gets 0$ for each $k \in [K]$ \Comment{Number of pulls for arm $k$}
+        \For{$t \gets 1$ to $T$}
+        \If{$\text{random}() < \epsilon(t)$}
         \State $k \sim \text{Unif}([K])$
         \Comment{Exploration}
-    \Else
+        \Else
         \State $k \gets \argmax_k \left(\frac{S^k}{N^k}\right)$
         \Comment{Exploitation}
-    \EndIf
-    \State $r_t \sim \nu^k$
-    \State $S^k \gets S^k + r_t$
-    \State $N^k \gets N^k + 1$
-\EndFor
-\end{algorithmic}
+        \EndIf
+        \State $r_t \sim \nu^k$
+        \State $S^k \gets S^k + r_t$
+        \State $N^k \gets N^k + 1$
+        \EndFor
+    \end{algorithmic}
 \end{definition}
 
 Note that we let $\epsilon$ vary over time. In particular we might want to gradually \emph{decrease} $\epsilon$ as we learn more about the reward distributions over time.
@@ -261,31 +261,31 @@ Instead, we'll apply the same trick we used in the ETC analysis: we'll use the \
 
 Let $N^k_t$ denote the (random) number of times arm $k$ has been pulled within the first $t$ timesteps, and $\hat \mu^k_t$ denote the sample average of those pulls. That is,
 \begin{align*}
-    N^k_t &:= \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} \\
-    \hat \mu^k_t &:= \frac{1}{N^k_t} \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} r_\tau.
+    N^k_t        & := \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \}                         \\
+    \hat \mu^k_t & := \frac{1}{N^k_t} \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} r_\tau.
 \end{align*}
 To achieve the ``fixed sample size'' assumption, we'll need to shift our index from \emph{time} to \emph{number of samples from each arm}. In particular, we'll define $\tilde r^k_n$ to be the $n$th sample from arm $k$, and $\tilde \mu^k_n$ to be the sample average of the first $n$ samples from arm $k$. Then, for a fixed $n$, this satisfies the ``fixed sample size'' assumption, and we can apply Hoeffding's inequality to get a bound on $\tilde \mu^k_n$.
 
 So how can we extend our bound on $\tilde\mu^k_n$ to $\hat \mu^k_t$? Well, we know $N^k_t \le t$ (where equality would be the case if and only if we had pulled arm $k$ every time). So we can apply the same trick as last time, where we uniform-ize across all possible values of $N^k_t$:
 \begin{align*}
-    \P\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) &\ge 1-t\delta.
+    \P\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) & \ge 1-t\delta.
 \end{align*}
 In particular, since $N^k_t \le t$, and $\tilde \mu^k_{N^k_t} = \hat \mu^k_t$ by definition, we have
 \begin{align*}
-    \P\left( |\hat \mu^k_t - \mu^k | \le \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}} \right) &\ge 1-\delta' \text{ where } \delta' := t \delta.
+    \P\left( |\hat \mu^k_t - \mu^k | \le \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}} \right) & \ge 1-\delta' \text{ where } \delta' := t \delta.
 \end{align*}
 This bound would then suffice for applying the UCB algorithm! That is, the upper confidence bound for arm $k$ would be \[ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}}, \] where we can choose $\delta'$ depending on how tight we want the interval to be. A smaller $\delta'$ would give us a larger yet higher-confidence interval, and vice versa. We can now use this to define the UCB algorithm.
 
 \begin{definition}{Upper Confidence Bound (UCB)}{ucb}
-\begin{algorithmic}
-\State \textbf{Input:} $\delta' \in (0, 1)$
-\For{$t \gets 0$ to $T-1$}
-    \State $k \gets \argmax_{k' \in [K]} \frac{S^{k'}}{N^{k'}} + \sqrt{\frac{\ln(2t/\delta')}{2 N^{k'}}}$
-    \State $r_t \sim \nu^k$
-    \State $S^k \gets S^k + r_t$
-    \State $N^k \gets N^k + 1$
-\EndFor
-\end{algorithmic}
+    \begin{algorithmic}
+        \State \textbf{Input:} $\delta' \in (0, 1)$
+        \For{$t \gets 0$ to $T-1$}
+        \State $k \gets \argmax_{k' \in [K]} \frac{S^{k'}}{N^{k'}} + \sqrt{\frac{\ln(2t/\delta')}{2 N^{k'}}}$
+        \State $r_t \sim \nu^k$
+        \State $S^k \gets S^k + r_t$
+        \State $N^k \gets N^k + 1$
+        \EndFor
+    \end{algorithmic}
 \end{definition}
 
 \textbf{Exercise:} As written, this ignores the issue that we divide by $N^k = 0$ for all arms at the beginning. How should we resolve this issue?
@@ -306,36 +306,36 @@ First we'll bound the regret incurred at each timestep. Then we'll bound the \em
 For the sake of analysis, we'll use a slightly looser bound that applies across the whole time horizon and across all arms. We'll omit the derivation since it's very similar to the above (walk through it yourself for practice).
 
 \begin{align*}
-    \P\left(\forall k \le K, t < T. |\hat \mu^k_t - \mu^k | \le B^k_t \right) &\ge 1-\delta'' \\
-    \text{where} \quad B^k_t &:= \sqrt{\frac{\ln(2TK/\delta'')}{2N^k_t}}.
+    \P\left(\forall k \le K, t < T. |\hat \mu^k_t - \mu^k | \le B^k_t \right) & \ge 1-\delta''                              \\
+    \text{where} \quad B^k_t                                                  & := \sqrt{\frac{\ln(2TK/\delta'')}{2N^k_t}}.
 \end{align*}
 
 Intuitively, $B^k_t$ denotes the \emph{width} of the CI for arm $k$ at time $t$. Then, assuming the above uniform bound holds (which occurs with probability $1-\delta''$), we can bound the regret at each timestep as follows:
 
 \begin{align*}
-    \mu^\star - \mu^{a_t} &\le \hat \mu^{k^*}_t + B_t^{k^*} - \mu^{a_t} && \text{applying UCB to arm } k^\star \\
-    &\le \hat \mu^{a_t}_t + B^{a_t}_t - \mu^{a_t} && \text{since UCB chooses } a_t = \argmax_{k \in [K]} \hat \mu^k_t + B_t^{k} \\
-    &\le 2 B^{a_t}_t && \text{since } \hat \mu^{a_t}_t - \mu^{a_t} \le B^{a_t}_t \text{ by definition of } B^{a_t}_t \\
+    \mu^\star - \mu^{a_t} & \le \hat \mu^{k^*}_t + B_t^{k^*} - \mu^{a_t} &  & \text{applying UCB to arm } k^\star                                                          \\
+                          & \le \hat \mu^{a_t}_t + B^{a_t}_t - \mu^{a_t} &  & \text{since UCB chooses } a_t = \argmax_{k \in [K]} \hat \mu^k_t + B_t^{k}                   \\
+                          & \le 2 B^{a_t}_t                              &  & \text{since } \hat \mu^{a_t}_t - \mu^{a_t} \le B^{a_t}_t \text{ by definition of } B^{a_t}_t \\
 \end{align*}
 
 Summing this across timesteps gives
 
 \begin{align*}
-    \text{Regret}_T &\le \sum_{t=0}^{T-1} 2 B^{a_t}_t \\
-    &= \sqrt{2\ln(2TK/\delta'')} \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} \\
-    \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} &= \sum_{t=0}^{T-1} \sum_{k=1}^K \mathbf{1}\{ a_t = k \} (N^k_t)^{-1/2} \\
-    &= \sum_{k=1}^K \sum_{n=1}^{N_T^k} n^{-1/2} \\
-    &\le K \sum_{n=1}^T n^{-1/2} \\
-    \sum_{n=1}^T n^{-1/2} &\le 1 + \int_1^T x^{-1/2} \ \mathrm{d}x \\
-    &= 1 + (2 \sqrt{x})_1^T \\
-    &= 2 \sqrt{T} - 1 \\
-    &\le 2 \sqrt{T} \\
+    \text{Regret}_T                     & \le \sum_{t=0}^{T-1} 2 B^{a_t}_t                                       \\
+                                        & = \sqrt{2\ln(2TK/\delta'')} \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2}        \\
+    \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} & = \sum_{t=0}^{T-1} \sum_{k=1}^K \ind{ a_t = k } (N^k_t)^{-1/2} \\
+                                        & = \sum_{k=1}^K \sum_{n=1}^{N_T^k} n^{-1/2}                             \\
+                                        & \le K \sum_{n=1}^T n^{-1/2}                                            \\
+    \sum_{n=1}^T n^{-1/2}               & \le 1 + \int_1^T x^{-1/2} \ \mathrm{d}x                                \\
+                                        & = 1 + (2 \sqrt{x})_1^T                                                 \\
+                                        & = 2 \sqrt{T} - 1                                                       \\
+                                        & \le 2 \sqrt{T}                                                         \\
 \end{align*}
 
 Putting everything together gives
 \begin{align*}
-    \text{Regret}_T &\le 2 K \sqrt{2T \ln(2TK/\delta'')} && \text{with probability } 1-\delta'' \\
-    &= \tilde O(K\sqrt{T})
+    \text{Regret}_T & \le 2 K \sqrt{2T \ln(2TK/\delta'')} &  & \text{with probability } 1-\delta'' \\
+                    & = \tilde O(K\sqrt{T})
 \end{align*}
 
 
@@ -357,15 +357,15 @@ So far, we've treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the reward dis
 
 From this Bayesian perspective, the \textbf{Thompson sampling} algorithm follows naturally: just sample from the distribution of the optimal arm, given the observations!
 \begin{definition}{Thompson sampling}{thompson_sampling}
-\begin{algorithmic}
-\State \textbf{Input:} the prior distribution $\pi \in \Delta([0, 1]^K)$
-\For{$t \gets 0$ to $T-1$}
-    \State $\muv \sim \pi(\cdot \mid a_0, r_0, \dots, a_{t-1}, r_{t-1})$
-    \State $a_t \gets \argmax_{k \in [K]} \mu^k$
-    \State $r_t \sim \nu^{a_t}$
-    \Comment{Observe reward}
-\EndFor
-\end{algorithmic}
+    \begin{algorithmic}
+        \State \textbf{Input:} the prior distribution $\pi \in \Delta([0, 1]^K)$
+        \For{$t \gets 0$ to $T-1$}
+        \State $\muv \sim \pi(\cdot \mid a_0, r_0, \dots, a_{t-1}, r_{t-1})$
+        \State $a_t \gets \argmax_{k \in [K]} \mu^k$
+        \State $r_t \sim \nu^{a_t}$
+        \Comment{Observe reward}
+        \EndFor
+    \end{algorithmic}
 \end{definition}
 In other words, we sample each arm proportionally to how likely we think it is to be optimal, given the observations so far.
 This strikes a good exploration-exploitation tradeoff: we explore more for arms that we're less certain about, and exploit more for arms that we're more certain about.
@@ -373,7 +373,7 @@ Thompson sampling is a simple yet powerful algorithm that achieves state-of-the-
 
 \begin{example}{Bayesian Bernoulli bandit}{bayesian_bernoulli}
     We've often been working in the Bernoulli bandit setting, where arm $k$ yields a reward of $1$ with probability $\mu^k$ and no reward otherwise. The vector of success probabilities $\muv = (\mu^1, \dots, \mu^K)$ thus describes the entire MAB.
-    
+
     Under the Bayesian perspective, we think of $\muv$ as a \emph{random} vector drawn from some prior distribution $\pi(\muv)$. For example, we might have $\pi$ be the Uniform distribution over the unit hypercube $[0, 1]^K$, that is, \[
         \pi(\muv) = \begin{cases}
             1 & \text{if } \muv \in [0, 1]^K \\
@@ -382,8 +382,8 @@ Thompson sampling is a simple yet powerful algorithm that achieves state-of-the-
     \]
     Then, upon viewing some reward, we can exactly calculate the \textbf{posterior} distribution of $\muv$ using Bayes's rule (i.e. the definition of conditional probability):
     \begin{align*}
-        \P(\muv \mid a_0, r_0) &\propto \P(r_0 \mid a_0, \muv) \P(a_0 \mid \muv) \P(\muv) \\
-        &\propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
+        \P(\muv \mid a_0, r_0) & \propto \P(r_0 \mid a_0, \muv) \P(a_0 \mid \muv) \P(\muv) \\
+                               & \propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
     \end{align*}
     This is the PDF of the $\text{Beta}(1 + r_0, 1 + (1 - r_0))$ distribution, which is a conjugate prior for the Bernoulli distribution. That is, if we start with a Beta prior on $\mu^k$ (note that $\text{Unif}([0, 1]) = \text{Beta}(1, 1)$), then the posterior, after conditioning on samples from $\text{Bern}(\mu^k)$, will also be Beta. This is a very convenient property, since it means we can simply update the parameters of the Beta distribution upon observing a reward, rather than having to recompute the entire posterior distribution from scratch.
 \end{example}
@@ -399,7 +399,7 @@ where \[
 It turns out that Thompson sampling achieves this lower bound with equality! That is, not only is the error \emph{rate} optimal, but the \emph{constant factor} is optimal as well.
 
 \iffalse
-\section{Gittins index}
+    \section{Gittins index}
 
 \fi
 
@@ -420,10 +420,80 @@ Assuming our context is \emph{discrete}, we can just perform the same algorithms
     Write down the UCB algorithm for this enlarged MAB. That is, write an expression for $\pi_t(x_t) = \argmax_a \dots$.
 \end{exercise}
 
+Recall that running UCB for $T$ timesteps on an MAB with $K$ arms achieves a regret bound of $\tilde{O}(\sqrt{TK})$. So in this problem, we would achieve regret $\tilde{O}(\sqrt{TK|\mathcal{X}|})$ in the contextual MAB, which has a polynomial dependence on $|\mathcal{X}|$.
 But in a situation where we have large, or even infinitely many contexts (e.g. in the case where our context is a continuous value), this becomes intractable.
-How can we improve this algorithm?
-Note that this treats the different contexts as entirely unrelated to each other.
-But often the contexts are \emph{related} to each other in some way.
+Note that this treats the different contexts as entirely unrelated to each other, while in practice, often contexts are \emph{related} to each other in some way: for example, we might want to advertise to users with similar preferences.
+How can we incorporate this structure into our solution?
+
+\subsection{Linear contextual bandits}
+
+We want to model the \emph{mean reward} of arm $k$ as a function of the context, i.e. $\mu^k(x)$.
+One simple model is the \emph{linear} one: $\mu^k(x) = \theta_k^\top x$, where $x \in \mathcal{X} = \R^d$ and $\theta_k \in \R^d$ describes a \emph{feature direction} for arm $k$.
+Recall that \textbf{supervised learning} gives us a way to estimate a conditional expectation from samples:
+We learn a \emph{least squares} estimator from the timesteps where arm $k$ was selected:
+\[
+    \hat \theta_t^k = \argmin_{\theta \in \R^d} \sum_{i=0}^{t-1} (r_i - x_i^\top \theta)^2 \ind{a_i = k}.
+\]
+This has the closed-form solution known as the \emph{ordinary least squares} (OLS) estimator:
+\begin{equation}
+    \begin{aligned}
+        \hat \theta_t^k &= (A_t^k)^{-1} \sum_{i=0}^{t-1} x_i r_i \ind{ a_i = k } \\
+        \text{where} \quad A_t^k &= \sum_{i=0}^{t-1} x_i x_i^\top \ind{a_i = k}.
+    \end{aligned}
+    \label{eq:ols_bandit}
+\end{equation}
+
+We can now apply the UCB algorithm in this environment in order to balance \emph{exploration} of new arms and \emph{exploitation} of arms that we believe to have high reward.
+But how should we construct the upper confidence bound?
+Previously, we treated the pulls of an arm as i.i.d. samples and used Hoeffding's inequality to bound the distance of the sample mean, our estimator, from the true mean.
+However, now our estimator is not a sample mean, but rather depends on the OLS estimator above \eqref{eq:ols_bandit}.
+Instead, we'll use \textbf{Chebyshev's inequality} to construct an upper confidence bound.
+
+\begin{theorem}{Chebyshev's inequality}{chebyshev}
+    For a random variable $Y$ such that $\E Y = 0$ and $\E Y^2 = \sigma^2$,
+    \[
+        |Y| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
+    \]
+\end{theorem}
+
+Since the OLS estimator is known to be unbiased, we can apply Chebyshev's inequality to $x_t^\top (\hat \theta_t^k - \theta^k)$:
+\begin{align*}
+    x_t^\top \theta^k \le x_t^\top \hat \theta_t^k + \beta \sqrt{x_t^\top (A_t^k)^{-1} x_t} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
+\end{align*}
+Note that we haven't explained why $x_t^\top (A_t^k)^{-1} x_t$ is the correct expression for the covariance matrix of $x_t^\top \hat \theta_t^k$. This result follows from performing some algebra on the definition of the OLS estimator \eqref{eq:ols_bandit}.
+The first term is exactly our predicted reward $\hat \mu^k_t(x_t)$.
+To interpret the second term, note that \[
+    x_t^\top (A_t^k)^-1 x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,
+\]
+where \[ \Sigma_t^k = \frac{1}{N_t^k} \sum_{i=0}^{t-1} \mathbf{1} \{a_i = k \} x_i x_i^\top \]
+is the empirical covariance matrix of the contexts.
+That is, the learner is encouraged to choose arms when $x_t$ is \emph{not aligned} with the data seen so far,
+or if arm $k$ has not been explored much so $N_t^k$ is small.
+The LinUCB algorithm follows as a direct generalization:
+
+\begin{definition}{LinUCB}{lin_ucb}
+\begin{algorithmic}
+    \For{$t \in [T]$}
+        \For{$k \in [K]$}
+            \State $A_t^k \gets \sum_{i=0}^{t-1} \ind{a_i = k} x_i x_i^\top + \lambda I$
+            \State $\theta_t^k \gets (A_t^k)^{-1} \sum_{i=0}^{t-1} x_i r_i \mathbf{1} \{ a_t = k \}$
+        \EndFor
+        \State Given context $x_t$
+        \State Choose $a_t = \argmax_k x_t^\top \hat \theta_t^k + c_t \sqrt{x_t^\top (A_t^k)^{-1} x_t}$
+        \State Observe reward $r_t \sim \nu^{a_t}(x_t)$
+    \EndFor
+\end{algorithmic}
+Note that we include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible.
+
+$c_t$ is similar to the $\log (2t/\delta')$ term of UCB: It depends logarithmically on
+\begin{itemize}
+    \item $\frac{1}{\delta}$, where $\delta$ is the probability with which the bound holds;
+    \item $t$ and $d$, which we uniformize over, involving $\det A_t^k$.
+\end{itemize}
+\end{definition}
+\todo{actually define $c_t$ fully}
+
+Using similar tools for UCB, we can also prove an $\tilde{O}(\sqrt{T})$ regret bound, which does much better
 
 \end{document}
 

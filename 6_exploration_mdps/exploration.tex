@@ -149,7 +149,7 @@ Let $\mathcal{D}_\hi^t$ denote the dataset of transitions collected at timestep 
 
 We seek to approximate $P_\hi(s_{h+1} \mid s_\hi, a_\hi) = \frac{\P(s_\hi, a_\hi, s_{h+1})}{\P(s_\hi, a_\hi)}$. We can estimate these using their sample probabilities from the dataset. That is, define
 \begin{align*}
-    N_\hi^t(s, a, s') &:= \sum_{i=0}^{t-1} \mathbf{1}\{ s_\hi^i = s, a_\hi^i = a, s_{h+1}^i = s' \} \\
+    N_\hi^t(s, a, s') &:= \sum_{i=0}^{t-1} \ind{ s_\hi^i = s, a_\hi^i = a, s_{h+1}^i = s' } \\
     N_\hi^t(s, a) &:= \sum_{s' \in \S} N_\hi^t(s, a, s') \\
 \end{align*}
 Then we can model
@@ -204,8 +204,8 @@ We will only provide a heuristic sketch of the proof; see \cite[Section 7.3]{aga
     Note that expanding out the definition of $\hat{P}_\hi^t$ gives
     \begin{align*}
         \E_{s' \sim \hat{P}_\hi^t(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right] &= \sum_{s' \in \S} \frac{N^t_\hi(s, a, s')}{N^t_\hi(s, a)} \Vopt_{h+1}(s') \\
-        &= \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \sum_{s' \in \S} \mathbf{1}\{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s, a, s') \} \Vopt_{h+1}(s') \\
-        &= \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \underbrace{\mathbf{1}\{ (s_\hi^i, a_\hi^i) = (s, a) \} \Vopt_{h+1}(s_{h+1}^i)}_{X^i}
+        &= \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \sum_{s' \in \S} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s, a, s') } \Vopt_{h+1}(s') \\
+        &= \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \underbrace{\ind{ (s_\hi^i, a_\hi^i) = (s, a) } \Vopt_{h+1}(s_{h+1}^i)}_{X^i}
     \end{align*}
     since the terms where $s' \neq s_{h+1}^i$ vanish.
 
@@ -213,7 +213,7 @@ We will only provide a heuristic sketch of the proof; see \cite[Section 7.3]{aga
     \begin{align*}
         \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right]
         &= \sum_{s' \in \S} P^?_\hi(s' \mid s, a) \Vopt_{h+1}(s') \\
-        &= \sum_{s' \in \S} \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \mathbf{1}\{ (s_\hi^i, a_\hi^i) = (s, a) \} P^?_\hi(s' \mid s, a) \Vopt_{h+1}(s') \\
+        &= \sum_{s' \in \S} \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) } P^?_\hi(s' \mid s, a) \Vopt_{h+1}(s') \\
         &= \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i.
     \end{align*}
     Now we can apply Hoeffding's inequality to obtain that, with probability at least $1-\delta$,
