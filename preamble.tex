@@ -2,10 +2,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1in, twoside]{geometry}
 \usepackage[indent]{parskip}
-\usepackage{graphicx, subcaption, hyperref, sidenotes, enumitem, tabularx, todonotes, listings, biblatex, tikz, algpseudocode, csquotes}
+\usepackage{graphicx, subcaption, sidenotes, enumitem, tabularx, todonotes, listings, biblatex, tikz, algpseudocode, csquotes}
 
 \renewcommand{\familydefault}{\sfdefault}
-\raggedbottom
+\raggedbottom % prevent stretching on mostly blank pages
 
 \newenvironment{steps}
     {\begingroup \samepage \begin{enumerate}[label={\bfseries Step \arabic{*}.}]}
@@ -26,6 +26,7 @@
 
 \addbibresource{\main/main.bib}
 
+
 % ==================== HEADER STYLES ====================
 
 \usepackage{fancyhdr, titlesec}
@@ -44,7 +45,6 @@
     {\thesection}
     {2em}
     {}
-
 
 
 % ==================== MATH NOTATION ====================
@@ -71,6 +71,8 @@
 \newcommand{\act}{a}
 \newcommand{\Vopt}{V^\star}
 \newcommand{\Qopt}{Q^\star}
+\newcommand{\Nex}{N_{\text{explore}}}
+\newcommand{\muv}{\boldsymbol{\mu}}
 
 \renewcommand{\tilde}{\widetilde}
 \renewcommand{\hat}{\widehat}
@@ -115,3 +117,5 @@
 \customtheorem{definition}{Definition}{df}{blue!5}  % important new terms and algorithms
 \customtheorem{theorem}{Theorem}{th}{green!5}       % theorems
 
+
+\usepackage{hyperref} % must come after titlesec

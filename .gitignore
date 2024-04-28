@@ -9,6 +9,8 @@ _build/
 *.blg
 *.fdb_latexmk
 *.fls
+*.glo
+*.ist
 *.log
 *.out
 *.run.xml
