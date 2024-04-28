@@ -4,25 +4,11 @@
 \usepackage[indent]{parskip}
 \usepackage{graphicx, subcaption, sidenotes, enumitem, tabularx, todonotes, listings, biblatex, tikz, algpseudocode, csquotes}
 
+
+% ==================== FORMATTING ====================
+
 \renewcommand{\familydefault}{\sfdefault}
 \raggedbottom % prevent stretching on mostly blank pages
-
-\newenvironment{steps}
-    {\begingroup \samepage \begin{enumerate}[label={\bfseries Step \arabic{*}.}]}
-    {\end{enumerate} \endgroup}
-
-\newenvironment{exercise}{\textbf{Exercise:}}{}
-\newenvironment{remark}{\textbf{Remark:}}{}
-
-\newcommand{\rltable}[3]{\begin{center}
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \textbf{States} & \textbf{Actions} &\textbf{Rewards} \\
-        \hline
-        #1 & #2 & #3 \\
-        \hline
-    \end{tabular}
-\end{center}}
 
 \addbibresource{\main/main.bib}
 
@@ -52,18 +38,25 @@
 % use tcolorbox theorems instead of amsthm
 \usepackage{amsmath, amsfonts, amssymb}
 
+\let\P\relax
+\DeclareMathOperator*{\P}{\mathbb{P}}
+\DeclareMathOperator*{\E}{\mathbb{E}}
+\DeclareMathOperator*{\argmin}{\textrm{arg\ min}}
+\DeclareMathOperator*{\argmax}{\textrm{arg\ max}}
+\DeclareMathOperator*{\var}{\textrm{Var}}
+\DeclareMathOperator*{\tr}{\textrm{Tr}}
+\DeclareMathOperator*{\diag}{\textrm{diag}}
+
+% semantic commands
+
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\bop}{\mathcal{J}}
 \newcommand{\cN}{\mathcal{N}}
-\let\P\relax
-\DeclareMathOperator{\P}{\mathbb{P}}
 \renewcommand{\S}{\mathcal{S}}
 \newcommand{\A}{\mathcal{A}}
 \newcommand{\qed}{$\blacksquare$}
 \newcommand{\kl}[2]{\mathrm{KL}\left(#1 \parallel #2\right)}
 \newcommand{\ind}[1]{\mathbf{1}\left\{#1\right\}}
-
-% semantic commands
 \newcommand{\hor}{H}
 \newcommand{\lgr}{\mathcal{L}}
 \newcommand{\hi}{h}
@@ -73,16 +66,8 @@
 \newcommand{\Qopt}{Q^\star}
 \newcommand{\Nex}{N_{\text{explore}}}
 \newcommand{\muv}{\boldsymbol{\mu}}
-
 \renewcommand{\tilde}{\widetilde}
 \renewcommand{\hat}{\widehat}
-
-\DeclareMathOperator*{\E}{\mathbb{E}}
-\DeclareMathOperator*{\argmin}{\textrm{arg\ min}}
-\DeclareMathOperator*{\argmax}{\textrm{arg\ max}}
-\DeclareMathOperator*{\var}{\textrm{Var}}
-\DeclareMathOperator*{\tr}{\textrm{Tr}}
-\DeclareMathOperator*{\diag}{\textrm{diag}}
 
 \allowdisplaybreaks
 
@@ -117,5 +102,24 @@
 \customtheorem{definition}{Definition}{df}{blue!5}  % important new terms and algorithms
 \customtheorem{theorem}{Theorem}{th}{green!5}       % theorems
 
+\newenvironment{exercise}{\textbf{Exercise:}}{}
+\newenvironment{remark}{\textbf{Remark:}}{}
+
+
+% ==================== OTHER COMMANDS ====================
+
+\newcommand{\rltable}[3]{\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{States} & \textbf{Actions} &\textbf{Rewards} \\
+        \hline
+        #1 & #2 & #3 \\
+        \hline
+    \end{tabular}
+\end{center}}
+
+\newenvironment{steps}
+    {\begingroup \samepage \begin{enumerate}[label={\bfseries Step \arabic{*}.}]}
+    {\end{enumerate} \endgroup}
 
 \usepackage{hyperref} % must come after titlesec

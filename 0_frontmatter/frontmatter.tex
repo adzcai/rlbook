@@ -65,7 +65,11 @@ $Q^\pi(s, a) \in \R$ & The action-value function of policy $\pi$. \\
 $\pi^\star, \Vopt, \Qopt$ & The optimal policy, value function, and action-value function. \\
 \end{tabular}
 
+\subsection{Vectors}
 
+Note that a vector $v \in \R^d$ can be thought of as a function from $v : [d] \to \R : i \mapsto v_i$.
+Similarly, we will often identify a real-valued function on states, such as the transition matrix for a given state-action pair,
+with the corresponding vector. That is, we will treat $P(\cdot \mid s, a) \in \R^{|\S|}$.
 
 \section{Challenges of reinforcement learning}
 
