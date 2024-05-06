@@ -109,11 +109,11 @@ How might we improve on pure exploration? Instead, we could try each arm once, a
 
 How does the expected regret of this strategy compare to that of pure exploration? We'll do a more general analysis in the following section. Now, for intuition, suppose there's just $K=2$ arms, with Bernoulli reward distributions with means $\mu^0 > \mu^1$.
 
-Let's let $r^0$ be the random reward from the first arm and $r^1$ be the random reward from the second. If $r^0 > r^1$, then we achieve zero regret. Otherwise, we achieve regret $T(\mu^0 - \mu^1)$. Thus, the expected regret is simply:
+Let $r^0$ be the random reward from the first arm and $r^1$ be the random reward from the second. If $r^0 > r^1$, then we achieve constant regret of $\mu^0 - \mu^1$ (from the one time we pull arm $1$ during exploration). Otherwise, we achieve regret $T\cdot (\mu^0 - \mu^1)$. Thus, the expected regret is simply:
 
 \begin{align*}
-    \E[\text{Regret}_T] & = \P(r^0 < r^1) \cdot T(\mu^0 - \mu^1) + c     \\
-                        & = (1 - \mu^0) \mu^1 \cdot T(\mu^0 - \mu^1) + c
+    \E[\text{Regret}_T] & = \P(r^0 < r^1) \cdot T \cdot (\mu^0 - \mu^1) + c     \\
+                        & = (1 - \mu^0) \mu^1 \cdot T \cdot (\mu^0 - \mu^1) + c
 \end{align*}
 
 Which is still $\Theta(T)$, the same as pure exploration! Can we do better?
@@ -216,11 +216,20 @@ The ETC algorithm is rather ``abrupt'' in that it switches from exploration to e
 Instead of doing all of the exploration and then all of the exploitation separately -- which additionally requires knowing the time horizon beforehand -- we can instead interleave exploration and exploitation by, at each timestep, choosing a random action with some probability. We call this the \textbf{epsilon-greedy} algorithm.
 
 \begin{definition}{Epsilon-greedy}{epsilon_greedy}
+    To ensure that the sample means $S^k/N^k$ are well-defined, we initially pull each arm once. Afterwards, at each timestep $t$, we choose a random arm with probability $\epsilon(t)$ and the greedy arm with probability $1-\epsilon(t)$.
+    Note that we let $\epsilon$ vary over time. In particular we might want to gradually \emph{decrease} $\epsilon$ as we learn more about the reward distributions over time.
+
     \begin{algorithmic}
         \State \textbf{Input:} $\epsilon : \mathbb{N} \to [0, 1]$
-        \State $S^k \gets 0$ for each $k \in [K]$ \Comment{Total reward for arm $k$}
-        \State $N^k \gets 0$ for each $k \in [K]$ \Comment{Number of pulls for arm $k$}
-        \For{$t \gets 1$ to $T$}
+        \For{$k \in [K]$}
+        \Comment{Initialization}
+        \State $r_k \sim \nu^k$
+        \State $S^k \gets r_k$
+        \Comment{Total reward for arm $k$}
+        \State $N^k \gets 1$
+        \Comment{Number of pulls for arm $k$}
+        \EndFor
+        \For{$t \gets K+1$ to $T$}
         \If{$\text{random}() < \epsilon(t)$}
         \State $k \sim \text{Unif}([K])$
         \Comment{Exploration}
@@ -235,14 +244,13 @@ Instead of doing all of the exploration and then all of the exploitation separat
     \end{algorithmic}
 \end{definition}
 
-Note that we let $\epsilon$ vary over time. In particular we might want to gradually \emph{decrease} $\epsilon$ as we learn more about the reward distributions over time.
 
-It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors). (We will not prove this here.)
-
-% TODO proof
-% \todo{Insert optimal epsilon and regret analysis / high probability bound}
-
+Setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors), the same as ETC. (We omit the proof here.)
+Why might we choose epsilon-greedy over ETC?
 In ETC, we had to set $\Nex$ based on the total number of timesteps $T$. But the epsilon-greedy algorithm actually handles the exploration \emph{automatically}: the regret rate holds for \emph{any} $t$, and doesn't depend on the final horizon $T$.
+
+% TODO proof of epsilon-greedy analysis
+% \todo{Insert optimal epsilon and regret analysis / high probability bound}
 
 But the way these algorithms explore is rather naive: we've been exploring \emph{uniformly} across all the arms. But what if we could be smarter about it, and explore \emph{more} for arms that we're less certain about?
 
@@ -319,15 +327,15 @@ Intuitively, $B^k_t$ denotes the \emph{width} of the CI for arm $k$ at time $t$.
 Summing this across timesteps gives
 
 \begin{align*}
-    \text{Regret}_T                     & \le \sum_{t=0}^{T-1} 2 B^{a_t}_t                                       \\
-                                        & = \sqrt{2\ln(2TK/\delta'')} \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2}        \\
-    \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} & = \sum_{t=0}^{T-1} \sum_{k=1}^K \ind{ a_t = k } (N^k_t)^{-1/2} \\
-                                        & = \sum_{k=1}^K \sum_{n=1}^{N_T^k} n^{-1/2}                             \\
-                                        & \le K \sum_{n=1}^T n^{-1/2}                                            \\
-    \sum_{n=1}^T n^{-1/2}               & \le 1 + \int_1^T x^{-1/2} \ \mathrm{d}x                                \\
-                                        & = 1 + (2 \sqrt{x})_1^T                                                 \\
-                                        & = 2 \sqrt{T} - 1                                                       \\
-                                        & \le 2 \sqrt{T}                                                         \\
+    \text{Regret}_T                     & \le \sum_{t=0}^{T-1} 2 B^{a_t}_t                                \\
+                                        & = \sqrt{2\ln(2TK/\delta'')} \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} \\
+    \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} & = \sum_{t=0}^{T-1} \sum_{k=1}^K \ind{ a_t = k } (N^k_t)^{-1/2}  \\
+                                        & = \sum_{k=1}^K \sum_{n=1}^{N_T^k} n^{-1/2}                      \\
+                                        & \le K \sum_{n=1}^T n^{-1/2}                                     \\
+    \sum_{n=1}^T n^{-1/2}               & \le 1 + \int_1^T x^{-1/2} \ \mathrm{d}x                         \\
+                                        & = 1 + (2 \sqrt{x})_1^T                                          \\
+                                        & = 2 \sqrt{T} - 1                                                \\
+                                        & \le 2 \sqrt{T}                                                  \\
 \end{align*}
 
 Putting everything together gives
@@ -403,14 +411,17 @@ It turns out that Thompson sampling achieves this lower bound with equality! Tha
 
 \section{Contextual bandits}
 
-In the above MAB environment, the reward distribution of the arms remains constant for each action that we take.
-However, in many real-world settings, we might receive additional information that affects the reward distributions of the arms.
+In the above MAB environment, the reward distributions of the arms remain constant.
+However, in many real-world settings, we might receive additional information that affects these distributions.
 For example, in the online advertising case where each arm corresponds to an ad we could show the user,
 we might receive information about the user's preferences that changes how likely they are to click on a given ad.
 We can model such environments using \textbf{contextual bandits}.
-At each timestep $t$, a new \emph{context} $x_t$ is drawn from some distribution $\nu_{\text{x}}$.
-The learner gets to observe the context, and choose an action $a_t$ according to some policy $\pi_t(x_t)$.
-Then, the learner observes the reward $\nu^{a_t}(x_t)$.
+
+\begin{definition}{Contextual bandit}{contextual_bandit}
+    At each timestep $t$, a new \emph{context} $x_t$ is drawn from some distribution $\nu_{\text{x}}$.
+    The learner gets to observe the context, and choose an action $a_t$ according to some context-dependent policy $\pi_t(x_t)$.
+    Then, the learner observes the reward from the chosen arm $r_t \sim \nu^{a_t}(x_t)$. The reward distribution also depends on the context.
+\end{definition}
 
 Assuming our context is \emph{discrete}, we can just perform the same algorithms, treating each context-arm pair as its own arm. This gives us an enlarged MAB of $K |\mathcal{X}|$ arms.
 
@@ -419,24 +430,25 @@ Assuming our context is \emph{discrete}, we can just perform the same algorithms
 \end{exercise}
 
 Recall that running UCB for $T$ timesteps on an MAB with $K$ arms achieves a regret bound of $\tilde{O}(\sqrt{TK})$. So in this problem, we would achieve regret $\tilde{O}(\sqrt{TK|\mathcal{X}|})$ in the contextual MAB, which has a polynomial dependence on $|\mathcal{X}|$.
-But in a situation where we have large, or even infinitely many contexts (e.g. in the case where our context is a continuous value), this becomes intractable.
-Note that this treats the different contexts as entirely unrelated to each other, while in practice, often contexts are \emph{related} to each other in some way: for example, we might want to advertise to users with similar preferences.
+But in a situation where we have large, or even infinitely many contexts, e.g. in the case where our context is a continuous value, this becomes intractable.
+
+Note that this ``enlarged MAB'' treats the different contexts as entirely unrelated to each other, while in practice, often contexts are \emph{related} to each other in some way: for example, we might want to advertise similar products to users with similar preferences.
 How can we incorporate this structure into our solution?
 
 \subsection{Linear contextual bandits}
 
 We want to model the \emph{mean reward} of arm $k$ as a function of the context, i.e. $\mu^k(x)$.
-One simple model is the \emph{linear} one: $\mu^k(x) = \theta_k^\top x$, where $x \in \mathcal{X} = \R^d$ and $\theta_k \in \R^d$ describes a \emph{feature direction} for arm $k$.
+One simple model is the \emph{linear} one: $\mu^k(x) = x^\top \theta^k$, where $x \in \mathcal{X} = \R^d$ and $\theta^k \in \R^d$ describes a \emph{feature direction} for arm $k$.
 Recall that \textbf{supervised learning} gives us a way to estimate a conditional expectation from samples:
 We learn a \emph{least squares} estimator from the timesteps where arm $k$ was selected:
 \[
-    \hat \theta_t^k = \argmin_{\theta \in \R^d} \sum_{i=0}^{t-1} (r_i - x_i^\top \theta)^2 \ind{a_i = k}.
+    \hat \theta_t^k = \argmin_{\theta \in \R^d} \sum_{\{ i \in [t] : a_i = k \}} (r_i - x_i^\top \theta)^2.
 \]
 This has the closed-form solution known as the \emph{ordinary least squares} (OLS) estimator:
 \begin{equation}
     \begin{aligned}
-        \hat \theta_t^k &= (A_t^k)^{-1} \sum_{i=0}^{t-1} x_i r_i \ind{ a_i = k } \\
-        \text{where} \quad A_t^k &= \sum_{i=0}^{t-1} x_i x_i^\top \ind{a_i = k}.
+        \hat \theta_t^k          & = (A_t^k)^{-1} \sum_{\{ i \in [t] : a_i = k \}} x_i r_i \\
+        \text{where} \quad A_t^k & = \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top.
     \end{aligned}
     \label{eq:ols_bandit}
 \end{equation}
@@ -444,7 +456,7 @@ This has the closed-form solution known as the \emph{ordinary least squares} (OL
 We can now apply the UCB algorithm in this environment in order to balance \emph{exploration} of new arms and \emph{exploitation} of arms that we believe to have high reward.
 But how should we construct the upper confidence bound?
 Previously, we treated the pulls of an arm as i.i.d. samples and used Hoeffding's inequality to bound the distance of the sample mean, our estimator, from the true mean.
-However, now our estimator is not a sample mean, but rather depends on the OLS estimator above \eqref{eq:ols_bandit}.
+However, now our estimator is not a sample mean, but rather the OLS estimator above \eqref{eq:ols_bandit}.
 Instead, we'll use \textbf{Chebyshev's inequality} to construct an upper confidence bound.
 
 \begin{theorem}{Chebyshev's inequality}{chebyshev}
@@ -454,44 +466,53 @@ Instead, we'll use \textbf{Chebyshev's inequality} to construct an upper confide
     \]
 \end{theorem}
 
-Since the OLS estimator is known to be unbiased, we can apply Chebyshev's inequality to $x_t^\top (\hat \theta_t^k - \theta^k)$:
+Since the OLS estimator is known to be unbiased (try proving this yourself), we can apply Chebyshev's inequality to $x_t^\top (\hat \theta_t^k - \theta^k)$:
 \begin{align*}
     x_t^\top \theta^k \le x_t^\top \hat \theta_t^k + \beta \sqrt{x_t^\top (A_t^k)^{-1} x_t} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
 \end{align*}
-Note that we haven't explained why $x_t^\top (A_t^k)^{-1} x_t$ is the correct expression for the covariance matrix of $x_t^\top \hat \theta_t^k$. This result follows from performing some algebra on the definition of the OLS estimator \eqref{eq:ols_bandit}.
+
+\begin{exercise}
+    We haven't explained why $x_t^\top (A_t^k)^{-1} x_t$ is the correct expression for the variance of $x_t^\top \hat \theta_t^k$. This result follows from some algebra on the definition of the OLS estimator \eqref{eq:ols_bandit}.
+\end{exercise}
+
 The first term is exactly our predicted reward $\hat \mu^k_t(x_t)$.
 To interpret the second term, note that \[
-    x_t^\top (A_t^k)^-1 x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,
+    x_t^\top (A_t^k)^{-1} x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,
 \]
-where \[ \Sigma_t^k = \frac{1}{N_t^k} \sum_{i=0}^{t-1} \mathbf{1} \{a_i = k \} x_i x_i^\top \]
-is the empirical covariance matrix of the contexts.
+where \[ \Sigma_t^k = \frac{1}{N_t^k} \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top \]
+is the empirical covariance matrix of the contexts (assuming that the context has mean zero).
 That is, the learner is encouraged to choose arms when $x_t$ is \emph{not aligned} with the data seen so far,
-or if arm $k$ has not been explored much so $N_t^k$ is small.
-The LinUCB algorithm follows as a direct generalization:
+or if arm $k$ has not been explored much and so $N_t^k$ is small.
+
+We can now substitute these quantities into UCB to get the \textbf{LinUCB} algorithm:
 
 \begin{definition}{LinUCB}{lin_ucb}
-\begin{algorithmic}
-    \For{$t \in [T]$}
+    \begin{algorithmic}
+        \State \textbf{Input:} Regularization parameter $\lambda > 0$
+        \State \textbf{Input:} Confidence parameter $c : \mathbb{N} \to [0, \infty)$
+        % \State $c \gets 1 + \sqrt{\ln(2TD/\delta)/2}$
+        \For{$t \in [T]$}
         \For{$k \in [K]$}
-            \State $A_t^k \gets \sum_{i=0}^{t-1} \ind{a_i = k} x_i x_i^\top + \lambda I$
-            \State $\theta_t^k \gets (A_t^k)^{-1} \sum_{i=0}^{t-1} x_i r_i \mathbf{1} \{ a_t = k \}$
+        \State $A_t^k \gets \sum_{i=0}^{t-1} \ind{a_i = k} x_i x_i^\top + \lambda I$
+        \State $\theta_t^k \gets (A_t^k)^{-1} \sum_{i=0}^{t-1} x_i r_i \mathbf{1} \{ a_t = k \}$
         \EndFor
         \State Given context $x_t$
         \State Choose $a_t = \argmax_k x_t^\top \hat \theta_t^k + c_t \sqrt{x_t^\top (A_t^k)^{-1} x_t}$
         \State Observe reward $r_t \sim \nu^{a_t}(x_t)$
-    \EndFor
-\end{algorithmic}
-Note that we include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible.
+        \EndFor
+    \end{algorithmic}
+    We include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible. This is equivalent to solving a \emph{ridge regression} problem instead of the unregularized least squares problem.
 
-$c_t$ is similar to the $\log (2t/\delta')$ term of UCB: It depends logarithmically on
-\begin{itemize}
-    \item $\frac{1}{\delta}$, where $\delta$ is the probability with which the bound holds;
-    \item $t$ and $d$, which we uniformize over, involving $\det A_t^k$.
-\end{itemize}
+    $c_t$ is similar to the $\log (2t/\delta')$ term of UCB: It controls the width of the confidence interval. Here, we treat it as a tunable parameter, though in a theoretical analysis, it would depend on $A_t^k$ and the probability $\delta$ with which the bound holds.
+    %  It depends logarithmically on
+    % \begin{itemize}
+    %     \item $\frac{1}{\delta}$, where $\delta$ is the probability with which the bound holds;
+    %     \item $t$ and $d$, which we uniformize over, involving $\det A_t^k$.
+    % \end{itemize}
 \end{definition}
-\todo{actually define $c_t$ fully}
+% \todo{actually define $c_t$ fully}
 
-Using similar tools for UCB, we can also prove an $\tilde{O}(\sqrt{T})$ regret bound, which does much better
+Using similar tools for UCB, we can also prove an $\tilde{O}(\sqrt{T})$ regret bound. The full details of the analysis can be found in \cite[Section 6.3]{agarwal_reinforcement_2022}.
 
 \end{document}
 
