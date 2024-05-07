@@ -60,6 +60,7 @@ Then, once the MDP is known, we can use DP to solve for the optimal policy.
 \begin{definition}{Explore-then-exploit (for deterministic MDPs)}{explore_then_exploit}
     We'll keep a set $K$ of all the $(s, a, r, s')$ pairs we've observed.
     Each episode, we'll choose an unseen state-action pair for which the reward and the next state are unknown, and take the shortest path there.
+    We assume that every state can be reached from the initial state within a single episode.
 
     \begin{algorithmic}
         \State $K \gets \emptyset$
@@ -125,11 +126,11 @@ Notably, this method doesn't consider the information that we gain across differ
     The state transition flips the coin, and doesn't depend on the action.
     The reward only depends on the action: Taking action Y gives reward $1$, and taking action N gives reward $0$.
 
-    Suppose we collect a data from the two constant policies $\pi_{\text{Y}}(s) = \text{Y}$ and $\pi_{\text{N}}(s) = \text{N}$.
-    Now we want to learn about policy $\tilde{\pi}$ that takes action Y and then N.
-    Do we need to collect data about $\tilde{\pi}$?
-    No! We can infer its behaviour on timestep $1$ from our data on policy $\pi_{\text{Y}}$ and its behaviour on timestep $2$ from our data on policy $\pi_{\text{N}}$.
-    But if we treat the MDP as a bandit, we treat $\tilde{\pi}$ as a new arm about which we know nothing.
+    Suppose we collect data from the two constant policies $\pi_{\text{Y}}(s) = \text{Y}$ and $\pi_{\text{N}}(s) = \text{N}$.
+    Now we want to learn about the policy $\tilde{\pi}$ that takes action Y and then N.
+    Do we need to collect data from $\tilde{\pi}$ to evaluate it?
+    No: Since the reward only depends on the action, we can infer its value from our data on the policies $\pi_{\text{Y}}$ and $\pi_{\text{N}}$.
+    However, if we treat the MDP as a bandit in which $\tilde{\pi}$ is a new, unknown arm, we ignore the known correlation between the action and the reward.
 \end{example}
 
 
@@ -148,9 +149,9 @@ In the \textbf{UCB-VI} algorithm, we will extend this idea to the case of an unk
 At a high level, the UCB-VI algorithm can be described as follows:
 
 \begin{enumerate}
-    \item \textbf{Modelling:} Use previous data to model the transitions $\hat{P}_0, \dots, \hat{P}_{H-2}$.
+    \item \textbf{Modelling:} Use previous data to model the transitions $\hat{P}_0, \dots, \hat{P}_{H-1}$.
     \item \textbf{Reward bonus:} Design a reward bonus $b_\hi(s, a) \in \R$ to encourage exploration, analogous to the UCB term.
-    \item \textbf{Optimistic planning:} Use DP to compute the optimal policy $\hat \pi_\hi(s)$ in the modelled MDP \[ \tilde{\mathcal{M}} = (\S, \A, \{ \hat{P}_\hi \}_{h \in [H-1]}, \{ r_\hi + b_\hi \}_{h \in [H-1]}, H). \]
+    \item \textbf{Optimistic planning:} Use DP to compute the optimal policy $\hat \pi_\hi(s)$ in the modelled MDP \[ \tilde{\mathcal{M}} = (\S, \A, \{ \hat{P}_\hi \}_{h \in [H]}, \{ r_\hi + b_\hi \}_{h \in [H]}, H). \]
     \item \textbf{Execution:} Use $\hat \pi_\hi(s)$ to collect a new trajectory, and repeat.
 \end{enumerate}
 
@@ -239,7 +240,7 @@ We will only provide a heuristic sketch of the proof; see \cite[Section 7.3]{aga
     \end{align*}
     Now we can apply Hoeffding's inequality to $X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i$, which is bounded by $\hor$, to obtain that, with probability at least $1-\delta$,
     \[
-        \text{error} = \left| \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \left(X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i \right) \right| \le 2 H \sqrt{\frac{\ln(1/\delta)}{N_\hi^k(s, a)}}.
+        \text{error} = \left| \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \left(X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i \right) \right| \le 2 H \sqrt{\frac{\ln(1/\delta)}{N_\hi^t(s, a)}}.
     \]
     Applying a union bound over all $s \in \S, a \in \A, t \in [T], h \in [H]$ gives the $b_\hi^t(s, a)$ term above.
 \end{derivation}
