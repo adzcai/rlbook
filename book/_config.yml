@@ -1,0 +1,43 @@
+title : "CS/STAT 184: Introduction to Reinforcement Learning"
+author: Alexander D. Cai
+logo: shared/184.png
+
+description: >-
+  An undergraduate textbook on reinforcement learning from a primarily
+  statistical perspective.
+
+execute:
+  execute_notebooks           : cache
+
+only_build_toc_files          : true
+
+html:
+  home_page_in_navbar         : false
+
+notebook_interface            : "notebook"
+
+repository:
+  url                         : https://github.com/adzcai/cs-stat-184-notes
+
+binder:
+  binderhub_url               : "https://mybinder.org"
+  text                        : "Launch binder"
+
+bibtex_bibfiles:
+  - "shared/references.bib"
+
+sphinx:
+  config:
+    latex_elements:
+      preamble                : "\\usepackage{rlbook}"
+    latex_additional_files:
+      - "shared/rlbook.sty"
+    bibtex_reference_style    : "author_year"
+    mathjax_path              : "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  extra_extensions:
+    - sphinx_proof
+
+latex:
+  latex_engine                : "pdflatex"
+  latex_documents:
+    targetname: book.tex

@@ -8,6 +8,7 @@
 
 
 \chapter{Markov Decision Processes}
+\label{ch:2_mdps}
 
 \tableofcontents
 
@@ -44,7 +45,7 @@ We'll see that this simple assumption leads to a rich set of problems and algori
 
 MDPs are usually classified as \textbf{finite-horizon}, where the interactions end after some finite number of time steps, or \textbf{infinite-horizon}, where the interactions can continue indefinitely. We'll begin with the finite-horizon case and discuss the infinite-horizon case in the second half of the chapter.
 
-In each setting, we'll describe how to evaluate different \textbf{policies} (strategies for choosing actions) and how to compute (or approximate) the \textbf{optimal policy} for a given MDP. We'll introduce the \textbf{Bellman consistency condition}, which allows us to analyze the whole series of interactions in terms of individual timesteps.
+In each setting, we'll describe how to evaluate different \textbf{policies} (strategies for choosing actions) and how to compute (or approximate) the \textbf{optimal policy} for a given MDP. We'll introduce the \textbf{one-step consistency condition}, which allows us to analyze the whole series of interactions in terms of individual timesteps.
 
 \newpage
 \section{Finite horizon MDPs}
@@ -191,9 +192,9 @@ and the action-value can be expressed in terms of the value of the following sta
 
 \subsubsection{The one-step (Bellman) consistency equation}
 
-Note that by simply considering the cumulative reward as the sum of the \emph{current} reward and the \emph{future} cumulative reward, we can describe the value function recursively (in terms of itself). This is named the \textbf{Bellman consistency equation} after \textbf{Richard Bellman} (1920--1984), who is credited with introducing dynamic programming in 1953.
+Note that by simply considering the cumulative reward as the sum of the \emph{current} reward and the \emph{future} cumulative reward, we can describe the value function recursively (in terms of itself). This is named the \textbf{one-step consistency equation} after \textbf{Richard Bellman} (1920--1984), who is credited with introducing dynamic programming in 1953.
 
-\begin{definition}{Bellman consistency equation for the value function}{bellman_consistency}
+\begin{definition}{one-step consistency equation for the value function}{bellman_consistency}
 \begin{equation}
     V_h^\pi(s) = \E_{\substack{a \sim \pi_h(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{h+1}^\pi(s')] \label{eq:bellman_consistency}
 \end{equation}
@@ -203,21 +204,21 @@ Note that by simply considering the cumulative reward as the sum of the \emph{cu
 
 \textbf{Exercise:} Verify that this equation holds by expanding $V_h^\pi(s)$ and $V_{h+1}^\pi(s')$.
 
-One can analogously derive the Bellman consistency equation for the action-value function:
+One can analogously derive the one-step consistency equation for the action-value function:
 
-\begin{definition}{Bellman consistency equation for action-values}{bellman_consistency_action}
+\begin{definition}{one-step consistency equation for action-values}{bellman_consistency_action}
 \[
     Q_h^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{h+1}(s')}} [Q_{h+1}^\pi(s', a')]
 \]
 \end{definition}
 
-\begin{remark}{The Bellman consistency equation for deterministic policies}{bellman_det}
-    Note that for deterministic policies, the Bellman consistency equation simplifies to
+\begin{theorem}{The one-step consistency equation for deterministic policies}{bellman_det}
+    Note that for deterministic policies, the one-step consistency equations simplify to
     \begin{align*}
         V_h^\pi(s) &= r(s, \pi_h(s)) + \E_{s' \sim P(s, \pi_h(s))} [V_{h+1}^\pi(s')] \\
         Q_h^\pi(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [Q_{h+1}^\pi(s', \pi_{h+1}(s'))]
     \end{align*}
-\end{remark}
+\end{theorem}
 
 \subsubsection{The Bellman operator}
 \label{sec:bellman_operator}
@@ -230,7 +231,7 @@ Fix a policy $\pi$. Consider the higher-order operator that takes in a ``value f
 \]
 \end{definition}
 
-We'll call $\bop^\pi : (\S \to \R) \to (\S \to \R)$ the \textbf{Bellman operator} of $\pi$. Note that it's defined on any ``value function'' mapping states to real numbers; $v$ doesn't have to be a well-defined value function for some policy (hence the lowercase notation). The Bellman operator also gives us a concise way to express the Bellman consistency equation \eqref{eq:bellman_consistency}:
+We'll call $\bop^\pi : (\S \to \R) \to (\S \to \R)$ the \textbf{Bellman operator} of $\pi$. Note that it's defined on any ``value function'' mapping states to real numbers; $v$ doesn't have to be a well-defined value function for some policy (hence the lowercase notation). The Bellman operator also gives us a concise way to express the one-step consistency equation \eqref{eq:bellman_consistency}:
 \[
     V_h^\pi = \bop^{\pi}(V_{h+1}^\pi)
 \]
@@ -246,7 +247,7 @@ How can we actually compute the value function of a given policy? This is the ta
 \subsubsection{Dynamic programming}
 \label{sec:dp}
 
-The Bellman consistency equation \eqref{eq:bellman_consistency} gives us a convenient algorithm for evaluating stationary policies: it expresses the value function at timestep $h$ as a function of the value function at timestep $h+1$. This means we can start at the end of the time horizon, where the value is known, and work backwards in time, using the Bellman consistency equation to compute the value function at each time step.
+The one-step consistency equation \eqref{eq:bellman_consistency} gives us a convenient algorithm for evaluating stationary policies: it expresses the value function at timestep $h$ as a function of the value function at timestep $h+1$. This means we can start at the end of the time horizon, where the value is known, and work backwards in time, using the one-step consistency equation to compute the value function at each time step.
 
 \begin{definition}{Dynamic programming for policy evaluation}{dp_eval_finite}
     \begin{algorithmic}
@@ -265,7 +266,7 @@ This clearly runs in time $O(H \cdot |\S|^2 \cdot |\A|)$ by counting the loops.
 
 
 \begin{example}{Tidying policy evaluation}{tidy_eval_finite}
-    Let's evaluate the policy from \ref{eg:tidy_policy} that tidies if and only if the room is messy. We'll use the Bellman consistency equation to compute the value function at each time step.
+    Let's evaluate the policy from \ref{eg:tidy_policy} that tidies if and only if the room is messy. We'll use the one-step consistency equation to compute the value function at each time step.
     \begin{align*}
         V_{H-1}^\pi(\text{orderly}) &= r(\text{orderly}, \text{ignore}) \\
         &= 1 \\
@@ -313,15 +314,15 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
 \]
 
 \begin{theorem}{It is optimal to be greedy w.r.t. the optimal value function}{optimal_greedy}
-    Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and action-value functions. Consider the greedy policy
+    Let $\Vopt$ and $\Qopt$ denote the optimal value and action-value functions. Consider the greedy policy
     \[
         \hat \pi_h(s) := \argmax_a Q_h^{\star}(s, a).
     \]
-    We aim to show that $\hat \pi$ is optimal; that is, $V^{\hat \pi} = V^{\star}$.
+    We aim to show that $\hat \pi$ is optimal; that is, $V^{\hat \pi} = \Vopt$.
 
     Fix an arbitrary state $s \in \S$ and time $h \in [H]$.
 
-    Firstly, by the definition of $V^{\star}$, we already know $V_h^{\star}(s) \ge V_h^{\hat \pi}(s)$. So for equality to hold we just need to show that $V_h^{\star}(s) \le V_h^{\hat \pi}(s)$. We'll first show that the Bellman operator $\bop^{\hat \pi}$ never decreases $V_h^{\star}$. Then we'll apply this result recursively to show that $V^{\star} = V^{\hat \pi}$.
+    Firstly, by the definition of $\Vopt$, we already know $V_h^{\star}(s) \ge V_h^{\hat \pi}(s)$. So for equality to hold we just need to show that $V_h^{\star}(s) \le V_h^{\hat \pi}(s)$. We'll first show that the Bellman operator $\bop^{\hat \pi}$ never decreases $V_h^{\star}$. Then we'll apply this result recursively to show that $\Vopt = V^{\hat \pi}$.
     
     \textbf{Lemma:} $\bop^{\hat \pi}$ never decreases $V_h^{\star}$ (elementwise):
     \[
@@ -332,8 +333,8 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
     
     \begin{align*}
     V_h^{\star}(s) &= \max_{\pi \in \Pi} V_h^{\pi}(s) \\
-    &= \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^\pi(s') \right] && \text{Bellman consistency} \\
-    &\le \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^{\star}(s') \right] && \text{definition of } V^\star \\
+    &= \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^\pi(s') \right] && \text{one-step consistency} \\
+    &\le \max_{\pi \in \Pi} \mathop{\mathbb{E}}_{a \sim \pi(\dots)}\left[r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^{\star}(s') \right] && \text{definition of } \Vopt \\
     &= \max_{a} \left[ r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(s, a)} V_{h+1}^{\star}(s') \right] && \text{only depends on } \pi \text{ via } a \\
     &= [\bop^{\hat \pi}(V_{h+1}^{\star})](s).
     \end{align*}
@@ -341,7 +342,7 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
     
     We can now apply this result recursively to get
     \[
-    V^{\star}_t(s) \le V^{\hat \pi}_t(s)
+    \Vopt_t(s) \le V^{\hat \pi}_t(s)
     \]
     as follows. (Note that even though $\hat \pi$ is deterministic, we'll use the $a \sim \hat \pi(s)$ notation to make it explicit that we're sampling a trajectory from it.)
     \begin{align*}
@@ -354,7 +355,7 @@ It is a stunning fact that \textbf{every finite-horizon MDP has an optimal polic
     &= V_{t}^{\hat \pi}(s) && \text{definition}
     \end{align*}
 
-    And so we have $V^{\star} = V^{\hat \pi}$, making $\hat \pi$ optimal.
+    And so we have $\Vopt = V^{\hat \pi}$, making $\hat \pi$ optimal.
 \end{theorem}
 
 
@@ -370,30 +371,30 @@ Now that we've shown this particular greedy policy is optimal, all we need to do
         we can't take any more actions, so the $Q$-function is simply the reward
         that we obtain:
         \[
-            Q^\star_{H-1}(s, a) = r(s, a)
+            \Qopt_{H-1}(s, a) = r(s, a)
         \]
         so the best thing to do is just act greedily
         and get as much reward as we can!
         \[
-            \pi^\star_{H-1}(s) = \argmax_a Q^\star_{H-1}(s, a)
+            \pi^\star_{H-1}(s) = \argmax_a \Qopt_{H-1}(s, a)
         \]
-        Then $V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
+        Then $\Vopt_{H-1}(s)$, the optimal value of state $s$ at the end of the
         trajectory, is simply whatever action gives the most reward.
         \[
-            V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
+            \Vopt_{H-1} = \max_a \Qopt_{H-1}(s, a)
         \]
     
     \item \emph{Recursion.} Then, we can work backwards in time, starting from the
         end, using our consistency equations! i.e. for each $t = H-2, \dots, 0$, we set
         \begin{align*}
-            Q^\star_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{h+1}(s')] \\
-            \pi^\star_{t}(s) &= \argmax_a Q^\star_{t}(s, a) \\
-            V^\star_{t}(s) &= \max_a Q^\star_{t}(s, a)
+            \Qopt_{t}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [\Vopt_{h+1}(s')] \\
+            \pi^\star_{t}(s) &= \argmax_a \Qopt_{t}(s, a) \\
+            \Vopt_{t}(s) &= \max_a \Qopt_{t}(s, a)
         \end{align*}
     \end{itemize}
 \end{definition}
 
-At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of the $|\S| |\A|$ state-action pairs. Each computation takes $|\S|$ operations to evaluate the average value over $s'$. This gives a total computation time of $O(H |\S|^2 |\A|)$.
+At each of the $H$ timesteps, we must compute $\Qopt$ for each of the $|\S| |\A|$ state-action pairs. Each computation takes $|\S|$ operations to evaluate the average value over $s'$. This gives a total computation time of $O(H |\S|^2 |\A|)$.
 
 Note that this algorithm is identical to the policy evaluation algorithm \ref{df:dp_eval_finite}, but instead of \emph{averaging} over the actions chosen by a policy, we instead simply take a \emph{maximum} over the action-values. We'll see this relationship between \textbf{policy evaluation} and \textbf{optimal policy computation} show up again in the infinite-horizon setting.
 
@@ -434,9 +435,9 @@ The time-dependent policies from the finite-horizon case become difficult to han
 
 \textbf{Exercise:} Which of the policies in \ref{eg:tidy_policy} are stationary?
 
-\subsubsection{Value functions and Bellman consistency}
+\subsubsection{Value functions and one-step consistency}
 
-We also consider stationary value functions $V^\pi : \S \to \R$ and $Q^\pi : \S \times \A \to \R$. We need to insert a factor of $\gamma$ into the Bellman consistency equation \eqref{eq:bellman_consistency} to account for the discounting:
+We also consider stationary value functions $V^\pi : \S \to \R$ and $Q^\pi : \S \times \A \to \R$. We need to insert a factor of $\gamma$ into the one-step consistency equation \eqref{eq:bellman_consistency} to account for the discounting:
 \begin{equation}
 \begin{aligned}
     V^\pi(s) &= \E_{\tau \sim \rho^\pi} [r_h + \gamma r_{h+1} + \gamma^2 r_{h+2} \cdots \mid s_h = s] && \text{for any } h \in \mathbb{N} \\
@@ -541,12 +542,12 @@ For $P^\pi$, we'll treat the rows as the states and the columns as the next stat
 
 The backwards DP technique we used in the finite-horizon case \eqref{sec:dp} no longer works since there is no ``final timestep'' to start from. We'll need another approach to policy evaluation.
 
-The Bellman consistency conditions yield a system of equations we can solve to evaluate a policy \emph{exactly}. For a faster approximate solution, we can iterate the policy's Bellman operator, since we know that it has a unique fixed point at the true value function.
+The one-step consistency conditions yield a system of equations we can solve to evaluate a policy \emph{exactly}. For a faster approximate solution, we can iterate the policy's Bellman operator, since we know that it has a unique fixed point at the true value function.
 
 
 \subsubsection{Tabular case for deterministic policies}
 
-The Bellman consistency equation for a deterministic policy can be written in tabular notation as
+The one-step consistency equation for a deterministic policy can be written in tabular notation as
 \[
     V^\pi = r^\pi + \gamma P^\pi V^\pi.
 \]
@@ -614,16 +615,16 @@ Now let's move on to solving for an optimal policy in the infinite-horizon case.
     \label{eq:optimal_policy_infinite}
 \end{equation}
 
-Once again, all optimal policies share the same \textbf{optimal value function} $V^\star$, and the greedy policy w.r.t. this value function is optimal.
+Once again, all optimal policies share the same \textbf{optimal value function} $\Vopt$, and the greedy policy w.r.t. this value function is optimal.
 
 \textbf{Exercise:} Verify this by modifying the proof \ref{th:optimal_greedy} from the finite-horizon case.
 
-So how can we compute such an optimal policy? We can't use the backwards DP approach from the finite-horizon case \eqref{df:pi_star_dp} since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the Bellman consistency equation \eqref{eq:bellman_consistency_infinite} for the optimal value function doesn't depend on any policy:
+So how can we compute such an optimal policy? We can't use the backwards DP approach from the finite-horizon case \eqref{df:pi_star_dp} since there's no ``final timestep'' to start from. Instead, we'll exploit the fact that the one-step consistency equation \eqref{eq:bellman_consistency_infinite} for the optimal value function doesn't depend on any policy:
 \[
-    V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]
+    \Vopt(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} \Vopt(s'). \right]
 \]
 
-\textbf{Exercise:} Verify this by substituting the greedy policy into the Bellman consistency equation.
+\textbf{Exercise:} Verify this by substituting the greedy policy into the one-step consistency equation.
 
 As before, thinking of the r.h.s. as an operator on value functions gives the \textbf{Bellman optimality operator}
 \[
@@ -634,7 +635,7 @@ As before, thinking of the r.h.s. as an operator on value functions gives the \t
 
 Since the optimal policy is still a policy, our result that the Bellman operator is a contracting map still holds, and so we can repeatedly apply this operator to converge to the optimal value function! This algorithm is known as \textbf{value iteration}.
 
-\begin{definition}{Value iteration pseudocode}{value_iteration_pseudocode}
+\begin{definition}{Value iteration}{value_iteration}
     \begin{algorithmic}
         \State $v^{(0)} \gets 0$
         \For{$t = 0, 1, 2, \dots, T-1$}
@@ -653,19 +654,19 @@ As the final step of the algorithm, to return an actual policy $\hat \pi$, we ca
 
 We must be careful, though: the value function of this greedy policy, $V^{\hat \pi}$, is \emph{not} the same as $v^{(T)}$, which need not even be a well-defined value function for some policy!
 
-The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\star\|_{\infty} \le \epsilon$, then the greedy policy $\hat \pi$ satisfies $\|V^{\hat \pi} - V^\star\|_{\infty} \le \frac{2\gamma}{1-\gamma} \epsilon$, which might potentially be very large.
+The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - \Vopt\|_{\infty} \le \epsilon$, then the greedy policy $\hat \pi$ satisfies $\|V^{\hat \pi} - \Vopt\|_{\infty} \le \frac{2\gamma}{1-\gamma} \epsilon$, which might potentially be very large.
 
 \begin{theorem}{Greedy policy value worsening}{greedy_worsen}
     We aim to show that
     \[
-        \|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}
+        \|V^{\hat \pi} - \Vopt \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - \Vopt\|_{\infty}
     \]
     where $\hat \pi(s) = \argmax_a q(s, a)$ is the greedy policy w.r.t. \[ q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s'). \]
 
     \textbf{Proof:} We first have
     \begin{align*}
-        V^{\star}(s) - V^{\hat \pi}(s) &= Q^{\star}(s,\pi^\star(s)) - Q^{\hat \pi}(s, \hat \pi(s))\\
-        &= [Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s))] + [Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))].
+        \Vopt(s) - V^{\hat \pi}(s) &= \Qopt(s,\pi^\star(s)) - Q^{\hat \pi}(s, \hat \pi(s))\\
+        &= [\Qopt(s,\pi^\star(s)) - \Qopt(s, \hat \pi(s))] + [\Qopt(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))].
     \end{align*}
     Let's bound these two quantities separately.
 
@@ -673,29 +674,29 @@ The bound on the policy's quality is actually quite loose: if $\|v^{(T)} - V^\st
     \[ q(s, \hat \pi(s)) \ge q(s,\pi^\star(s)). \]
     Let's add $q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
     \begin{align*}
-        Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s)) &\le [Q^{\star}(s,\pi^\star(s))- q(s,\pi^\star(s))] + [q(s, \hat \pi(s)) - Q^{\star}(s, \hat \pi(s))] \\
-        &= \gamma \E_{s' \sim P(s, \pi^{\star}(s))} [ V^{\star}(s') - v(s') ] + \gamma \E_{s' \sim P(s, \hat \pi(s))} [ v(s') - V^{\star}(s') ] \\
-        &\le 2 \gamma \|v - V^{\star}\|_{\infty}.
+        \Qopt(s,\pi^\star(s)) - \Qopt(s, \hat \pi(s)) &\le [\Qopt(s,\pi^\star(s))- q(s,\pi^\star(s))] + [q(s, \hat \pi(s)) - \Qopt(s, \hat \pi(s))] \\
+        &= \gamma \E_{s' \sim P(s, \pi^{\star}(s))} [ \Vopt(s') - v(s') ] + \gamma \E_{s' \sim P(s, \hat \pi(s))} [ v(s') - \Vopt(s') ] \\
+        &\le 2 \gamma \|v - \Vopt\|_{\infty}.
     \end{align*}
 
     The second quantity is bounded by
     \begin{align*}
-        Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))
+        \Qopt(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))
         &=
-        \gamma \E_{s'\sim P(s, \hat \pi(s))}\left[ V^\star(s') - V^{\hat \pi}(s') \right] \\
+        \gamma \E_{s'\sim P(s, \hat \pi(s))}\left[ \Vopt(s') - V^{\hat \pi}(s') \right] \\
         & \leq 
-        \gamma \|V^{\star} - V^{\hat \pi}\|_\infty
+        \gamma \|\Vopt - V^{\hat \pi}\|_\infty
     \end{align*}
     and thus
     \begin{align*}
-        \|V^\star - V^{\hat \pi}\|_\infty &\le 2 \gamma \|v - V^{\star}\|_{\infty} + \gamma \|V^{\star} - V^{\hat \pi}\|_\infty \\
-        \|V^\star - V^{\hat \pi}\|_\infty &\le \frac{2 \gamma \|v - V^{\star}\|_{\infty}}{1-\gamma}.
+        \|\Vopt - V^{\hat \pi}\|_\infty &\le 2 \gamma \|v - \Vopt\|_{\infty} + \gamma \|\Vopt - V^{\hat \pi}\|_\infty \\
+        \|\Vopt - V^{\hat \pi}\|_\infty &\le \frac{2 \gamma \|v - \Vopt\|_{\infty}}{1-\gamma}.
     \end{align*}
 \end{theorem}
 
-So in order to compensate and achieve $\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
+So in order to compensate and achieve $\|V^{\hat \pi} - \Vopt\| \le \epsilon$, we must have
 \[
-    \|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.
+    \|v^{(T)} - \Vopt\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.
 \]
 This means, using \eqref{eq:iterations_vi}, we need to run value iteration for
 \[
@@ -729,7 +730,7 @@ We aim to show that the number of iterations required for an $\epsilon$-accurate
 \]
 This bound follows from the contraction property \eqref{eq:bellman_convergence}:
 \[
-    \|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.
+    \|V^{\pi^{t+1}} - \Vopt \|_{\infty} \le \gamma \|V^{\pi^{t}} - \Vopt \|_{\infty}.
 \]
 We'll prove that the iterates of PI respect the contraction property by showing that the policies improve monotonically:
 \[
@@ -762,7 +763,7 @@ which implies that $V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s)$ for all $s$ (since the 
 
 This means we can now apply the Bellman convergence result \eqref{eq:bellman_convergence} to get
 \[
-    \|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\bop^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.
+    \|V^{\pi^{t+1}} - \Vopt \|_{\infty} \le \|\bop^{\star} (V^{\pi^{t}}) - \Vopt\|_{\infty} \le \gamma \|V^{\pi^{t}} - \Vopt \|_{\infty}.
 \]
 \end{theorem}
 
@@ -773,7 +774,7 @@ This means we can now apply the Bellman convergence result \eqref{eq:bellman_con
     \item Our goal is to find a policy $\pi$ that maximizes expected total reward. Policies can be \textbf{deterministic} or \textbf{stochastic}, \textbf{state-dependent} or \textbf{history-dependent}, \textbf{stationary} or \textbf{time-dependent}.
     \item A policy induces a distribution over \textbf{trajectories}.
     \item We can evaluate a policy by computing its \textbf{value function} $V^\pi(s)$, which is the expected total reward starting from state $s$ and following policy $\pi$. We can also compute the \textbf{state-action value function} $Q^\pi(s, a)$, which is the expected total reward starting from state $s$, taking action $a$, and then following policy $\pi$. In the finite-horizon setting, these also depend on the timestep $h$.
-    \item The \textbf{Bellman consistency equation} is an equation that the value function must satisfy. It can be used to solve for the value functions exactly. Thinking of the r.h.s. of this equation as an operator on value functions gives the \textbf{Bellman operator}.
+    \item The \textbf{one-step consistency equation} is an equation that the value function must satisfy. It can be used to solve for the value functions exactly. Thinking of the r.h.s. of this equation as an operator on value functions gives the \textbf{Bellman operator}.
     \item In the finite-horizon setting, we can compute the optimal policy using \textbf{dynamic programming}.
     \item In the infinite-horizon setting, we can compute the optimal policy using \textbf{value iteration} or \textbf{policy iteration}.
 \end{itemize}

@@ -1,8 +1,9 @@
-\providecommand{\main}{.}
+\providecommand{\main}{.} % see https://tex.stackexchange.com/questions/289450/path-of-figures-in-different-directories-with-subfile-latex
 
 \documentclass[12pt,twoside,letterpaper,openany]{book}
 
 \input{preamble}
+\input{glossary}
 
 \graphicspath{ {\main/assets/} }
 
@@ -46,6 +47,16 @@
 
 \subfile{\main/4_pg/pg}
 
-\subfile{\main/5_challenges/challenges}
+\subfile{\main/5_fitted_dp/fitted_dp}
+
+\subfile{\main/6_exploration_mdps/exploration}
+
+\backmatter
+
+\subfile{\main/appendix/appendix}
+
+\printglossaries
+
+\printbibliography
 
 \end{document}

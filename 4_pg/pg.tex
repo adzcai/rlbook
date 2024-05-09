@@ -15,10 +15,10 @@
 
 \section{Motivation}
 
-The scope of our problem has been gradually expanding.
+The scope of our problem has been gradually expanding:
 
 \begin{enumerate}
-    \item  In the first chapter, we considered \emph{bandits} with a finite number of arms, where the only stochasticity involved was their rewards.
+    \item In the first chapter, we considered \emph{bandits} with a finite number of arms, where the only stochasticity involved was their rewards.
     \item In the second chapter, we considered \emph{MDPs} more generally, involving a finite number of states and actions, where the state transitions are Markovian.
     \item In the third chapter, we considered \emph{continuous} state and action spaces and developed the \emph{Linear Quadratic Regulator.} We then showed how to use it to find \emph{locally optimal solutions} to problems with nonlinear dynamics and non-quadratic cost functions.
 \end{enumerate}
@@ -233,7 +233,8 @@ Consider a continuous $n$-dimensional action space $\A = \R^n$. Then for a stoch
 
 \subsection{Motivation for policy gradient}
 
-Recall the policy iteration algorithm discussed in the MDP section \todo{cite}: We alternate between these two steps:
+Recall the policy iteration algorithm discussed in the MDP section: We alternate between these two steps:
+% \todo{cite}
 
 \begin{itemize}
     \item Estimating the $Q$-function of the current policy
@@ -294,10 +295,10 @@ To formalize ``close to'', we typically use the \textbf{Kullback-Leibler diverge
         \kl{p}{q} := \E_{x \sim p} \left[ \log \frac{p(x)}{q(x)} \right]
     \end{equation}
     This can be interpreted in many different ways, many stemming from information theory.
-    Note that $\kl{p}{q} = 0$ if and only if $p = q$. Also note that it is not symmetric.
+    Note that $\kl{p}{q} = 0$ if and only if $p = q$. Also note that it is generally not symmetric.
 \end{definition}
 
-\todo{list possible interpretations}
+% \todo{list possible interpretations}
 
 % For some parameterized policy $\pi_{\theta}$, let
 
@@ -318,9 +319,9 @@ Additionally, rather than estimating the $Q$-function of the current policy, we 
     Note that the objective function is not identical to the r.h.s. of the Performance Difference Lemma. Here, we still use the \emph{states} sampled from the old policy, and only use the \emph{actions} from the new policy.
     This is because it would be computationally infeasible to sample entire trajectories from $\pi_\theta$ as we are optimizing over $\theta$.
     This approximation is also reasonable in the sense that it matches the r.h.s. of the Performance Difference Lemma to first order in $\theta$. (We will elaborate more on this later.)
-    See the TRPO paper for details.
+    % See the TRPO paper for details.
 \end{definition}
-\todo{add reference to trpo}
+% \todo{add reference to trpo}
 
 Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories. This is intractable in general, so we need to estimate the expectation.
 As before, we can do this by taking an empirical average over samples from the trajectory distribution.
@@ -362,7 +363,9 @@ Applying importance sampling allows us to estimate the TRPO objective as follows
 
 \subsection{Natural policy gradient}
 
-Instead, we can solve an approximation to the TRPO optimization problem. This will link us back to the policy gradient from before. We take a first-order approximation to objective function and second-order approximation to the KLD constraint. (A full derivation is given in the appendix.) \todo{cite appendix} This results in the optimization problem
+Instead, we can solve an approximation to the TRPO optimization problem. This will link us back to the policy gradient from before. We take a first-order approximation to the objective function and a second-order approximation to the KLD constraint.
+% (A full derivation is given in the appendix.) \todo{cite appendix}
+This results in the optimization problem
 \begin{equation}
     \begin{gathered}
         \max_\theta \nabla_\theta J(\pi_{\theta^k})^\top (\theta - \theta^k) \\
@@ -388,7 +391,7 @@ where $F_{\theta^k}$ is the \textbf{Fisher information matrix} defined below.
 \end{definition}
 
 This is a convex optimization problem, and so we can find the global optima by setting the gradient of the Lagrangian to zero:
-\todo{include Lagrangian notes in appendix}
+% \todo{include Lagrangian notes in appendix}
 \begin{align*}
     \lgr(\theta, \eta)                     & = \nabla_\theta J(\pi_{\theta^k})^\top (\theta - \theta^k) - \eta \left[ \frac{1}{2} (\theta - \theta^k)^\top F_{\theta^k} (\theta - \theta^k) - \delta \right] \\
     \nabla_\theta \lgr(\theta^{k+1}, \eta) & = 0                                                                                                                                                             \\
@@ -485,7 +488,7 @@ Combining the expectations together, this gives the (exact) objective
     \max_{\theta} \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_h \mid s_h)}{\pi^k(a_h \mid s_h)} A^{\pi^k}(s_h, a_h) - \lambda \log \frac{1}{\pi_\theta(a_h \mid s_h)} \right) \right]
 \]
 
-Now we can use gradient ascent until convergence to maximize this function, completing a single iteration of PPO.
+Now we can use gradient ascent on the parameters $\theta$ until convergence to maximize this function, completing a single iteration of PPO (i.e. $\theta^{k+1} \gets \theta$).
 
 \end{document}
 

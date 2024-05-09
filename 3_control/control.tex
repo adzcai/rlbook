@@ -131,9 +131,14 @@ Is there a relevant simplification that we can analyze?
 Let us consider \emph{linear dynamics} and an \emph{upward-curved quadratic cost function} (in both arguments). We will also consider a time-homogenous cost function that targets $(s^\star, a^\star) = (0, 0)$. This model is called the \textbf{linear quadratic regulator} (LQR) and is a fundamental tool in control theory. Solving the LQR problem will additionally enable us to \emph{locally approximate} more complex setups using \emph{Taylor approximations}.
 
 \begin{definition}{The linear quadratic regulator}{lqr}
-    \textbf{Linear, time-homogeneous dynamics}: \[
-        \st_{\hi+1} = f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi
-    \]
+    \textbf{Linear, time-homogeneous dynamics}: for each timestep $h \in [H]$,
+    \begin{align*}
+        \st_{\hi+1} &= f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi \\
+        \text{where } w_\hi &\sim \mathcal{N}(0, \sigma^2 I).
+    \end{align*}
+    Here, $w_\hi$ is a spherical Gaussian \textbf{noise term} that makes the state transitions random.
+    Setting $\sigma = 0$ gives us \textbf{deterministic} state transitions.
+    We will find that the optimal policy actually \emph{does not depend on the noise}, although the optimal value function and Q-function do.
 
     \noindent \textbf{Upward-curved quadratic, time-homogeneous cost function}:
     % TODO Link to that video in the multivariable calculus series
@@ -144,14 +149,11 @@ Let us consider \emph{linear dynamics} and an \emph{upward-curved quadratic cost
         c(\st_\hi, \act_\hi) = \begin{cases}
             \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi & \hi < \hor \\
             \st_\hi^\top Q \st_\hi                            & \hi = \hor
-        \end{cases}
+        \end{cases}.
     \]
     We require $Q$ and $R$ to both be positive definite matrices so that $c$ has a well-defined unique minimum. We can furthermore assume without loss of generality that they are both symmetric (see exercise below).
 
     % Intuitively, the cost function punishes states and actions that are far away from the origin (i.e. both the state and action are zero vectors). More generally, we'll want to replace the origin with a \emph{goal} state and action $(\st^\star, \act^\star)$. This can easily be done by replacing $\st_\hi$ with $(\st_\hi - \st^\star)$ and $\act_\hi$ with $(\act_\hi - \act^\star)$ in the expression above.
-
-
-    \noindent \textbf{Spherical Gaussian noise:} \[ w_\hi \sim \mathcal{N}(0, \sigma^2 I) \quad \forall \hi \in [H] \]
 
     \noindent This results in the LQR optimization problem:
     \begin{align*}
@@ -239,18 +241,18 @@ These will be instrumental in constructing the optimal policy via \textbf{dynami
 
 \section{Optimality and the Riccati Equation} \label{sec:optimal_lqr}
 
-In this section, we'll compute the optimal value function $V^\star_h$, Q-function $Q^\star_h$, and policy $\pi^\star_h$ in the LQR setting using \textbf{dynamic programming} in a very similar way to the DP algorithms in the MDP setting \eqref{sec:dp}:
+In this section, we'll compute the optimal value function $\Vopt_h$, Q-function $\Qopt_h$, and policy $\pi^\star_h$ in the LQR setting \eqref{df:lqr} using \textbf{dynamic programming} in a very similar way to the DP algorithms in the MDP setting \eqref{sec:dp}:
 \begin{enumerate}
     \item We'll compute $V_H^\star$ (at the end of the horizon) as our base case.
     \item Then we'll work backwards in time, using $V_{h+1}^\star$ to compute $Q_h^\star$, $\pi_{h}^\star$, and $V_h^\star$.
 \end{enumerate}
-Along the way, we will prove the striking fact that the solution has very simple structure: $V_h^\star$ and $Q^\star_h$ are \emph{upward-curved quadratics} and $\pi_h^\star$ is \emph{linear}.
+Along the way, we will prove the striking fact that the solution has very simple structure: $V_h^\star$ and $\Qopt_h$ are \emph{upward-curved quadratics} and $\pi_h^\star$ is \emph{linear} and furthermore does not depend on the noise!
 
 \begin{definition}[breakable=false]{Optimal value functions for LQR}{optimal_value_lqr}
     The \textbf{optimal value function} is the one that, at any time and in any state,
     achieves \emph{minimum cost} across \emph{all policies}: \[
         \begin{split}
-            V^\star_\hi(\st) &= \min_{\pi_\hi, \dots, \pi_{\hor-1}} V^\pi_\hi(\st) \\
+            \Vopt_\hi(\st) &= \min_{\pi_\hi, \dots, \pi_{\hor-1}} V^\pi_\hi(\st) \\
             &= \min_{\pi_{\hi}, \dots, \pi_{\hor-1}} \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \\
                 &\hspace{8em} \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \bigg] \\
         \end{split}
@@ -260,7 +262,7 @@ Along the way, we will prove the striking fact that the solution has very simple
 \begin{theorem}{Optimal value function in LQR is a upward-curved quadratic}{optimal_value_lqr_quadratic}
     At each timestep $h \in [H]$,
     \[
-        V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi
+        \Vopt_\hi(\st) = \st^\top P_\hi \st + p_\hi
     \]
     for some symmetric positive definite matrix $P_\hi \in \R^{n_\st \times n_\st}$ and vector $p_\hi \in \R^{n_\st}$.
 \end{theorem}
@@ -283,35 +285,35 @@ Along the way, we will prove the striking fact that the solution has very simple
 % it turns out that the optimal policy has special structure!
 
 
-\textbf{Base case:} At the final timestep, there are no possible actions to take, and so $V^\star_\hor(\st) = c(\st) = \st^\top Q \st$. Thus $V_\hor^\star(\st) = \st^\top P_\hi \st + p_\hi$ where $P_\hor = Q$ and $p_\hor$ is the zero vector.
+\textbf{Base case:} At the final timestep, there are no possible actions to take, and so $\Vopt_\hor(\st) = c(\st) = \st^\top Q \st$. Thus $V_\hor^\star(\st) = \st^\top P_\hi \st + p_\hi$ where $P_\hor = Q$ and $p_\hor$ is the zero vector.
 
-\textbf{Inductive hypothesis:} We seek to show that the inductive step holds for both theorems: If $V^\star_{\hi+1}(\st)$ is a upward-curved quadratic, then $V^\star_\hi(\st)$ must also be a upward-curved quadratic, and $\pi^\star_\hi(\st)$ must be linear. We'll break this down into the following steps:
+\textbf{Inductive hypothesis:} We seek to show that the inductive step holds for both theorems: If $\Vopt_{\hi+1}(\st)$ is a upward-curved quadratic, then $\Vopt_\hi(\st)$ must also be a upward-curved quadratic, and $\pi^\star_\hi(\st)$ must be linear. We'll break this down into the following steps:
 \begin{steps}
-    \item Show that $Q^\star_\hi(\st, \act)$ is a upward-curved quadratic (in both $\st$ and $\act$).
-    \item Derive the optimal policy $\pi^\star_\hi(\st) = \arg \min_\act Q^\star_\hi(\st, \act)$ and show that it's linear.
-    \item Show that $V^\star_\hi(\st)$ is a upward-curved quadratic.
+    \item Show that $\Qopt_\hi(\st, \act)$ is a upward-curved quadratic (in both $\st$ and $\act$).
+    \item Derive the optimal policy $\pi^\star_\hi(\st) = \arg \min_\act \Qopt_\hi(\st, \act)$ and show that it's linear.
+    \item Show that $\Vopt_\hi(\st)$ is a upward-curved quadratic.
 \end{steps}
 % TODO refer to (This proof is nearly identical to the MDP setting.)
 % This is essentially the same proof that we wrote in the finite-horizon MDP setting,
 % except now the state and action are \emph{continuous} instead of finite.
 
 We first assume the inductive hypothesis that our theorems are true at time $\hi+1$. That is,
-\[ V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \S. \]
+\[ \Vopt_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \S. \]
 
-\textbf{Step 1.} We aim to show that $Q^\star_\hi(\st)$ is a upward-curved quadratic.
-Recall that the definition of $Q^\star_\hi : \S \times \A \to \R$ is \[
-    Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} [V^\star_{\hi+1}(\st')].
+\textbf{Step 1.} We aim to show that $\Qopt_\hi(\st)$ is a upward-curved quadratic.
+Recall that the definition of $\Qopt_\hi : \S \times \A \to \R$ is \[
+    \Qopt_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} [\Vopt_{\hi+1}(\st')].
 \]
 Recall $c(\st, \act) = \st^\top Q \st + \act^\top R \act$. Let's consider the average value
 over the next timestep. The only randomness in the dynamics comes from the noise
 $w_{\hi+1} \sim \cN(0, \sigma^2 I)$, so we can write out this expected value as:
 \begin{align*}
-            & \E_{\st'} [V^\star_{\hi+1}(\st')]                                                                                                         \\
-    {} = {} & \E_{w_{\hi+1}} [V^\star_{\hi+1}(A \st + B \act + w_{\hi+1})]                                             &  & \text{definition of } f     \\
+            & \E_{\st'} [\Vopt_{\hi+1}(\st')]                                                                                                         \\
+    {} = {} & \E_{w_{\hi+1}} [\Vopt_{\hi+1}(A \st + B \act + w_{\hi+1})]                                             &  & \text{definition of } f     \\
     {} = {} & \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. &  & \text{inductive hypothesis}
 \end{align*}
 Summing and combining like terms, we get \begin{align*}
-    Q^\star_\hi(\st, \act) & = \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
+    \Qopt_\hi(\st, \act) & = \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
                            & = \st^\top (Q + A^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act                       \\
                            & \qquad + \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] + p_{\hi+1}.
 \end{align*}
@@ -330,12 +332,12 @@ Thus, the only terms left are the ones on the diagonal, so the sum of these can
 be expressed as the trace of $\sigma^2 P_{\hi+1}$: \[
     \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] = \tr(\sigma^2 P_{\hi+1}).
 \]
-Substituting this back into the expression for $Q^\star_\hi$, we have:
+Substituting this back into the expression for $\Qopt_\hi$, we have:
 
 \begin{equation}
     \boxed{
         \begin{aligned}
-            Q^\star_\hi(\st, \act) & = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
+            \Qopt_\hi(\st, \act) & = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
             + 2\st^\top A^\top P_{\hi+1} B \act                                                                        \\
                                    & \qquad + \tr(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
         \end{aligned}
@@ -352,14 +354,14 @@ recall that in our definition of LQR,
 we assumed that $R$ is SPD (see \autoref{df:lqr}).
 Also note that since $P_{\hi+1}$ is SPD (by the inductive hypothesis), so too must be $B^\top P_{\hi+1} B$. (If this isn't clear, try proving it as an exercise.)
 Since the sum of two SPD matrices is also SPD, we have that $R + B^\top P_{\hi+1} B$ is SPD,
-and so $Q^\star_\hi$ is indeed a upward-curved quadratic with respect to $\act$.
+and so $\Qopt_\hi$ is indeed a upward-curved quadratic with respect to $\act$.
 
 \textbf{Step 2.} Now we aim to show that $\pi^\star_\hi$ is linear.
-Since $Q^\star_\hi$ is a upward-curved quadratic, finding its minimum over $\act$ is easy:
+Since $\Qopt_\hi$ is a upward-curved quadratic, finding its minimum over $\act$ is easy:
 we simply set the gradient with respect to $\act$ equal to zero and solve for $\act$.
 First, we calculate the gradient:
 \begin{align*}
-    \nabla_\act Q^\star_\hi(\st, \act) & = \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
+    \nabla_\act \Qopt_\hi(\st, \act) & = \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
                                        & = 2 (R + B^\top P_{\hi+1} B) \act + 2 (\st^\top A^\top P_{\hi+1} B)^\top
 \end{align*}
 Setting this to zero, we get \begin{align}
@@ -374,9 +376,9 @@ where $K_\hi = (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A$. Note that this
 
 \textbf{Step 3.} To complete our inductive proof, we must show that the
 inductive hypothesis is true at time $\hi$; that is, we must prove that
-$V^\star_\hi(\st)$ is a upward-curved quadratic.
-Using the identity $V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))$, we have: \begin{align*}
-    V^\star_\hi(\st) & = Q^\star_\hi(\st, \pi^\star(\st))                                                                \\
+$\Vopt_\hi(\st)$ is a upward-curved quadratic.
+Using the identity $\Vopt_\hi(\st) = \Qopt_\hi(\st, \pi^\star(\st))$, we have: \begin{align*}
+    \Vopt_\hi(\st) & = \Qopt_\hi(\st, \pi^\star(\st))                                                                \\
                      & = \st^\top (Q + A^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
     + 2\st^\top A^\top P_{\hi+1} B (-K_\hi \st)                                                                          \\
                      & \qquad + \tr(\sigma^2 P_{\hi+1}) + p_{\hi+1}
@@ -398,13 +400,13 @@ There are several nice properties to note about the Riccati equation:
 \begin{enumerate}
     \item It's defined \textbf{recursively.} Given the dynamics defined by $A$ and $B$, and the state cost matrix $Q$, we can
           recursively calculate $P_\hi$ across all timesteps starting from $P_\hor = Q$.
-    \item $P_\hi$ often appears in calculations surrounding optimality, such as $V^\star_\hi, Q^\star_\hi$, and $\pi^\star_\hi$.
+    \item $P_\hi$ often appears in calculations surrounding optimality, such as $\Vopt_\hi, \Qopt_\hi$, and $\pi^\star_\hi$.
     \item Together with the dynamics given by $A$ and $B$, and the action coefficients $R$, it fully defines the optimal policy.
 \end{enumerate}
 
-Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$, which is a upward-curved quadratic, and this concludes our proof. \qed
+Now we've shown that $\Vopt_\hi(\st) = \st^\top P_\hi \st + p_\hi$, which is a upward-curved quadratic, and this concludes our proof. \qed
 
-In summary, we just demonstrated that at each timestep $\hi \in \hor$, the optimal value function $V^\star_\hi$ and optimal Q-function $Q^\star_\hi$ are both upward-curved quadratics and the optimal policy $\pi^\star_\hi$ is linear.
+In summary, we just demonstrated that at each timestep $\hi \in \hor$, the optimal value function $\Vopt_\hi$ and optimal Q-function $\Qopt_\hi$ are both upward-curved quadratics and the optimal policy $\pi^\star_\hi$ is linear.
 We also showed that all of these quantities can be calculated using a sequence of symmetric matrices $P_0, \dots, P_H$ that can be defined recursively using the Riccati equation \eqref{df:riccati}.
 
 Before we move on to some extensions of LQR, let's consider how the state at time $\hi$ behaves when we act according to this optimal policy.
@@ -539,7 +541,7 @@ Note that this punishes states and actions that are far from the intended trajec
     The infinite-horizon case is just where the deadline is infinitely far away, so you can just behave ``like normal'' all the time!
 
     In the previous chapter, we dealt with such \textbf{infinite-horizon} cases by \emph{discounting} future rewards. This time, we'll take a different approach by considering the limit of a \emph{finite}-horizon task as $\hor \to \infty$.
-    As it turns out, our derivation is exactly analogous to value iteration for MDPs (\autoref{df:value_iteration_pseudocode})!
+    As it turns out, our derivation is exactly analogous to value iteration for MDPs (\autoref{df:value_iteration})!
     However, here the structure is nice enough that we don't need a discount factor $\gamma$ to deal with limits analytically.
     (Note that we must normalize by $1/\hor$ to keep the total cost bounded.)
 
@@ -657,12 +659,12 @@ since for the LQR setup we required that the $Q$ and $R$ matrices were positive 
 
 One way to naively \emph{force} some symmetric matrix $D$ to be positive definite is to set any non-positive eigenvalues to some small positive value $\varepsilon > 0$.
 Recall that any real symmetric matrix $D \in \R^{n \times n}$ has an basis of eigenvectors $u_1, \dots, u_n$ with corresponding eigenvalues $\lambda_1, \dots, \lambda_n$ such that $D u_i = \lambda_i u_i$. Then we can construct the positive definite approximation by \[
-    \widetilde{D} = \left( \sum_{i=1, \dots, n \mid \lambda_i > 0} \lambda_i u_i u_i^\top \right) + \varepsilon I.
+    \tilde{D} = \left( \sum_{i=1, \dots, n \mid \lambda_i > 0} \lambda_i u_i u_i^\top \right) + \varepsilon I.
 \]
 
-\textbf{Exercise:} Convince yourself that $\widetilde{D}$ is indeed positive definite.
+\textbf{Exercise:} Convince yourself that $\tilde{D}$ is indeed positive definite.
 
-Note that Hessian matrices are generally symmetric, so we can apply this process to $Q$ and $R$ to obtain the positive definite approximations $\widetilde{Q}$ and $\widetilde{R}$. Now that we have a upward-curved quadratic approximation to the cost function, and a linear approximation to the state transitions, we can simply apply the time-homogenous LQR methods from \autoref{sec:optimal_lqr}.
+Note that Hessian matrices are generally symmetric, so we can apply this process to $Q$ and $R$ to obtain the positive definite approximations $\tilde{Q}$ and $\tilde{R}$. Now that we have a upward-curved quadratic approximation to the cost function, and a linear approximation to the state transitions, we can simply apply the time-homogenous LQR methods from \autoref{sec:optimal_lqr}.
 
 % TODO: insert figure here for visual intuition, in case people aren't experienced with the calculus
 
