@@ -1311,26 +1311,22 @@ $$
 \begin{aligned}
         V^{\star}(s) - V^{\hat \pi}(s) &= Q^{\star}(s,\pi^\star(s)) - Q^{\hat \pi}(s, \hat \pi(s))\\
         &= [Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s))] + [Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))].
-    
 \end{aligned}
 $$
 
 Let's bound these two quantities separately.
 
-For the first quantity, note that by the definition of $\hat \pi$, we
-have
+For the first quantity, note that by the definition of $\hat \pi$, we have
 
 $$q(s, \hat \pi(s)) \ge q(s,\pi^\star(s)).$$
 
-Let's add
-$q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
+Let's add $q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
 
 $$
 \begin{aligned}
         Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s)) &\le [Q^{\star}(s,\pi^\star(s))- q(s,\pi^\star(s))] + [q(s, \hat \pi(s)) - Q^{\star}(s, \hat \pi(s))] \\
         &= \gamma \E_{s' \sim P(s, \pi^{\star}(s))} [ V^{\star}(s') - v(s') ] + \gamma \E_{s' \sim P(s, \hat \pi(s))} [ v(s') - V^{\star}(s') ] \\
         &\le 2 \gamma \|v - V^{\star}\|_{\infty}.
-    
 \end{aligned}
 $$
 
@@ -1344,7 +1340,6 @@ $$
         \gamma \E_{s'\sim P(s, \hat \pi(s))}\left[ V^\star(s') - V^{\hat \pi}(s') \right] \\
         & \leq 
         \gamma \|V^{\star} - V^{\hat \pi}\|_\infty
-    
 \end{aligned}
 $$
 
@@ -1354,13 +1349,11 @@ $$
 \begin{aligned}
         \|V^\star - V^{\hat \pi}\|_\infty &\le 2 \gamma \|v - V^{\star}\|_{\infty} + \gamma \|V^{\star} - V^{\hat \pi}\|_\infty \\
         \|V^\star - V^{\hat \pi}\|_\infty &\le \frac{2 \gamma \|v - V^{\star}\|_{\infty}}{1-\gamma}.
-    
 \end{aligned}
 $$
 :::
 
-So in order to compensate and achieve
-$\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
+So in order to compensate and achieve $\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
 
 $$\|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.$$
 
@@ -1368,19 +1361,13 @@ This means, using {prf:ref}`iterations_vi`, we need to run value iteration for
 
 $$T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)$$
 
-iterations to achieve an $\epsilon$-accurate estimate of the optimal
-value function.
+iterations to achieve an $\epsilon$-accurate estimate of the optimal value function.
 
 
 (policy_iteration)=
 #### Policy iteration
 
-Can we mitigate this "greedy worsening"? What if instead of
-approximating the optimal value function and then acting greedily by it
-at the very end, we iteratively improve the policy and value function
-*together*? This is the idea behind **policy iteration**. In each step,
-we simply set the policy to act greedily with respect to its own value
-function.
+Can we mitigate this "greedy worsening"? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function *together*? This is the idea behind **policy iteration**. In each step, we simply set the policy to act greedily with respect to its own value function.
 
 ```{code-cell} ipython3
 def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
@@ -1394,13 +1381,7 @@ def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
 policy_iteration(tidy_mdp_inf)
 ```
 
-Although PI appears more complex than VI, we'll use the same contraction
-property
-{prf:ref}`bellman_contraction` to show convergence. This will give
-us the same runtime bound as value iteration and iterative policy
-evaluation for an $\epsilon$-optimal value function
-{prf:ref}`iterations_vi`, although in practice, PI often converges
-much faster.
+Although PI appears more complex than VI, we'll use the same contraction property {prf:ref}`bellman_contraction` to show convergence. This will give us the same runtime bound as value iteration and iterative policy evaluation for an $\epsilon$-optimal value function {prf:ref}`iterations_vi`, although in practice, PI often converges much faster.
 
 ::::{prf:theorem} Policy Iteration runtime and convergence
 :label: pi_iter_analysis
