@@ -35,8 +35,10 @@ sphinx:
   config:
     # duplicate configuration for web and pdf
     latex_elements:
-      pointsize               : 12pt
+      pointsize               : 11pt
       preamble                : |
+        \usepackage{setspace}
+
         \let\P\undefined
         \DeclareMathOperator*{\E}{\mathbb{E}}
         \DeclareMathOperator*{\P}{\mathbb{P}}
@@ -45,6 +47,9 @@ sphinx:
         \newcommand{\st}{s}
         \newcommand{\act}{a}
         \newcommand{\kl}[2]{\mathrm{KL}\left(#1 \parallel #2\right)}
+
+        \renewcommand{\familydefault}{\sfdefault}
+        \onehalfspacing
     mathjax3_config:
       tex:
         macros:

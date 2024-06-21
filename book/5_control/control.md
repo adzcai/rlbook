@@ -380,7 +380,7 @@ $$
 Recall $c(\st, \act) = \st^\top Q \st + \act^\top R \act$. Let's
 consider the average value over the next timestep. The only randomness
 in the dynamics comes from the noise
-$w_{\hi+1} \sim \cN(0, \sigma^2 I)$, so we can write out this expected
+$w_{\hi+1} \sim \mathcal{N}(0, \sigma^2 I)$, so we can write out this expected
 value as: 
 
 $$
