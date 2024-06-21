@@ -4,7 +4,7 @@ For the Harvard undergraduate course **CS/STAT 184: Introduction to Reinforcemen
 
 Run `git clean -iX` to remove extra files not tracked by Git repository.
 
-Written using [Markdown](https://www.markdownguide.org/) and [Jupyter Book](https://jupyterbook.org/en/stable/content/proof.html)
+Written using [Markdown](https://www.markdownguide.org/) and [Jupyter Book](#about-jupyter-book).
 
 ## Overleaf notes
 
@@ -15,7 +15,7 @@ git remote add overleaf https://git.overleaf.com/63e2a72f2cf8b91fc96f46a6
 git push overleaf main:master
 ```
 
-# Contributing
+# Getting started
 
 Create a new [mamba](https://mamba.readthedocs.io/en/latest/index.html) environment (or [conda](https://docs.conda.io/projects/conda/en/stable/) if you prefer):
 
@@ -30,18 +30,20 @@ open book/_build/html/index.html
 
 [_toc.yml](_toc.yml) contains the table of contents.
 
-Some relevant parts of the Jupyter Book documentation and related software:
+## About Jupyter Book
 
-- [Conda environment file](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#create-env-file-manually)
-- [Sphinx](https://www.sphinx-doc.org/en/master/index.html): The (highly extensible) documentation engine that powers Jupyter Book.
-  - [How Jupyter Book and Sphinx relate to one another](https://jupyterbook.org/en/stable/explain/sphinx.html)
-    - "Jupyter Book can be thought of as an opinionated distribution of Sphinx"
-  - Originally uses the [reStructuredText (rst)](https://docutils.sourceforge.io/rst.html) markup language but now supports [MyST Markdown](https://myst-parser.readthedocs.io/en/latest/index.html) (used by Jupyter Book), a superset of [CommonMark](https://commonmark.org/) that supports tables, figures, etc., and especially a powerful system of [directives](https://myst-parser.readthedocs.io/en/latest/syntax/roles-and-directives.html)
-    - [Sphinx Directives](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html)
+[Jupyter Book](https://jupyterbook.org/en/stable/intro.html) is a framework for building books from Jupyter Notebooks. It is essentially a bundle of Sphinx extensions that enable parsing Markdown (of the MyST flavor described below) and running Juypter Notebook code. [Sphinx](https://www.sphinx-doc.org/en/master/index.html) is a popular engine for generating documentation. It is used by many popular software projects (e.g. the [Flask](https://flask.palletsprojects.com) documentation). See [how Jupyter Book and Sphinx relate to one another](https://jupyterbook.org/en/stable/explain/sphinx.html).
+
+[MyST (Markedly Structured Text)](https://myst-parser.readthedocs.io/en/latest/index.html) is a superset of [CommonMark](https://commonmark.org/) that supports tables, figures, etc., and especially a powerful system of [directives](https://myst-parser.readthedocs.io/en/latest/syntax/roles-and-directives.html). These include the original [Sphinx directives](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html) as well as the `code-cell` directive that allows MyST documents to be run as Jupyter notebooks via [JupyText](https://jupytext.readthedocs.io/en/latest/#). For version control purposes, this is much more convenient than storing native Jupyter notebooks. MyST Markdown is not yet supported within the traditional Jupyter interface.
+
+## MyST syntax
+
 - [Math and equations](https://jupyterbook.org/en/stable/content/math.html)
+  - Enclose inline math in dollar signs. `$1 + 2 = 3$`
+  - Use the `math` directive instead of LaTeX `\label`s
 - [Proofs, Theorems, and Algorithms](https://jupyterbook.org/en/stable/content/proof.html)
   - [Sphinx Proof](https://sphinx-proof.readthedocs.io/en/latest/)
-    - Need to use `prf:ref` inline role instead of Markdown reference
+    - To cite an object, use the `prf:ref` inline role instead of Markdown reference
     - Supports `proof`, `theorem`, `axiom`, `lemma`, `definition`, `criterion`, `remark`, `conjecture`, `corollary`, `algorithm`, `example`, `property`, `observation`, `proposition`, `assumption`
   - [Defining TeX macros](https://jupyterbook.org/en/stable/advanced/sphinx.html#defining-tex-macros)
 - [Direct LaTeX Math](https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#direct-latex-math)
@@ -65,6 +67,8 @@ ghp-import -n -p -f book/_build/html
 [Docs](https://jupyterbook.org/en/stable/content/references.html#content-references)
 
 Citations are kept in the [references.bib](./references.bib) file.
+
+I recommend the [MyST-Markdown](https://marketplace.visualstudio.com/items?itemName=ExecutableBookProject.myst-highlight) VS Code extension.
 
 ````md
 (my-label)=

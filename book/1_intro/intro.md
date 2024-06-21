@@ -1,40 +1,20 @@
 # Introduction
 
-Welcome to the study of reinforcement learning! This set of lecture
-notes accompanies the undergraduate course CS/STAT 184 and is intended
-to be a friendly yet rigorous introduction to this active
-subfield of machine learning. Here are some questions you might have
-before embarking on this journey:
+Welcome to the study of reinforcement learning! This set of lecture notes accompanies the undergraduate course [CS/STAT 184](https://shamulent.github.io/CS_Stat184_Fall23.html) taught at Harvard and is intended to be a friendly yet rigorous introduction to this active subfield of machine learning. Here are some questions you might have before embarking on this journey:
 
-**What is reinforcement learning (RL)?** Broadly speaking, RL is a subfield of machine learning that studies how
-an agent can learn to make sequential decisions in an environment.
+**What is reinforcement learning (RL)?** Broadly speaking, RL is a subfield of machine learning that studies how an agent can learn to make sequential decisions in a dynamic environment. It provides a powerful framework for attacking a wide variety of problems, including robotic control, video games and board games, resource management, language modelling, and more. It also provides an interdisciplinary paradigm for studying animal and human behavior. Many of the most stunning results in machine learning, ranging from AlphaGo to ChatGPT, are built on top of RL.
 
-**Why study RL?** RL provides a powerful framework for attacking a wide variety of
-problems, including robotic control, video games and board games,
-resource management, language modelling, and more. It also provides an
-interdisciplinary paradigm for studying animal and human behavior. Many
-of the most stunning results in machine learning, ranging from AlphaGo
-to ChatGPT, are built on top of RL.
-
-**Is this book for me?** This book assumes familiarity with multivariable calculus, linear
-algebra, and probability. For Harvard undergraduates, this would be
-fulfilled by Math 21a, Math 21b, and Stat 110. Stat 111 is strongly
-recommended but not required. Here is a non-comprehensive list of topics
-you should be familiar with before starting this book:
+**Is this book for me?** This book assumes familiarity with multivariable calculus, linear algebra, and probability. For Harvard undergraduates, this would be fulfilled by Math 21a, Math 21b, and Stat 110. Stat 111 is strongly recommended but not required. Here is a non-comprehensive list of topics you should be familiar with before starting this book:
 
 -   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
     inversion, eigenvalues and eigenvectors, and the Gram-Schmidt
     process.
-
 -   **Multivariable Calculus:** Partial derivatives, gradients,
     directional derivatives, the chain rule, Taylor series.
-
 -   **Probability:** Random variables, probability distributions,
-    expectation, the law of iterated expectations (Adam's rule), variance, covariance,
-    conditional probability, Bayes's rule, and the law of total probability.
+    expectation and variance, the law of iterated expectations (Adam's rule), covariance, conditional probability, Bayes's rule, and the law of total probability.
 
-How does reinforcement learning differ from other machine learning paradigms?
-Here is a list of comparisons:
+**How does reinforcement learning differ from other machine learning paradigms?** Machine learning is often broken down into the three subcategories of supervised learning, unsupervised learning, and RL.
 
 -   **Supervised learning.** Supervised learning concerns itself with
     learning a mapping from inputs to outputs (e.g. image
@@ -84,7 +64,7 @@ finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \math
 ## Notation
 
 We will use the following notation throughout the book. This notation is
-inspired by Sutton and Barto and AJKS .
+inspired by {cite}`sutton_reinforcement_2018` and {cite}`agarwal_reinforcement_2022`.
 
 | Notation      | Definition                |
 |:-------------:|:--------------------------|
@@ -103,24 +83,17 @@ inspired by Sutton and Barto and AJKS .
 
 ## Challenges of reinforcement learning
 
-**Exploration-exploitation tradeoff.** Should the agent try a new action or stick with the action that it knows
-is good?
+**Exploration-exploitation tradeoff.** Should the agent try new actions or choose actions that it already believes to be good?
 
-**Prediction.** The agent might want to predict the value of a state or state-action
-pair.
+**Prediction.** The agent might want to predict the **value** of a state or state-action pair.
 
-**Policy computation (control).** In a complex environment, even if the dynamics are known, it can still
-be challenging to compute the best policy.
+**Policy computation (control).** In a complex environment, even if the dynamics are known, it can still be challenging to compute the best policy.
 
 
 ## Programming
 
 This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html). It uses [Python 3.11](https://docs.python.org/3.11/contents.html).
 
-It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for
-numerical computing.
-JAX was chosen for the clarity of its functional style
-and due to its extensive RL ecosystem.
+It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for numerical computing. JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem.
 
-We use the standard [Gymnasium](https://gymnasium.farama.org/) library for
-interfacing with RL environments.
+We use the standard [Gymnasium](https://gymnasium.farama.org/) library for interfacing with RL environments.

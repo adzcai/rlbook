@@ -13,11 +13,16 @@ only_build_toc_files          : true
 
 html:
   home_page_in_navbar         : false
+  comments:
+    utterances:
+      repo: "adzcai/cs-stat-184-notes"
 
 notebook_interface            : "notebook"
 
 repository:
   url                         : https://github.com/adzcai/cs-stat-184-notes
+  path_to_book                : book
+  branch                      : main
 
 binder:
   binderhub_url               : "https://mybinder.org"
