@@ -14,51 +14,85 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "adzcai/cs-stat-184-notes");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"tex": {"macros": {"E": "\\mathop{\\mathbb{E}}", "P": "\\mathop{\\mathbb{P}}", "hi": "h", "hor": "H", "st": "s", "act": "a"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '4_fitted_dp/fitted_dp';</script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -74,27 +108,23 @@
 
   
   
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -116,8 +146,13 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
     </header>
   
 
@@ -177,7 +212,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">4. Fitted dynamic programming algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../5_control/control.html">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">6. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_pg/pg.html">6. Policy Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">7. Bibliography</a></li>
 </ul>
 
     </div>
@@ -193,7 +229,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -202,14 +238,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -303,9 +339,9 @@ document.write(`
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -330,8 +366,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-risk-minimization">4.2. Empirical risk minimization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">4.3. Fitted value iteration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supervised-learning">4.4. Supervised learning</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.4.1. Linear regression</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.4.2. Neural networks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">Linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">Neural networks</a></li>
 </ul>
 </li>
 </ul>
@@ -417,6 +453,12 @@ document.write(`
 </div>
 </div>
 </details>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/h1/xqzrgt6166bfw5ds8psb0s4r0000gn/T/ipykernel_42715/2036372066.py:4: DeprecationWarning: jax.tree_map is deprecated: use jax.tree.map (jax v0.4.25 or newer) or jax.tree_util.tree_map (any JAX version).
+  from jax import grad, vmap, tree_map
+</pre></div>
+</div>
+</div>
 </div>
 <section id="introduction">
 <h2><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">4.1. </span>Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
@@ -430,8 +472,9 @@ which attempt to learn the optimal value function (and the optimal policy) from 
 </section>
 <section id="empirical-risk-minimization">
 <span id="erm"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">4.2. </span>Empirical risk minimization</a><a class="headerlink" href="#empirical-risk-minimization" title="Link to this heading">#</a></h2>
-<p>The <strong>supervised learning</strong> task is as follows: We seek to learn the relationship
-between some “input variables” <span class="math notranslate nohighlight">\(x\)</span> and some output variable <span class="math notranslate nohighlight">\(y\)</span>.
+<p>The <strong>supervised learning</strong> task is as follows:
+We seek to learn the relationship between some input variables <span class="math notranslate nohighlight">\(x\)</span> and some output variable <span class="math notranslate nohighlight">\(y\)</span>
+(drawn from their joint distribution).
 Precisely, we want to find a function <span class="math notranslate nohighlight">\(\hat f : x \mapsto y\)</span> that minimizes the
 <em>squared error</em> of the prediction:</p>
 <div class="math notranslate nohighlight">
@@ -491,7 +534,7 @@ This approach is called <strong>empirical risk minimization</strong>.</p>
 <p>Let us apply ERM to the RL problem of computing the optimal policy / value function.</p>
 <p>How did we compute the optimal value function in MDPs with <em>finite</em> state and action spaces?</p>
 <ul class="simple">
-<li><p>In a <a class="reference internal" href="../3_mdps/mdps.html#id1"><span class="std std-ref">finite-horizon MDP</span></a>, we can use <a class="reference internal" href="../3_mdps/mdps.html#pi_star_dp">dynamic programming</a>, working backwards from the end of the time horizon, to compute the optimal value function exactly.</p></li>
+<li><p>In a <a class="reference internal" href="../3_mdps/mdps.html#id2"><span class="std std-ref">finite-horizon MDP</span></a>, we can use <a class="reference internal" href="../3_mdps/mdps.html#pi_star_dp">dynamic programming</a>, working backwards from the end of the time horizon, to compute the optimal value function exactly.</p></li>
 <li><p>In an <a class="reference internal" href="../3_mdps/mdps.html#infinite-horizon-mdps"><span class="std std-ref">infinite-horizon MDP</span></a>, we can use <a class="reference internal" href="../3_mdps/mdps.html#value-iteration"><span class="std std-ref">value iteration</span></a>, which iterates the Bellman optimality operator <a class="reference internal" href="../3_mdps/mdps.html#equation-bellman-optimality-operator">(3.7)</a> to approximately compute the optimal value function.</p></li>
 </ul>
 <p>Our existing approaches represent the value function, and the MDP itself,
@@ -540,62 +583,43 @@ Let us indicate the trajectory index in the superscript, so that</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|                                                                                           | 0/100 [00:00&lt;?, ?it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|                                                                                                                                   | 0/100 [00:00&lt;?, ?it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1%|▊                                                                                  | 1/100 [00:00&lt;00:22,  4.44it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 27%|████████████████████████████████▋                                                                                        | 27/100 [00:00&lt;00:00, 269.78it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 14%|███████████▍                                                                      | 14/100 [00:00&lt;00:01, 53.10it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 74%|█████████████████████████████████████████████████████████████████████████████████████████▌                               | 74/100 [00:00&lt;00:00, 354.34it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 28%|██████████████████████▉                                                           | 28/100 [00:00&lt;00:00, 82.57it/s]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 42%|██████████████████████████████████▍                                               | 42/100 [00:00&lt;00:00, 99.39it/s]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 57%|██████████████████████████████████████████████▏                                  | 57/100 [00:00&lt;00:00, 113.17it/s]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 72%|██████████████████████████████████████████████████████████▎                      | 72/100 [00:00&lt;00:00, 123.53it/s]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 86%|█████████████████████████████████████████████████████████████████████▋           | 86/100 [00:00&lt;00:00, 127.26it/s]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|████████████████████████████████████████████████████████████████████████████████| 100/100 [00:01&lt;00:00, 112.20it/s]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|█████████████████████████████████████████████████████████████████████████████████| 100/100 [00:01&lt;00:00, 99.30it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 100/100 [00:00&lt;00:00, 366.04it/s]
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Transition(s=array([-0.00767412,  1.4020356 , -0.77731264, -0.39489663,  0.00889908,
-         0.17607279,  0.        ,  0.        ], dtype=float32), a=2, r=0.4116697539428856),
- Transition(s=array([-0.015343  ,  1.3934507 , -0.7757339 , -0.3816226 ,  0.0176519 ,
-         0.17507371,  0.        ,  0.        ], dtype=float32), a=3, r=0.009271240724076507),
- Transition(s=array([-0.02292128,  1.3842582 , -0.7643686 , -0.40865484,  0.02411738,
-         0.12932143,  0.        ,  0.        ], dtype=float32), a=3, r=0.11140747346857552),
- Transition(s=array([-0.03041582,  1.3744599 , -0.75385344, -0.43555325,  0.02847344,
-         0.08712948,  0.        ,  0.        ], dtype=float32), a=3, r=0.3130673700277964),
- Transition(s=array([-0.03782635,  1.3640672 , -0.7433239 , -0.4619387 ,  0.03071316,
-         0.04479855,  0.        ,  0.        ], dtype=float32), a=0, r=-0.5848429904064858)]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Transition(s=array([-0.00767412,  1.4020356 , -0.77731264, -0.3948966 ,  0.00889908,
+         0.17607284,  0.        ,  0.        ], dtype=float32), a=0, r=-1.0289857267201228),
+ Transition(s=array([-0.01534882,  1.3925751 , -0.7762624 , -0.42053893,  0.0175994 ,
+         0.17402385,  0.        ,  0.        ], dtype=float32), a=2, r=0.5966971747277625),
+ Transition(s=array([-0.02291803,  1.3831196 , -0.7662615 , -0.42038685,  0.02683624,
+         0.18475416,  0.        ,  0.        ], dtype=float32), a=3, r=-0.1699903399218374),
+ Transition(s=array([-0.03040352,  1.3730592 , -0.75575364, -0.447277  ,  0.03396181,
+         0.1425242 ,  0.        ,  0.        ], dtype=float32), a=1, r=-2.0553392532472103),
+ Transition(s=array([-0.03796244,  1.3623978 , -0.76495737, -0.47407132,  0.04292942,
+         0.1793688 ,  0.        ,  0.        ], dtype=float32), a=1, r=-2.249529602313912)]
 </pre></div>
 </div>
 </div>
 </div>
-<p>We want to <em>learn</em> the optimal value function (or Q-function) from this dataset.
+<p>Can we view the dataset of trajectories as a “labelled dataset” in order to apply supervised learning to approximate the optimal Q-function? Yes!
 Recall that we can characterize the optimal Q-function using the <a class="reference internal" href="../3_mdps/mdps.html#bellman_consistency_optimal">Bellman optimality equations</a>,
 which don’t depend on an actual policy:</p>
 <div class="math notranslate nohighlight">
 \[
 Q_\hi^\star(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [\max_{a'} Q_{\hi+1}^\star(s', a')]
 \]</div>
-<p>Can we view the dataset of trajectories as a “labelled dataset” in order to apply supervised learning to approximate the optimal Q-function? Yes!
-We can think of the arguments to the Q-function – i.e. the current state, action, and timestep <span class="math notranslate nohighlight">\(\hi\)</span> –
+<p>We can think of the arguments to the Q-function – i.e. the current state, action, and timestep <span class="math notranslate nohighlight">\(\hi\)</span> –
 as the inputs <span class="math notranslate nohighlight">\(x\)</span>, and the r.h.s. of the above equation as the label <span class="math notranslate nohighlight">\(f(x)\)</span>. Note that the r.h.s. can also be expressed as a <strong>conditional expectation</strong>:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -651,17 +675,17 @@ x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \ma
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>states: [[-0.00767412  1.4020356  -0.77731264 -0.39489663  0.00889908  0.17607279
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>states: [[-0.00767412  1.4020356  -0.77731264 -0.3948966   0.00889908  0.17607284
    0.          0.        ]
- [-0.015343    1.3934507  -0.7757339  -0.3816226   0.0176519   0.17507371
+ [-0.01534882  1.3925751  -0.7762624  -0.42053893  0.0175994   0.17402385
    0.          0.        ]
- [-0.02292128  1.3842582  -0.7643686  -0.40865484  0.02411738  0.12932143
+ [-0.02291803  1.3831196  -0.7662615  -0.42038685  0.02683624  0.18475416
    0.          0.        ]
- [-0.03041582  1.3744599  -0.75385344 -0.43555325  0.02847344  0.08712948
+ [-0.03040352  1.3730592  -0.75575364 -0.447277    0.03396181  0.1425242
    0.          0.        ]
- [-0.03782635  1.3640672  -0.7433239  -0.4619387   0.03071316  0.04479855
+ [-0.03796244  1.3623978  -0.76495737 -0.47407132  0.04292942  0.1793688
    0.          0.        ]]
-actions: [2 3 3 3 0]
+actions: [0 2 3 1 1]
 timesteps: [0 1 2 3 4]
 </pre></div>
 </div>
@@ -674,7 +698,7 @@ timesteps: [0 1 2 3 4]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([ 0.41166976,  0.00927124,  0.11140747,  0.31306738, -0.584843  ],      dtype=float32)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([-1.0289857 ,  0.59669715, -0.16999035, -2.0553393 , -2.2495296 ],      dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -857,7 +881,7 @@ the gradient descent algorithm updates the parameters according to the rule</p>
 </div>
 </div>
 <section id="linear-regression">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">4.4.1. </span>Linear regression</a><a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Linear regression</a><a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h3>
 <p>In linear regression, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is linear in the parameters:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -879,7 +903,7 @@ i.e. <span class="math notranslate nohighlight">\(\widetilde x = \phi(x)\)</span
 </div>
 </section>
 <section id="neural-networks">
-<h3><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">4.4.2. </span>Neural networks</a><a class="headerlink" href="#neural-networks" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Neural networks</a><a class="headerlink" href="#neural-networks" title="Link to this heading">#</a></h3>
 <p>In neural networks, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is a composition of linear functions (represented by matrices <span class="math notranslate nohighlight">\(W_i\)</span>) and non-linear activation functions (denoted by <span class="math notranslate nohighlight">\(\sigma\)</span>):</p>
 <div class="math notranslate nohighlight">
 \[
@@ -896,7 +920,7 @@ for computing the gradient of the empirical risk with respect to the parameters.
 Essentially, the hierarchical structure of the neural network, i.e. computing the
 output of the network as a composition of functions, allows us to use the chain rule
 to compute the gradient of the output with respect to the parameters of each layer.</p>
-<p><span id="id2">[<a class="reference internal" href="../bibliography.html#id3" title="Michael A. Nielsen. Neural Networks and Deep Learning. Determination Press, 2015. URL: http://neuralnetworksanddeeplearning.com/ (visited on 2024-03-10).">Nielsen, 2015</a>]</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
+<p><span id="id2">[<a class="reference internal" href="../bibliography.html#id5" title="Michael A. Nielsen. Neural Networks and Deep Learning. Determination Press, 2015.">Nielsen, 2015</a>]</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
 </section>
 </section>
 </section>
@@ -928,7 +952,7 @@ to compute the gradient of the output with respect to the parameters of each lay
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
     <a class="left-prev"
@@ -969,8 +993,8 @@ to compute the gradient of the output with respect to the parameters of each lay
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-risk-minimization">4.2. Empirical risk minimization</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">4.3. Fitted value iteration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supervised-learning">4.4. Supervised learning</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.4.1. Linear regression</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.4.2. Neural networks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">Linear regression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">Neural networks</a></li>
 </ul>
 </li>
 </ul>
@@ -1021,8 +1045,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
 
   <footer class="bd-footer">
   </footer>

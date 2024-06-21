@@ -14,51 +14,85 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "adzcai/cs-stat-184-notes");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"tex": {"macros": {"E": "\\mathop{\\mathbb{E}}", "P": "\\mathop{\\mathbb{P}}", "hi": "h", "hor": "H", "st": "s", "act": "a"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '2_bandits/bandits';</script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -74,27 +108,23 @@
 
   
   
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -116,8 +146,13 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
     </header>
   
 
@@ -177,7 +212,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../4_fitted_dp/fitted_dp.html">4. Fitted dynamic programming algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../5_control/control.html">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">6. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6_pg/pg.html">6. Policy Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">7. Bibliography</a></li>
 </ul>
 
     </div>
@@ -193,7 +229,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -202,14 +238,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -303,9 +339,9 @@ document.write(`
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -330,17 +366,17 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">2.2. Pure exploration (random guessing)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">2.3. Pure greedy</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">2.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">2.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">2.4.1.1. Exploration phase.</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">2.4.1.2. Exploitation phase.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">ETC regret analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">Exploration phase.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">Exploitation phase.</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">2.5. Epsilon-greedy</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">2.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">2.6.1. UCB regret analysis</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">2.6.2. Lower bound on regret (intuition)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">UCB regret analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">Lower bound on regret (intuition)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">2.7. Thompson sampling and Bayesian bandits</a></li>
@@ -630,17 +666,17 @@ variance of the reward estimates by pulling each arm
 <p>(Note that the “pure greedy” strategy is just the special case where
 <span class="math notranslate nohighlight">\(N_{\text{explore}}= 1\)</span>.)</p>
 <section id="etc-regret-analysis">
-<span id="id2"></span><h3><span class="section-number">2.4.1. </span>ETC regret analysis<a class="headerlink" href="#etc-regret-analysis" title="Link to this heading">#</a></h3>
+<span id="id2"></span><h3>ETC regret analysis<a class="headerlink" href="#etc-regret-analysis" title="Link to this heading">#</a></h3>
 <p>Let’s analyze the expected regret of this strategy by splitting it up
 into the exploration and exploitation phases.</p>
 <section id="exploration-phase">
-<h4><span class="section-number">2.4.1.1. </span>Exploration phase.<a class="headerlink" href="#exploration-phase" title="Link to this heading">#</a></h4>
+<h4>Exploration phase.<a class="headerlink" href="#exploration-phase" title="Link to this heading">#</a></h4>
 <p>This phase takes <span class="math notranslate nohighlight">\(N_{\text{explore}}K\)</span> timesteps. Since at each step we
 incur at most <span class="math notranslate nohighlight">\(1\)</span> regret, the total regret is at most
 <span class="math notranslate nohighlight">\(N_{\text{explore}}K\)</span>.</p>
 </section>
 <section id="exploitation-phase">
-<h4><span class="section-number">2.4.1.2. </span>Exploitation phase.<a class="headerlink" href="#exploitation-phase" title="Link to this heading">#</a></h4>
+<h4>Exploitation phase.<a class="headerlink" href="#exploitation-phase" title="Link to this heading">#</a></h4>
 <p>This will take a bit more effort. We’ll prove that for any total time
 <span class="math notranslate nohighlight">\(T\)</span>, we can choose <span class="math notranslate nohighlight">\(N_{\text{explore}}\)</span> such that with arbitrarily high
 probability, the regret is sublinear. We know the regret from the
@@ -848,7 +884,7 @@ uncertain about the arm, and we’d choose it for <em>exploration</em>.</p></li>
 <p>As desired, this explores in a smarter, <em>adaptive</em> way compared to the
 previous algorithms. Does it achieve lower regret?</p>
 <section id="ucb-regret-analysis">
-<h3><span class="section-number">2.6.1. </span>UCB regret analysis<a class="headerlink" href="#ucb-regret-analysis" title="Link to this heading">#</a></h3>
+<h3>UCB regret analysis<a class="headerlink" href="#ucb-regret-analysis" title="Link to this heading">#</a></h3>
 <p>First we’ll bound the regret incurred at each timestep. Then we’ll bound
 the <em>total</em> regret across timesteps.</p>
 <p>For the sake of analysis, we’ll use a slightly looser bound that applies
@@ -901,7 +937,7 @@ follows:</p>
 <span class="math notranslate nohighlight">\(\sqrt{K}\)</span> and show <span class="math notranslate nohighlight">\(\text{Regret}_T = \tilde O(\sqrt{TK})\)</span>.</p>
 </section>
 <section id="lower-bound-on-regret-intuition">
-<h3><span class="section-number">2.6.2. </span>Lower bound on regret (intuition)<a class="headerlink" href="#lower-bound-on-regret-intuition" title="Link to this heading">#</a></h3>
+<h3>Lower bound on regret (intuition)<a class="headerlink" href="#lower-bound-on-regret-intuition" title="Link to this heading">#</a></h3>
 <p>Is it possible to do better than <span class="math notranslate nohighlight">\(\Omega(\sqrt{T})\)</span> in general? In fact,
 no! We can show that any algorithm must incur <span class="math notranslate nohighlight">\(\Omega(\sqrt{T})\)</span> regret
 in the worst case. We won’t rigorously prove this here, but the
@@ -979,7 +1015,7 @@ distribution upon observing a reward, rather than having to recompute
 the entire posterior distribution from scratch.</p>
 </section>
 </div><p>It turns out that asymptotically, Thompson sampling is optimal in the
-following sense. <span id="id3">[<a class="reference internal" href="../bibliography.html#id2" title="T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. Advances in Applied Mathematics, 6(1):4–22, 1985. URL: https://www.sciencedirect.com/science/article/pii/0196885885900028 (visited on 2023-10-23), doi:10.1016/0196-8858(85)90002-8.">Lai and Robbins, 1985</a>]</span> prove an
+following sense. <span id="id3">[<a class="reference internal" href="../bibliography.html#id4" title="T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. Advances in Applied Mathematics, 6(1):4–22, March 1985. doi:10.1016/0196-8858(85)90002-8.">Lai and Robbins, 1985</a>]</span> prove an
 <em>instance-dependent</em> lower bound that says for <em>any</em> bandit algorithm,</p>
 <div class="math notranslate nohighlight">
 \[\liminf_{T \to \infty} \frac{\E[N_T^k]}{\ln(T)} \ge \frac{1}{\text{KL}(\mu^k \parallel \mu^\star)}\]</div>
@@ -1021,7 +1057,7 @@ the <em>constant factor</em> is optimal as well.</p>
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
     <a class="left-prev"
@@ -1062,17 +1098,17 @@ the <em>constant factor</em> is optimal as well.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">2.2. Pure exploration (random guessing)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">2.3. Pure greedy</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">2.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">2.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">2.4.1.1. Exploration phase.</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">2.4.1.2. Exploitation phase.</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">ETC regret analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">Exploration phase.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">Exploitation phase.</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">2.5. Epsilon-greedy</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">2.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">2.6.1. UCB regret analysis</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">2.6.2. Lower bound on regret (intuition)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">UCB regret analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">Lower bound on regret (intuition)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">2.7. Thompson sampling and Bayesian bandits</a></li>
@@ -1124,8 +1160,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
 
   <footer class="bd-footer">
   </footer>

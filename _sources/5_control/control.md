@@ -1,6 +1,12 @@
 (lqr_chapter)=
 # Linear Quadratic Regulators
 
+:::{math}
+
+\newcommand{\st}{s}
+\newcommand{\act}{a}
+:::
+
 Up to this point, we have considered decision problems with finitely
 many states and actions. However, in many applications, states and
 actions may take on continuous values. For example, consider autonomous
@@ -172,7 +178,7 @@ us to *locally approximate* more complex setups using *Taylor
 approximations*.
 
 :::{prf:definition} The linear quadratic regulator
-:label: lqr
+:label: lqr_definition
 
 **Linear, time-homogeneous dynamics**: for each timestep $h \in [H]$,
 
@@ -280,7 +286,7 @@ $$
 
 In this section, we'll compute the optimal value function $V^\star_h$,
 Q-function $Q^\star_h$, and policy $\pi^\star_h$ in the LQR setting
-{prf:ref}`lqr` using
+{prf:ref}`lqr_definition` using
 **dynamic programming** in a very similar way to the DP algorithms [in the MDP setting](eval_dp):
 
 1.  We'll compute $V_H^\star$ (at the end of the horizon) as our base
@@ -502,7 +508,7 @@ $$
  This
 is fairly straightforward: recall that in our definition of LQR, we
 assumed that $R$ is SPD (see
-{prf:ref}`lqr`).
+{prf:ref}`lqr_definition`).
 Also note that since $P_{\hi+1}$ is SPD (by the inductive hypothesis),
 so too must be $B^\top P_{\hi+1} B$. (If this isn't clear, try proving
 it as an exercise.) Since the sum of two SPD matrices is also SPD, we

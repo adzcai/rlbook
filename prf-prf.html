@@ -13,46 +13,80 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "adzcai/cs-stat-184-notes");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -76,27 +110,23 @@
 
   
   
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -118,8 +148,13 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
     </header>
   
 
@@ -181,7 +216,8 @@
 <li class="toctree-l1"><a class="reference internal" href="3_mdps/mdps.html">3. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_fitted_dp/fitted_dp.html">4. Fitted dynamic programming algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_control/control.html">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">6. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_pg/pg.html">6. Policy Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">7. Bibliography</a></li>
 </ul>
 
     </div>
@@ -197,7 +233,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -206,14 +242,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -307,17 +343,22 @@ document.write(`
    <a href="#cap-empirical_risk_minimization"><strong>empirical_risk_minimization</strong></a> | 
    <a href="#cap-epsilon_greedy"><strong>epsilon_greedy</strong></a> | 
    <a href="#cap-finite_mdp"><strong>finite_mdp</strong></a> | 
+   <a href="#cap-fisher_matrix"><strong>fisher_matrix</strong></a> | 
    <a href="#cap-fitted_evaluation"><strong>fitted_evaluation</strong></a> | 
    <a href="#cap-fitted_q_iteration"><strong>fitted_q_iteration</strong></a> | 
    <a href="#cap-greedy_worsen"><strong>greedy_worsen</strong></a> | 
    <a href="#cap-hoeffding"><strong>hoeffding</strong></a> | 
    <a href="#cap-ilqr"><strong>ilqr</strong></a> | 
+   <a href="#cap-importance_sampling"><strong>importance_sampling</strong></a> | 
    <a href="#cap-iterations_vi"><strong>iterations_vi</strong></a> | 
+   <a href="#cap-kld"><strong>kld</strong></a> | 
    <a href="#cap-lemma-18"><strong>lemma-18</strong></a> | 
-   <a href="#cap-lqr"><strong>lqr</strong></a> | 
+   <a href="#cap-lqr_definition"><strong>lqr_definition</strong></a> | 
    <a href="#cap-markov"><strong>markov</strong></a> | 
    <a href="#cap-multi-armed"><strong>multi-armed</strong></a> | 
+   <a href="#cap-natural_simple"><strong>natural_simple</strong></a> | 
    <a href="#cap-nonlinear_control"><strong>nonlinear_control</strong></a> | 
+   <a href="#cap-npg"><strong>npg</strong></a> | 
    <a href="#cap-optimal_control"><strong>optimal_control</strong></a> | 
    <a href="#cap-optimal_greedy"><strong>optimal_greedy</strong></a> | 
    <a href="#cap-optimal_policy_finite"><strong>optimal_policy_finite</strong></a> | 
@@ -325,10 +366,18 @@ document.write(`
    <a href="#cap-optimal_value_lqr"><strong>optimal_value_lqr</strong></a> | 
    <a href="#cap-optimal_value_lqr_quadratic"><strong>optimal_value_lqr_quadratic</strong></a> | 
    <a href="#cap-parameterized_empirical_risk_minimization"><strong>parameterized_empirical_risk_minimization</strong></a> | 
+   <a href="#cap-pdl"><strong>pdl</strong></a> | 
+   <a href="#cap-pg_advantage"><strong>pg_advantage</strong></a> | 
+   <a href="#cap-pg_baseline"><strong>pg_baseline</strong></a> | 
+   <a href="#cap-pg_baseline_algorithm"><strong>pg_baseline_algorithm</strong></a> | 
+   <a href="#cap-pg_with_q"><strong>pg_with_q</strong></a> | 
    <a href="#cap-pi_iter_analysis"><strong>pi_iter_analysis</strong></a> | 
    <a href="#cap-pi_star_dp"><strong>pi_star_dp</strong></a> | 
    <a href="#cap-policy"><strong>policy</strong></a> | 
+   <a href="#cap-ppo"><strong>ppo</strong></a> | 
    <a href="#cap-regret"><strong>regret</strong></a> | 
+   <a href="#cap-reinforce_pg"><strong>reinforce_pg</strong></a> | 
+   <a href="#cap-remark-5"><strong>remark-5</strong></a> | 
    <a href="#cap-riccati"><strong>riccati</strong></a> | 
    <a href="#cap-riccati_time_dependent"><strong>riccati_time_dependent</strong></a> | 
    <a href="#cap-thompson_sampling"><strong>thompson_sampling</strong></a> | 
@@ -340,6 +389,8 @@ document.write(`
    <a href="#cap-tidy_traj"><strong>tidy_traj</strong></a> | 
    <a href="#cap-time_dependent_lqr"><strong>time_dependent_lqr</strong></a> | 
    <a href="#cap-trajectory"><strong>trajectory</strong></a> | 
+   <a href="#cap-trpo"><strong>trpo</strong></a> | 
+   <a href="#cap-trpo_implement"><strong>trpo_implement</strong></a> | 
    <a href="#cap-ucb"><strong>ucb</strong></a> | 
    <a href="#cap-union_bound"><strong>union_bound</strong></a> | 
    <a href="#cap-value"><strong>value</strong></a> | 
@@ -500,6 +551,14 @@ document.write(`
        <a href="3_mdps/mdps.html#finite_mdp"><code class="xref">finite_mdp</code></a> <em>(3_mdps/mdps)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-fisher_matrix"><td></td><td>
+       <strong>fisher_matrix</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#fisher_matrix"><code class="xref">fisher_matrix</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-fitted_evaluation"><td></td><td>
        <strong>fitted_evaluation</strong></td><td></td></tr>
      <tr>
@@ -540,6 +599,14 @@ document.write(`
        <a href="5_control/control.html#ilqr"><code class="xref">ilqr</code></a> <em>(5_control/control)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-importance_sampling"><td></td><td>
+       <strong>importance_sampling</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#importance_sampling"><code class="xref">importance_sampling</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-iterations_vi"><td></td><td>
        <strong>iterations_vi</strong></td><td></td></tr>
      <tr>
@@ -547,6 +614,14 @@ document.write(`
        <td>
        <a href="3_mdps/mdps.html#iterations_vi"><code class="xref">iterations_vi</code></a> <em>(3_mdps/mdps)</em></td><td>
        <em>remark</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-kld"><td></td><td>
+       <strong>kld</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#kld"><code class="xref">kld</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-lemma-18"><td></td><td>
        <strong>lemma-18</strong></td><td></td></tr>
@@ -556,12 +631,12 @@ document.write(`
        <a href="3_mdps/mdps.html#lemma-18"><code class="xref">lemma-18</code></a> <em>(3_mdps/mdps)</em></td><td>
        <em>lemma</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-lqr"><td></td><td>
-       <strong>lqr</strong></td><td></td></tr>
+     <tr class="cap" id="cap-lqr_definition"><td></td><td>
+       <strong>lqr_definition</strong></td><td></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="5_control/control.html#lqr"><code class="xref">lqr</code></a> <em>(5_control/control)</em></td><td>
+       <a href="5_control/control.html#lqr_definition"><code class="xref">lqr_definition</code></a> <em>(5_control/control)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-markov"><td></td><td>
@@ -580,12 +655,28 @@ document.write(`
        <a href="2_bandits/bandits.html#multi-armed"><code class="xref">multi-armed</code></a> <em>(2_bandits/bandits)</em></td><td>
        <em>remark</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-natural_simple"><td></td><td>
+       <strong>natural_simple</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#natural_simple"><code class="xref">natural_simple</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-nonlinear_control"><td></td><td>
        <strong>nonlinear_control</strong></td><td></td></tr>
      <tr>
        <td></td>
        <td>
        <a href="5_control/control.html#nonlinear_control"><code class="xref">nonlinear_control</code></a> <em>(5_control/control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-npg"><td></td><td>
+       <strong>npg</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#npg"><code class="xref">npg</code></a> <em>(6_pg/pg)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-optimal_control"><td></td><td>
@@ -644,6 +735,46 @@ document.write(`
        <a href="4_fitted_dp/fitted_dp.html#parameterized_empirical_risk_minimization"><code class="xref">parameterized_empirical_risk_minimization</code></a> <em>(4_fitted_dp/fitted_dp)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pdl"><td></td><td>
+       <strong>pdl</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#pdl"><code class="xref">pdl</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pg_advantage"><td></td><td>
+       <strong>pg_advantage</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#pg_advantage"><code class="xref">pg_advantage</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>theorem</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pg_baseline"><td></td><td>
+       <strong>pg_baseline</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#pg_baseline"><code class="xref">pg_baseline</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pg_baseline_algorithm"><td></td><td>
+       <strong>pg_baseline_algorithm</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#pg_baseline_algorithm"><code class="xref">pg_baseline_algorithm</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>algorithm</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pg_with_q"><td></td><td>
+       <strong>pg_with_q</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#pg_with_q"><code class="xref">pg_with_q</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-pi_iter_analysis"><td></td><td>
        <strong>pi_iter_analysis</strong></td><td></td></tr>
      <tr>
@@ -668,6 +799,14 @@ document.write(`
        <a href="3_mdps/mdps.html#policy"><code class="xref">policy</code></a> <em>(3_mdps/mdps)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-ppo"><td></td><td>
+       <strong>ppo</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#ppo"><code class="xref">ppo</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-regret"><td></td><td>
        <strong>regret</strong></td><td></td></tr>
      <tr>
@@ -675,6 +814,22 @@ document.write(`
        <td>
        <a href="2_bandits/bandits.html#regret"><code class="xref">regret</code></a> <em>(2_bandits/bandits)</em></td><td>
        <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-reinforce_pg"><td></td><td>
+       <strong>reinforce_pg</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#reinforce_pg"><code class="xref">reinforce_pg</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-remark-5"><td></td><td>
+       <strong>remark-5</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#remark-5"><code class="xref">remark-5</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>remark</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-riccati"><td></td><td>
        <strong>riccati</strong></td><td></td></tr>
@@ -764,6 +919,22 @@ document.write(`
        <a href="3_mdps/mdps.html#trajectory"><code class="xref">trajectory</code></a> <em>(3_mdps/mdps)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-trpo"><td></td><td>
+       <strong>trpo</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#trpo"><code class="xref">trpo</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-trpo_implement"><td></td><td>
+       <strong>trpo_implement</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="6_pg/pg.html#trpo_implement"><code class="xref">trpo_implement</code></a> <em>(6_pg/pg)</em></td><td>
+       <em>algorithm</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-ucb"><td></td><td>
        <strong>ucb</strong></td><td></td></tr>
      <tr>
@@ -805,7 +976,7 @@ document.write(`
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
 </div>
@@ -814,8 +985,6 @@ document.write(`
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"></div>
               
             
           </div>
@@ -860,8 +1029,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script src="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
 
   <footer class="bd-footer">
   </footer>
