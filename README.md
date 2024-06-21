@@ -30,11 +30,21 @@ open book/_build/html/index.html
 
 [_toc.yml](_toc.yml) contains the table of contents.
 
+Every new chapter must be added to the [Makefile](./Makefile) and to the table of contents.
+
 ## About Jupyter Book
 
 [Jupyter Book](https://jupyterbook.org/en/stable/intro.html) is a framework for building books from Jupyter Notebooks. It is essentially a bundle of Sphinx extensions that enable parsing Markdown (of the MyST flavor described below) and running Juypter Notebook code. [Sphinx](https://www.sphinx-doc.org/en/master/index.html) is a popular engine for generating documentation. It is used by many popular software projects (e.g. the [Flask](https://flask.palletsprojects.com) documentation). See [how Jupyter Book and Sphinx relate to one another](https://jupyterbook.org/en/stable/explain/sphinx.html).
 
 [MyST (Markedly Structured Text)](https://myst-parser.readthedocs.io/en/latest/index.html) is a superset of [CommonMark](https://commonmark.org/) that supports tables, figures, etc., and especially a powerful system of [directives](https://myst-parser.readthedocs.io/en/latest/syntax/roles-and-directives.html). These include the original [Sphinx directives](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html) as well as the `code-cell` directive that allows MyST documents to be run as Jupyter notebooks via [JupyText](https://jupytext.readthedocs.io/en/latest/#). For version control purposes, this is much more convenient than storing native Jupyter notebooks. MyST Markdown is not yet supported within the traditional Jupyter interface.
+
+For converting existing TeX to MyST, use
+
+```
+pandoc -f latex -t commonmark_x input.tex -o output.md --wrap=none
+```
+
+Some manual conversion may be required.
 
 ## MyST syntax
 

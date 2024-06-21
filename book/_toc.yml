@@ -12,6 +12,7 @@ chapters:
   - file: 4_fitted_dp/fitted_dp
   - file: 5_control/control
   - file: 6_pg/pg
+  - file: 7_exploration/exploration
 # - file: challenges
 # - file: appendix
   - file: bibliography

@@ -5,6 +5,7 @@ RAW_CHAPTERS = \
 	4_fitted_dp/fitted_dp.md \
 	5_control/control.md \
 	6_pg/pg.md \
+	7_exploration/exploration.md \
 	appendix.md \
 	bibliography.md \
 	challenges.md \
