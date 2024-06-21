@@ -13,7 +13,7 @@ kernelspec:
 ---
 
 (bandits)=
-# Bandits
+# Multi-Armed Bandits
 
 ```{code-cell} ipython3
 :tags: ["hide-input"]
@@ -23,16 +23,13 @@ import numpy as np
 from abc import ABC, abstractmethod  # "Abstract Base Class"
 ```
 
-The **multi-armed bandits** (MAB) setting is a simple but powerful
-setting for studying the basic challenges of RL. In this setting, an
-agent repeatedly chooses from a fixed set of actions, called **arms**,
-each of which has an associated reward distribution. The agent’s goal is
-to maximize the total reward it receives over some time period.
+The **multi-armed bandits** (MAB) setting is a simple setting for studying the basic challenges of RL. In this setting, an agent repeatedly chooses from a fixed set of actions, called **arms**, each of which has an associated reward distribution. The agent’s goal is to maximize the total reward it receives over some time period.
 
-In particular, we’ll spend a lot of time discussing the
-**Exploration-Exploitation Tradeoff**: should the agent choose new
-actions to learn more about the environment, or should it choose actions
-that it already knows to be good?
+| States | Actions | Rewards                             |
+| :----: | :-----: | :---------------------------------: |
+| None   | Finite  | $\mathcal{A} \to \triangle([0, 1])$ |
+
+In particular, we’ll spend a lot of time discussing the **Exploration-Exploitation Tradeoff**: should the agent choose new actions to learn more about the environment, or should it choose actions that it already knows to be good?
 
 ::::{prf:example} Online advertising
 :label: advertising
