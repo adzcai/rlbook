@@ -33,10 +33,21 @@ bibtex_bibfiles:
 
 sphinx:
   config:
+    # duplicate configuration for web and pdf
     latex_elements:
-      preamble                : "\\usepackage{rlbook}"
-    latex_additional_files:
-      - "shared/rlbook.sty"
+      preamble                : |
+        \let\P\undefined
+        \DeclareMathOperator*{\E}{\mathbb{E}}
+        \DeclareMathOperator*{\P}{\mathbb{P}}
+        \newcommand{\hi}{h}
+        \newcommand{\hor}{H}
+    mathjax3_config:
+      tex:
+        macros:
+          "E": "\\mathop{\\mathbb{E}}"
+          "P": "\\mathop{\\mathbb{P}}"
+          "hi": "h"
+          "hor": "H"
     bibtex_reference_style    : "author_year"
     mathjax_path              : "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
   extra_extensions:
