@@ -679,7 +679,7 @@ Bayes’s rule (i.e. the definition of conditional probability):
 
 $$
     \begin{align*}
-        \P(\muv \mid a_0, r_0) &\propto \P(r_0 \mid a_0, \muv) \P(a_0 \mid \muv) \P(\muv) \\
+        \P(\boldsymbol{\mu} \mid a_0, r_0) &\propto \P(r_0 \mid a_0, \boldsymbol{\mu}) \P(a_0 \mid \boldsymbol{\mu}) \P(\boldsymbol{\mu}) \\
         &\propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
     \end{align*}
 $$
