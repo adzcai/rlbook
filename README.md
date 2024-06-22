@@ -135,8 +135,9 @@ And then refer to these using {prf:ref}`my-theorem` (note this uses the `prf:ref
 ````
 
 
-## Code syntax
+## Code syntax and style guide
 
+- Always prefer inline roles to Markdown links.
 - We use [Plotly Express](https://plotly.com/python/plotly-express/) for plotting.
 
 

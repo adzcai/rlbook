@@ -28,7 +28,8 @@ We borrow these definitions from the {ref}`mdps` chapter:
 from typing import NamedTuple, Callable, Optional
 from jaxtyping import Float, Int, Array
 import jax.numpy as np
-from jax import grad, vmap, tree_map
+from jax import grad, vmap
+from jax.tree_util import tree_map
 import jax.random as rand
 from functools import partial
 from tqdm import tqdm
@@ -181,10 +182,10 @@ def collect_data(
 ) -> list[Trajectory]:
     """Collect a dataset of trajectories from the given policy (or a random one)."""
     trajectories = []
-    keys = rand.split(key, N)
+    seeds = [rand.bits(k).item() for k in rand.split(key, N)]
     for i in tqdm(range(N)):
         τ = []
-        s, _ = env.reset(seed=rand.bits(keys[i]).item())
+        s, _ = env.reset(seed=seeds[i])
         for h in range(H):
             # sample from a random policy
             a = π(s, h) if π else env.action_space.sample()
@@ -473,4 +474,4 @@ to compute the gradient of the output with respect to the parameters of each lay
 
 {cite}`nielsen_neural_2015` provides a comprehensive introduction to neural networks and backpropagation.
 
-
+## Bias correction for Q-learning
