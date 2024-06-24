@@ -1,3 +1,16 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.16.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
 (lqr_chapter)=
 # Linear Quadratic Regulators
 
@@ -566,7 +579,7 @@ There are several nice properties to note about the Riccati equation:
     coefficients $R$, it fully defines the optimal policy.
 
 Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$,
-which is a upward-curved quadratic, and this concludes our proof. 0◻
+which is a upward-curved quadratic, and this concludes our proof.
 
 In summary, we just demonstrated that at each timestep $\hi \in \hor$,
 the optimal value function $V^\star_\hi$ and optimal Q-function

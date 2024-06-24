@@ -1,6 +1,2 @@
-# include all metadata here
-notebook_metadata_filter = "-all"
-cell_metadata_filter = "-all"
-
 # sync Jupyter notebooks with MyST files
 formats = "ipynb,md:myst"

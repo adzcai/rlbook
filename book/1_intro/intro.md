@@ -1,3 +1,18 @@
+---
+jupytext:
+  cell_metadata_filter: -all
+  formats: md:myst
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.16.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
 # Introduction
 
 Welcome to the study of reinforcement learning! This set of lecture notes accompanies the undergraduate course [CS/STAT 184](https://shamulent.github.io/CS_Stat184_Fall23.html) taught at Harvard and is intended to be a friendly yet rigorous introduction to this active subfield of machine learning. Here are some questions you might have before embarking on this journey:
@@ -52,6 +67,7 @@ borrow ideas from supervised learning to approximate the value function (discuss
 an important tool for *continuous control*, in which the state space is no longer
 finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_s}$).
 
++++
 
 | Chapter | States | Actions | Rewards (or costs) |
 |:-------:|:------:|:-------:|:-------:|
@@ -60,6 +76,7 @@ finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \math
 | {ref}`fitted_dp` | Large or continuous | Finite | Deterministic |
 | {ref}`lqr` | Continuous | Continuous | Deterministic |
 
++++
 
 ## Notation
 
@@ -89,6 +106,7 @@ inspired by {cite}`sutton_reinforcement_2018` and {cite}`agarwal_reinforcement_2
 
 **Policy computation (control).** In a complex environment, even if the dynamics are known, it can still be challenging to compute the best policy.
 
++++
 
 ## Programming
 
