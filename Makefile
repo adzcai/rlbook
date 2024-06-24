@@ -1,3 +1,7 @@
+ENV_NAME = rlbook
+
+RUN = micromamba run -n $(ENV_NAME)
+
 RAW_CHAPTERS = \
 	1_intro/intro.md \
 	2_bandits/bandits.md \
@@ -16,13 +20,13 @@ CHAPTERS = $(addprefix book/, $(RAW_CHAPTERS))
 CONFIG = book/_config.yml book/_toc.yml
 
 book/_build/html: $(CHAPTERS) $(CONFIG)
-	jb build book
+	$(RUN) jb build book
 
 open: book/_build/html
 	open book/_build/html/index.html
 
 book/_build/latex: $(CHAPTERS) $(CONFIG)
-	jb build book --builder latex
+	$(RUN) jb build book --builder latex
 
 pdf: book/_build/latex
 	cd book/_build/latex && make
@@ -32,4 +36,4 @@ clean: book/_build
 	rm -r book/_build
 
 debug:
-	jb config sphinx book
+	$(RUN) jb config sphinx book
