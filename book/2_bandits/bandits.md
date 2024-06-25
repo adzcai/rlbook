@@ -262,6 +262,7 @@ $$
 Which is still $\Theta(T)$, the same as pure exploration! Can we do
 better?
 
+(etc)=
 ## Explore-then-commit
 
 We can improve the pure greedy algorithm as follows: let’s reduce the
@@ -270,8 +271,6 @@ $N_{\text{explore}}> 1$ times before committing. This is called the
 **explore-then-commit** strategy.
 
 ```{code-cell}
-:label: etc
-
 class ExploreThenCommit(Agent):
     def __init__(self, K: int, T: int, N_explore: int):
         super().__init__(K, T)

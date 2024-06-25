@@ -18,7 +18,7 @@ kernelspec:
 
 One of the key challenges of reinforcement learning is the *exploration-exploitation tradeoff*. Should we *exploit* actions we know will give high reward, or should we *explore* different actions to discover potentially better strategies? An algorithm that doesn't explore effectively might easily *overfit* to certain areas of the state space, and fail to generalize once they enter a region they haven't yet seen. The algorithms we saw in the chapter on fitted DP {ref}`fitted_dp` suffer from this issue.
 
-In the multi-armed bandits chapter {ref}`mab`, where the state never changes so all we care about are the actions, we saw algorithms like UCB {prf:ref}`ucb` and Thompson sampling {prf:ref}`thompson_sampling` that incentivize the learner to explore arms that it is uncertain about. In this chapter, we will see how to generalize these ideas to the MDP setting.
+In the multi-armed bandits chapter {ref}`bandits`, where the state never changes so all we care about are the actions, we saw algorithms like UCB {prf:ref}`ucb` and Thompson sampling {prf:ref}`thompson_sampling` that incentivize the learner to explore arms that it is uncertain about. In this chapter, we will see how to generalize these ideas to the MDP setting.
 
 :::{prf:definition} Per-episode regret
 :label: per_episode_regret
@@ -44,7 +44,7 @@ There are $|\S|$ states. The agent starts in the leftmost state. In every state,
 
 ### Exploration in deterministic MDPs
 
-Let us address the exploration problem in a *deterministic* MDP where taking action $a$ in state $s$ always leads to the state $P(s, a) \in \S$. In this simple setting, there will be no "automatic" exploration due to randomness, so our strategy must actively explore new states. One simple strategy is to visit every possible state-action pair to learn the entire MDP. Then, once the MDP is known, we can use DP to solve for the optimal policy. (This should remind you of the {prf:ref}`etc` algorithm.)
+Let us address the exploration problem in a *deterministic* MDP where taking action $a$ in state $s$ always leads to the state $P(s, a) \in \S$. In this simple setting, there will be no "automatic" exploration due to randomness, so our strategy must actively explore new states. One simple strategy is to visit every possible state-action pair to learn the entire MDP. Then, once the MDP is known, we can use DP to solve for the optimal policy. (This should remind you of the {ref}`etc` algorithm.)
 
 ::::{prf:definition} Explore-then-exploit (for deterministic MDPs)
 :label: explore_then_exploit
@@ -65,7 +65,7 @@ Performance of explore-then-exploitexplore_then_exploit_performance As long as e
 (mdp_mab)=
 ## Treating an unknown MDP as a MAB
 
-We also explored the exploration-exploitation tradeoff in the chapter on [mab]{acronym-label="mab" acronym-form="singular+long"} {prf:ref}`ch:1_bandits`. Recall tthat in the MAB setting, we have $K$ arms, each of which has an unknown reward distribution, and we want to learn which of the arms is *optimal*, i.e. has the highest mean reward.
+We also explored the exploration-exploitation tradeoff in the chapter on {ref}`bandits`. Recall tthat in the MAB setting, we have $K$ arms, each of which has an unknown reward distribution, and we want to learn which of the arms is *optimal*, i.e. has the highest mean reward.
 
 One algorithm that struck a good balance between exploration and exploitation was the **upper confidence bound** algorithm {prf:ref}`ucb`: For each arm, we construct a *confidence interval* for its true mean award, and then choose the arm with the highest upper confidence bound. In summary, $$k_{t+1} \gets \argmax_{k \in [K]} \frac{R^{k}_t}{N^{k}_t} + \sqrt{\frac{\ln(2t/\delta)}{2 N^{k}_t}}$$ where $N_t^k$ indicates the number of times arm $k$ has been pulled up until time $t$, $R_t^k$ indicates the total reward obtained by pulling arm $k$ up until time $t$, and $\delta > 0$ controls the width of the confidence interval. How might we extend UCB to the MDP case?
 
@@ -146,8 +146,13 @@ We aim to show that, with high probability, $$V_\hi^\star(s) \le \hat{V}_\hi^t(s
 
 2.  The transition probabilities $\hat{P}_\hi^t$ v.s. $P^?_\hi$.
 
-We can bound these individually, and then combine them by the triangle inequality. For the former, we can simply bound the difference by $H$, assuming that the rewards are within $[0, 1]$. Now, all that is left is to bound the error from the transition probabilities: $$\text{error} = \left| \E_{s' \sim \hat{P}_\hi^t(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right] - \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right]. \right|
-        \label{eq:err}$$
+We can bound these individually, and then combine them by the triangle inequality. For the former, we can simply bound the difference by $H$, assuming that the rewards are within $[0, 1]$. Now, all that is left is to bound the error from the transition probabilities:
+
+:::{math}
+:label: err
+
+\text{error} = \left| \E_{s' \sim \hat{P}_\hi^t(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right] - \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right]. \right|
+:::
 
 Let us bound this term for a fixed $s, a, h, t$. (Later we can make this uniform across $s, a, h, t$ using the union bound.) Note that expanding out the definition of $\hat{P}_\hi^t$ gives $$\begin{aligned}
         \E_{s' \sim \hat{P}_\hi^t(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right] & = \sum_{s' \in \S} \frac{N^t_\hi(s, a, s')}{N^t_\hi(s, a)} \Vopt_{h+1}(s')                                                     \\
@@ -156,7 +161,7 @@ Let us bound this term for a fixed $s, a, h, t$. (Later we can make this uniform
     
 \end{aligned}$$ since the terms where $s' \neq s_{h+1}^i$ vanish.
 
-Now, in order to apply Hoeffding's inequality, we would like to express the second term in {prf:ref}`eq:err` as a sum over $t$ random variables as well. We will do this by redundantly averaging over all desired trajectories (i.e. where we visit state $s$ and action $a$ at time $h$): $$\begin{aligned}
+Now, in order to apply Hoeffding's inequality, we would like to express the second term in {eq}`err` as a sum over $t$ random variables as well. We will do this by redundantly averaging over all desired trajectories (i.e. where we visit state $s$ and action $a$ at time $h$): $$\begin{aligned}
         \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ \Vopt_{h+1}(s') \right]
          & = \sum_{s' \in \S} P^?_\hi(s' \mid s, a) \Vopt_{h+1}(s')                                                                              \\
          & = \sum_{s' \in \S} \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) } P^?_\hi(s' \mid s, a) \Vopt_{h+1}(s') \\
@@ -195,7 +200,7 @@ It turns out that UCB-VI achieves a per-episode regret of
 $$\E \left[ \sum_{t=0}^{T-1} \left(\Vopt_0(s_0) - V^{\pi^t}_0(s_0) \right) \right] = \tilde{O}(H^2 \sqrt{|\S| |\A| T})$$
 :::
 
-Comparing this to the UCB regret bound $\tilde{O}(\sqrt{T K})$, where $K$ is the number of arms of the MAB, we see that we've reduced the number of effective arms from $|\A|^{|\S|\hor}$ (in {prf:ref}`eq:mdp_as_mab`) to $H^4 |\S||\A|$, which is indeed polynomial in $|\S|$, $|\A|$, and $H$, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret: $$\frac{1}{T} \E[\text{Regret}_T] = \tilde{O}\left(\sqrt{\frac{H^4 |\S||\A|}{T}}\right)$$ Note that the time-dependent transition matrix has $H |\S|^2 |\A|$ entries. Assuming $H \ll |\S|$, this shows that it's possible to achieve low regret, and achieve a near-optimal policy, while only understanding a $1/|\S|$ fraction of the world's dynamics.
+Comparing this to the UCB regret bound $\tilde{O}(\sqrt{T K})$, where $K$ is the number of arms of the MAB, we see that we've reduced the number of effective arms from $|\A|^{|\S|\hor}$ (in {eq}`mdp_as_mab`) to $H^4 |\S||\A|$, which is indeed polynomial in $|\S|$, $|\A|$, and $H$, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret: $$\frac{1}{T} \E[\text{Regret}_T] = \tilde{O}\left(\sqrt{\frac{H^4 |\S||\A|}{T}}\right)$$ Note that the time-dependent transition matrix has $H |\S|^2 |\A|$ entries. Assuming $H \ll |\S|$, this shows that it's possible to achieve low regret, and achieve a near-optimal policy, while only understanding a $1/|\S|$ fraction of the world's dynamics.
 
 ## Linear MDPs
 
@@ -257,8 +262,8 @@ In this chapter, we've explored how to explore in an unknown MDP.
 
 - We first discussed the explore-then-exploit algorithm {prf:ref}`explore_then_exploit`, a simple way to explore a deterministic MDP by visiting all state-action pairs.
 
-- We then discussed how to treat an unknown MDP as a MAB {prf:ref}`sec:mdp_mab`, and how this approach is inefficient since it doesn't make use of relationships between policies.
+- We then discussed how to treat an unknown MDP as a MAB {ref}`mdp_mab`, and how this approach is inefficient since it doesn't make use of relationships between policies.
 
 - We then introduced the UCB-VI algorithm {prf:ref}`ucb_vi`, which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration.
 
-- Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCB-VI algorithm {prf:ref}`sec:lin_ucb_vi`, which has a sample complexity independent of the size of the state and action spaces.
+- Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCB-VI algorithm {ref}`lin_ucb_vi`, which has a sample complexity independent of the size of the state and action spaces.

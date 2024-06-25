@@ -11,13 +11,13 @@ kernelspec:
   name: python3
 ---
 
-# Policy Gradients
+# Policy Gradient Algorithms
 
 ## Motivation
 
 The scope of our problem has been gradually expanding:
 
-1.  In the first chapter, we considered *bandits* with a finite number of arms, where the only stochasticity involved was their rewards.
+1.  In the first chapter, we considered the *multi-armed bandit setting* with a finite number of arms, where the only stochasticity involved was their rewards.
 
 2.  In the second chapter, we considered *MDPs* more generally, involving a finite number of states and actions, where the state transitions are Markovian.
 
@@ -29,27 +29,48 @@ Now, we'll continue to investigate the case of finding optimal policies in large
 
 - *Iterative LQR* for locally optimal policies in continuous control.
 
-Here we'll see some general algorithms that allow us to optimize policies for general kinds of problems. These algorithms have been used in many groundbreaking applications, including AlphaGo, OpenAI Five. These methods also bring us into the domain where we can use *deep learning* to approximate complex, nonlinear functions.
+Here we'll see some algorithms that allow us to optimize policies for *general* kinds of problems. These algorithms have been used in many groundbreaking applications, including AlphaGo, OpenAI Five, and ChatGPT. (TODO Come up with better examples) These methods also bring us into the domain where we can use *deep learning* to approximate complex, nonlinear functions.
+
++++
 
 ## (Stochastic) Policy Gradient Ascent
 
-Let's suppose our policy can be *parameterized* by some parameters $\theta.$ For example, these might be a preferences over state-action pairs, or in a high-dimensional case, the weights and biases of a deep neural network. We'll talk more about possible parameterizations in {ref}`parameterizations`.
+Let's suppose our policy can be *parameterized* by some parameters $\theta$. For example, in a finite MDP with $|\mathcal{S}|$ states and $|\mathcal{A}|$ actions, we might assign one scalar value $\theta_{s, a}$ to each state-action pair, and compute the policy as $\pi(s) = \argmax_a \theta_{s, a}$. In a high-dimensional case, the weights and biases of a deep neural network. We'll talk more about possible parameterizations in {ref}`parameterizations`.
 
-Remember that in reinforcement learning, the goal is to *maximize reward.* Specifically, we seek the parameters that maximize the expected total reward, which we can express concisely using the value function we defined earlier: $$\begin{split}
-        J(\theta) := \E_{s_0 \sim \mu_0} V^{\pi_\theta} (s_0) = & \E \sum_{t=0}^{T-1} r_t \\
-        \text{where} \quad & s_0 \sim \mu_0 \\
-        & s_{t+1} \sim P(s_t, a_t), \\
-        & a_h = \pi_\theta(s_h) \\
-        & r_h = r(s_h, a_h).
-    \end{split} \label{eq:objective_fn}$$ We call a sequence of states, actions, and rewards a **trajectory** $\tau = (s_i, a_i, r_i)_{i=0}^{T-1},$ and the total time-discounted reward is also often called the **return** $R(\tau)$ of a trajectory. Note that the above is the *undiscounted, finite-horizon case,* which we'll continue to use throughout the chapter, but analogous results hold for the *discounted, infinite-horizon case.*
+Remember that in reinforcement learning, the goal is to *maximize reward.* Specifically, we seek the parameters that maximize the expected total reward, which we can express concisely using the value function we defined earlier:
 
-Note that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is stationary (i.e. $a_t \sim \pi_\theta (s_t)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$: $$\begin{split}
+:::{math}
+:label: objective_fn
+
+\begin{split}
+    J(\theta) := \E_{s_0 \sim \mu_0} V^{\pi_\theta} (s_0) = & \E \sum_{t=0}^{T-1} r_t \\
+    \text{where} \quad & s_0 \sim \mu_0 \\
+    & s_{t+1} \sim P(s_t, a_t), \\
+    & a_h = \pi_\theta(s_h) \\
+    & r_h = r(s_h, a_h).
+\end{split}
+:::
+
+We call a sequence of states, actions, and rewards a **trajectory** $\tau = (s_i, a_i, r_i)_{i=0}^{T-1}$. The total time-discounted reward is also often called the **return** $R(\tau)$ of a trajectory. Note that the above is the *undiscounted, finite-horizon case,* which we'll continue to use throughout the chapter, but analogous results hold for the *discounted, infinite-horizon case.*
+
++++
+
+Note that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is stationary (i.e. $a_t \sim \pi_\theta (s_t)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$:
+
+:::{math}
+:label: trajectory_likelihood
+
+\begin{split}
         \rho_\theta(\tau) &= \mu(s_0) \pi_\theta(a_0 | s_0) \\
         &\qquad \times P(s_1 | s_0, a_0) \pi_\theta(a_1 | s_1) \\
         &\qquad \times \cdots \\
         &\qquad \times P(s_{H-1} | s_{H-2}, a_{H-2}) \pi_\theta(a_{H-1} | s_{H-1}).
-    \end{split}
-    \label{eq:trajectory_likelihood}$$ This lets us rewrite $J(\theta) = \E_{\tau \sim \rho_\theta} R(\tau).$
+\end{split}
+:::
+
++++
+
+This lets us rewrite $J(\theta) = \E_{\tau \sim \rho_\theta} R(\tau).$
 
 Now how do we optimize for this function (the expected total reward)? One very general optimization technique is *gradient ascent.* Namely, the **gradient** of a function at a given point answers: At this point, which direction should we move to increase the function the most? By repeatedly moving in this direction, we can keep moving up on the graph of this function. Expressing this iteratively, we have: $$\theta_{t+1} = \theta_t + \eta \nabla_\theta J(\pi_\theta) \Big|_{\theta = \theta_t},$$
 
@@ -191,8 +212,10 @@ What advantages does the policy gradient algorithm have over policy iteration? B
 
 To analyze the difference between them, we'll make use of the **performance difference lemma**.
 
-:::{prf:theorem}
-Performance difference lemmapdl Let $\rho_{\pi, s}$ denote the distribution induced by the policy $\pi$ over trajectories starting in state $s$.
+:::{prf:theorem} Performance difference lemma
+:label: pdl
+
+Let $\rho_{\pi, s}$ denote the distribution induced by the policy $\pi$ over trajectories starting in state $s$.
 
 Given two policies $\pi, \tilde pi$, the PDL allows us to express the difference between their value functions as follows: $$V_0^{\tilde \pi}(s) - V_0^\pi(s) = \E_{\tau \sim \rho_{\tilde \pi, s}} \left[ \sum_{h=0}^{H-1} A_h^\pi (s_h, a_h) \right]$$
 
@@ -250,6 +273,8 @@ Initialize $\theta^0$ Sample $N$ trajectories from $\rho^k$ to learn a value est
 \end{gathered}$$
 ::: -->
 ::::
+
++++
 
 ### Natural policy gradient
 
@@ -332,3 +357,7 @@ Let us simplify the $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ term first. Expandi
 As we did for TRPO [\[df:trpo_implement\]](#df:trpo_implement){reference-type="eqref" reference="df:trpo_implement"}, we can use importance sampling [\[df:importance_sampling\]](#df:importance_sampling){reference-type="eqref" reference="df:importance_sampling"} to rewrite the inner expectation. Combining the expectations together, this gives the (exact) objective $$\max_{\theta} \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_h \mid s_h)}{\pi^k(a_h \mid s_h)} A^{\pi^k}(s_h, a_h) - \lambda \log \frac{1}{\pi_\theta(a_h \mid s_h)} \right) \right]$$
 
 Now we can use gradient ascent on the parameters $\theta$ until convergence to maximize this function, completing a single iteration of PPO (i.e. $\theta^{k+1} \gets \theta$).
+
+```{code-cell} ipython3
+
+```

@@ -132,6 +132,8 @@ This is the content of the theorem
 ```
 
 And then refer to these using {prf:ref}`my-theorem` (note this uses the `prf:ref` role)
+
+Punctuation should be included *inside formatting.*
 ````
 
 

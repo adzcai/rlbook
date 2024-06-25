@@ -15,11 +15,13 @@ kernelspec:
 
 # Introduction
 
-Welcome to the study of reinforcement learning! This set of lecture notes accompanies the undergraduate course [CS/STAT 184](https://shamulent.github.io/CS_Stat184_Fall23.html) taught at Harvard and is intended to be a friendly yet rigorous introduction to this active subfield of machine learning. Here are some questions you might have before embarking on this journey:
+Welcome to the study of reinforcement learning! This textbook accompanies the undergraduate course [CS/STAT 184](https://shamulent.github.io/CS_Stat184_Fall23.html) taught at Harvard and is intended to be a friendly yet rigorous introduction to this active subfield of machine learning. Here are some questions you might have before embarking on this journey:
 
-**What is reinforcement learning (RL)?** Broadly speaking, RL is a subfield of machine learning that studies how an agent can learn to make sequential decisions in a dynamic environment. It provides a powerful framework for attacking a wide variety of problems, including robotic control, video games and board games, resource management, language modelling, and more. It also provides an interdisciplinary paradigm for studying animal and human behavior. Many of the most stunning results in machine learning, ranging from AlphaGo to ChatGPT, are built on top of RL.
++++
 
-**Is this book for me?** This book assumes familiarity with multivariable calculus, linear algebra, and probability. For Harvard undergraduates, this would be fulfilled by Math 21a, Math 21b, and Stat 110. Stat 111 is strongly recommended but not required. Here is a non-comprehensive list of topics you should be familiar with before starting this book:
+## Prerequisites
+
+This book assumes familiarity with multivariable calculus, linear algebra, and probability. For Harvard undergraduates, this would be fulfilled by Math 21a, Math 21b, and Stat 110. Stat 111 is strongly recommended but not required. Here is a non-comprehensive list of topics you should be familiar with before starting this book:
 
 -   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
     inversion, eigenvalues and eigenvectors, and the Gram-Schmidt
@@ -29,7 +31,13 @@ Welcome to the study of reinforcement learning! This set of lecture notes accomp
 -   **Probability:** Random variables, probability distributions,
     expectation and variance, the law of iterated expectations (Adam's rule), covariance, conditional probability, Bayes's rule, and the law of total probability.
 
-**How does reinforcement learning differ from other machine learning paradigms?** Machine learning is often broken down into the three subcategories of supervised learning, unsupervised learning, and RL.
++++
+
+## Reinforcement learning in a nutshell
+
+Broadly speaking, RL is a subfield of machine learning that studies how an agent can learn to make sequential decisions in a dynamic environment. It provides a powerful framework for attacking a wide variety of problems, including robotic control, video games and board games, resource management, language modelling, and more. It also provides an interdisciplinary paradigm for studying animal and human behavior. Many of the most stunning results in machine learning, ranging from AlphaGo to ChatGPT, are built on top of RL.
+
+**How does reinforcement learning differ from other machine learning paradigms?** Machine learning is often broken down into the three subcategories of supervised learning, unsupervised learning, and reinforcement learning.
 
 -   **Supervised learning.** Supervised learning concerns itself with
     learning a mapping from inputs to outputs (e.g. image
@@ -48,24 +56,31 @@ Welcome to the study of reinforcement learning! This set of lecture notes accomp
 -  **Unsupervised learning.** Unsupervised learning deals with learning the
     structure of data without the use of labels.
 
+### Challenges of reinforcement learning
+
+The RL task is quite general. It will be helpful to decompose it into a few subtasks that can be tackled separately. This decomposition also provides a useful framework for analyzing the algorithms we will encounter.
+
+**Policy evaluation (prediction):** How 'good' is a specific state, or state-action pair? That is, how much reward does it lead to in the long run?
+
+**Policy optimization (control):** Suppose we have a complete, accurate model of how the environment behaves. What is the best action to take in every scenario?
+
+**Recursion (bootstrapping):** How can we "reuse" our current predictions to generate new information?
+
+**Exploration-exploitation tradeoff:** Should we try new actions, or capitalize on actions that we currently believe to be good?
+
++++
+
 ## Overview
 
-[Chapter 2](bandits) discusses **multi-armed bandits**, a simple model for
-reinforcement learning. In this setting, there are multiple arms, each with their
-own reward distribution. The agent must decide which arm to pull at each time step.
+{ref}`bandits` discusses **multi-armed bandits,** a simple model for
+reinforcement learning. In this setting, there are multiple arms, each with their own reward distribution. The agent must decide which arm to pull at each time step.
 
-[Chapter 3](mdps) introduces (finite) **Markov Decision Processes**, the dominant
-mathematical framework for studying RL. This general framework models an agent
-interacting with a environment that in responds to its actions. Certain states
-and actions will be rewarded, and the agent's goal is to maximize its total reward.
+{ref}`mdps` introduces (finite) **Markov Decision Processes**, a mathematical framework for describing interactive environments. Certain states and actions will be rewarded, and the agent's goal is to maximize its total reward.
 
-[Chapter 4](fitted_dp) introduces **fitted dynamic programming** algorithms
-for solving MDPs when the state space is too large to be enumerated. These algorithms
-borrow ideas from supervised learning to approximate the value function (discussed in {ref}`mdps`).
+{ref}`fitted_dp` introduces **fitted dynamic programming** algorithms for solving MDPs when the state space is too large to be enumerated. These algorithms borrow ideas from supervised learning to approximate the value function (discussed in {ref}`mdps`).
 
-[Chapter 5](lqr) is a standalone chapter on the **linear quadratic regulator**,
-an important tool for *continuous control*, in which the state space is no longer
-finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_s}$).
+{ref}`lqr` is a standalone chapter on the **linear quadratic regulator**,
+an important tool for *continuous control*, in which the state space is no longer finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_s}$).
 
 +++
 
@@ -98,20 +113,12 @@ inspired by {cite}`sutton_reinforcement_2018` and {cite}`agarwal_reinforcement_2
 | $\mathcal{S}$ | A state space.            |
 | $\mathcal{A}$ | An action space.          |
 
-## Challenges of reinforcement learning
-
-**Exploration-exploitation tradeoff.** Should the agent try new actions or choose actions that it already believes to be good?
-
-**Prediction.** The agent might want to predict the **value** of a state or state-action pair.
-
-**Policy computation (control).** In a complex environment, even if the dynamics are known, it can still be challenging to compute the best policy.
-
 +++
 
 ## Programming
 
 This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html). It uses [Python 3.11](https://docs.python.org/3.11/contents.html).
 
-It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for numerical computing. JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem.
+It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for numerical computing. JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem, sustained in large part by the Google DeepMind research group and a large body of open-source contributors.
 
 We use the standard [Gymnasium](https://gymnasium.farama.org/) library for interfacing with RL environments.

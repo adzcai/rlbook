@@ -28,27 +28,20 @@ from jax import vmap
 from functools import partial
 ```
 
-The field of RL studies how an agent can learn to make sequential
-decisions in an interactive environment. This is a very general problem!
-How can we *formalize* this task in a way that is both *sufficiently
-general* yet also tractable enough for *fruitful analysis*?
+The field of RL studies how an agent can learn to make sequential decisions in an interactive environment. This is a very general problem! How can we *formalize* this task in a way that is both *sufficiently general* yet also tractable enough for *fruitful analysis*?
 
-Let’s consider some examples of sequential decision problems to identify
-the key common properties we’d like to capture:
+Let’s consider some examples of sequential decision problems to identify the key common properties we’d like to capture:
 
 -   **Board games** like chess or Go, where the player takes turns with
     the opponent to make moves on the board.
 
--   **Video games** like Super Mario Bros or Breakout, where the player
+-   **Video games** like Breakout, where the player
     controls a character to reach the goal.
 
 -   **Robotic control**, where the robot can move and interact with the
     real-world environment to complete some task.
 
-All of these fit into the RL framework. Furthermore, these are
-environments where the **state transitions**, the “rules” of the
-environment, only depend on the *most recent* state and action. This is
-called the **Markov property**.
+All of these fit into the RL framework. Furthermore, these are environments where the **state transitions**, the “rules” of the environment, only depend on the *most recent* state and action. This is called the **Markov property**.
 
 :::{prf:definition} Markov property
 :label: markov
@@ -68,10 +61,12 @@ and algorithms. Environments with the Markov property are called
 **Markov decision processes** (MDPs) and will be the focus of this
 chapter.
 
-**Exercise:** What information might be encoded in the state for each of
+:::{attention}
+What information might be encoded in the state for each of
 the above examples? What might the valid set of actions be? Describe the
 state transitions heuristically and verify that they satisfy the Markov
 property.
+:::
 
 MDPs are usually classified as **finite-horizon**, where the
 interactions end after some finite number of time steps, or

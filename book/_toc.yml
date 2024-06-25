@@ -2,17 +2,17 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 
 format: jb-book
-root: index
+root: index.md
 options:
   numbered: 2
 chapters:
-  - file: 1_intro/intro
-  - file: 2_bandits/bandits
-  - file: 3_mdps/mdps
-  - file: 4_fitted_dp/fitted_dp
-  - file: 5_control/control
-  - file: 6_pg/pg
-  - file: 7_exploration/exploration
+  - file: 1_intro/intro.md
+  - file: 2_bandits/bandits.md
+  - file: 3_mdps/mdps.md
+  - file: 4_fitted_dp/fitted_dp.md
+  - file: 5_control/control.md
+  - file: 6_pg/pg.md
+  - file: 7_exploration/exploration.md
 # - file: challenges
 # - file: appendix
-  - file: bibliography
+  - file: bibliography.md

@@ -12,7 +12,7 @@ kernelspec:
 ---
 
 (fitted_dp)=
-# Fitted dynamic programming algorithms
+# Fitted Dynamic Programming Algorithms
 
 ```{contents}
 :local:
