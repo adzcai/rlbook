@@ -46,3 +46,6 @@ debug:
 
 sync: $(NOTEBOOKS)
 	$(RUN) jupytext --sync $(NOTEBOOKS)
+
+lab:
+	$(RUN) jupyter lab

@@ -14,12 +14,28 @@ kernelspec:
 (bandits)=
 # Multi-Armed Bandits
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [hide-input]
 
-from jaxtyping import Float
+from jaxtyping import Float, Array
 import numpy as np
+from bokeh.plotting import figure, show, output_notebook
+import latexify
 from abc import ABC, abstractmethod  # "Abstract Base Class"
+from typing import Type, Sequence, Callable, Union
+
+output_notebook()  # set up bokeh
+
+def random_argmax(ary: Array) -> int:
+    max_idx = np.flatnonzero(ary == ary.max())
+    return np.random.choice(max_idx).item()
+
+def choose_zero(ary: Float[Array, "K"]) -> Union[int, None]:
+    min_idx = np.flatnonzero(ary == 0)
+    if min_idx.size > 0:
+        return np.random.choice(min_idx).item()
+    else:
+        return None
 ```
 
 The **multi-armed bandits** (MAB) setting is a simple setting for studying the basic challenges of RL. In this setting, an agent repeatedly chooses from a fixed set of actions, called **arms**, each of which has an associated reward distribution. The agent’s goal is to maximize the total reward it receives over some time period.
@@ -33,91 +49,82 @@ In particular, we’ll spend a lot of time discussing the **Exploration-Exploita
 ::::{prf:example} Online advertising
 :label: advertising
 
-Let’s suppose you, the agent, are an advertising company. You have $K$
-different ads that you can show to users; For concreteness, let’s
-suppose there’s just a single user. You receive $1$ reward if the user
-clicks the ad, and $0$ otherwise. Thus, the unknown *reward
-distribution* associated to each ad is a Bernoulli distribution defined
-by the probability that the user clicks on the ad. Your goal is to
-maximize the total number of clicks by the user.
+Let’s suppose you, the agent, are an advertising company. You have $K$ different ads that you can show to users; For concreteness, let’s suppose there’s just a single user. You receive $1$ reward if the user clicks the ad, and $0$ otherwise. Thus, the unknown *reward distribution* associated to each ad is a Bernoulli distribution defined by the probability that the user clicks on the ad. Your goal is to maximize the total number of clicks by the user.
 ::::
 
 ::::{prf:example} Clinical trials
 :label: clinical_trials
 
-Suppose you’re a pharmaceutical company, and you’re testing a new drug.
-You have $K$ different dosages of the drug that you can administer to
-patients. You receive $1$ reward if the patient recovers, and $0$
-otherwise. Thus, the unknown *reward distribution* associated to each
-dosage is a Bernoulli distribution defined by the probability that the
-patient recovers. Your goal is to maximize the total number of patients
-that recover.
+Suppose you’re a pharmaceutical company, and you’re testing a new drug. You have $K$ different dosages of the drug that you can administer to patients. You receive $1$ reward if the patient recovers, and $0$ otherwise. Thus, the unknown *reward distribution* associated to each dosage is a Bernoulli distribution defined by the probability that the patient recovers. Your goal is to maximize the total number of patients that recover.
 ::::
 
-In this chapter, we will introduce the multi-armed bandits setting, and
-discuss some of the challenges that arise when trying to solve problems
-in this setting. We will also introduce some of the key concepts that we
-will use throughout the book, such as regret and
-exploration-exploitation tradeoffs.
+In this chapter, we will introduce the multi-armed bandits setting, and discuss some of the challenges that arise when trying to solve problems in this setting. We will also introduce some of the key concepts that we will use throughout the book, such as regret and exploration-exploitation tradeoffs.
+
++++
 
 ## Introduction
 
 ::::{prf:remark} Namesake
 :label: multi-armed
 
-The name “multi-armed bandits” comes from slot machines in casinos,
-which are often called “one-armed bandits” since they have one arm (the
-lever) and take money from the player.
+The name “multi-armed bandits” comes from slot machines in casinos, which are often called “one-armed bandits” since they have one arm (the lever) and take money from the player.
 ::::
 
-Let $K$ denote the number of arms. We’ll label them $0, \dots, K-1$ and
-use *superscripts* to indicate the arm index; since we seldom need to
-raise a number to a power, this hopefully won’t cause much confusion.
-For simplicity, we’ll assume rewards are *bounded* between $0$ and $1$.
-Then each arm has an unknown reward distribution
-$\nu^k \in \Delta([0, 1])$ with mean $\mu^k = \E_{r \sim \nu^k} [r]$.
+Let $K$ denote the number of arms. We’ll label them $0, \dots, K-1$ and use *superscripts* to indicate the arm index; since we seldom need to raise a number to a power, this won’t cause much confusion. In this chapter, we’ll consider the **Bernoulli bandit** setting from the examples above, where arm $k$ either returns reward $1$ with probability $\mu^k$ or $0$ otherwise. The agent gets to pull an arm $T$ times in total. We can formalize the Bernoulli bandit in the following Python code:
+
+```{code-cell} ipython3
+class MAB:
+    """
+    The Bernoulli multi-armed bandit environment.
+
+    :param means: the means (success probabilities) of the reward distributions for each arm
+    :param T: the time horizon
+    """
+
+    def __init__(self, means: Float[Array, "K"], T: int):
+        assert all(0 <= p <= 1 for p in means)
+        self.means = means
+        self.T = T
+        self.K = self.means.size
+        self.best_arm = random_argmax(self.means)
+
+    def pull(self, k: int) -> int:
+        """Pull the `k`-th arm and sample from its (Bernoulli) reward distribution."""
+        reward = np.random.rand() < self.means[k].item()
+        return +reward
+```
+
+```{code-cell} ipython3
+mab = MAB(means=np.array([0.1, 0.8, 0.4]), T=184)
+```
+
+<!-- rewards are *bounded* between $0$ and $1$. Then each arm has an unknown reward distribution $\nu^k \in \Delta([0, 1])$ with mean $\mu^k = \E_{r \sim \nu^k} [r]$. -->
 
 In pseudocode, the agent’s interaction with the MAB environment can be
 described by the following process:
 
-```{code-cell}
-def mab_loop(mab: "MAB", agent: "Agent"):
-    agent.init(mab.K, mab.T)
+```{code-cell} ipython3
+@latexify.algorithmic(prefixes={"mab"}, identifiers={"arm": "a", "reward": "r", "means": "mu"}, use_math_symbols=True)
+def mab_loop(mab: MAB, agent: "Agent") -> int:
     for t in range(mab.T):
         arm = agent.choose_arm()  # in 0, ..., K-1
         reward = mab.pull(arm)
         agent.update_history(arm, reward)
+
+mab_loop
 ```
 
-where we define the `MAB` and `Agent` classes as follows:
+The `Agent` class stores the pull history and uses it to decide which arm to pull next. Since we are working with Bernoulli bandits, we can summarize the pull history concisely in a $\mathbb{N}^{K \times 2}$ array.
 
-```{code-cell}
-class BernoulliMAB:
-    def __init__(self, μ: Float[np.ndarray, "K"], T: int):
-        """
-        The Bernoulli multi-armed bandit environment.
-        The mean (i.e. success probability) of the `k`-th arm is `μ[k]`.
-
-        :param μ: the means of the reward distributions for each arm
-        :param T: the time horizon
-        """
-        self.μ = μ
-        self.T = T
-
-    @property
-    def K(self):
-        return self.μ.size
-
-    def pull(self, k: int) -> bool:
-        """Pull the `k`-th arm and return the reward."""
-        return np.random.rand() < self.μ[k]
-
+```{code-cell} ipython3
 class Agent(ABC):
     def __init__(self, K: int, T: int):
         """The MAB agent that decides how to choose an arm given the past history."""
         self.K = K
         self.T = T
-        self.history = np.zeros((mab.K, 2))
+        self.rewards = []  # for plotting
+        self.choices = []
+        self.history = np.zeros((K, 2), dtype=int)
 
     @abstractmethod
     def choose_arm(self) -> int:
@@ -125,17 +132,21 @@ class Agent(ABC):
         ...
 
     @property
-    def step(self):
-        return self.history.sum()
+    def count(self) -> int:
+        """The number of pulls made."""
+        return len(self.rewards)
 
-    def update_history(self, arm: int, reward: bool):
-        self.history[arm, +reward] += 1
+    def update_history(self, arm: int, reward: int):
+        self.rewards.append(reward)
+        self.choices.append(arm)
+        self.history[arm, reward] += 1
 ```
 
 What’s the *optimal* strategy for the agent, i.e. the one that achieves
 the highest expected reward? Convince yourself that the agent should try
-to always pull the arm with the highest expected reward
-$\mu^\star := \max_{k \in [K]} \mu^k$.
+to always pull the arm with the highest expected reward:
+
+$$\mu^\star := \max_{k \in [K]} \mu^k.$$
 
 The goal, then, can be rephrased as to minimize the **regret**, defined
 below:
@@ -148,6 +159,15 @@ The agent’s **regret** after $T$ timesteps is defined as
 $$
 \text{Regret}_T := \sum_{t=0}^{T-1} \mu^\star - \mu^{a_t}.
 $$
+::::
+
+```{code-cell} ipython3
+def regret_per_step(self: MAB, agent: Agent):
+    """Get the difference from the average reward of the optimal arm. The sum of these is the regret."""
+    return [self.means[self.best_arm] - self.means[arm] for arm in agent.choices]
+
+MAB.regret_per_step = regret_per_step
+```
 
 Note that this depends on the *true means* of the pulled arms, *not* the actual
 observed rewards.
@@ -158,41 +178,47 @@ actions $a_0, \dots, a_{T-1}$).
 Throughout the chapter, we will try to upper bound the regret of various
 algorithms in two different senses:
 
-1.  Upper bound the *expected* regret, i.e. show
+1.  Upper bound the *expected regret,* i.e. show
     $\E[\text{Regret}_T] \le M_T$.
 
-2.  Find a high-probability upper bound on the regret, i.e. show
+2.  Find a *high-probability* upper bound on the regret, i.e. show
     $\P(\text{Regret}_T \le M_{T, \delta}) \ge 1-\delta$.
 
-Note that these two different approaches say very different things about
-the regret. The first approach says that the *average* regret is at most
-$M_T$. However, the agent might still achieve higher regret on many
-runs. The second approach says that, *with high probability*, the agent
-will achieve regret at most $M_{T, \delta}$. However, it doesn’t say
-anything about the regret in the remaining $\delta$ fraction of runs,
-which might be arbitrarily high.
-::::
+Note that these two different approaches say very different things about the regret. The first approach says that the *average* regret is at most $M_T$. However, the agent might still achieve higher regret on many runs. The second approach says that, *with high probability*, the agent will achieve regret at most $M_{T, \delta}$. However, it doesn’t say anything about the regret in the remaining $\delta$ fraction of runs, which might be arbitrarily high.
 
-We’d like to achieve **sublinear regret** in expectation, i.e.
-$\E[\text{Regret}_T] = o(T)$. That is, as we learn more about the
-environment, we’d like to be able to exploit that knowledge to achieve
-higher rewards.
+We’d like to achieve **sublinear regret** in expectation, i.e. $\E[\text{Regret}_T] = o(T)$. That is, as we learn more about the environment, we’d like to be able to exploit that knowledge to take the optimal arm as often as possible.
 
 The rest of the chapter comprises a series of increasingly sophisticated
 MAB algorithms.
+
+```{code-cell} ipython3
+def plot_strategy(mab: MAB, agent: Agent):
+    p = figure(title=f"{agent.__class__.__name__} regret", x_axis_label="timestep")
+    p.line(np.arange(mab.T), np.cumsum(agent.rewards), legend_label="reward")
+    cum_regret = np.cumsum(mab.regret_per_step(agent))
+    p.line(np.arange(mab.T), cum_regret, legend_label="cumulative regret", line_color="orange")
+    colors = ['red', 'green', 'blue']
+    p.circle(np.arange(mab.T), np.zeros(mab.T), radius=0.5, color=[colors[k] for k in agent.choices], legend_label="arm")
+    show(p)
+```
 
 ## Pure exploration (random guessing)
 
 A trivial strategy is to always choose arms at random (i.e. "pure
 exploration").
 
-```{code-cell}
+```{code-cell} ipython3
 :label: pure_exploration
 
 class PureExploration(Agent):
     def choose_arm(self):
         """Choose an arm uniformly at random."""
-        return np.random.randint(self.step)
+        return np.random.randint(self.K)
+```
+
+```{code-cell} ipython3
+agent = PureExploration(mab.K, mab.T)
+mab_loop(mab, agent)
 ```
 
 Note that
@@ -210,9 +236,11 @@ $$
 \end{align}
 $$
 
-This scales as $\Theta(T)$, i.e. *linear* in the number
-of timesteps $T$. There’s no learning here: the agent doesn’t use any
-information about the environment to improve its strategy.
+This scales as $\Theta(T)$, i.e. *linear* in the number of timesteps $T$. There’s no learning here: the agent doesn’t use any information about the environment to improve its strategy. You can see that the distribution over its arm choices always appears "(uniformly) random".
+
+```{code-cell} ipython3
+plot_strategy(mab, agent)
+```
 
 ## Pure greedy
 
@@ -220,20 +248,20 @@ How might we improve on pure exploration? Instead, we could try each arm
 once, and then commit to the one with the highest observed reward. We’ll
 call this the **pure greedy** strategy.
 
-```{code-cell}
+```{code-cell} ipython3
 :label: pure_greedy
 
 class PureGreedy(Agent):
     def choose_arm(self):
-        """Choose the arm with the highest observed reward."""
-        if self.step < self.K:
+        """Choose the arm with the highest observed reward on its first pull."""
+        if self.count < self.K:
             # first K steps: choose each arm once
-            return self.step
+            return self.count
 
-        if self.step == self.K:
+        if self.count == self.K:
             # after the first K steps: choose the arm with the highest observed reward
-            self.greedy_arm = np.argmax(self.history[:, 1])
-
+            self.greedy_arm = random_argmax(self.history[:, 1])
+        
         return self.greedy_arm
 ```
 
@@ -259,42 +287,56 @@ $$
 \end{align}
 $$
 
-Which is still $\Theta(T)$, the same as pure exploration! Can we do
-better?
+Which is still $\Theta(T)$, the same as pure exploration!
+
+```{code-cell} ipython3
+agent = PureGreedy(mab.K, mab.T)
+mab_loop(mab, agent)
+plot_strategy(mab, agent)
+```
+
+The cumulative regret is a straight line because the regret only depends on the arms chosen and not the actual reward observed. In fact, if the greedy algorithm happens to get lucky on the first set of pulls, it may act entirely optimally for that episode! But its _average_ regret is what measures its effectiveness.
+
++++
 
 (etc)=
 ## Explore-then-commit
 
-We can improve the pure greedy algorithm as follows: let’s reduce the
-variance of the reward estimates by pulling each arm
-$N_{\text{explore}}> 1$ times before committing. This is called the
-**explore-then-commit** strategy.
+We can improve the pure greedy algorithm as follows: let’s reduce the variance of the reward estimates by pulling each arm $N_{\text{explore}}> 1$ times before committing. This is called the **explore-then-commit** strategy. Note that the “pure greedy” strategy above is just the special case where
+$N_{\text{explore}}= 1$.
 
-```{code-cell}
+```{code-cell} ipython3
 class ExploreThenCommit(Agent):
     def __init__(self, K: int, T: int, N_explore: int):
         super().__init__(K, T)
         self.N_explore = N_explore
 
     def choose_arm(self):
-        if self.step < self.K * self.N_explore:
+        if self.count < self.K * self.N_explore:
             # exploration phase: choose each arm N_explore times
-            return self.step // self.N_explore
+            return self.count // self.N_explore
 
         # exploitation phase: choose the arm with the highest observed reward
-        if self.step == self.K * self.N_explore:
-            self.greedy_arm = np.argmax(self.history[:, 1])
+        if self.count == self.K * self.N_explore:
+            self.greedy_arm = random_argmax(self.history[:, 1])
 
         return self.greedy_arm
 ```
 
-(Note that the “pure greedy” strategy is just the special case where
-$N_{\text{explore}}= 1$.)
+```{code-cell} ipython3
+agent = ExploreThenCommit(mab.K, mab.T, mab.T // 15)
+mab_loop(mab, agent)
+plot_strategy(mab, agent)
+```
+
+Notice that now, the graphs are much more consistent, and the algorithm finds the true optimal arm and sticks with it much more frequently. We would expect ETC to then have a better (i.e. lower) average regret. Can we prove this?
+
++++
 
 (etc-regret-analysis)=
 ### ETC regret analysis
 
-Let’s analyze the expected regret of this strategy by splitting it up
+Let’s analyze the expected regret of the explore-then-commit strategy by splitting it up
 into the exploration and exploitation phases.
 
 #### Exploration phase.
@@ -305,9 +347,9 @@ $N_{\text{explore}}K$.
 
 #### Exploitation phase.
 
-This will take a bit more effort. We’ll prove that for any total time
-$T$, we can choose $N_{\text{explore}}$ such that with arbitrarily high
-probability, the regret is sublinear. We know the regret from the
+This will take a bit more effort. We’ll prove that for any total time $T$, we can choose $N_{\text{explore}}$ such that with arbitrarily high probability, the regret is sublinear.
+
+Let $\hat k$ denote the arm chosen after the exploration phase. We know the regret from the
 exploitation phase is
 
 $$T_{\text{exploit}} (\mu^\star - \mu^{\hat k}) \qquad \text{where} \qquad T_{\text{exploit}} := T - N_{\text{explore}}K.$$
@@ -330,9 +372,9 @@ $\delta > 0$,
 $$\P\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| > \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.$$
 :::
 
-(The proof of this inequality is beyond the scope of this book.) We can
-apply this directly to the rewards for a given arm $k$, since the
-rewards from that arm are i.i.d.:
+The proof of this inequality is beyond the scope of this book. See {cite}`vershynin_high-dimensional_2018` Chapter 2.2.
+
+We can apply this directly to the rewards for a given arm $k$, since the rewards from that arm are i.i.d.:
 
 :::{math}
 :label: "hoeffding-etc"
@@ -414,6 +456,8 @@ exploration to exploitation after a fixed number of timesteps. In
 practice, it’s often better to use a more gradual transition, which
 brings us to the *epsilon-greedy* algorithm.
 
++++
+
 ## Epsilon-greedy
 
 Instead of doing all of the exploration and then all of the exploitation
@@ -422,33 +466,42 @@ beforehand – we can instead interleave exploration and exploitation by,
 at each timestep, choosing a random action with some probability. We
 call this the **epsilon-greedy** algorithm.
 
-:::{prf:definition} Epsilon-greedy
-:label: epsilon_greedy
+```{code-cell} ipython3
+class EpsilonGreedy(Agent):
+    def __init__(self, K: int, T: int, get_epsilon: Callable[[int], float]):
+        super().__init__(K, T)
+        self.get_epsilon = get_epsilon
 
-**Input:** $\epsilon : \mathbb{N} \to [0, 1]$ $S^k \gets 0$ for each
-$k \in [K]$ $N^k \gets 0$ for each $k \in [K]$ $k \sim \text{Unif}([K])$
-$k \gets \arg \max_k \left(\frac{S^k}{N^k}\right)$ $r_t \sim \nu^k$
-$S^k \gets S^k + r_t$ $N^k \gets N^k + 1$
-:::
+    def choose_arm(self):
+        epsilon = self.get_epsilon(self.count)
+        if np.random.random() < epsilon:
+            return np.random.randint(0, self.K - 1)
+        else:
+            counts = self.history.sum(axis=1)
+            unvisited = choose_zero(counts)
+            if unvisited is not None:
+                return unvisited
+            sample_means = self.history[:, 1] / counts
+            return random_argmax(sample_means)
+```
 
-Note that we let $\epsilon$ vary over time. In particular we might want
-to gradually *decrease* $\epsilon$ as we learn more about the reward
-distributions over time.
+```{code-cell} ipython3
+agent = EpsilonGreedy(mab.K, mab.T, lambda t: 0.1)
+mab_loop(mab, agent)
+plot_strategy(mab, agent)
+```
 
-It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also
-achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the
-logarithmic factors). (We will not prove this here.)
+Note that we let $\epsilon$ vary over time. In particular, we might want to gradually *decrease* $\epsilon$ as we learn more about the reward distributions and no longer need to spend time exploring.
 
-In ETC, we had to set $N_{\text{explore}}$ based on the total number of
-timesteps $T$. But the epsilon-greedy algorithm actually handles the
-exploration *automatically*: the regret rate holds for *any* $t$, and
-doesn’t depend on the final horizon $T$.
+It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors). (We will not prove this here.) TODO ADD PROOF CITATION
 
-But the way these algorithms explore is rather naive: we’ve been
-exploring *uniformly* across all the arms. But what if we could be
-smarter about it, and explore *more* for arms that we’re less certain
-about?
+In ETC, we had to set $N_{\text{explore}}$ based on the total number of timesteps $T$. But the epsilon-greedy algorithm actually handles the exploration *automatically*: the regret rate holds for *any* $t$, and doesn’t depend on the final horizon $T$.
 
+But the way these algorithms explore is rather naive: we’ve been exploring *uniformly* across all the arms. But what if we could be smarter about it, and explore *more* for arms that we’re less certain about?
+
++++
+
+(ucb)=
 ## Upper Confidence Bound (UCB)
 
 To quantify how *certain* we are about the mean of each arm, we’ll
@@ -506,8 +559,7 @@ $$
 \end{align}
 $$
 
-In particular, since $N^k_t \le t$, and
-$\tilde \mu^k_{N^k_t} = \hat \mu^k_t$ by definition, we have
+In particular, since $N^k_t \le t$, and $\tilde \mu^k_{N^k_t} = \hat \mu^k_t$ by definition, we have
 
 $$
 \begin{align}
@@ -515,26 +567,28 @@ $$
 \end{align}
 $$
 
-This bound would then suffice for applying the UCB
-algorithm! That is, the upper confidence bound for arm $k$ would be
-$$M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},$$ where
-we can choose $\delta'$ depending on how tight we want the interval to
-be. A smaller $\delta'$ would give us a larger yet higher-confidence
-interval, and vice versa. We can now use this to define the UCB
-algorithm.
+This bound would then suffice for applying the UCB algorithm! That is, the upper confidence bound for arm $k$ would be
 
-:::{prf:definition} Upper Confidence Bound (UCB)
-:label: ucb
+$$M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},$$
 
-**Input:** $\delta' \in (0, 1)$
-$k \gets \arg \max_{k' \in [K]} \frac{S^{k'}}{N^{k'}} + \sqrt{\frac{\ln(2t/\delta')}{2 N^{k'}}}$
-$r_t \sim \nu^k$ $S^k \gets S^k + r_t$ $N^k \gets N^k + 1$
+where we can choose $\delta'$ depending on how tight we want the interval to be. A smaller $\delta'$ would give us a larger and higher-confidence interval, and vice versa. We can now use this to define the UCB algorithm.
 
-:::
+```{code-cell} ipython3
+class UCB(Agent):
+    def __init__(self, K: int, T: int, delta: float):
+        super().__init__(K, T)
+        self.delta = delta
 
-**Exercise:** As written, this ignores the issue that we divide by
-$N^k = 0$ for all arms at the beginning. How should we resolve this
-issue?
+    def choose_arm(self):
+        counts = self.history.sum(axis=1)
+        unvisited = choose_zero(counts)
+        if unvisited is not None:
+            return unvisited
+        sample_means = self.history[:, 1] / counts
+        bounds = np.sqrt(np.log(2 * self.count / self.delta) / (2 * counts))
+        ucbs = sample_means + bounds
+        return random_argmax(ucbs)
+```
 
 Intuitively, UCB prioritizes arms where:
 
@@ -546,6 +600,12 @@ Intuitively, UCB prioritizes arms where:
 
 As desired, this explores in a smarter, *adaptive* way compared to the
 previous algorithms. Does it achieve lower regret?
+
+```{code-cell} ipython3
+agent = UCB(mab.K, mab.T, 0.05)
+mab_loop(mab, agent)
+plot_strategy(mab, agent)
+```
 
 ### UCB regret analysis
 
@@ -605,6 +665,8 @@ $$
 In fact, we can do a more sophisticated analysis to trim off a factor of
 $\sqrt{K}$ and show $\text{Regret}_T = \tilde O(\sqrt{TK})$.
 
++++
+
 ### Lower bound on regret (intuition)
 
 Is it possible to do better than $\Omega(\sqrt{T})$ in general? In fact,
@@ -623,6 +685,9 @@ won’t be able to confidently tell them apart, and will sample them about
 equally. But then we’ll incur regret
 $$\Omega((T/2) \cdot (1/\sqrt{T})) = \Omega(\sqrt{T}).$$
 
++++
+
+(thompson_sampling)=
 ## Thompson sampling and Bayesian bandits
 
 So far, we’ve treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the
@@ -637,14 +702,29 @@ From this Bayesian perspective, the **Thompson sampling** algorithm
 follows naturally: just sample from the distribution of the optimal arm,
 given the observations!
 
-:::{prf:definition} Thompson sampling
-:label: thompson_sampling
+```{code-cell} ipython3
+class Distribution(ABC):
+    @abstractmethod
+    def sample(self) -> Float[Array, "K"]:
+        ...
 
-**Input:** the prior distribution $\pi \in \Delta([0, 1]^K)$
-$\boldsymbol{\mu}\sim \pi(\cdot \mid a_0, r_0, \dots, a_{t-1}, r_{t-1})$
-$a_t \gets \arg \max_{k \in [K]} \mu^k$ $r_t \sim \nu^{a_t}$
+    @abstractmethod
+    def update(self, arm: int, reward: float):
+        ...
 
-:::
+class ThompsonSampling(Agent):
+    def __init__(self, K: int, T: int, prior: Distribution):
+        super().__init__(K, T)
+        self.distribution = prior
+
+    def choose_arm(self):
+        means = self.distribution.sample()
+        return random_argmax(means)
+
+    def update_history(self, arm: int, reward: int):
+        super().update_history(arm, reward)
+        self.distribution.update(arm, reward)
+```
 
 In other words, we sample each arm proportionally to how likely we think
 it is to be optimal, given the observations so far. This strikes a good
@@ -656,24 +736,16 @@ achieves state-of-the-art performance in many settings.
 :::{prf:example} Bayesian Bernoulli bandit
 :label: bayesian_bernoulli
 
-We’ve often been working in the Bernoulli bandit setting, where arm $k$
-yields a reward of $1$ with probability $\mu^k$ and no reward otherwise.
-The vector of success probabilities
-$\boldsymbol{\mu}= (\mu^1, \dots, \mu^K)$ thus describes the entire MAB.
+We’ve been working in the Bernoulli bandit setting, where arm $k$ yields a reward of $1$ with probability $\mu^k$ and no reward otherwise. The vector of success probabilities $\boldsymbol{\mu} = (\mu^1, \dots, \mu^K)$ thus describes the entire MAB.
 
-Under the Bayesian perspective, we think of $\boldsymbol{\mu}$ as a
-*random* vector drawn from some prior distribution
-$\pi(\boldsymbol{\mu})$. For example, we might have $\pi$ be the Uniform
-distribution over the unit hypercube $[0, 1]^K$, that is,
+Under the Bayesian perspective, we think of $\boldsymbol{\mu}$ as a *random* vector drawn from some prior distribution $\pi(\boldsymbol{\mu})$. For example, we might have $\pi$ be the Uniform distribution over the unit hypercube $[0, 1]^K$, that is,
 
 $$\pi(\boldsymbol{\mu}) = \begin{cases}
     1 & \text{if } \boldsymbol{\mu}\in [0, 1]^K \\
     0 & \text{otherwise}
 \end{cases}$$
 
-Then, upon viewing some reward, we can exactly
-calculate the **posterior** distribution of $\boldsymbol{\mu}$ using
-Bayes’s rule (i.e. the definition of conditional probability):
+In this case, upon viewing some reward, we can exactly calculate the **posterior** distribution of $\boldsymbol{\mu}$ using Bayes’s rule (i.e. the definition of conditional probability):
 
 $$
     \begin{align*}
@@ -693,6 +765,27 @@ distribution upon observing a reward, rather than having to recompute
 the entire posterior distribution from scratch.
 :::
 
+```{code-cell} ipython3
+class Beta(Distribution):
+    def __init__(self, K: int, alpha: int = 1, beta: int = 1):
+        self.alphas = np.full(K, alpha)
+        self.betas = np.full(K, beta)
+
+    def sample(self):
+        return np.random.beta(self.alphas, self.betas)
+
+    def update(self, arm: int, reward: int):
+        self.alphas[arm] += reward
+        self.betas[arm] += 1 - reward
+```
+
+```{code-cell} ipython3
+beta_distribution = Beta(mab.K)
+agent = ThompsonSampling(mab.K, mab.T, beta_distribution)
+mab_loop(mab, agent)
+plot_strategy(mab, agent)
+```
+
 It turns out that asymptotically, Thompson sampling is optimal in the
 following sense. {cite}`lai_asymptotically_1985` prove an
 *instance-dependent* lower bound that says for *any* bandit algorithm,
@@ -709,7 +802,7 @@ $\mu^\star$. It turns out that Thompson sampling achieves this lower
 bound with equality! That is, not only is the error *rate* optimal, but
 the *constant factor* is optimal as well.
 
-
++++
 
 ## Contextual bandits
 
@@ -731,6 +824,8 @@ context-dependent policy $\pi_t(x_t)$. Then, the learner observes the
 reward from the chosen arm $r_t \sim \nu^{a_t}(x_t)$. The reward
 distribution also depends on the context.
 :::
+
++++
 
 Assuming our context is *discrete*, we can just perform the same
 algorithms, treating each context-arm pair as its own arm. This gives us
@@ -755,16 +850,18 @@ to each other in some way: for example, we might want to advertise
 similar products to users with similar preferences. How can we
 incorporate this structure into our solution?
 
++++
+
 ### Linear contextual bandits
 
 We want to model the *mean reward* of arm $k$ as a function of the
 context, i.e. $\mu^k(x)$. One simple model is the *linear* one:
-$\mu^k(x) = x^\top \theta^k$, where $x \in \mathcal{X} = \R^d$ and
-$\theta^k \in \R^d$ describes a *feature direction* for arm $k$. Recall
+$\mu^k(x) = x^\top \theta^k$, where $x \in \mathcal{X} = \mathbb{R}^d$ and
+$\theta^k \in \mathbb{R}^d$ describes a *feature direction* for arm $k$. Recall
 that **supervised learning** gives us a way to estimate a conditional
 expectation from samples: We learn a *least squares* estimator from the
 timesteps where arm $k$ was selected:
-$$\hat \theta_t^k = \argmin_{\theta \in \R^d} \sum_{\{ i \in [t] : a_i = k \}} (r_i - x_i^\top \theta)^2.$$
+$$\hat \theta_t^k = \argmin_{\theta \in \mathbb{R}^d} \sum_{\{ i \in [t] : a_i = k \}} (r_i - x_i^\top \theta)^2.$$
 This has the closed-form solution known as the *ordinary least squares*
 (OLS) estimator:
 
@@ -843,3 +940,7 @@ and the probability $\delta$ with which the bound holds.
 
 Using similar tools for UCB, we can also prove an $\tilde{O}(\sqrt{T})$
 regret bound. The full details of the analysis can be found in Section 3 of {cite}`agarwal_reinforcement_2022`.
+
+```{code-cell} ipython3
+
+```

@@ -46,7 +46,8 @@ sphinx:
         \newcommand{\hor}{H}
         \newcommand{\st}{s}
         \newcommand{\act}{a}
-        \newcommand{\kl}[2]{\mathrm{KL}\left(#1 \parallel #2\right)}
+        \newcommand{\kl}[2]{\mathrm{KL}\left(#1\parallel#2\right)}
+        \newcommand{\ind}[1]{\mathbf{1}\left\{#1\right\}}
 
         \renewcommand{\familydefault}{\sfdefault}
         \onehalfspacing
@@ -59,9 +60,9 @@ sphinx:
           "hor": "H"
           "st": "s"
           "act": "a"
-          "kl": ["\\mathrm{KL}\\left(#1 \\parallel #2\\right)", 2]
+          "kl": ["\\mathrm{KL}\\left(#1\\parallel#2\\right)", 2]
+          "ind": ["\\mathbf{1}\\left\\{#1\\right\\}", 1]
     bibtex_reference_style    : "author_year"
-    mathjax_path              : "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
   extra_extensions:
     - sphinx_proof
 

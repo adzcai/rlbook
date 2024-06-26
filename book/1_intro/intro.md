@@ -80,7 +80,7 @@ reinforcement learning. In this setting, there are multiple arms, each with thei
 {ref}`fitted_dp` introduces **fitted dynamic programming** algorithms for solving MDPs when the state space is too large to be enumerated. These algorithms borrow ideas from supervised learning to approximate the value function (discussed in {ref}`mdps`).
 
 {ref}`lqr` is a standalone chapter on the **linear quadratic regulator**,
-an important tool for *continuous control*, in which the state space is no longer finite (i.e. $|\S| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_s}$).
+an important tool for *continuous control*, in which the state space is no longer finite (i.e. $|\mathcal{S}| < \infty$) but rather continuous (i.e. $|\mathcal{S}| = \mathbb{R}^{n_s}$).
 
 +++
 
@@ -117,8 +117,6 @@ inspired by {cite}`sutton_reinforcement_2018` and {cite}`agarwal_reinforcement_2
 
 ## Programming
 
-This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html). It uses [Python 3.11](https://docs.python.org/3.11/contents.html).
+Why include code in a textbook? We believe that implementing an algorithm is a strong test of your understanding of it; mathematical notation can often abstract away details, while a computer must be given every detailed instruction. We have sought to write concise, readable, idiomatic Python code that is self-contained within each file. This approach is inspired by {cite}`sussman_functional_2013`.
 
-It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for numerical computing. JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem, sustained in large part by the Google DeepMind research group and a large body of open-source contributors.
-
-We use the standard [Gymnasium](https://gymnasium.farama.org/) library for interfacing with RL environments.
+This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html). It uses [Python 3.11](https://docs.python.org/3.11/contents.html). It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for numerical computing. JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem, sustained in large part by the Google DeepMind research group and a large body of open-source contributors. We use the standard [Gymnasium](https://gymnasium.farama.org/) library for interfacing with RL environments.
