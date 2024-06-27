@@ -204,7 +204,9 @@ The score can then be written as $$\nabla \log \pi_\theta(a|s) = \nabla f_\theta
 
 ### Continuous action spaces
 
-Consider a continuous $n$-dimensional action space $\mathcal{A} = \mathbb{R}^n$. Then for a stochastic policy, we could use a function to predict the *mean* action and then add some random noise about it. For example, we could use a neural network to predict the mean action $\mu_\theta(s)$ and then add some noise $\epsilon \sim \mathcal{N}(0, \sigma^2 I)$ to it: $$\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).$$
+Consider a continuous $n$-dimensional action space $\mathcal{A} = \mathbb{R}^n$. Then for a stochastic policy, we could use a function to predict the *mean* action and then add some random noise about it. For example, we could use a neural network to predict the mean action $\mu_\theta(s)$ and then add some noise $\epsilon \sim \mathcal{N}(0, \sigma^2 I)$ to it:
+
+$$\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).$$
 
 **Exercise:** Can you extend the "linear in features" policy to continuous action spaces in a similar way?
 
@@ -229,14 +231,20 @@ To analyze the difference between them, we'll make use of the **performance diff
 
 Let $\rho_{\pi, s}$ denote the distribution induced by the policy $\pi$ over trajectories starting in state $s$.
 
-Given two policies $\pi, \tilde pi$, the PDL allows us to express the difference between their value functions as follows: $$V_0^{\tilde \pi}(s) - V_0^\pi(s) = \E_{\tau \sim \rho_{\tilde \pi, s}} \left[ \sum_{h=0}^{H-1} A_h^\pi (s_h, a_h) \right]$$
+Given two policies $\pi, \tilde pi$, the PDL allows us to express the difference between their value functions as follows:
+
+$$V_0^{\tilde \pi}(s) - V_0^\pi(s) = \E_{\tau \sim \rho_{\tilde \pi, s}} \left[ \sum_{h=0}^{H-1} A_h^\pi (s_h, a_h) \right]$$
 
 Some intuition: Recall that $A^\pi_h(s, a)$ tells us how much better the action $a$ is in state $s$ than average, supposing actions are chosen according to $\pi$. How much better is $\tilde \pi$ than $\pi$? To answer this, we break down the trajectory step-by-step. At each step, we compute how much better actions from $\tilde \pi$ are than the actions from $\pi$. But this is exactly the average $\pi$-advantage, where the expectation is taken over actions from $\tilde \pi$. This is exactly what the PDL describes.
 :::
 
 Let's analyze why fitted approaches such as PI don't work as well in the RL setting. To start, let's ask, where *do* fitted approaches work well? They are commonly seen in *supervised learning*, where a prediction rule is fit using some labelled training set, and then assessed on a test set from the same distribution. Does this assumption still hold when doing PI?
 
-Let's consider a single iteration of PI. Suppose the new policy $\tilde \pi$ chooses some action with a negative advantage w.r.t. $\pi$. Define $\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_h(s, \tilde \pi(s))$. If this is negative, then the PDL shows that there may exist some state $s$ and time $h$ such that $$V_h^{\tilde \pi}(s) \ge V_h^{\pi}(s) - H \cdot |\Delta_\infty|.$$ In general, PI cannot avoid particularly bad situations where the new policy $\tilde \pi$ often visits these bad states, causing an actual degradation. It does not enforce that the trajectory distributions $\rho_\pi$ and $\rho_{\tilde \pi}$ be close to each other. In other words, the "training distribution" that our prediction rule is fitted on, $\rho_\pi$, may differ significantly from the "evaluation distribution" $\rho_{\tilde \pi}$ --- we must address this issue of *distributional shift*.
+Let's consider a single iteration of PI. Suppose the new policy $\tilde \pi$ chooses some action with a negative advantage w.r.t. $\pi$. Define $\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_h(s, \tilde \pi(s))$. If this is negative, then the PDL shows that there may exist some state $s$ and time $h$ such that
+
+$$V_h^{\tilde \pi}(s) \ge V_h^{\pi}(s) - H \cdot |\Delta_\infty|.$$
+
+In general, PI cannot avoid particularly bad situations where the new policy $\tilde \pi$ often visits these bad states, causing an actual degradation. It does not enforce that the trajectory distributions $\rho_\pi$ and $\rho_{\tilde \pi}$ be close to each other. In other words, the "training distribution" that our prediction rule is fitted on, $\rho_\pi$, may differ significantly from the "evaluation distribution" $\rho_{\tilde \pi}$ --- we must address this issue of *distributional shift*.
 
 How can we enforce that the *trajectory distributions* do not change much at each step? In fact, policy gradient already does this to a small extent: Supposing that the mapping from parameters to trajectory distributions is relatively smooth, then, by adjusting the parameters a small distance from the current iterate, we end up at a new policy with a similar trajectory distribution. But this is not very rigorous, and in practice the parameter-to-distribution mapping may not be smooth. Can we constrain the distance between the resulting distributions more explicitly? This brings us to the next two methods: **trust region policy optimization** (TRPO) and the **natural policy gradient** (NPG).
 
