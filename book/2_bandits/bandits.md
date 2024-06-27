@@ -19,12 +19,17 @@ kernelspec:
 
 from jaxtyping import Float, Array
 import numpy as np
-from bokeh.plotting import figure, show, output_notebook
+# from bokeh.plotting import figure, show, output_notebook
 import latexify
 from abc import ABC, abstractmethod  # "Abstract Base Class"
 from typing import Type, Sequence, Callable, Union
+import matplotlib.pyplot as plt
 
-output_notebook()  # set up bokeh
+np.random.seed(184)
+
+# output_notebook()  # set up bokeh
+
+plt.style.use('fivethirtyeight')
 
 def random_argmax(ary: Array) -> int:
     max_idx = np.flatnonzero(ary == ary.max())
@@ -36,6 +41,8 @@ def choose_zero(ary: Float[Array, "K"]) -> Union[int, None]:
         return np.random.choice(min_idx).item()
     else:
         return None
+
+latex = latexify.algorithmic(prefixes={"mab"}, identifiers={"arm": "a", "reward": "r", "means": "mu"}, use_math_symbols=True)
 ```
 
 The **multi-armed bandits** (MAB) setting is a simple setting for studying the basic challenges of RL. In this setting, an agent repeatedly chooses from a fixed set of actions, called **arms**, each of which has an associated reward distribution. The agent’s goal is to maximize the total reward it receives over some time period.
@@ -95,16 +102,14 @@ class MAB:
 ```
 
 ```{code-cell} ipython3
-mab = MAB(means=np.array([0.1, 0.8, 0.4]), T=184)
+mab = MAB(means=np.array([0.1, 0.8, 0.4]), T=100)
 ```
-
-<!-- rewards are *bounded* between $0$ and $1$. Then each arm has an unknown reward distribution $\nu^k \in \Delta([0, 1])$ with mean $\mu^k = \E_{r \sim \nu^k} [r]$. -->
 
 In pseudocode, the agent’s interaction with the MAB environment can be
 described by the following process:
 
 ```{code-cell} ipython3
-@latexify.algorithmic(prefixes={"mab"}, identifiers={"arm": "a", "reward": "r", "means": "mu"}, use_math_symbols=True)
+@latex
 def mab_loop(mab: MAB, agent: "Agent") -> int:
     for t in range(mab.T):
         arm = agent.choose_arm()  # in 0, ..., K-1
@@ -162,11 +167,9 @@ $$
 ::::
 
 ```{code-cell} ipython3
-def regret_per_step(self: MAB, agent: Agent):
+def regret_per_step(mab: MAB, agent: Agent):
     """Get the difference from the average reward of the optimal arm. The sum of these is the regret."""
-    return [self.means[self.best_arm] - self.means[arm] for arm in agent.choices]
-
-MAB.regret_per_step = regret_per_step
+    return [mab.means[mab.best_arm] - mab.means[arm] for arm in agent.choices]
 ```
 
 Note that this depends on the *true means* of the pulled arms, *not* the actual
@@ -193,13 +196,23 @@ MAB algorithms.
 
 ```{code-cell} ipython3
 def plot_strategy(mab: MAB, agent: Agent):
-    p = figure(title=f"{agent.__class__.__name__} regret", x_axis_label="timestep")
-    p.line(np.arange(mab.T), np.cumsum(agent.rewards), legend_label="reward")
-    cum_regret = np.cumsum(mab.regret_per_step(agent))
-    p.line(np.arange(mab.T), cum_regret, legend_label="cumulative regret", line_color="orange")
+    plt.figure(figsize=(10, 6))
+
+    # plot reward and cumulative regret
+    plt.plot(np.arange(mab.T), np.cumsum(agent.rewards), label='reward')
+    cum_regret = np.cumsum(regret_per_step(mab, agent))
+    plt.plot(np.arange(mab.T), cum_regret, label='cumulative regret')
+    
+    # draw colored circles for arm choices
     colors = ['red', 'green', 'blue']
-    p.circle(np.arange(mab.T), np.zeros(mab.T), radius=0.5, color=[colors[k] for k in agent.choices], legend_label="arm")
-    show(p)
+    color_array = [colors[k] for k in agent.choices]
+    plt.scatter(np.arange(mab.T), np.zeros(mab.T), c=color_array, label='arm')
+
+    # labels and title
+    plt.xlabel('timestep')
+    plt.legend()
+    plt.title(f'{agent.__class__.__name__} reward and regret')
+    plt.show()
 ```
 
 ## Pure exploration (random guessing)
@@ -214,11 +227,6 @@ class PureExploration(Agent):
     def choose_arm(self):
         """Choose an arm uniformly at random."""
         return np.random.randint(self.K)
-```
-
-```{code-cell} ipython3
-agent = PureExploration(mab.K, mab.T)
-mab_loop(mab, agent)
 ```
 
 Note that
@@ -239,6 +247,8 @@ $$
 This scales as $\Theta(T)$, i.e. *linear* in the number of timesteps $T$. There’s no learning here: the agent doesn’t use any information about the environment to improve its strategy. You can see that the distribution over its arm choices always appears "(uniformly) random".
 
 ```{code-cell} ipython3
+agent = PureExploration(mab.K, mab.T)
+mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
@@ -259,7 +269,7 @@ class PureGreedy(Agent):
             return self.count
 
         if self.count == self.K:
-            # after the first K steps: choose the arm with the highest observed reward
+            # after the first K steps, choose the arm with the highest observed reward
             self.greedy_arm = random_argmax(self.history[:, 1])
         
         return self.greedy_arm
@@ -711,7 +721,9 @@ class Distribution(ABC):
     @abstractmethod
     def update(self, arm: int, reward: float):
         ...
+```
 
+```{code-cell} ipython3
 class ThompsonSampling(Agent):
     def __init__(self, K: int, T: int, prior: Distribution):
         super().__init__(K, T)
@@ -852,6 +864,7 @@ incorporate this structure into our solution?
 
 +++
 
+(lin_ucb)=
 ### Linear contextual bandits
 
 We want to model the *mean reward* of arm $k$ as a function of the
@@ -915,31 +928,45 @@ $k$ has not been explored much and so $N_t^k$ is small.
 We can now substitute these quantities into UCB to get the **LinUCB**
 algorithm:
 
-::::{prf:definition} LinUCB
-:label: lin_ucb
+```{code-cell} ipython3
+class LinUCB(Agent):
+    def __init__(self, K: int, T: int, D: int, lam: float, get_c: Callable[[int], float]):
+        super().__init__(K, T)
+        self.lam = lam
+        self.get_c = get_c
+        self.contexts = [None for _ in range(K)]
+        self.A = np.repeat(lam * np.eye(D)[...], K)
+        self.targets = np.zeros(K, D)
+        self.w = np.zeros(K, D)
 
-<!-- TODO :::{algorithmic}
-**Input:** Regularization parameter $\lambda > 0$ **Input:** Confidence
-parameter $c : \mathbb{N} \to [0, \infty)$
-$A_t^k \gets \sum_{i=0}^{t-1} \ind{a_i = k} x_i x_i^\top + \lambda I$
-$\theta_t^k \gets (A_t^k)^{-1} \sum_{i=0}^{t-1} x_i r_i \mathbf{1} \{ a_t = k \}$
-Given context $x_t$ Choose
-$a_t = \argmax_k x_t^\top \hat \theta_t^k + c_t \sqrt{x_t^\top (A_t^k)^{-1} x_t}$
-Observe reward $r_t \sim \nu^{a_t}(x_t)$
-::: -->
+    def choose_arm(self, context: Float[Array, "D"]):
+        c = self.get_c(self.count)
+        scores = self.w @ context + c * np.sqrt(context.T @ np.linalg.solve(self.A, context))
 
-We include a $\lambda I$ regularization term to ensure that $A_t^k$ is
-invertible. This is equivalent to solving a *ridge regression* problem
-instead of the unregularized least squares problem.
+    def update_history(self, context: Float[Array, "D"], arm: int, reward: int):
+        self.A[arm] += np.outer(context, context)
+        self.targets[arm] += context * reward
+        self.w[arm] = np.linalg.solve(self.A[arm], self.targets[arm])
+        
+```
+
+:::{attention}
+Note that the matrix $A_t^k$ above might not be invertible. When does this occur? One way to address this is to include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible. This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem. Implement this solution. TODO SOLUTION CURRENTLY SHOWN
+:::
+
++++
 
 $c_t$ is similar to the $\log (2t/\delta')$ term of UCB: It controls the
 width of the confidence interval. Here, we treat it as a tunable
 parameter, though in a theoretical analysis, it would depend on $A_t^k$
 and the probability $\delta$ with which the bound holds.
-::::
 
 Using similar tools for UCB, we can also prove an $\tilde{O}(\sqrt{T})$
 regret bound. The full details of the analysis can be found in Section 3 of {cite}`agarwal_reinforcement_2022`.
+
++++
+
+## Summary
 
 ```{code-cell} ipython3
 
