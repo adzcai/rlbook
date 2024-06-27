@@ -19,30 +19,38 @@ kernelspec:
 
 from jaxtyping import Float, Array
 import numpy as np
+
 # from bokeh.plotting import figure, show, output_notebook
 import latexify
 from abc import ABC, abstractmethod  # "Abstract Base Class"
-from typing import Type, Sequence, Callable, Union
+from typing import Callable, Union
 import matplotlib.pyplot as plt
 
 np.random.seed(184)
 
 # output_notebook()  # set up bokeh
 
-plt.style.use('fivethirtyeight')
+plt.style.use("fivethirtyeight")
+
 
 def random_argmax(ary: Array) -> int:
     max_idx = np.flatnonzero(ary == ary.max())
     return np.random.choice(max_idx).item()
 
-def choose_zero(ary: Float[Array, "K"]) -> Union[int, None]:
+
+def choose_zero(ary: Float[Array, " K"]) -> Union[int, None]:
     min_idx = np.flatnonzero(ary == 0)
     if min_idx.size > 0:
         return np.random.choice(min_idx).item()
     else:
         return None
 
-latex = latexify.algorithmic(prefixes={"mab"}, identifiers={"arm": "a", "reward": "r", "means": "mu"}, use_math_symbols=True)
+
+latex = latexify.algorithmic(
+    prefixes={"mab"},
+    identifiers={"arm": "a", "reward": "r", "means": "mu"},
+    use_math_symbols=True,
+)
 ```
 
 The **multi-armed bandits** (MAB) setting is a simple setting for studying the basic challenges of RL. In this setting, an agent repeatedly chooses from a fixed set of actions, called **arms**, each of which has an associated reward distribution. The agent’s goal is to maximize the total reward it receives over some time period.
@@ -88,7 +96,7 @@ class MAB:
     :param T: the time horizon
     """
 
-    def __init__(self, means: Float[Array, "K"], T: int):
+    def __init__(self, means: Float[Array, " K"], T: int):
         assert all(0 <= p <= 1 for p in means)
         self.means = means
         self.T = T
@@ -115,6 +123,7 @@ def mab_loop(mab: MAB, agent: "Agent") -> int:
         arm = agent.choose_arm()  # in 0, ..., K-1
         reward = mab.pull(arm)
         agent.update_history(arm, reward)
+
 
 mab_loop
 ```
@@ -199,19 +208,19 @@ def plot_strategy(mab: MAB, agent: Agent):
     plt.figure(figsize=(10, 6))
 
     # plot reward and cumulative regret
-    plt.plot(np.arange(mab.T), np.cumsum(agent.rewards), label='reward')
+    plt.plot(np.arange(mab.T), np.cumsum(agent.rewards), label="reward")
     cum_regret = np.cumsum(regret_per_step(mab, agent))
-    plt.plot(np.arange(mab.T), cum_regret, label='cumulative regret')
-    
+    plt.plot(np.arange(mab.T), cum_regret, label="cumulative regret")
+
     # draw colored circles for arm choices
-    colors = ['red', 'green', 'blue']
+    colors = ["red", "green", "blue"]
     color_array = [colors[k] for k in agent.choices]
-    plt.scatter(np.arange(mab.T), np.zeros(mab.T), c=color_array, label='arm')
+    plt.scatter(np.arange(mab.T), np.zeros(mab.T), c=color_array, label="arm")
 
     # labels and title
-    plt.xlabel('timestep')
+    plt.xlabel("timestep")
     plt.legend()
-    plt.title(f'{agent.__class__.__name__} reward and regret')
+    plt.title(f"{agent.__class__.__name__} reward and regret")
     plt.show()
 ```
 
@@ -271,7 +280,7 @@ class PureGreedy(Agent):
         if self.count == self.K:
             # after the first K steps, choose the arm with the highest observed reward
             self.greedy_arm = random_argmax(self.history[:, 1])
-        
+
         return self.greedy_arm
 ```
 
@@ -715,12 +724,10 @@ given the observations!
 ```{code-cell} ipython3
 class Distribution(ABC):
     @abstractmethod
-    def sample(self) -> Float[Array, "K"]:
-        ...
+    def sample(self) -> Float[Array, " K"]: ...
 
     @abstractmethod
-    def update(self, arm: int, reward: float):
-        ...
+    def update(self, arm: int, reward: float): ...
 ```
 
 ```{code-cell} ipython3
@@ -930,7 +937,9 @@ algorithm:
 
 ```{code-cell} ipython3
 class LinUCB(Agent):
-    def __init__(self, K: int, T: int, D: int, lam: float, get_c: Callable[[int], float]):
+    def __init__(
+        self, K: int, T: int, D: int, lam: float, get_c: Callable[[int], float]
+    ):
         super().__init__(K, T)
         self.lam = lam
         self.get_c = get_c
@@ -939,15 +948,17 @@ class LinUCB(Agent):
         self.targets = np.zeros(K, D)
         self.w = np.zeros(K, D)
 
-    def choose_arm(self, context: Float[Array, "D"]):
+    def choose_arm(self, context: Float[Array, " D"]):
         c = self.get_c(self.count)
-        scores = self.w @ context + c * np.sqrt(context.T @ np.linalg.solve(self.A, context))
+        scores = self.w @ context + c * np.sqrt(
+            context.T @ np.linalg.solve(self.A, context)
+        )
+        return random_argmax(scores)
 
-    def update_history(self, context: Float[Array, "D"], arm: int, reward: int):
+    def update_history(self, context: Float[Array, " D"], arm: int, reward: int):
         self.A[arm] += np.outer(context, context)
         self.targets[arm] += context * reward
         self.w[arm] = np.linalg.solve(self.A[arm], self.targets[arm])
-        
 ```
 
 :::{attention}

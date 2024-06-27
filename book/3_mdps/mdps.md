@@ -21,8 +21,8 @@ kernelspec:
 ```{code-cell}
 :tags: [hide-input]
 
-from typing import NamedTuple, Optional
-from jaxtyping import Float, Int, Array
+from typing import NamedTuple
+from jaxtyping import Float, Array
 import jax.numpy as np
 from jax import vmap
 from functools import partial
@@ -134,7 +134,7 @@ Verify that these types make sense!
 class MDP(NamedTuple):
     S: int  # number of states
     A: int  # number of actions
-    μ: Float[Array, "S"]
+    μ: Float[Array, " S"]
     P: Float[Array, "S A S"]
     r: Float[Array, "S A"]
     H: int
@@ -180,26 +180,30 @@ tidy_mdp = MDP(
     S=2,  # 0 = orderly, 1 = messy
     A=2,  # 0 = ignore, 1 = tidy
     μ=np.array([1.0, 0.0]),  # start in orderly state
-    P=np.array([
+    P=np.array(
         [
-            [0.7, 0.3],  # orderly, ignore
-            [1.0, 0.0],  # orderly, tidy
-        ],
+            [
+                [0.7, 0.3],  # orderly, ignore
+                [1.0, 0.0],  # orderly, tidy
+            ],
+            [
+                [0.0, 1.0],  # messy, ignore
+                [1.0, 0.0],  # messy, tidy
+            ],
+        ]
+    ),
+    r=np.array(
         [
-            [0.0, 1.0],  # messy, ignore
-            [1.0, 0.0],  # messy, tidy
-        ],
-    ]),
-    r=np.array([
-        [
-            1.0,   # orderly, ignore
-            -1.0,  # orderly, tidy
-        ],
-        [
-            -1.0,  # messy, ignore
-            0.0,   # messy, tidy
-        ],
-    ]),
+            [
+                1.0,  # orderly, ignore
+                -1.0,  # orderly, tidy
+            ],
+            [
+                -1.0,  # messy, ignore
+                0.0,  # messy, tidy
+            ],
+        ]
+    ),
     H=7,
 )
 ```
@@ -292,6 +296,7 @@ class Transition(NamedTuple):
     a: int
     r: float
 
+
 Trajectory = list[Transition]
 ```
 
@@ -332,7 +337,7 @@ def trajectory_log_likelihood(mdp: MDP, τ: Trajectory, π: Policy) -> float:
     total = np.log(mdp.μ[τ[0].s])
     total += np.log(π[τ[0].s, τ[0].a])
     for i in range(1, mdp.H):
-        total += np.log(mdp.P[τ[i-1].s, τ[i-1].a, τ[i].s])
+        total += np.log(mdp.P[τ[i - 1].s, τ[i - 1].a, τ[i].s])
         total += np.log(π[τ[i].s, τ[i].a])
     return total
 ```
@@ -381,7 +386,7 @@ $$V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)]$$
 def q_to_v(
     policy: Float[Array, "S A"],
     q: Float[Array, "S A"],
-) -> Float[Array, "S"]:
+) -> Float[Array, " S"]:
     """
     Compute the value function for a given policy in a known finite MDP
     at a single timestep from its action-value function.
@@ -398,7 +403,7 @@ $$Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]$$
 ```{code-cell}
 def v_to_q(
     mdp: MDP,
-    v: Float[Array, "S"],
+    v: Float[Array, " S"],
 ) -> Float[Array, "S A"]:
     """
     Compute the action-value function in a known finite MDP
@@ -406,6 +411,7 @@ def v_to_q(
     """
     # the discount factor is relevant later
     return mdp.r + mdp.γ * mdp.P @ v
+
 
 v_ary_to_q_ary = vmap(v_to_q, in_axes=(None, 0))
 ```
@@ -422,7 +428,8 @@ def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
     """
     return np.eye(q.shape[1])[np.argmax(q, axis=1)]
 
-def v_to_greedy(mdp: MDP, v: Float[Array, "S"]) -> Float[Array, "S A"]:
+
+def v_to_greedy(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, "S A"]:
     """Get the (deterministic) greedy policy w.r.t. a value function."""
     return q_to_greedy(v_to_q(mdp, v))
 ```
@@ -511,11 +518,11 @@ $$[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} 
 ```{code-cell}
 :tags: [hide-input]
 
-def bellman_operator(
+def bellman_operator_looping(
     mdp: MDP,
     policy: Float[Array, "S A"],
-    v: Float[Array, "S"],
-) -> Float[Array, "S"]:
+    v: Float[Array, " S"],
+) -> Float[Array, " S"]:
     """
     Looping definition of the Bellman operator.
     Concise version is below
@@ -524,7 +531,11 @@ def bellman_operator(
     for s in range(mdp.S):
         for a in range(mdp.A):
             for s_next in range(mdp.S):
-                v_new[s] += policy[s, a] * mdp.P[s, a, s_next] * (mdp.r[s, a] + mdp.γ * v[s_next])
+                v_new[s] += (
+                    policy[s, a]
+                    * mdp.P[s, a, s_next]
+                    * (mdp.r[s, a] + mdp.γ * v[s_next])
+                )
     return v_new
 ```
 
@@ -532,8 +543,8 @@ def bellman_operator(
 def bellman_operator(
     mdp: MDP,
     policy: Float[Array, "S A"],
-    v: Float[Array, "S"],
-) -> Float[Array, "S"]:
+    v: Float[Array, " S"],
+) -> Float[Array, " S"]:
     """For a known finite MDP, the Bellman operator can be exactly evaluated."""
     return np.sum(policy * (mdp.r + mdp.γ * mdp.P @ v), axis=1)
     return q_to_v(policy, v_to_q(mdp, v))  # equivalent
@@ -583,8 +594,8 @@ equation to compute the value function at each time step.
 def dp_eval_finite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "H S"]:
     """Evaluate a policy using dynamic programming."""
     V_ary = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
-    for h in range(mdp.H-1, -1, -1):
-        V_ary[h] = bellman_operator(mdp, policy[h], V_ary[h+1])
+    for h in range(mdp.H - 1, -1, -1):
+        V_ary[h] = bellman_operator(mdp, policy[h], V_ary[h + 1])
     return np.stack(V_ary[:-1])
 ```
 
@@ -804,7 +815,7 @@ def find_optimal_policy(mdp: MDP):
         Q[h] = mdp.r + mdp.P @ V[h + 1]
         π[h] = np.eye(mdp.S)[np.argmax(Q[h], axis=1)]  # one-hot
         V[h] = np.max(Q[h], axis=1)
-    
+
     Q = np.stack(Q)
     π = np.stack(π)
     V = np.stack(V[:-1])
@@ -882,7 +893,7 @@ $$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).$$
 Code-wise, we can reuse the `MDP` class from before {prf:ref}`finite_mdp` and set `mdp.H = float('inf')`.
 
 ```{code-cell}
-tidy_mdp_inf = tidy_mdp._replace(H=float('inf'), γ=0.95)
+tidy_mdp_inf = tidy_mdp._replace(H=float("inf"), γ=0.95)
 ```
 
 ### Stationary policies
@@ -1085,7 +1096,9 @@ least one nonzero element.)
 :::
 
 ```{code-cell}
-def eval_deterministic_infinite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "S"]:
+def eval_deterministic_infinite(
+    mdp: MDP, policy: Float[Array, "S A"]
+) -> Float[Array, " S"]:
     π = np.argmax(policy, axis=1)  # un-one-hot
     P_π = mdp.P[np.arange(mdp.S), π]
     r_π = mdp.r[np.arange(mdp.S), π]
@@ -1140,6 +1153,7 @@ takes $O(|\mathcal{S}|^2)$ time for the matrix-vector multiplication.
 def supremum_norm(v):
     return np.max(np.abs(v))  # same as np.linalg.norm(v, np.inf)
 
+
 def loop_until_convergence(op, v, ε=1e-6):
     """Repeatedly apply op to v until convergence (in supremum norm)."""
     while True:
@@ -1148,7 +1162,8 @@ def loop_until_convergence(op, v, ε=1e-6):
             return v_new
         v = v_new
 
-def iterative_evaluation(mdp: MDP, π: Float[Array, "S A"], ε=1e-6) -> Float[Array, "S"]:
+
+def iterative_evaluation(mdp: MDP, π: Float[Array, "S A"], ε=1e-6) -> Float[Array, " S"]:
     op = partial(bellman_operator, mdp, π)
     return loop_until_convergence(op, np.zeros(mdp.S), ε)
 ```
@@ -1241,10 +1256,11 @@ gives the **Bellman optimality operator**
 :::
 
 ```{code-cell}
-def bellman_optimality_operator(mdp: MDP, v: Float[Array, "S"]) -> Float[Array, "S"]:
+def bellman_optimality_operator(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, " S"]:
     return np.max(mdp.r + mdp.γ * mdp.P @ v, axis=1)
 
-def check_optimal(v: Float[Array, "S"], mdp: MDP):
+
+def check_optimal(v: Float[Array, " S"], mdp: MDP):
     return np.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
@@ -1257,7 +1273,7 @@ apply this operator to converge to the optimal value function! This
 algorithm is known as **value iteration**.
 
 ```{code-cell}
-def value_iteration(mdp: MDP, ε: float = 1e-6) -> Float[Array, "S"]:
+def value_iteration(mdp: MDP, ε: float = 1e-6) -> Float[Array, " S"]:
     """Iterate the Bellman optimality operator until convergence."""
     op = partial(bellman_optimality_operator, mdp)
     return loop_until_convergence(op, np.zeros(mdp.S), ε)
@@ -1366,7 +1382,8 @@ Can we mitigate this "greedy worsening"? What if instead of approximating the op
 ```{code-cell}
 def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
     """Iteratively improve the policy and value function."""
-    op = lambda π: v_to_greedy(mdp, eval_deterministic_infinite(mdp, π))
+    def op(pi):
+        return v_to_greedy(mdp, eval_deterministic_infinite(mdp, pi))
     π_init = np.ones((mdp.S, mdp.A)) / mdp.A  # uniform random policy
     return loop_until_convergence(op, π_init, ε)
 ```

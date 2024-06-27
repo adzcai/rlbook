@@ -22,12 +22,10 @@ We borrow these definitions from the {ref}`mdps` chapter:
 
 ```{code-cell}
 from typing import NamedTuple, Callable, Optional
-from jaxtyping import Float, Int, Array
+from jaxtyping import Float, Array
 import jax.numpy as np
 from jax import grad, vmap
-from jax.tree_util import tree_map
 import jax.random as rand
-from functools import partial
 from tqdm import tqdm
 import gymnasium as gym
 
@@ -52,7 +50,7 @@ State = Float[Array, "..."]  # arbitrary shape
 
 # assume finite `A` actions and f outputs an array of Q-values
 # i.e. Q(s, a, h) is implemented as f(s, h)[a]
-QFunction = Callable[[State, int], Float[Array, "A"]]
+QFunction = Callable[[State, int], Float[Array, " A"]]
 
 
 def Q_zero(A: int) -> QFunction:
@@ -269,7 +267,7 @@ Then we can use empirical risk minimization to find a function $\hat f$ that app
 
 ```{code-cell}
 # We will see some examples of fitting methods in the next section
-FittingMethod = Callable[[Float[Array, "N D"], Float[Array, "N"]], QFunction]
+FittingMethod = Callable[[Float[Array, "N D"], Float[Array, " N"]], QFunction]
 ```
 
 But notice that the definition of $y_{i \hi}$ depends on the Q-function itself!
@@ -407,7 +405,7 @@ where $\eta > 0$ is the **learning rate**.
 :::
 
 ```{code-cell}
-Params = Float[Array, "D"]
+Params = Float[Array, " D"]
 
 
 def gradient_descent(
@@ -439,7 +437,7 @@ To expand its expressivity, we can _transform_ the input $x$ using some feature 
 i.e. $\widetilde x = \phi(x)$, and then fit a linear model in the transformed space instead.
 
 ```{code-cell}
-def fit_linear(X: Float[Array, "N D"], y: Float[Array, "N"], φ=lambda x: x):
+def fit_linear(X: Float[Array, "N D"], y: Float[Array, " N"], φ=lambda x: x):
     """Fit a linear model to the given dataset using ordinary least squares."""
     X = vmap(φ)(X)
     θ = np.linalg.lstsq(X, y, rcond=None)[0]

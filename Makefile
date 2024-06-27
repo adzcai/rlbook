@@ -3,23 +3,25 @@ ENV_NAME = rlbook
 RUN = micromamba run -n $(ENV_NAME)
 
 _NOTEBOOKS = \
-	1_intro/intro.md \
-	2_bandits/bandits.md \
-	3_mdps/mdps.md \
-	4_fitted_dp/fitted_dp.md \
-	5_control/control.md \
-	6_pg/pg.md \
-	7_exploration/exploration.md
+	1_intro/intro \
+	2_bandits/bandits \
+	3_mdps/mdps \
+	4_fitted_dp/fitted_dp \
+	5_control/control \
+	6_pg/pg \
+	7_exploration/exploration
 
-NOTEBOOKS = $(addprefix book/, $(_NOTEBOOKS))
+NOTEBOOKS = $(addsuffix .md, $(addprefix book/, $(_NOTEBOOKS)))
+
+IPYNBS = $(addsuffix .ipynb, $(addprefix book/, $(_NOTEBOOKS)))
 
 _META = \
-	appendix.md \
-	bibliography.md \
-	challenges.md \
-	index.md
+	appendix \
+	bibliography \
+	challenges \
+	index
 
-META = $(addprefix book/, $(_META))
+META = $(addsuffix .md, $(addprefix book/, $(_META)))
 
 CHAPTERS = $(NOTEBOOKS) $(META)
 
@@ -49,3 +51,6 @@ sync: $(NOTEBOOKS)
 
 lab:
 	$(RUN) jupyter lab
+
+lint:
+	$(RUN) ruff check --fix $(IPYNBS)
