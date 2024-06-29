@@ -382,6 +382,6 @@ As we did for TRPO {prf:ref}`trpo`, we can use importance sampling {prf:ref}`imp
 
 Now we can use gradient ascent on the parameters $\theta$ until convergence to maximize this function, completing a single iteration of PPO (i.e. $\theta^{k+1} \gets \theta$).
 
-```{code-cell} ipython3
+```{code-cell}
 
 ```

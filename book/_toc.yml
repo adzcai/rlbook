@@ -6,13 +6,13 @@ root: index.md
 options:
   numbered: 2
 chapters:
-  - file: 1_intro/intro.md
-  - file: 2_bandits/bandits.md
-  - file: 3_mdps/mdps.md
-  - file: 4_fitted_dp/fitted_dp.md
-  - file: 5_control/control.md
-  - file: 6_pg/pg.md
-  - file: 7_exploration/exploration.md
+  - file: intro.md
+  - file: bandits.md
+  - file: mdps.md
+  - file: fitted_dp.md
+  - file: control.md
+  - file: pg.md
+  - file: exploration.md
 # - file: challenges
 # - file: appendix
   - file: bibliography.md

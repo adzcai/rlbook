@@ -14,7 +14,7 @@ kernelspec:
 (bandits)=
 # Multi-Armed Bandits
 
-```{code-cell} ipython3
+```{code-cell}
 :tags: [hide-input]
 
 from jaxtyping import Float, Array
@@ -48,8 +48,9 @@ def choose_zero(ary: Float[Array, " K"]) -> Union[int, None]:
 
 latex = latexify.algorithmic(
     prefixes={"mab"},
-    identifiers={"arm": "a", "reward": "r", "means": "mu"},
+    identifiers={"arm": "a_t", "reward": "r", "means": "mu"},
     use_math_symbols=True,
+    escape_underscores=False,
 )
 ```
 
@@ -87,7 +88,7 @@ The name “multi-armed bandits” comes from slot machines in casinos, which ar
 
 Let $K$ denote the number of arms. We’ll label them $0, \dots, K-1$ and use *superscripts* to indicate the arm index; since we seldom need to raise a number to a power, this won’t cause much confusion. In this chapter, we’ll consider the **Bernoulli bandit** setting from the examples above, where arm $k$ either returns reward $1$ with probability $\mu^k$ or $0$ otherwise. The agent gets to pull an arm $T$ times in total. We can formalize the Bernoulli bandit in the following Python code:
 
-```{code-cell} ipython3
+```{code-cell}
 class MAB:
     """
     The Bernoulli multi-armed bandit environment.
@@ -109,14 +110,14 @@ class MAB:
         return +reward
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 mab = MAB(means=np.array([0.1, 0.8, 0.4]), T=100)
 ```
 
 In pseudocode, the agent’s interaction with the MAB environment can be
 described by the following process:
 
-```{code-cell} ipython3
+```{code-cell}
 @latex
 def mab_loop(mab: MAB, agent: "Agent") -> int:
     for t in range(mab.T):
@@ -130,7 +131,7 @@ mab_loop
 
 The `Agent` class stores the pull history and uses it to decide which arm to pull next. Since we are working with Bernoulli bandits, we can summarize the pull history concisely in a $\mathbb{N}^{K \times 2}$ array.
 
-```{code-cell} ipython3
+```{code-cell}
 class Agent(ABC):
     def __init__(self, K: int, T: int):
         """The MAB agent that decides how to choose an arm given the past history."""
@@ -175,7 +176,7 @@ $$
 $$
 ::::
 
-```{code-cell} ipython3
+```{code-cell}
 def regret_per_step(mab: MAB, agent: Agent):
     """Get the difference from the average reward of the optimal arm. The sum of these is the regret."""
     return [mab.means[mab.best_arm] - mab.means[arm] for arm in agent.choices]
@@ -203,7 +204,7 @@ We’d like to achieve **sublinear regret** in expectation, i.e. $\E[\text{Regre
 The rest of the chapter comprises a series of increasingly sophisticated
 MAB algorithms.
 
-```{code-cell} ipython3
+```{code-cell}
 def plot_strategy(mab: MAB, agent: Agent):
     plt.figure(figsize=(10, 6))
 
@@ -229,7 +230,7 @@ def plot_strategy(mab: MAB, agent: Agent):
 A trivial strategy is to always choose arms at random (i.e. "pure
 exploration").
 
-```{code-cell} ipython3
+```{code-cell}
 :label: pure_exploration
 
 class PureExploration(Agent):
@@ -247,15 +248,15 @@ $$
 so the expected regret is simply
 
 $$
-\begin{align}
+\begin{aligned}
     \E[\text{Regret}_T] &= \sum_{t=0}^{T-1} \E[\mu^\star - \mu^{a_t}] \\
     &= T (\mu^\star - \bar \mu) > 0.
-\end{align}
+\end{aligned}
 $$
 
 This scales as $\Theta(T)$, i.e. *linear* in the number of timesteps $T$. There’s no learning here: the agent doesn’t use any information about the environment to improve its strategy. You can see that the distribution over its arm choices always appears "(uniformly) random".
 
-```{code-cell} ipython3
+```{code-cell}
 agent = PureExploration(mab.K, mab.T)
 mab_loop(mab, agent)
 plot_strategy(mab, agent)
@@ -267,7 +268,7 @@ How might we improve on pure exploration? Instead, we could try each arm
 once, and then commit to the one with the highest observed reward. We’ll
 call this the **pure greedy** strategy.
 
-```{code-cell} ipython3
+```{code-cell}
 :label: pure_greedy
 
 class PureGreedy(Agent):
@@ -300,15 +301,15 @@ regret. Otherwise, we achieve regret $T(\mu^0 - \mu^1)$. Thus, the
 expected regret is simply:
 
 $$
-\begin{align}
+\begin{aligned}
     \E[\text{Regret}_T] &= \P(r^0 < r^1) \cdot T(\mu^0 - \mu^1) + c \\
     &= (1 - \mu^0) \mu^1 \cdot T(\mu^0 - \mu^1) + c
-\end{align}
+\end{aligned}
 $$
 
 Which is still $\Theta(T)$, the same as pure exploration!
 
-```{code-cell} ipython3
+```{code-cell}
 agent = PureGreedy(mab.K, mab.T)
 mab_loop(mab, agent)
 plot_strategy(mab, agent)
@@ -324,7 +325,7 @@ The cumulative regret is a straight line because the regret only depends on the 
 We can improve the pure greedy algorithm as follows: let’s reduce the variance of the reward estimates by pulling each arm $N_{\text{explore}}> 1$ times before committing. This is called the **explore-then-commit** strategy. Note that the “pure greedy” strategy above is just the special case where
 $N_{\text{explore}}= 1$.
 
-```{code-cell} ipython3
+```{code-cell}
 class ExploreThenCommit(Agent):
     def __init__(self, K: int, T: int, N_explore: int):
         super().__init__(K, T)
@@ -342,7 +343,7 @@ class ExploreThenCommit(Agent):
         return self.greedy_arm
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 agent = ExploreThenCommit(mab.K, mab.T, mab.T // 15)
 mab_loop(mab, agent)
 plot_strategy(mab, agent)
@@ -427,20 +428,20 @@ $$\P(\forall i \in [n]. A_i) \ge 1 - n \delta.$$
 Applying the union bound across the arms for the l.h.s. event of {eq}`hoeffding-etc`, we have
 
 $$
-\begin{align}
+\begin{aligned}
     \P\left( \forall k \in [K], |\Delta^k | \le \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) &\ge 1-K\delta
-\end{align}
+\end{aligned}
 $$
 
 Then to apply this bound to $\hat k$ in particular, we
 can apply the useful trick of “adding zero”:
 
 $$
-\begin{align}
+\begin{aligned}
     \mu^{k^\star} - \mu^{\hat k} &= \mu^{k^\star} - \mu^{\hat k} + (\hat \mu^{k^\star} - \hat \mu^{k^\star}) + (\hat \mu^{\hat k} - \hat \mu^{\hat k}) \\
     &= \Delta^{\hat k} - \Delta^{k^*} + \underbrace{(\hat \mu^{k^\star} - \hat \mu^{\hat k})}_{\le 0 \text{ by definition of } \hat k} \\
     &\le 2 \sqrt{\frac{\ln(2K/\delta')}{2N_{\text{explore}}}} \text{ with probability at least } 1-\delta'
-\end{align}
+\end{aligned}
 $$
 
 where we’ve set $\delta' = K\delta$. Putting this all
@@ -454,20 +455,20 @@ optimal $N_{\text{explore}}$ by setting the derivative of the r.h.s. to
 zero:
 
 $$
-\begin{align}
+\begin{aligned}
     0 &= K - T_{\text{exploit}} \cdot \frac{1}{2} \sqrt{\frac{2\ln(2K/\delta')}{N_{\text{explore}}^3}} \\
     N_{\text{explore}}&= \left( T_{\text{exploit}} \cdot \frac{\sqrt{\ln(2K/\delta')/2}}{K} \right)^{2/3}
-\end{align}
+\end{aligned}
 $$
 
 Plugging this into the expression for the regret, we
 have (still with probability $1-\delta'$)
 
 $$
-\begin{align}
+\begin{aligned}
     \text{Regret}_T &\le 3 T^{2/3} \sqrt[3]{K \ln(2K/\delta') / 2} \\
     &= \tilde{O}(T^{2/3} K^{1/3}).
-\end{align}
+\end{aligned}
 $$
 
 The ETC algorithm is rather “abrupt” in that it switches from
@@ -485,7 +486,7 @@ beforehand – we can instead interleave exploration and exploitation by,
 at each timestep, choosing a random action with some probability. We
 call this the **epsilon-greedy** algorithm.
 
-```{code-cell} ipython3
+```{code-cell}
 class EpsilonGreedy(Agent):
     def __init__(self, K: int, T: int, get_epsilon: Callable[[int], float]):
         super().__init__(K, T)
@@ -504,7 +505,7 @@ class EpsilonGreedy(Agent):
             return random_argmax(sample_means)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 agent = EpsilonGreedy(mab.K, mab.T, lambda t: 0.1)
 mab_loop(mab, agent)
 plot_strategy(mab, agent)
@@ -552,10 +553,10 @@ within the first $t$ timesteps, and $\hat \mu^k_t$ denote the sample
 average of those pulls. That is,
 
 $$
-\begin{align}
+\begin{aligned}
     N^k_t &:= \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} \\
     \hat \mu^k_t &:= \frac{1}{N^k_t} \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} r_\tau.
-\end{align}
+\end{aligned}
 $$
 
 To achieve the “fixed sample size” assumption, we’ll
@@ -573,17 +574,17 @@ trick as last time, where we uniform-ize across all possible values of
 $N^k_t$:
 
 $$
-\begin{align}
+\begin{aligned}
     \P\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) &\ge 1-t\delta.
-\end{align}
+\end{aligned}
 $$
 
 In particular, since $N^k_t \le t$, and $\tilde \mu^k_{N^k_t} = \hat \mu^k_t$ by definition, we have
 
 $$
-\begin{align}
+\begin{aligned}
     \P\left( |\hat \mu^k_t - \mu^k | \le \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}} \right) &\ge 1-\delta' \text{ where } \delta' := t \delta.
-\end{align}
+\end{aligned}
 $$
 
 This bound would then suffice for applying the UCB algorithm! That is, the upper confidence bound for arm $k$ would be
@@ -592,7 +593,7 @@ $$M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},$$
 
 where we can choose $\delta'$ depending on how tight we want the interval to be. A smaller $\delta'$ would give us a larger and higher-confidence interval, and vice versa. We can now use this to define the UCB algorithm.
 
-```{code-cell} ipython3
+```{code-cell}
 class UCB(Agent):
     def __init__(self, K: int, T: int, delta: float):
         super().__init__(K, T)
@@ -620,7 +621,7 @@ Intuitively, UCB prioritizes arms where:
 As desired, this explores in a smarter, *adaptive* way compared to the
 previous algorithms. Does it achieve lower regret?
 
-```{code-cell} ipython3
+```{code-cell}
 agent = UCB(mab.K, mab.T, 0.05)
 mab_loop(mab, agent)
 plot_strategy(mab, agent)
@@ -637,10 +638,10 @@ derivation since it’s very similar to the above (walk through it
 yourself for practice).
 
 $$
-\begin{align}
+\begin{aligned}
     \P\left(\forall k \le K, t < T. |\hat \mu^k_t - \mu^k | \le B^k_t \right) &\ge 1-\delta'' \\
     \text{where} \quad B^k_t &:= \sqrt{\frac{\ln(2TK/\delta'')}{2N^k_t}}.
-\end{align}
+\end{aligned}
 $$
 
 Intuitively, $B^k_t$ denotes the *width* of the CI for arm $k$ at time
@@ -649,17 +650,17 @@ probability $1-\delta''$), we can bound the regret at each timestep as
 follows:
 
 $$
-\begin{align}
+\begin{aligned}
     \mu^\star - \mu^{a_t} &\le \hat \mu^{k^*}_t + B_t^{k^*} - \mu^{a_t} && \text{applying UCB to arm } k^\star \\
     &\le \hat \mu^{a_t}_t + B^{a_t}_t - \mu^{a_t} && \text{since UCB chooses } a_t = \arg \max_{k \in [K]} \hat \mu^k_t + B_t^{k} \\
     &\le 2 B^{a_t}_t && \text{since } \hat \mu^{a_t}_t - \mu^{a_t} \le B^{a_t}_t \text{ by definition of } B^{a_t}_t \\
-\end{align}
+\end{aligned}
 $$
 
 Summing this across timesteps gives
 
 $$
-\begin{align}
+\begin{aligned}
     \text{Regret}_T &\le \sum_{t=0}^{T-1} 2 B^{a_t}_t \\
     &= \sqrt{2\ln(2TK/\delta'')} \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} \\
     \sum_{t=0}^{T-1} (N^{a_t}_t)^{-1/2} &= \sum_{t=0}^{T-1} \sum_{k=1}^K \mathbf{1}\{ a_t = k \} (N^k_t)^{-1/2} \\
@@ -669,16 +670,16 @@ $$
     &= 1 + (2 \sqrt{x})_1^T \\
     &= 2 \sqrt{T} - 1 \\
     &\le 2 \sqrt{T} \\
-\end{align}
+\end{aligned}
 $$
 
 Putting everything together gives
 
 $$
-\begin{align}
+\begin{aligned}
     \text{Regret}_T &\le 2 K \sqrt{2T \ln(2TK/\delta'')} && \text{with probability } 1-\delta'' \\
     &= \tilde O(K\sqrt{T})
-\end{align}
+\end{aligned}
 $$
 
 In fact, we can do a more sophisticated analysis to trim off a factor of
@@ -721,7 +722,7 @@ From this Bayesian perspective, the **Thompson sampling** algorithm
 follows naturally: just sample from the distribution of the optimal arm,
 given the observations!
 
-```{code-cell} ipython3
+```{code-cell}
 class Distribution(ABC):
     @abstractmethod
     def sample(self) -> Float[Array, " K"]: ...
@@ -730,7 +731,7 @@ class Distribution(ABC):
     def update(self, arm: int, reward: float): ...
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 class ThompsonSampling(Agent):
     def __init__(self, K: int, T: int, prior: Distribution):
         super().__init__(K, T)
@@ -767,10 +768,10 @@ $$\pi(\boldsymbol{\mu}) = \begin{cases}
 In this case, upon viewing some reward, we can exactly calculate the **posterior** distribution of $\boldsymbol{\mu}$ using Bayes’s rule (i.e. the definition of conditional probability):
 
 $$
-    \begin{align*}
-        \P(\boldsymbol{\mu} \mid a_0, r_0) &\propto \P(r_0 \mid a_0, \boldsymbol{\mu}) \P(a_0 \mid \boldsymbol{\mu}) \P(\boldsymbol{\mu}) \\
-        &\propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
-    \end{align*}
+\begin{aligned}
+    \P(\boldsymbol{\mu} \mid a_0, r_0) &\propto \P(r_0 \mid a_0, \boldsymbol{\mu}) \P(a_0 \mid \boldsymbol{\mu}) \P(\boldsymbol{\mu}) \\
+    &\propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
+\end{aligned}
 $$
 
 This is the PDF of the
@@ -784,7 +785,7 @@ distribution upon observing a reward, rather than having to recompute
 the entire posterior distribution from scratch.
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 class Beta(Distribution):
     def __init__(self, K: int, alpha: int = 1, beta: int = 1):
         self.alphas = np.full(K, alpha)
@@ -798,7 +799,7 @@ class Beta(Distribution):
         self.betas[arm] += 1 - reward
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 beta_distribution = Beta(mab.K)
 agent = ThompsonSampling(mab.K, mab.T, beta_distribution)
 mab_loop(mab, agent)
@@ -935,7 +936,7 @@ $k$ has not been explored much and so $N_t^k$ is small.
 We can now substitute these quantities into UCB to get the **LinUCB**
 algorithm:
 
-```{code-cell} ipython3
+```{code-cell}
 class LinUCB(Agent):
     def __init__(
         self, K: int, T: int, D: int, lam: float, get_c: Callable[[int], float]
@@ -979,6 +980,6 @@ regret bound. The full details of the analysis can be found in Section 3 of {cit
 
 ## Summary
 
-```{code-cell} ipython3
+```{code-cell}
 
 ```

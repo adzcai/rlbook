@@ -2,18 +2,11 @@ ENV_NAME = rlbook
 
 RUN = micromamba run -n $(ENV_NAME)
 
-_NOTEBOOKS = \
-	1_intro/intro \
-	2_bandits/bandits \
-	3_mdps/mdps \
-	4_fitted_dp/fitted_dp \
-	5_control/control \
-	6_pg/pg \
-	7_exploration/exploration
+_NOTEBOOKS = $(addprefix book/, intro bandits mdps fitted_dp control pg exploration)
 
-NOTEBOOKS = $(addsuffix .md, $(addprefix book/, $(_NOTEBOOKS)))
+NOTEBOOKS = $(addsuffix .md, $(_NOTEBOOKS))
 
-IPYNBS = $(addsuffix .ipynb, $(addprefix book/, $(_NOTEBOOKS)))
+IPYNBS = $(addsuffix .ipynb, $(_NOTEBOOKS))
 
 _META = \
 	appendix \
@@ -40,8 +33,9 @@ pdf: book/_build/latex
 	cd book/_build/latex && make
 	code book/_build/latex/book.log
 
-clean: book/_build
+clean: book/_build $(IPYNBS)
 	rm -r book/_build
+	rm $(IPYNBS)
 
 debug:
 	$(RUN) jb config sphinx book

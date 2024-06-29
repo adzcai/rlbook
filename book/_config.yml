@@ -44,10 +44,11 @@ sphinx:
         \DeclareMathOperator*{\P}{\mathbb{P}}
         \newcommand{\hi}{h}
         \newcommand{\hor}{H}
-        \newcommand{\st}{s}
-        \newcommand{\act}{a}
         \newcommand{\kl}[2]{\mathrm{KL}\left(#1\parallel#2\right)}
         \newcommand{\ind}[1]{\mathbf{1}\left\{#1\right\}}
+
+        \newcommand{\st}{s}
+        \newcommand{\act}{a}
 
         \renewcommand{\familydefault}{\sfdefault}
         \onehalfspacing
@@ -56,12 +57,14 @@ sphinx:
         macros:
           "E": "\\mathop{\\mathbb{E}}"
           "P": "\\mathop{\\mathbb{P}}"
-          "hi": "h"
-          "hor": "H"
-          "st": "s"
-          "act": "a"
           "kl": ["\\mathrm{KL}\\left(#1\\parallel#2\\right)", 2]
           "ind": ["\\mathbf{1}\\left\\{#1\\right\\}", 1]
+
+          "hi": "h"
+          "hor": "H"
+
+          "st": "s"  # or "x" for control chapter
+          "act": "a"  # or "u" for control chapter
     bibtex_reference_style    : "author_year"
   extra_extensions:
     - sphinx_proof

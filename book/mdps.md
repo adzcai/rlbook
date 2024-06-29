@@ -330,15 +330,15 @@ $$\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P
 :::
 
 ```{code-cell}
-def trajectory_log_likelihood(mdp: MDP, τ: Trajectory, π: Policy) -> float:
+def trajectory_log_likelihood(mdp: MDP, tau: Trajectory, pi: Policy) -> float:
     """
     Compute the log likelihood of a trajectory under a given MDP and policy.
     """
-    total = np.log(mdp.μ[τ[0].s])
-    total += np.log(π[τ[0].s, τ[0].a])
+    total = np.log(mdp.μ[tau[0].s])
+    total += np.log(pi[tau[0].s, tau[0].a])
     for i in range(1, mdp.H):
-        total += np.log(mdp.P[τ[i - 1].s, τ[i - 1].a, τ[i].s])
-        total += np.log(π[τ[i].s, τ[i].a])
+        total += np.log(mdp.P[tau[i - 1].s, tau[i - 1].a, tau[i].s])
+        total += np.log(pi[tau[i].s, tau[i].a])
     return total
 ```
 
@@ -808,19 +808,19 @@ $$
 ```{code-cell}
 def find_optimal_policy(mdp: MDP):
     Q = [None] * mdp.H
-    π = [None] * mdp.H
+    pi = [None] * mdp.H
     V = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
 
     for h in range(mdp.H - 1, -1, -1):
         Q[h] = mdp.r + mdp.P @ V[h + 1]
-        π[h] = np.eye(mdp.S)[np.argmax(Q[h], axis=1)]  # one-hot
+        pi[h] = np.eye(mdp.S)[np.argmax(Q[h], axis=1)]  # one-hot
         V[h] = np.max(Q[h], axis=1)
 
     Q = np.stack(Q)
-    π = np.stack(π)
+    pi = np.stack(pi)
     V = np.stack(V[:-1])
 
-    return π, V, Q
+    return pi, V, Q
 ```
 
 At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of
@@ -1099,9 +1099,9 @@ least one nonzero element.)
 def eval_deterministic_infinite(
     mdp: MDP, policy: Float[Array, "S A"]
 ) -> Float[Array, " S"]:
-    π = np.argmax(policy, axis=1)  # un-one-hot
-    P_π = mdp.P[np.arange(mdp.S), π]
-    r_π = mdp.r[np.arange(mdp.S), π]
+    pi = np.argmax(policy, axis=1)  # un-one-hot
+    P_π = mdp.P[np.arange(mdp.S), pi]
+    r_π = mdp.r[np.arange(mdp.S), pi]
     return np.linalg.solve(np.eye(mdp.S) - mdp.γ * P_π, r_π)
 ```
 
@@ -1163,8 +1163,8 @@ def loop_until_convergence(op, v, ε=1e-6):
         v = v_new
 
 
-def iterative_evaluation(mdp: MDP, π: Float[Array, "S A"], ε=1e-6) -> Float[Array, " S"]:
-    op = partial(bellman_operator, mdp, π)
+def iterative_evaluation(mdp: MDP, pi: Float[Array, "S A"], ε=1e-6) -> Float[Array, " S"]:
+    op = partial(bellman_operator, mdp, pi)
     return loop_until_convergence(op, np.zeros(mdp.S), ε)
 ```
 
@@ -1427,12 +1427,10 @@ $[\mathcal{J}^{\star}(V^{\pi^{t}})](s) \ge V^{\pi^{t}}(s)$, we then have
 :::{math}
 :label: pi_iter_proof
 
-$$
 \begin{aligned}
     V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &\ge V^{\pi^{t+1}}(s) - \mathcal{J}^{\star} (V^{\pi^{t}})(s) \\
     &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right].
 \end{aligned}
-$$
 :::
 
 But note that the

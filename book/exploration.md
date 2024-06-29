@@ -36,7 +36,7 @@ For example, policy gradient algorithms require the gradient to be nonzero in or
 
 Here's a simple example of an MDP with sparse reward:
 
-![image](assets/sparse_reward_mdp.png)
+![image](shared/sparse_reward_mdp.png)
 
 There are $|\mathcal{S}|$ states. The agent starts in the leftmost state. In every state, there are three possible actions, two of which move the agent left and one which moves the agent right. The reward function assigns $r=1$ to the rightmost cell.
 ::::

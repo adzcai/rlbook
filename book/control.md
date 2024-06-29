@@ -21,13 +21,13 @@ driving, controlling a robot's joints, and automated manufacturing. How
 can we teach computers to solve these kinds of problems? This is the
 task of **continuous control**.
 
-:::{figure} assets/rubiks_cube.jpg
+:::{figure} shared/rubiks_cube.jpg
 :name: control_examples
 
 Solving a Rubik’s Cube with a robot hand.
 :::
 
-:::{figure} assets/boston_dynamics.jpg
+:::{figure} shared/boston_dynamics.jpg
 :name: robot_hand
 
 Boston Dynamics’s Spot robot.
@@ -52,7 +52,7 @@ continuously, and the state transitions governing the system, i.e. the
 laws of physics, are highly complex. This task is equivalent to the
 classic control problem known as *CartPole*:
 
-:::{image} assets/cart_pole.png
+:::{image} shared/cart_pole.png
 :width: "40%"
 :::
 
@@ -964,7 +964,7 @@ accurate in a *local* region around the point of linearization, so the
 performance of our LQR controller will degrade as we move further away.
 We'll see how to address this in the next section using the **iterative LQR** algorithm.
 
-:::{figure} assets/log_taylor.png
+:::{figure} shared/log_taylor.png
 :name: local_linearization
 
 Local linearization might only be accurate in a small region around the
