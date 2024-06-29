@@ -16,17 +16,19 @@ _META = \
 
 META = $(addsuffix .md, $(addprefix book/, $(_META)))
 
-CHAPTERS = $(NOTEBOOKS) $(META)
+SOLUTIONS = book/solutions/bandits.py
+
+SOURCE = $(NOTEBOOKS) $(META) $(SOLUTIONS)
 
 CONFIG = book/_config.yml book/_toc.yml
 
-book/_build/html: $(CHAPTERS) $(CONFIG)
+book/_build/html: $(SOURCE) $(CONFIG)
 	$(RUN) jb build book
 
 open: book/_build/html
 	open book/_build/html/index.html
 
-book/_build/latex: $(CHAPTERS) $(CONFIG)
+book/_build/latex: $(SOURCE) $(CONFIG)
 	$(RUN) jb build book --builder latex
 
 pdf: book/_build/latex
