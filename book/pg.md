@@ -46,8 +46,8 @@ Remember that in reinforcement learning, the goal is to *maximize reward.* Speci
     J(\theta) := \E_{s_0 \sim \mu_0} V^{\pi_\theta} (s_0) = & \E \sum_{t=0}^{T-1} r_t \\
     \text{where} \quad & s_0 \sim \mu_0 \\
     & s_{t+1} \sim P(s_t, a_t), \\
-    & a_h = \pi_\theta(s_h) \\
-    & r_h = r(s_h, a_h).
+    & a_\hi = \pi_\theta(s_\hi) \\
+    & r_\hi = r(s_\hi, a_\hi).
 \end{split}
 :::
 
@@ -158,7 +158,7 @@ Note that to avoid correlations between the gradient estimator and the value est
 Policy gradient with a learned baselinepg_baseline
 
 <!-- :::{prf:algorithmic}
-Learning rate $\eta_0, \dots, \eta_{K-1}$ Initialization $\theta^0$ Sample $N$ trajectories from $\pi_{\theta^k}$ to estimate a baseline $\tilde b$ such that $\tilde b_h(s) \approx V_h^{\theta^k}(s)$ Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho_{\theta^k}$ Compute the policy gradient estimate $$\tilde{\nabla}_\theta J(\theta^k) = \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \nabla \log \pi_{\theta^k} (a_h \mid s_h) (R_h(\tau_m) - \tilde b_h(s_h))$$ Gradient ascent update $\theta^{k+1} \gets \theta^k + \tilde \nabla_\theta J(\theta^k)$
+Learning rate $\eta_0, \dots, \eta_{K-1}$ Initialization $\theta^0$ Sample $N$ trajectories from $\pi_{\theta^k}$ to estimate a baseline $\tilde b$ such that $\tilde b_\hi(s) \approx V_\hi^{\theta^k}(s)$ Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho_{\theta^k}$ Compute the policy gradient estimate $$\tilde{\nabla}_\theta J(\theta^k) = \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \nabla \log \pi_{\theta^k} (a_\hi \mid s_\hi) (R_\hi(\tau_m) - \tilde b_\hi(s_\hi))$$ Gradient ascent update $\theta^{k+1} \gets \theta^k + \tilde \nabla_\theta J(\theta^k)$
 ::: -->
 
 The baseline estimation step can be done using any appropriate supervised learning algorithm. Note that the gradient estimator will be unbiased regardless of the baseline.
@@ -229,20 +229,46 @@ To analyze the difference between them, we'll make use of the **performance diff
 :::{prf:theorem} Performance difference lemma
 :label: pdl
 
-Let $\rho_{\pi, s}$ denote the distribution induced by the policy $\pi$ over trajectories starting in state $s$.
+Suppose Beatrice and Joan are playing a game and want to compare their average rewards starting in state $s$.
+However, only Beatrice is allowed to take actions, while Joan can evaluate those actions from her own perspective. That is, she knows how good Beatrice's action is compared to her typical strategy in that state. (This is her _advantage function_ $A_\hi^{\text{Joan}}(s_\hi, a_\hi)$).
 
-Given two policies $\pi, \tilde pi$, the PDL allows us to express the difference between their value functions as follows:
+The performance difference lemma says that this is all they need to compare themselves! That is,
 
-$$V_0^{\tilde \pi}(s) - V_0^\pi(s) = \E_{\tau \sim \rho_{\tilde \pi, s}} \left[ \sum_{h=0}^{H-1} A_h^\pi (s_h, a_h) \right]$$
+:::{math}
+:label: pdl_eq
+V_0^{\text{Beatrice}}(s) - V_0^{\text{Joan}}(s) = \E_{\tau \sim \rho_{\text{Beatrice}, s}} \left[ \sum_{h=0}^{H-1} A_\hi^{\text{Joan}} (s_\hi, a_\hi) \right]
+:::{math}
 
-Some intuition: Recall that $A^\pi_h(s, a)$ tells us how much better the action $a$ is in state $s$ than average, supposing actions are chosen according to $\pi$. How much better is $\tilde \pi$ than $\pi$? To answer this, we break down the trajectory step-by-step. At each step, we compute how much better actions from $\tilde \pi$ are than the actions from $\pi$. But this is exactly the average $\pi$-advantage, where the expectation is taken over actions from $\tilde \pi$. This is exactly what the PDL describes.
+where $\rho_{\text{Beatrice}, s}$ denotes the distribution over trajectories starting in state $s$ when Beatrice is playing.
+
+To see why, consider just a single step $\hi$ of the trajectory. At this step we compute how much better actions from Joan are than the actions from Beatrice, on average. But this is exactly the average Joan-evaluated-advantage across actions from Beatrice, as described in the PDL!
+
+Formally, this corresponds to a nice telescoping simplification when we expand out the definition of the advantage function. Note that
+
+$$
+\begin{align*}
+A^\pi_\hi(s_\hi, a_\hi) &= Q^\pi_\hi(s_\hi, a_\hi) - V^\pi_\hi(s_\hi) \\
+&= r_\hi(s_\hi, a_\hi) + \E_{s_{\hi+1} \sim P(s_\hi, a_\hi)} [V^\pi_{\hi+1}(s_{\hi+1})] - V^\pi_\hi(s_\hi)
+\end{align*}
+$$
+
+so expanding out the r.h.s. expression of {eq}`pdl_eq` and grouping terms together gives
+
+$$
+\begin{align*}
+\E_{\tau \sim \rho_{\text{Beatrice}, s}} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\text{Joan}} (s_\hi, a_\hi) \right] &= \E_{\tau \sim \rho_{\text{Beatrice}, s}} \left[ \left( \sum_{\hi=0}^{\hor-1} r_\hi(s_\hi, a_\hi) \right) + \left( V^{\text{Joan}}_1(s_1) + \cdots + V^{\text{Joan}}_\hor(s_\hor) \right) - \left( V^{\text{Joan}_0}(s_0) + \cdots + V^{\text{Joan}}_{\hor-1}(s_{\hor-1}) \right) \right] \\
+&= V^{\text{Beatrice}}_0(s) - V^{\text{Joan}}_0(s)
+\end{align*}
+$$
+
+as desired. (Note that the "inner" expectation from expanding the advantage function has the same distribution as the outer one, so omitting it here is valid.)
 :::
 
 Let's analyze why fitted approaches such as PI don't work as well in the RL setting. To start, let's ask, where *do* fitted approaches work well? They are commonly seen in *supervised learning*, where a prediction rule is fit using some labelled training set, and then assessed on a test set from the same distribution. Does this assumption still hold when doing PI?
 
-Let's consider a single iteration of PI. Suppose the new policy $\tilde \pi$ chooses some action with a negative advantage w.r.t. $\pi$. Define $\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_h(s, \tilde \pi(s))$. If this is negative, then the PDL shows that there may exist some state $s$ and time $h$ such that
+Let's consider a single iteration of PI. Suppose the new policy $\tilde \pi$ chooses some action with a negative advantage w.r.t. $\pi$. Define $\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\hi(s, \tilde \pi(s))$. If this is negative, then the PDL shows that there may exist some state $s$ and time $h$ such that
 
-$$V_h^{\tilde \pi}(s) \ge V_h^{\pi}(s) - H \cdot |\Delta_\infty|.$$
+$$V_\hi^{\tilde \pi}(s) \ge V_\hi^{\pi}(s) - H \cdot |\Delta_\infty|.$$
 
 In general, PI cannot avoid particularly bad situations where the new policy $\tilde \pi$ often visits these bad states, causing an actual degradation. It does not enforce that the trajectory distributions $\rho_\pi$ and $\rho_{\tilde \pi}$ be close to each other. In other words, the "training distribution" that our prediction rule is fitted on, $\rho_\pi$, may differ significantly from the "evaluation distribution" $\rho_{\tilde \pi}$ --- we must address this issue of *distributional shift*.
 
@@ -264,13 +290,13 @@ Additionally, rather than estimating the $Q$-function of the current policy, we 
 :label: trpo
 
 <!-- :::{prf:algorithmic}
-Trust region radius $\delta$ Initialize $\theta^0$ $\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_h \E_{a_h \sim \pi_\theta(s_h)} A^{\pi^k}(s_h, a_h) \right]$ See below where $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}} \le \delta$ $\pi^K$
+Trust region radius $\delta$ Initialize $\theta^0$ $\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_\hi \E_{a_\hi \sim \pi_\theta(s_\hi)} A^{\pi^k}(s_\hi, a_\hi) \right]$ See below where $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}} \le \delta$ $\pi^K$
 ::: -->
 
 Note that the objective function is not identical to the r.h.s. of the Performance Difference Lemma. Here, we still use the *states* sampled from the old policy, and only use the *actions* from the new policy. This is because it would be computationally infeasible to sample entire trajectories from $\pi_\theta$ as we are optimizing over $\theta$. This approximation is also reasonable in the sense that it matches the r.h.s. of the Performance Difference Lemma to first order in $\theta$. (We will elaborate more on this later.)
 ::::
 
-Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories. This is intractable in general, so we need to estimate the expectation. As before, we can do this by taking an empirical average over samples from the trajectory distribution. However, the inner expectation over $a_h \sim \pi_{\theta}$ involves the optimizing variable $\theta$, and we'd like an expression that has a closed form in terms of $\theta$ to make optimization tractable. Otherwise, we'd need to resample many times each time we made an update to $\theta$. To address this, we'll use a common technique known as **importance sampling**.
+Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories. This is intractable in general, so we need to estimate the expectation. As before, we can do this by taking an empirical average over samples from the trajectory distribution. However, the inner expectation over $a_\hi \sim \pi_{\theta}$ involves the optimizing variable $\theta$, and we'd like an expression that has a closed form in terms of $\theta$ to make optimization tractable. Otherwise, we'd need to resample many times each time we made an update to $\theta$. To address this, we'll use a common technique known as **importance sampling**.
 
 :::{prf:definition} Importance sampling
 :label: importance_sampling
@@ -288,9 +314,9 @@ Applying importance sampling allows us to estimate the TRPO objective as follows
 :label: trpo_implement
 
 <!-- :::{prf:algorithmic} TODO
-Initialize $\theta^0$ Sample $N$ trajectories from $\rho^k$ to learn a value estimator $\tilde b_h(s) \approx V^{\pi^k}_h(s)$ Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho^k$ $$\begin{gathered}
-            \theta^{k+1} \gets \argmax_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_h \mid s_h)}{\pi^k(a_h \mid s_h)} [ R_h(\tau_m) - \tilde b_h(s_h) ] \\
-            \text{where } \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \log \frac{\pi_k(a_h^m \mid s_h^m)}{\pi_\theta(a_h^m \mid s_h^m)} \le \delta
+Initialize $\theta^0$ Sample $N$ trajectories from $\rho^k$ to learn a value estimator $\tilde b_\hi(s) \approx V^{\pi^k}_\hi(s)$ Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho^k$ $$\begin{gathered}
+            \theta^{k+1} \gets \argmax_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} [ R_\hi(\tau_m) - \tilde b_\hi(s_\hi) ] \\
+            \text{where } \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \log \frac{\pi_k(a_\hi^m \mid s_\hi^m)}{\pi_\theta(a_\hi^m \mid s_\hi^m)} \le \delta
         
 \end{gathered}$$
 ::: -->
@@ -313,7 +339,7 @@ Fisher information matrixfisher_matrix Let $p_\theta$ denote a parameterized dis
     
 \end{aligned}$$ Recall that the Hessian of a function describes its curvature: That is, for a vector $\delta \in \Theta$, the quantity $\delta^\top F_\theta \delta$ describes how rapidly the negative log-likelihood changes if we move by $\delta$.
 
-In particular, when $p_\theta = \rho_{\theta}$ denotes a trajectory distribution, we can further simplify the expression: $$F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_h \mid s_h)) (\nabla \log \pi_\theta(a_h \mid s_h))^\top \right]
+In particular, when $p_\theta = \rho_{\theta}$ denotes a trajectory distribution, we can further simplify the expression: $$F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]
         \label{eq:fisher_trajectory}$$ Note that we've used the Markov property to cancel out the cross terms corresponding to two different time steps.
 :::
 
@@ -364,7 +390,7 @@ We can relax the TRPO objective in a different way: Rather than imposing a hard 
 Proximal policy optimization (exact)ppo
 
 <!-- :::{prf:algorithmic}
-Regularization parameter $\lambda$ Initialize $\theta^0$ $\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_h \E_{a_h \sim \pi_\theta(s_h)} A^{\pi^k}(s_h, a_h) \right] - \lambda \kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ $\theta^K$
+Regularization parameter $\lambda$ Initialize $\theta^0$ $\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_\hi \E_{a_\hi \sim \pi_\theta(s_\hi)} A^{\pi^k}(s_\hi, a_\hi) \right] - \lambda \kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ $\theta^K$
 ::: -->
 
 Note that like the original TRPO algorithm {prf:ref}`trpo`, PPO is not gradient-based; rather, at each step, we try to maximize local advantage relative to the current policy.
@@ -374,11 +400,11 @@ Let us now turn this into an implementable algorithm, assuming we can sample tra
 
 Let us simplify the $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ term first. Expanding gives $$\begin{aligned}
     \kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}} & = \E_{\tau \sim \rho_{\pi^k}} \left[\log \frac{\rho_{\pi^k}(\tau)}{\rho_{\pi_{\theta}}(\tau)}\right]                                                       \\
-                                           & = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{\pi^k(a_h \mid s_h)}{\pi_{\theta}(a_h \mid s_h)}\right] & \text{state transitions cancel} \\
-                                           & = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{1}{\pi_{\theta}(a_h \mid s_h)}\right] + c
+                                           & = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{\pi^k(a_\hi \mid s_\hi)}{\pi_{\theta}(a_\hi \mid s_\hi)}\right] & \text{state transitions cancel} \\
+                                           & = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{1}{\pi_{\theta}(a_\hi \mid s_\hi)}\right] + c
 \end{aligned}$$ where $c$ is some constant relative to $\theta$.
 
-As we did for TRPO {prf:ref}`trpo`, we can use importance sampling {prf:ref}`importance_sampling` to rewrite the inner expectation. Combining the expectations together, this gives the (exact) objective $$\max_{\theta} \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_h \mid s_h)}{\pi^k(a_h \mid s_h)} A^{\pi^k}(s_h, a_h) - \lambda \log \frac{1}{\pi_\theta(a_h \mid s_h)} \right) \right]$$
+As we did for TRPO {prf:ref}`trpo`, we can use importance sampling {prf:ref}`importance_sampling` to rewrite the inner expectation. Combining the expectations together, this gives the (exact) objective $$\max_{\theta} \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} A^{\pi^k}(s_\hi, a_\hi) - \lambda \log \frac{1}{\pi_\theta(a_\hi \mid s_\hi)} \right) \right]$$
 
 Now we can use gradient ascent on the parameters $\theta$ until convergence to maximize this function, completing a single iteration of PPO (i.e. $\theta^{k+1} \gets \theta$).
 

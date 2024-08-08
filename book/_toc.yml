@@ -4,7 +4,7 @@
 format: jb-book
 root: index.md
 options:
-  numbered: 2
+  numbered: true
 chapters:
   - file: intro.md
   - file: bandits.md
@@ -13,6 +13,7 @@ chapters:
   - file: control.md
   - file: pg.md
   - file: exploration.md
+  - file: imitation_learning.md
 # - file: challenges
 # - file: appendix
   - file: bibliography.md

@@ -484,6 +484,10 @@ plot_strategy(mab, agent)
 
 Note that we let $\epsilon$ vary over time. In particular, we might want to gradually *decrease* $\epsilon$ as we learn more about the reward distributions and no longer need to spend time exploring.
 
+:::{attention}
+What is the expected regret of the algorithm if we set $\epsilon$ to be a constant?
+:::
+
 It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors). (We will not prove this here.) TODO ADD PROOF CITATION
 
 In ETC, we had to set $N_{\text{explore}}$ based on the total number of timesteps $T$. But the epsilon-greedy algorithm actually handles the exploration *automatically*: the regret rate holds for *any* $t$, and doesn’t depend on the final horizon $T$.
@@ -852,10 +856,11 @@ This has the closed-form solution known as the *ordinary least squares*
 
 :::{math}
 :label: ols_bandit
+
 \begin{aligned}
-        \hat \theta_t^k          & = (A_t^k)^{-1} \sum_{\{ i \in [t] : a_i = k \}} x_i r_i \\
-        \text{where} \quad A_t^k & = \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top.
-    \end{aligned}
+    \hat \theta_t^k          & = (A_t^k)^{-1} \sum_{\{ i \in [t] : a_i = k \}} x_i r_i \\
+    \text{where} \quad A_t^k & = \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top.
+\end{aligned}
 :::
 
 We can now apply the UCB algorithm in this environment in order to
@@ -877,7 +882,9 @@ $$|Y| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}$$
 
 Since the OLS estimator is known to be unbiased (try proving this
 yourself), we can apply Chebyshev's inequality to
-$x_t^\top (\hat \theta_t^k - \theta^k)$: $$\begin{aligned}
+$x_t^\top (\hat \theta_t^k - \theta^k)$:
+
+$$\begin{aligned}
     x_t^\top \theta^k \le x_t^\top \hat \theta_t^k + \beta \sqrt{x_t^\top (A_t^k)^{-1} x_t} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
 \end{aligned}$$
 
@@ -901,7 +908,7 @@ We can now substitute these quantities into UCB to get the **LinUCB**
 algorithm:
 
 ```{code-cell}
-class LinUCB(Agent):
+class LinUCBPseudocode(Agent):
     def __init__(
         self, K: int, T: int, D: int, lam: float, get_c: Callable[[int], float]
     ):
@@ -944,6 +951,4 @@ regret bound. The full details of the analysis can be found in Section 3 of {cit
 
 ## Summary
 
-```{code-cell}
 
-```
