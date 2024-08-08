@@ -1,12 +1,10 @@
 ---
 jupytext:
-  cell_metadata_filter: -all
-  formats: md:myst
   text_representation:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.16.1
+    jupytext_version: 1.16.2
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -14,7 +12,7 @@ kernelspec:
 ---
 
 (fitted_dp)=
-# Fitted dynamic programming algorithms
+# Fitted Dynamic Programming Algorithms
 
 ```{contents}
 :local:
@@ -22,15 +20,12 @@ kernelspec:
 
 We borrow these definitions from the {ref}`mdps` chapter:
 
-```{code-cell} ipython3
-:tags: [hide-input]
-
+```{code-cell}
 from typing import NamedTuple, Callable, Optional
-from jaxtyping import Float, Int, Array
+from jaxtyping import Float, Array
 import jax.numpy as np
-from jax import grad, vmap, tree_map
+from jax import grad, vmap
 import jax.random as rand
-from functools import partial
 from tqdm import tqdm
 import gymnasium as gym
 
@@ -55,7 +50,7 @@ State = Float[Array, "..."]  # arbitrary shape
 
 # assume finite `A` actions and f outputs an array of Q-values
 # i.e. Q(s, a, h) is implemented as f(s, h)[a]
-QFunction = Callable[[State, int], Float[Array, "A"]]
+QFunction = Callable[[State, int], Float[Array, " A"]]
 
 
 def Q_zero(A: int) -> QFunction:
@@ -175,16 +170,16 @@ $$
 \tau_i = \{ s_0^i, a_0^i, r_0^i, s_1^i, a_1^i, r_1^i, \dots, s_{\hor-1}^i, a_{\hor-1}^i, r_{\hor-1}^i \}.
 $$
 
-```{code-cell} ipython3
+```{code-cell}
 def collect_data(
     env: gym.Env, N: int, H: int, key: rand.PRNGKey, π: Optional[Policy] = None
 ) -> list[Trajectory]:
     """Collect a dataset of trajectories from the given policy (or a random one)."""
     trajectories = []
-    keys = rand.split(key, N)
+    seeds = [rand.bits(k).item() for k in rand.split(key, N)]
     for i in tqdm(range(N)):
         τ = []
-        s, _ = env.reset(seed=rand.bits(keys[i]).item())
+        s, _ = env.reset(seed=seeds[i])
         for h in range(H):
             # sample from a random policy
             a = π(s, h) if π else env.action_space.sample()
@@ -197,7 +192,7 @@ def collect_data(
     return trajectories
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 env = gym.make("LunarLander-v2")
 trajectories = collect_data(env, 100, 300, key)
 trajectories[0][:5]  # show first five transitions from first trajectory
@@ -226,7 +221,7 @@ $$
 x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \max_{a'} Q^\star_{\hi + 1}(s_{\hi + 1}^i, a')
 $$
 
-```{code-cell} ipython3
+```{code-cell}
 def get_X(trajectories: list[Trajectory]):
     """
     We pass the state and timestep as input to the Q-function
@@ -257,22 +252,22 @@ def get_y(
     return np.array(y)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 s, a, h = get_X(trajectories[:1])
 print("states:", s[:5])
 print("actions:", a[:5])
 print("timesteps:", h[:5])
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 get_y(trajectories[:1])[:5]
 ```
 
 Then we can use empirical risk minimization to find a function $\hat f$ that approximates the optimal Q-function.
 
-```{code-cell} ipython3
+```{code-cell}
 # We will see some examples of fitting methods in the next section
-FittingMethod = Callable[[Float[Array, "N D"], Float[Array, "N"]], QFunction]
+FittingMethod = Callable[[Float[Array, "N D"], Float[Array, " N"]], QFunction]
 ```
 
 But notice that the definition of $y_{i \hi}$ depends on the Q-function itself!
@@ -292,7 +287,7 @@ and then using this new dataset to fit the next iterate.
       $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 def fitted_q_iteration(
     trajectories: list[Trajectory],
     fit: FittingMethod,
@@ -328,7 +323,7 @@ We can also use this fixed-point interation to *evaluate* a policy using the dat
       $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 def fitted_evaluation(
     trajectories: list[Trajectory],
     fit: FittingMethod,
@@ -355,7 +350,7 @@ How would you modify this algorithm to evaluate the data collection policy?
 
 We can use this policy evaluation algorithm to adapt the {ref}`policy iteration algorithm <policy_iteration>` to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted_evaluation` algorithm.
 
-```{code-cell} ipython3
+```{code-cell}
 def fitted_policy_iteration(
     trajectories: list[Trajectory],
     fit: FittingMethod,
@@ -409,8 +404,8 @@ $$
 where $\eta > 0$ is the **learning rate**.
 :::
 
-```{code-cell} ipython3
-Params = Float[Array, "D"]
+```{code-cell}
+Params = Float[Array, " D"]
 
 
 def gradient_descent(
@@ -441,8 +436,8 @@ This function class is extremely simple and only contains linear functions.
 To expand its expressivity, we can _transform_ the input $x$ using some feature function $\phi$,
 i.e. $\widetilde x = \phi(x)$, and then fit a linear model in the transformed space instead.
 
-```{code-cell} ipython3
-def fit_linear(X: Float[Array, "N D"], y: Float[Array, "N"], φ=lambda x: x):
+```{code-cell}
+def fit_linear(X: Float[Array, "N D"], y: Float[Array, " N"], φ=lambda x: x):
     """Fit a linear model to the given dataset using ordinary least squares."""
     X = vmap(φ)(X)
     θ = np.linalg.lstsq(X, y, rcond=None)[0]
@@ -473,4 +468,4 @@ to compute the gradient of the output with respect to the parameters of each lay
 
 {cite}`nielsen_neural_2015` provides a comprehensive introduction to neural networks and backpropagation.
 
-
+## Bias correction for Q-learning

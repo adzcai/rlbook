@@ -1,11 +1,10 @@
 ---
 jupytext:
-  formats: md:myst
   text_representation:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.16.1
+    jupytext_version: 1.16.2
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -19,37 +18,30 @@ kernelspec:
 :local:
 ```
 
-```{code-cell} ipython3
-:tags: ["hide-input"]
+```{code-cell}
+:tags: [hide-input]
 
-from typing import NamedTuple, Optional
-from jaxtyping import Float, Int, Array
+from typing import NamedTuple
+from jaxtyping import Float, Array
 import jax.numpy as np
 from jax import vmap
 from functools import partial
 ```
 
-The field of RL studies how an agent can learn to make sequential
-decisions in an interactive environment. This is a very general problem!
-How can we *formalize* this task in a way that is both *sufficiently
-general* yet also tractable enough for *fruitful analysis*?
+The field of RL studies how an agent can learn to make sequential decisions in an interactive environment. This is a very general problem! How can we *formalize* this task in a way that is both *sufficiently general* yet also tractable enough for *fruitful analysis*?
 
-Let’s consider some examples of sequential decision problems to identify
-the key common properties we’d like to capture:
+Let’s consider some examples of sequential decision problems to identify the key common properties we’d like to capture:
 
 -   **Board games** like chess or Go, where the player takes turns with
     the opponent to make moves on the board.
 
--   **Video games** like Super Mario Bros or Breakout, where the player
+-   **Video games** like Breakout, where the player
     controls a character to reach the goal.
 
 -   **Robotic control**, where the robot can move and interact with the
     real-world environment to complete some task.
 
-All of these fit into the RL framework. Furthermore, these are
-environments where the **state transitions**, the “rules” of the
-environment, only depend on the *most recent* state and action. This is
-called the **Markov property**.
+All of these fit into the RL framework. Furthermore, these are environments where the **state transitions**, the “rules” of the environment, only depend on the *most recent* state and action. This is called the **Markov property**.
 
 :::{prf:definition} Markov property
 :label: markov
@@ -69,10 +61,12 @@ and algorithms. Environments with the Markov property are called
 **Markov decision processes** (MDPs) and will be the focus of this
 chapter.
 
-**Exercise:** What information might be encoded in the state for each of
+:::{attention}
+What information might be encoded in the state for each of
 the above examples? What might the valid set of actions be? Describe the
 state transitions heuristically and verify that they satisfy the Markov
 property.
+:::
 
 MDPs are usually classified as **finite-horizon**, where the
 interactions end after some finite number of time steps, or
@@ -136,11 +130,11 @@ Verify that these types make sense!
 :::
 ::::
 
-```{code-cell} ipython3
+```{code-cell}
 class MDP(NamedTuple):
     S: int  # number of states
     A: int  # number of actions
-    μ: Float[Array, "S"]
+    μ: Float[Array, " S"]
     P: Float[Array, "S A S"]
     r: Float[Array, "S A"]
     H: int
@@ -181,31 +175,35 @@ Consider a time horizon of $H = 7$ days (one interaction per day). Let
 $t = 0$ correspond to Monday and $t = 6$ correspond to Sunday.
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 tidy_mdp = MDP(
     S=2,  # 0 = orderly, 1 = messy
     A=2,  # 0 = ignore, 1 = tidy
     μ=np.array([1.0, 0.0]),  # start in orderly state
-    P=np.array([
+    P=np.array(
         [
-            [0.7, 0.3],  # orderly, ignore
-            [1.0, 0.0],  # orderly, tidy
-        ],
+            [
+                [0.7, 0.3],  # orderly, ignore
+                [1.0, 0.0],  # orderly, tidy
+            ],
+            [
+                [0.0, 1.0],  # messy, ignore
+                [1.0, 0.0],  # messy, tidy
+            ],
+        ]
+    ),
+    r=np.array(
         [
-            [0.0, 1.0],  # messy, ignore
-            [1.0, 0.0],  # messy, tidy
-        ],
-    ]),
-    r=np.array([
-        [
-            1.0,   # orderly, ignore
-            -1.0,  # orderly, tidy
-        ],
-        [
-            -1.0,  # messy, ignore
-            0.0,   # messy, tidy
-        ],
-    ]),
+            [
+                1.0,  # orderly, ignore
+                -1.0,  # orderly, tidy
+            ],
+            [
+                -1.0,  # messy, ignore
+                0.0,  # messy, tidy
+            ],
+        ]
+    ),
     H=7,
 )
 ```
@@ -243,7 +241,7 @@ we can represent a randomized mapping $\mathcal{S} \to \Delta(\mathcal{A})$
 as a matrix $\pi \in [0, 1]^{\mathcal{S}, \mathcal{A}}$ where each row describes
 the policy's distribution over actions for the corresponding state.
 
-```{code-cell} ipython3
+```{code-cell}
 # In code, we use the `Policy` type to represent a randomized mapping from states to actions.
 # In the finite-horizon case, an array of `H` of these, one for at each time step,
 # would constitute a time-dependent policy.
@@ -270,7 +268,7 @@ Here are some possible policies for the tidying MDP {prf:ref}`tidy_mdp`:
     and $\pi_\hi(\text{orderly}) = \text{ignore}$ for all $\hi$.
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 # arrays of shape (H, S, A) represent time-dependent policies
 tidy_policy_always_tidy = np.zeros((7, 2, 2)).at[:, :, 1].set(1.0)
 tidy_policy_weekends = np.zeros((7, 2, 2)).at[5:7, :, 1].set(1.0).at[0:5, :, 0].set(1.0)
@@ -292,11 +290,12 @@ $r_\hi = r(s_\hi, a_\hi)$. (Note that sources differ as to whether to include
 the reward at the final time step. This is a minor detail.)
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 class Transition(NamedTuple):
     s: int
     a: int
     r: float
+
 
 Trajectory = list[Transition]
 ```
@@ -330,16 +329,16 @@ an **autoregressive** way (i.e. one timestep at a time):
 $$\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})$$
 :::
 
-```{code-cell} ipython3
-def trajectory_log_likelihood(mdp: MDP, τ: Trajectory, π: Policy) -> float:
+```{code-cell}
+def trajectory_log_likelihood(mdp: MDP, tau: Trajectory, pi: Policy) -> float:
     """
     Compute the log likelihood of a trajectory under a given MDP and policy.
     """
-    total = np.log(mdp.μ[τ[0].s])
-    total += np.log(π[τ[0].s, τ[0].a])
+    total = np.log(mdp.μ[tau[0].s])
+    total += np.log(pi[tau[0].s, tau[0].a])
     for i in range(1, mdp.H):
-        total += np.log(mdp.P[τ[i-1].s, τ[i-1].a, τ[i].s])
-        total += np.log(π[τ[i].s, τ[i].a])
+        total += np.log(mdp.P[tau[i - 1].s, tau[i - 1].a, tau[i].s])
+        total += np.log(pi[tau[i].s, tau[i].a])
     return total
 ```
 
@@ -383,11 +382,11 @@ actions drawn from the policy:
 
 $$V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)]$$
 
-```{code-cell} ipython3
+```{code-cell}
 def q_to_v(
     policy: Float[Array, "S A"],
     q: Float[Array, "S A"],
-) -> Float[Array, "S"]:
+) -> Float[Array, " S"]:
     """
     Compute the value function for a given policy in a known finite MDP
     at a single timestep from its action-value function.
@@ -401,10 +400,10 @@ state:
 
 $$Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]$$
 
-```{code-cell} ipython3
+```{code-cell}
 def v_to_q(
     mdp: MDP,
-    v: Float[Array, "S"],
+    v: Float[Array, " S"],
 ) -> Float[Array, "S A"]:
     """
     Compute the action-value function in a known finite MDP
@@ -413,6 +412,7 @@ def v_to_q(
     # the discount factor is relevant later
     return mdp.r + mdp.γ * mdp.P @ v
 
+
 v_ary_to_q_ary = vmap(v_to_q, in_axes=(None, 0))
 ```
 
@@ -420,7 +420,7 @@ v_ary_to_q_ary = vmap(v_to_q, in_axes=(None, 0))
 
 For any given $q \in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}$, we can define the **greedy policy** $\hat \pi_q$ as the policy that selects the action with the highest $q$-value at each state:
 
-```{code-cell} ipython3
+```{code-cell}
 def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
     """
     Get the (deterministic) greedy policy w.r.t. an action-value function.
@@ -428,7 +428,8 @@ def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
     """
     return np.eye(q.shape[1])[np.argmax(q, axis=1)]
 
-def v_to_greedy(mdp: MDP, v: Float[Array, "S"]) -> Float[Array, "S A"]:
+
+def v_to_greedy(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, "S A"]:
     """Get the (deterministic) greedy policy w.r.t. a value function."""
     return q_to_greedy(v_to_q(mdp, v))
 ```
@@ -448,7 +449,7 @@ who is credited with introducing dynamic programming in 1953.
 $$V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]$$
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 def check_bellman_consistency_v(
     mdp: MDP,
     policy: Float[Array, "H S A"],
@@ -514,14 +515,14 @@ equation for that "value function":
 $$[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].$$
 :::
 
-```{code-cell} ipython3
-:tags: ["hide-input"]
+```{code-cell}
+:tags: [hide-input]
 
-def bellman_operator(
+def bellman_operator_looping(
     mdp: MDP,
     policy: Float[Array, "S A"],
-    v: Float[Array, "S"],
-) -> Float[Array, "S"]:
+    v: Float[Array, " S"],
+) -> Float[Array, " S"]:
     """
     Looping definition of the Bellman operator.
     Concise version is below
@@ -530,16 +531,20 @@ def bellman_operator(
     for s in range(mdp.S):
         for a in range(mdp.A):
             for s_next in range(mdp.S):
-                v_new[s] += policy[s, a] * mdp.P[s, a, s_next] * (mdp.r[s, a] + mdp.γ * v[s_next])
+                v_new[s] += (
+                    policy[s, a]
+                    * mdp.P[s, a, s_next]
+                    * (mdp.r[s, a] + mdp.γ * v[s_next])
+                )
     return v_new
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 def bellman_operator(
     mdp: MDP,
     policy: Float[Array, "S A"],
-    v: Float[Array, "S"],
-) -> Float[Array, "S"]:
+    v: Float[Array, " S"],
+) -> Float[Array, " S"]:
     """For a known finite MDP, the Bellman operator can be exactly evaluated."""
     return np.sum(policy * (mdp.r + mdp.γ * mdp.P @ v), axis=1)
     return q_to_v(policy, v_to_q(mdp, v))  # equivalent
@@ -585,12 +590,12 @@ known, and work backwards in time, using the Bellman consistency
 equation to compute the value function at each time step.
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 def dp_eval_finite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "H S"]:
     """Evaluate a policy using dynamic programming."""
     V_ary = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
-    for h in range(mdp.H-1, -1, -1):
-        V_ary[h] = bellman_operator(mdp, policy[h], V_ary[h+1])
+    for h in range(mdp.H - 1, -1, -1):
+        V_ary[h] = bellman_operator(mdp, policy[h], V_ary[h + 1])
     return np.stack(V_ary[:-1])
 ```
 
@@ -638,7 +643,7 @@ etc. You may wish to repeat this computation for the
 other policies to get a better sense of this algorithm.
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 V_messy = dp_eval_finite(tidy_mdp, tidy_policy_messy_only)
 V_messy
 ```
@@ -800,22 +805,22 @@ $$
 $$
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 def find_optimal_policy(mdp: MDP):
     Q = [None] * mdp.H
-    π = [None] * mdp.H
+    pi = [None] * mdp.H
     V = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
 
     for h in range(mdp.H - 1, -1, -1):
         Q[h] = mdp.r + mdp.P @ V[h + 1]
-        π[h] = np.eye(mdp.S)[np.argmax(Q[h], axis=1)]  # one-hot
+        pi[h] = np.eye(mdp.S)[np.argmax(Q[h], axis=1)]  # one-hot
         V[h] = np.max(Q[h], axis=1)
-    
+
     Q = np.stack(Q)
-    π = np.stack(π)
+    pi = np.stack(pi)
     V = np.stack(V[:-1])
 
-    return π, V, Q
+    return pi, V, Q
 ```
 
 At each of the $H$ timesteps, we must compute $Q^{\star}$ for each of
@@ -830,7 +835,7 @@ action-values. We'll see this relationship between **policy evaluation**
 and **optimal policy computation** show up again in the infinite-horizon
 setting.
 
-```{code-cell} ipython3
+```{code-cell}
 π_opt, V_opt, Q_opt = find_optimal_policy(tidy_mdp)
 assert np.allclose(π_opt, tidy_policy_messy_only)
 assert np.allclose(V_opt, V_messy)
@@ -887,8 +892,8 @@ $$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).$$
 
 Code-wise, we can reuse the `MDP` class from before {prf:ref}`finite_mdp` and set `mdp.H = float('inf')`.
 
-```{code-cell} ipython3
-tidy_mdp_inf = tidy_mdp._replace(H=float('inf'), γ=0.95)
+```{code-cell}
+tidy_mdp_inf = tidy_mdp._replace(H=float("inf"), γ=0.95)
 ```
 
 ### Stationary policies
@@ -1090,11 +1095,13 @@ is invertible because it maps any nonzero vector to a vector with at
 least one nonzero element.)
 :::
 
-```{code-cell} ipython3
-def eval_deterministic_infinite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "S"]:
-    π = np.argmax(policy, axis=1)  # un-one-hot
-    P_π = mdp.P[np.arange(mdp.S), π]
-    r_π = mdp.r[np.arange(mdp.S), π]
+```{code-cell}
+def eval_deterministic_infinite(
+    mdp: MDP, policy: Float[Array, "S A"]
+) -> Float[Array, " S"]:
+    pi = np.argmax(policy, axis=1)  # un-one-hot
+    P_π = mdp.P[np.arange(mdp.S), pi]
+    r_π = mdp.r[np.arange(mdp.S), pi]
     return np.linalg.solve(np.eye(mdp.S) - mdp.γ * P_π, r_π)
 ```
 
@@ -1120,7 +1127,7 @@ $1/(1-\gamma) = 20$. We see that the value function is indeed slightly
 lower than this.
 :::
 
-```{code-cell} ipython3
+```{code-cell}
 eval_deterministic_infinite(tidy_mdp_inf, tidy_policy_messy_only[0])
 ```
 
@@ -1142,9 +1149,10 @@ $$v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}),$$
 i.e. $v^{(t)} = (\mathcal{J}^{\pi})^{(t)} (v^{(0)})$. Note that each iteration
 takes $O(|\mathcal{S}|^2)$ time for the matrix-vector multiplication.
 
-```{code-cell} ipython3
+```{code-cell}
 def supremum_norm(v):
     return np.max(np.abs(v))  # same as np.linalg.norm(v, np.inf)
+
 
 def loop_until_convergence(op, v, ε=1e-6):
     """Repeatedly apply op to v until convergence (in supremum norm)."""
@@ -1154,8 +1162,9 @@ def loop_until_convergence(op, v, ε=1e-6):
             return v_new
         v = v_new
 
-def iterative_evaluation(mdp: MDP, π: Float[Array, "S A"], ε=1e-6) -> Float[Array, "S"]:
-    op = partial(bellman_operator, mdp, π)
+
+def iterative_evaluation(mdp: MDP, pi: Float[Array, "S A"], ε=1e-6) -> Float[Array, " S"]:
+    op = partial(bellman_operator, mdp, pi)
     return loop_until_convergence(op, np.zeros(mdp.S), ε)
 ```
 
@@ -1163,7 +1172,7 @@ Then, as we showed in {eq}`bellman_convergence`, by the Banach fixed-point theor
 
 $$\|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.$$
 
-```{code-cell} ipython3
+```{code-cell}
 iterative_evaluation(tidy_mdp_inf, tidy_policy_messy_only[0])
 ```
 
@@ -1246,11 +1255,12 @@ gives the **Bellman optimality operator**
 [\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right]
 :::
 
-```{code-cell} ipython3
-def bellman_optimality_operator(mdp: MDP, v: Float[Array, "S"]) -> Float[Array, "S"]:
+```{code-cell}
+def bellman_optimality_operator(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, " S"]:
     return np.max(mdp.r + mdp.γ * mdp.P @ v, axis=1)
 
-def check_optimal(v: Float[Array, "S"], mdp: MDP):
+
+def check_optimal(v: Float[Array, " S"], mdp: MDP):
     return np.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
@@ -1262,14 +1272,14 @@ operator is a contracting map still holds, and so we can repeatedly
 apply this operator to converge to the optimal value function! This
 algorithm is known as **value iteration**.
 
-```{code-cell} ipython3
-def value_iteration(mdp: MDP, ε: float = 1e-6) -> Float[Array, "S"]:
+```{code-cell}
+def value_iteration(mdp: MDP, ε: float = 1e-6) -> Float[Array, " S"]:
     """Iterate the Bellman optimality operator until convergence."""
     op = partial(bellman_optimality_operator, mdp)
     return loop_until_convergence(op, np.zeros(mdp.S), ε)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 value_iteration(tidy_mdp_inf)
 ```
 
@@ -1311,26 +1321,22 @@ $$
 \begin{aligned}
         V^{\star}(s) - V^{\hat \pi}(s) &= Q^{\star}(s,\pi^\star(s)) - Q^{\hat \pi}(s, \hat \pi(s))\\
         &= [Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s))] + [Q^{\star}(s, \hat \pi(s)) - Q^{\hat \pi}(s, \hat \pi(s))].
-    
 \end{aligned}
 $$
 
 Let's bound these two quantities separately.
 
-For the first quantity, note that by the definition of $\hat \pi$, we
-have
+For the first quantity, note that by the definition of $\hat \pi$, we have
 
 $$q(s, \hat \pi(s)) \ge q(s,\pi^\star(s)).$$
 
-Let's add
-$q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
+Let's add $q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
 
 $$
 \begin{aligned}
         Q^{\star}(s,\pi^\star(s)) - Q^{\star}(s, \hat \pi(s)) &\le [Q^{\star}(s,\pi^\star(s))- q(s,\pi^\star(s))] + [q(s, \hat \pi(s)) - Q^{\star}(s, \hat \pi(s))] \\
         &= \gamma \E_{s' \sim P(s, \pi^{\star}(s))} [ V^{\star}(s') - v(s') ] + \gamma \E_{s' \sim P(s, \hat \pi(s))} [ v(s') - V^{\star}(s') ] \\
         &\le 2 \gamma \|v - V^{\star}\|_{\infty}.
-    
 \end{aligned}
 $$
 
@@ -1344,7 +1350,6 @@ $$
         \gamma \E_{s'\sim P(s, \hat \pi(s))}\left[ V^\star(s') - V^{\hat \pi}(s') \right] \\
         & \leq 
         \gamma \|V^{\star} - V^{\hat \pi}\|_\infty
-    
 \end{aligned}
 $$
 
@@ -1354,13 +1359,11 @@ $$
 \begin{aligned}
         \|V^\star - V^{\hat \pi}\|_\infty &\le 2 \gamma \|v - V^{\star}\|_{\infty} + \gamma \|V^{\star} - V^{\hat \pi}\|_\infty \\
         \|V^\star - V^{\hat \pi}\|_\infty &\le \frac{2 \gamma \|v - V^{\star}\|_{\infty}}{1-\gamma}.
-    
 \end{aligned}
 $$
 :::
 
-So in order to compensate and achieve
-$\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
+So in order to compensate and achieve $\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
 
 $$\|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.$$
 
@@ -1368,39 +1371,28 @@ This means, using {prf:ref}`iterations_vi`, we need to run value iteration for
 
 $$T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)$$
 
-iterations to achieve an $\epsilon$-accurate estimate of the optimal
-value function.
+iterations to achieve an $\epsilon$-accurate estimate of the optimal value function.
 
 
 (policy_iteration)=
 #### Policy iteration
 
-Can we mitigate this "greedy worsening"? What if instead of
-approximating the optimal value function and then acting greedily by it
-at the very end, we iteratively improve the policy and value function
-*together*? This is the idea behind **policy iteration**. In each step,
-we simply set the policy to act greedily with respect to its own value
-function.
+Can we mitigate this "greedy worsening"? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function *together*? This is the idea behind **policy iteration**. In each step, we simply set the policy to act greedily with respect to its own value function.
 
-```{code-cell} ipython3
+```{code-cell}
 def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
     """Iteratively improve the policy and value function."""
-    op = lambda π: v_to_greedy(mdp, eval_deterministic_infinite(mdp, π))
+    def op(pi):
+        return v_to_greedy(mdp, eval_deterministic_infinite(mdp, pi))
     π_init = np.ones((mdp.S, mdp.A)) / mdp.A  # uniform random policy
     return loop_until_convergence(op, π_init, ε)
 ```
 
-```{code-cell} ipython3
+```{code-cell}
 policy_iteration(tidy_mdp_inf)
 ```
 
-Although PI appears more complex than VI, we'll use the same contraction
-property
-{prf:ref}`bellman_contraction` to show convergence. This will give
-us the same runtime bound as value iteration and iterative policy
-evaluation for an $\epsilon$-optimal value function
-{prf:ref}`iterations_vi`, although in practice, PI often converges
-much faster.
+Although PI appears more complex than VI, we'll use the same contraction property {prf:ref}`bellman_contraction` to show convergence. This will give us the same runtime bound as value iteration and iterative policy evaluation for an $\epsilon$-optimal value function {prf:ref}`iterations_vi`, although in practice, PI often converges much faster.
 
 ::::{prf:theorem} Policy Iteration runtime and convergence
 :label: pi_iter_analysis
@@ -1435,12 +1427,10 @@ $[\mathcal{J}^{\star}(V^{\pi^{t}})](s) \ge V^{\pi^{t}}(s)$, we then have
 :::{math}
 :label: pi_iter_proof
 
-$$
 \begin{aligned}
     V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &\ge V^{\pi^{t+1}}(s) - \mathcal{J}^{\star} (V^{\pi^{t}})(s) \\
     &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right].
 \end{aligned}
-$$
 :::
 
 But note that the
@@ -1510,4 +1500,3 @@ $$\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\mathcal{J}^{\star} (V^{\pi^{t}}) 
 
 -   In the infinite-horizon setting, we can compute the optimal policy
     using **value iteration** or **policy iteration**.
-

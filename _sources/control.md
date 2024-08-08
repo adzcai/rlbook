@@ -1,11 +1,18 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.16.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
 (lqr_chapter)=
 # Linear Quadratic Regulators
-
-:::{math}
-
-\newcommand{\st}{s}
-\newcommand{\act}{a}
-:::
 
 Up to this point, we have considered decision problems with finitely
 many states and actions. However, in many applications, states and
@@ -14,13 +21,13 @@ driving, controlling a robot's joints, and automated manufacturing. How
 can we teach computers to solve these kinds of problems? This is the
 task of **continuous control**.
 
-:::{figure} assets/rubiks_cube.jpg
+:::{figure} shared/rubiks_cube.jpg
 :name: control_examples
 
 Solving a Rubik’s Cube with a robot hand.
 :::
 
-:::{figure} assets/boston_dynamics.jpg
+:::{figure} shared/boston_dynamics.jpg
 :name: robot_hand
 
 Boston Dynamics’s Spot robot.
@@ -45,7 +52,7 @@ continuously, and the state transitions governing the system, i.e. the
 laws of physics, are highly complex. This task is equivalent to the
 classic control problem known as *CartPole*:
 
-:::{image} assets/cart_pole.png
+:::{image} shared/cart_pole.png
 :width: "40%"
 :::
 
@@ -112,7 +119,6 @@ $\hi \in [\hor]$.
 
 
 $$
-
 \begin{split}
             \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad & \E \left[
                 \left( \sum_{\hi=0}^{\hor-1} c_\hi(\st_\hi, \act_\hi) \right) + c_\hor(\st_\hor)
@@ -122,8 +128,7 @@ $$
             & \st_0 \sim \mu_0 \\
             & w_\hi \sim \text{noise}
         \end{split}
-        
-        $$
+$$
 
 
 :::
@@ -184,13 +189,10 @@ approximations*.
 
 
 $$
-
 \begin{aligned}
         \st_{\hi+1} &= f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi \\
         \text{where } w_\hi &\sim \mathcal{N}(0, \sigma^2 I).
-    
 \end{aligned}
-
 $$
 
  Here, $w_\hi$ is a spherical Gaussian **noise term**
@@ -203,13 +205,11 @@ value function and Q-function do.
 
 
 $$
-
 c(\st_\hi, \act_\hi) = \begin{cases}
             \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi & \hi < \hor \\
             \st_\hi^\top Q \st_\hi                            & \hi = \hor
         \end{cases}.
-        
-        $$
+$$
         
          We require $Q$ and $R$ to both be positive
 definite matrices so that $c$ has a well-defined unique minimum. We can
@@ -219,16 +219,13 @@ symmetric (see exercise below).
 This results in the LQR optimization problem: 
 
 $$
-
 \begin{aligned}
         \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad & \E \left[ \left( \sum_{\hi=0}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \right] \\
         \textrm{where} \quad                                & \st_{\hi+1} = A \st_\hi + B \act_\hi + w_\hi                                                                                        \\
                                                             & \act_\hi = \pi_\hi (\st_\hi)                                                                                                        \\
                                                             & w_\hi \sim \mathcal{N}(0, \sigma^2 I)                                                                                               \\
                                                             & \st_0 \sim \mu_0.
-    
 \end{aligned}
-
 $$
 
 
@@ -254,13 +251,11 @@ $\hi \in [\hor]$ as the average **cost-to-go** incurred by that policy:
 
 
 $$
-
 \begin{split}
             V^\pi_\hi (\st) &= \E \left[ \left( \sum_{i=\hi}^{\hor-1} c(\st_i, \act_i) \right) + c(\st_\hor) \mid \st_\hi = \st,  \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \right] \\
             &= \E \left[ \left( \sum_{i=\hi}^{\hor-1} \st_i^\top Q \st_i + \act_i^\top R \act_i \right) + \st_\hor^\top Q \st_\hor \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \right] \\
         \end{split}
-        
-        $$
+$$
 
 
 
@@ -268,15 +263,13 @@ The Q-function additionally conditions on the first action we take:
 
 
 $$
-
 \begin{split}
             Q^\pi_\hi (\st, \act) &= \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} c(\st_i, \act_i) \right) + c(\st_\hor) \\
                 &\qquad\qquad \mid  (\st_\hi, \act_\hi) = (\st, \act), \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \bigg] \\
             &= \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_i^\top Q \st_i + \act_i^\top R \act_i \right) + \st_\hor^\top Q \st_\hor \\
                 &\qquad\qquad \mid (\st_\hi, \act_\hi) = (\st, \act), \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \bigg] \\
         \end{split}
-        
-        $$
+$$
 
 
 :::
@@ -308,13 +301,11 @@ function** is the one that, at any time and in any state, achieves
 *minimum cost* across *all policies*: 
 
 $$
-
 \begin{split}
     V^\star_\hi(\st) &= \min_{\pi_\hi, \dots, \pi_{\hor-1}} V^\pi_\hi(\st) \\
     &= \min_{\pi_{\hi}, \dots, \pi_{\hor-1}} \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \\
         &\hspace{8em} \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \bigg] \\
 \end{split}
-
 $$
 
 
@@ -402,30 +393,26 @@ $$
 Recall $c(\st, \act) = \st^\top Q \st + \act^\top R \act$. Let's
 consider the average value over the next timestep. The only randomness
 in the dynamics comes from the noise
-$w_{\hi+1} \sim \cN(0, \sigma^2 I)$, so we can write out this expected
+$w_{\hi+1} \sim \mathcal{N}(0, \sigma^2 I)$, so we can write out this expected
 value as: 
 
 $$
-
 \begin{aligned}
             & \E_{\st'} [V^\star_{\hi+1}(\st')]                                                                                                         \\
     {} = {} & \E_{w_{\hi+1}} [V^\star_{\hi+1}(A \st + B \act + w_{\hi+1})]                                             &  & \text{definition of } f     \\
     {} = {} & \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. &  & \text{inductive hypothesis}
 \end{aligned}
-
 $$
 
  Summing and combining like terms, we get
 
 
 $$
-
 \begin{aligned}
     Q^\star_\hi(\st, \act) & = \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
                            & = \st^\top (Q + A^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act                       \\
                            & \qquad + \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] + p_{\hi+1}.
 \end{aligned}
-
 $$
 
  Note that the terms that are linear in $w_\hi$ have mean
@@ -434,11 +421,9 @@ By expanding out the product and using linearity of expectation, we can
 write this out as 
 
 $$
-
 \begin{aligned}
     \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] & = \sum_{i=1}^d \sum_{j=1}^d (P_{\hi+1})_{ij} \E_{w_{\hi+1}} [(w_{\hi+1})_i (w_{\hi+1})_j].
 \end{aligned}
-
 $$
 
  When dealing with these *quadratic forms*, it's often
@@ -482,7 +467,6 @@ Substituting this back into the expression for $Q^\star_\hi$, we have:
 
 :::{math}
 :label: q_star_lqr
-
 \begin{aligned}
     Q^\star_\hi(\st, \act) & = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
     + 2\st^\top A^\top P_{\hi+1} B \act                                                                        \\
@@ -522,24 +506,20 @@ to zero and solve for $\act$. First, we calculate the gradient:
 
 
 $$
-
 \begin{aligned}
     \nabla_\act Q^\star_\hi(\st, \act) & = \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
                                        & = 2 (R + B^\top P_{\hi+1} B) \act + 2 (\st^\top A^\top P_{\hi+1} B)^\top
 \end{aligned}
-
 $$
 
- Setting this to zero, we get 
+Setting this to zero, we get 
 
 $$
-
 \begin{aligned}
     0                  & = (R + B^\top P_{\hi+1} B) \pi^\star_\hi(\st) + B^\top P_{\hi+1} A \st \nonumber \\
     \pi^\star_\hi(\st) & = (R + B^\top P_{\hi+1} B)^{-1} (-B^\top P_{\hi+1} A \st) \nonumber              \\
                        & = - K_\hi \st,
 \end{aligned}
-
 $$
 
  where
@@ -555,14 +535,12 @@ $V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))$, we have:
 
 
 $$
-
 \begin{aligned}
     V^\star_\hi(\st) & = Q^\star_\hi(\st, \pi^\star(\st))                                                                \\
                      & = \st^\top (Q + A^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
     + 2\st^\top A^\top P_{\hi+1} B (-K_\hi \st)                                                                          \\
                      & \qquad + \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}
 \end{aligned}
-
 $$
 
  Note that with respect to $\st$, this is the sum of a
@@ -601,7 +579,7 @@ There are several nice properties to note about the Riccati equation:
     coefficients $R$, it fully defines the optimal policy.
 
 Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$,
-which is a upward-curved quadratic, and this concludes our proof. 0◻
+which is a upward-curved quadratic, and this concludes our proof.
 
 In summary, we just demonstrated that at each timestep $\hi \in \hor$,
 the optimal value function $V^\star_\hi$ and optimal Q-function
@@ -623,14 +601,12 @@ cleaner way in terms of the history. Note that having linear dynamics
 makes it easy to expand terms backwards in time: 
 
 $$
-
 \begin{aligned}
     \st_\hi & = A \st_{\hi-1} + B \act_{\hi-1} + w_{\hi-1}                                 \\
             & = A (A\st_{\hi-2} + B \act_{\hi-2} + w_{\hi-2}) + B \act_{\hi-1} + w_{\hi-1} \\
             & = \cdots                                                                     \\
             & = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i (B \act_{\hi-i-1} + w_{\hi-i-1}).
 \end{aligned}
-
 $$
 
 
@@ -642,9 +618,7 @@ term vanishes due to linearity, and so we're left with
 
 
 $$
-
 \E [\st_\hi \mid \st_{0:(\hi-1)}, \act_{0:(\hi-1)}] = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i B \act_{\hi-i-1}.
-
 $$
 
 
@@ -652,9 +626,7 @@ If we choose actions according to our optimal policy, this becomes
 
 
 $$
-
 \E [\st_\hi \mid \st_0, \act_i = - K_i \st_i \quad \forall i \le \hi] = \left( \prod_{i=0}^{\hi-1} (A - B K_i) \right) \st_0.
-
 $$
 
 
@@ -671,15 +643,12 @@ $\bar \st_0$, the corresponding eigenvector, for which
 
 
 $$
-
 \lim_{\hi \to \infty} (A - BK)^\hi \bar \st_0
     = \lim_{\hi \to \infty} \lambda_{\max}^\hi \bar \st_0
     = \infty.
+$$
     
-    $$
-    
-     Otherwise, if $|\lambda_{\max}| < 1$, then it's
-impossible for your original state to explode as dramatically.
+Otherwise, if $|\lambda_{\max}| < 1$, then it's impossible for your original state to explode as dramatically.
 
 ## Extensions
 
@@ -728,16 +697,13 @@ The modified problem is now defined as follows:
 
 
 $$
-
 \begin{aligned}
         \min_{\pi_{0}, \dots, \pi_{\hor-1}} \quad & \E \left[ \left( \sum_{\hi=0}^{\hor-1} (\st_\hi^\top Q_\hi \st_\hi) + \act_\hi^\top R_\hi \act_\hi \right) + \st_\hor^\top Q_\hor \st_\hor \right] \\
         \textrm{where} \quad                      & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + w_\hi                                                             \\
                                                   & \st_0 \sim \mu_0                                                                                                                                   \\
                                                   & \act_\hi = \pi_\hi (\st_\hi)                                                                                                                       \\
                                                   & w_\hi \sim \mathcal{N}(0, \sigma^2 I).
-    
 \end{aligned}
-
 $$
 
 
@@ -856,16 +822,13 @@ simplicity:
 
 
 $$
-
 \begin{aligned}
         \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad & \E_{\st_0} \left[ \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi) \right] \\
         \text{where} \quad                                  & \st_{\hi+1} = f(\st_\hi, \act_\hi)                                   \\
                                                             & \act_\hi = \pi_\hi(\st_\hi)                                          \\
                                                             & \st_0 \sim \mu_0                                                     \\
                                                             & c(\st, \act) = d(\st, \st^\star) + d(\act, \act^\star).
-    
 \end{aligned}
-
 $$
 
  Here, $d$ denotes a function that measures the
@@ -900,19 +863,16 @@ Linearizing the dynamics around $(\st^\star, \act^\star)$ gives:
 
 
 $$
-
 \begin{gathered}
     f(\st, \act) \approx f(\st^\star, \act^\star) + \nabla_\st f(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act f(\st^\star, \act^\star) (\act - \act^\star) \\
     (\nabla_\st f(\st, \act))_{ij} = \frac{d f_i(\st, \act)}{d \st_j}, \quad i, j \le n_\st \qquad (\nabla_\act f(\st, \act))_{ij} = \frac{d f_i(\st, \act)}{d \act_j}, \quad i \le n_\st, j \le n_\act
 \end{gathered}
-
 $$
 
  and quadratizing the cost function around
 $(\st^\star, \act^\star)$ gives: 
 
 $$
-
 \begin{aligned}
     c(\st, \act) & \approx c(\st^\star, \act^\star) \quad \text{constant term}                                                                                      \\
                  & \qquad + \nabla_\st c(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act c(\st^\star, \act^\star) (a - \act^\star) \quad \text{linear terms} \\
@@ -922,14 +882,12 @@ $$
                                & \qquad + (\st - \st^\star)^\top \nabla_{\st \act} c(\st^\star, \act^\star) (\act - \act^\star)
                           \end{aligned} \right\} \text{quadratic terms}
 \end{aligned}
-
 $$
 
  where the gradients and Hessians are defined as
 
 
 $$
-
 \begin{aligned}
     (\nabla_\st c(\st, \act))_{i}         & = \frac{d c(\st, \act)}{d \st_i}, \quad i \le n_\st
                                           & (\nabla_\act c(\st, \act))_{i}                                               & = \frac{d c(\st, \act)}{d \act_i}, \quad i \le n_\act               \\
@@ -937,7 +895,6 @@ $$
                                           & (\nabla_{\act \act} c(\st, \act))_{ij}                                       & = \frac{d^2 c(\st, \act)}{d \act_i d \act_j}, \quad i, j \le n_\act \\
     (\nabla_{\st \act} c(\st, \act))_{ij} & = \frac{d^2 c(\st, \act)}{d \st_i d \act_j}. \quad i \le n_\st, j \le n_\act
 \end{aligned}
-
 $$
 
 
@@ -1007,7 +964,7 @@ accurate in a *local* region around the point of linearization, so the
 performance of our LQR controller will degrade as we move further away.
 We'll see how to address this in the next section using the **iterative LQR** algorithm.
 
-:::{figure} assets/log_taylor.png
+:::{figure} shared/log_taylor.png
 :name: local_linearization
 
 Local linearization might only be accurate in a small region around the
@@ -1056,7 +1013,6 @@ quadratize the cost function around $(\bar \st^i_\hi, \bar \act^i_\hi)$:
 
 
 $$
-
 \begin{aligned}
     f_\hi(\st, \act) & \approx f(\bar {\st}^i_\hi, \bar {\act}^i_\hi) + \nabla_{\st } f(\bar {\st}^i_\hi, \bar {\act}^i_\hi)(\st - \bar {\st}^i_\hi) + \nabla_{\act } f(\bar {\st}^i_\hi, \bar {\act}^i_\hi)(\act - \bar {\act}^i_\hi)                         \\
     c_\hi(\st, \act) & \approx c(\bar {\st}^i_\hi, \bar {\act}^i_\hi) + \begin{bmatrix}
@@ -1076,7 +1032,6 @@ $$
         \act - \bar {\act}^i_\hi
     \end{bmatrix}.
 \end{aligned}
-
 $$
 
 
@@ -1115,14 +1070,12 @@ $\bar \act^{i+1}_0, \dots, \bar \act^{i+1}_{\hor-1}$ such that the cost
 is minimized: 
 
 $$
-
 \begin{aligned}
     \min_{\alpha \in [0, 1]} \quad & \sum_{\hi=0}^{\hor-1} c(\st_\hi, \bar \act^{i+1}_\hi)                     \\
     \text{where} \quad             & \st_{\hi+1} = f(\st_\hi, \bar \act^{i+1}_\hi)                             \\
                                    & \bar \act^{i+1}_\hi = \alpha \bar \act^i_\hi + (1-\alpha) \widetilde \act_\hi \\
                                    & \st_0 = \bar \st_0.
 \end{aligned}
-
 $$
 
  Note that this optimizes over the closed interval
