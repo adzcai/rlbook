@@ -971,6 +971,7 @@ Local linearization might only be accurate in a small region around the
 point of linearization.
 :::
 
+(iterative_lqr)=
 ### Iterative LQR
 
 To address these issues with local linearization, we'll use an iterative

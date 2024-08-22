@@ -347,30 +347,27 @@ document.write(`
    <a href="#cap-conditional_expectation_minimizes_mse"><strong>conditional_expectation_minimizes_mse</strong></a> | 
    <a href="#cap-contextual_bandit"><strong>contextual_bandit</strong></a> | 
    <a href="#cap-contraction"><strong>contraction</strong></a> | 
-   <a href="#cap-definition-0"><strong>definition-0</strong></a> | 
-   <a href="#cap-definition-2"><strong>definition-2</strong></a> | 
-   <a href="#cap-definition-6"><strong>definition-6</strong></a> | 
-   <a href="#cap-definition-7"><strong>definition-7</strong></a> | 
-   <a href="#cap-definition-9"><strong>definition-9</strong></a> | 
    <a href="#cap-empirical_risk_minimization"><strong>empirical_risk_minimization</strong></a> | 
-   <a href="#cap-example-8"><strong>example-8</strong></a> | 
    <a href="#cap-explore_then_exploit"><strong>explore_then_exploit</strong></a> | 
    <a href="#cap-finite_mdp"><strong>finite_mdp</strong></a> | 
+   <a href="#cap-fisher_matrix"><strong>fisher_matrix</strong></a> | 
    <a href="#cap-fitted_evaluation"><strong>fitted_evaluation</strong></a> | 
    <a href="#cap-fitted_q_iteration"><strong>fitted_q_iteration</strong></a> | 
    <a href="#cap-greedy_worsen"><strong>greedy_worsen</strong></a> | 
    <a href="#cap-hoeffding"><strong>hoeffding</strong></a> | 
    <a href="#cap-ilqr"><strong>ilqr</strong></a> | 
-   <a href="#cap-importance_sampling"><strong>importance_sampling</strong></a> | 
    <a href="#cap-ineffective_mdp"><strong>ineffective_mdp</strong></a> | 
    <a href="#cap-iterations_vi"><strong>iterations_vi</strong></a> | 
+   <a href="#cap-kld"><strong>kld</strong></a> | 
    <a href="#cap-lemma-18"><strong>lemma-18</strong></a> | 
    <a href="#cap-lin_ucb_vi_regret"><strong>lin_ucb_vi_regret</strong></a> | 
    <a href="#cap-linear_mdp"><strong>linear_mdp</strong></a> | 
    <a href="#cap-lqr_definition"><strong>lqr_definition</strong></a> | 
    <a href="#cap-markov"><strong>markov</strong></a> | 
    <a href="#cap-multi-armed"><strong>multi-armed</strong></a> | 
+   <a href="#cap-natural_simple"><strong>natural_simple</strong></a> | 
    <a href="#cap-nonlinear_control"><strong>nonlinear_control</strong></a> | 
+   <a href="#cap-npg"><strong>npg</strong></a> | 
    <a href="#cap-optimal_control"><strong>optimal_control</strong></a> | 
    <a href="#cap-optimal_greedy"><strong>optimal_greedy</strong></a> | 
    <a href="#cap-optimal_policy_finite"><strong>optimal_policy_finite</strong></a> | 
@@ -380,6 +377,7 @@ document.write(`
    <a href="#cap-parameterized_empirical_risk_minimization"><strong>parameterized_empirical_risk_minimization</strong></a> | 
    <a href="#cap-pdl"><strong>pdl</strong></a> | 
    <a href="#cap-per_episode_regret"><strong>per_episode_regret</strong></a> | 
+   <a href="#cap-pg_baseline"><strong>pg_baseline</strong></a> | 
    <a href="#cap-pi_iter_analysis"><strong>pi_iter_analysis</strong></a> | 
    <a href="#cap-pi_star_dp"><strong>pi_star_dp</strong></a> | 
    <a href="#cap-policy"><strong>policy</strong></a> | 
@@ -399,7 +397,6 @@ document.write(`
    <a href="#cap-time_dependent_lqr"><strong>time_dependent_lqr</strong></a> | 
    <a href="#cap-trajectory"><strong>trajectory</strong></a> | 
    <a href="#cap-trpo"><strong>trpo</strong></a> | 
-   <a href="#cap-trpo_implement"><strong>trpo_implement</strong></a> | 
    <a href="#cap-ucb_vi"><strong>ucb_vi</strong></a> | 
    <a href="#cap-ucb_vi_bonus"><strong>ucb_vi_bonus</strong></a> | 
    <a href="#cap-ucb_vi_regret"><strong>ucb_vi_regret</strong></a> | 
@@ -431,7 +428,7 @@ document.write(`
      <tr>
        <td></td>
        <td>
-       <a href="imitation_learning.html#algorithm-0"><code class="xref">algorithm-0</code></a> <em>(imitation_learning)</em></td><td>
+       <a href="pg.html#algorithm-0"><code class="xref">algorithm-0</code></a> <em>(pg)</em></td><td>
        <em>algorithm</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-algorithm-14"><td></td><td>
@@ -562,46 +559,6 @@ document.write(`
        <a href="mdps.html#contraction"><code class="xref">contraction</code></a> <em>(mdps)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-definition-0"><td></td><td>
-       <strong>definition-0</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#definition-0"><code class="xref">definition-0</code></a> <em>(pg)</em></td><td>
-       <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-definition-2"><td></td><td>
-       <strong>definition-2</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#definition-2"><code class="xref">definition-2</code></a> <em>(pg)</em></td><td>
-       <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-definition-6"><td></td><td>
-       <strong>definition-6</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#definition-6"><code class="xref">definition-6</code></a> <em>(pg)</em></td><td>
-       <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-definition-7"><td></td><td>
-       <strong>definition-7</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#definition-7"><code class="xref">definition-7</code></a> <em>(pg)</em></td><td>
-       <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-definition-9"><td></td><td>
-       <strong>definition-9</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#definition-9"><code class="xref">definition-9</code></a> <em>(pg)</em></td><td>
-       <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-empirical_risk_minimization"><td></td><td>
        <strong>empirical_risk_minimization</strong></td><td></td></tr>
      <tr>
@@ -609,14 +566,6 @@ document.write(`
        <td>
        <a href="fitted_dp.html#empirical_risk_minimization"><code class="xref">empirical_risk_minimization</code></a> <em>(fitted_dp)</em></td><td>
        <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-example-8"><td></td><td>
-       <strong>example-8</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#example-8"><code class="xref">example-8</code></a> <em>(pg)</em></td><td>
-       <em>example</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-explore_then_exploit"><td></td><td>
        <strong>explore_then_exploit</strong></td><td></td></tr>
@@ -632,6 +581,14 @@ document.write(`
        <td></td>
        <td>
        <a href="mdps.html#finite_mdp"><code class="xref">finite_mdp</code></a> <em>(mdps)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-fisher_matrix"><td></td><td>
+       <strong>fisher_matrix</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="pg.html#fisher_matrix"><code class="xref">fisher_matrix</code></a> <em>(pg)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-fitted_evaluation"><td></td><td>
@@ -674,14 +631,6 @@ document.write(`
        <a href="control.html#ilqr"><code class="xref">ilqr</code></a> <em>(control)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-importance_sampling"><td></td><td>
-       <strong>importance_sampling</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#importance_sampling"><code class="xref">importance_sampling</code></a> <em>(pg)</em></td><td>
-       <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-ineffective_mdp"><td></td><td>
        <strong>ineffective_mdp</strong></td><td></td></tr>
      <tr>
@@ -697,6 +646,14 @@ document.write(`
        <td>
        <a href="mdps.html#iterations_vi"><code class="xref">iterations_vi</code></a> <em>(mdps)</em></td><td>
        <em>remark</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-kld"><td></td><td>
+       <strong>kld</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="pg.html#kld"><code class="xref">kld</code></a> <em>(pg)</em></td><td>
+       <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-lemma-18"><td></td><td>
        <strong>lemma-18</strong></td><td></td></tr>
@@ -746,12 +703,28 @@ document.write(`
        <a href="bandits.html#multi-armed"><code class="xref">multi-armed</code></a> <em>(bandits)</em></td><td>
        <em>remark</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-natural_simple"><td></td><td>
+       <strong>natural_simple</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="pg.html#natural_simple"><code class="xref">natural_simple</code></a> <em>(pg)</em></td><td>
+       <em>example</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-nonlinear_control"><td></td><td>
        <strong>nonlinear_control</strong></td><td></td></tr>
      <tr>
        <td></td>
        <td>
        <a href="control.html#nonlinear_control"><code class="xref">nonlinear_control</code></a> <em>(control)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-npg"><td></td><td>
+       <strong>npg</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="pg.html#npg"><code class="xref">npg</code></a> <em>(pg)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-optimal_control"><td></td><td>
@@ -824,6 +797,14 @@ document.write(`
        <td></td>
        <td>
        <a href="exploration.html#per_episode_regret"><code class="xref">per_episode_regret</code></a> <em>(exploration)</em></td><td>
+       <em>definition</em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-pg_baseline"><td></td><td>
+       <strong>pg_baseline</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="pg.html#pg_baseline"><code class="xref">pg_baseline</code></a> <em>(pg)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-pi_iter_analysis"><td></td><td>
@@ -976,14 +957,6 @@ document.write(`
        <td></td>
        <td>
        <a href="pg.html#trpo"><code class="xref">trpo</code></a> <em>(pg)</em></td><td>
-       <em>definition</em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-trpo_implement"><td></td><td>
-       <strong>trpo_implement</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="pg.html#trpo_implement"><code class="xref">trpo_implement</code></a> <em>(pg)</em></td><td>
        <em>definition</em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-ucb_vi"><td></td><td>

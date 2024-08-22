@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -216,7 +216,8 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="control.html">5. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Gradient Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exploration.html">7. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">8. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">8. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">9. Bibliography</a></li>
 </ul>
 
     </div>
@@ -575,31 +576,31 @@ Let us indicate the trajectory index in the superscript, so that</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|                                                                                                                    | 0/100 [00:00&lt;?, ?it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|                                                    | 0/100 [00:00&lt;?, ?it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 41%|███████████████████████████████████████████▍                                                              | 41/100 [00:00&lt;00:00, 401.13it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 39%|████████████████▍                         | 39/100 [00:00&lt;00:00, 388.67it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 92%|█████████████████████████████████████████████████████████████████████████████████████████████████▌        | 92/100 [00:00&lt;00:00, 461.38it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 90%|█████████████████████████████████████▊    | 90/100 [00:00&lt;00:00, 458.33it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 100/100 [00:00&lt;00:00, 454.25it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|█████████████████████████████████████████| 100/100 [00:00&lt;00:00, 453.82it/s]
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Transition(s=array([-0.00767412,  1.4020356 , -0.77731264, -0.3948966 ,  0.00889908,
-         0.17607284,  0.        ,  0.        ], dtype=float32), a=0, r=-1.0289857267201228),
- Transition(s=array([-0.01534882,  1.3925751 , -0.7762624 , -0.42053893,  0.0175994 ,
-         0.17402385,  0.        ,  0.        ], dtype=float32), a=2, r=0.5966971747277625),
- Transition(s=array([-0.02291803,  1.3831196 , -0.7662615 , -0.42038685,  0.02683624,
-         0.18475416,  0.        ,  0.        ], dtype=float32), a=3, r=-0.1699903399218374),
- Transition(s=array([-0.03040352,  1.3730592 , -0.75575364, -0.447277  ,  0.03396181,
-         0.1425242 ,  0.        ,  0.        ], dtype=float32), a=3, r=0.034493417178880464),
- Transition(s=array([-0.03780527,  1.3624053 , -0.745235  , -0.47362387,  0.03897107,
-         0.10019406,  0.        ,  0.        ], dtype=float32), a=2, r=0.6816059819300448)]
+         0.17607284,  0.        ,  0.        ], dtype=float32), a=1, r=-2.1191279854808145),
+ Transition(s=array([-0.01542616,  1.3925703 , -0.7859692 , -0.4207744 ,  0.01954689,
+         0.21297753,  0.        ,  0.        ], dtype=float32), a=2, r=0.39769165458876615),
+ Transition(s=array([-0.02307358,  1.3831106 , -0.77605283, -0.42061192,  0.03073004,
+         0.22368379,  0.        ,  0.        ], dtype=float32), a=3, r=-0.3487214817021129),
+ Transition(s=array([-0.03063736,  1.3730472 , -0.7655495 , -0.4474775 ,  0.03980196,
+         0.18145534,  0.        ,  0.        ], dtype=float32), a=1, r=-2.2423600035067452),
+ Transition(s=array([-0.03827467,  1.3623825 , -0.77475727, -0.47430995,  0.05071578,
+         0.21829662,  0.        ,  0.        ], dtype=float32), a=1, r=-2.436894065119587)]
 </pre></div>
 </div>
 </div>
@@ -669,15 +670,15 @@ x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \ma
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>states: [[-0.00767412  1.4020356  -0.77731264 -0.3948966   0.00889908  0.17607284
    0.          0.        ]
- [-0.01534882  1.3925751  -0.7762624  -0.42053893  0.0175994   0.17402385
+ [-0.01542616  1.3925703  -0.7859692  -0.4207744   0.01954689  0.21297753
    0.          0.        ]
- [-0.02291803  1.3831196  -0.7662615  -0.42038685  0.02683624  0.18475416
+ [-0.02307358  1.3831106  -0.77605283 -0.42061192  0.03073004  0.22368379
    0.          0.        ]
- [-0.03040352  1.3730592  -0.75575364 -0.447277    0.03396181  0.1425242
+ [-0.03063736  1.3730472  -0.7655495  -0.4474775   0.03980196  0.18145534
    0.          0.        ]
- [-0.03780527  1.3624053  -0.745235   -0.47362387  0.03897107  0.10019406
+ [-0.03827467  1.3623825  -0.77475727 -0.47430995  0.05071578  0.21829662
    0.          0.        ]]
-actions: [0 2 3 3 2]
+actions: [1 2 3 1 1]
 timesteps: [0 1 2 3 4]
 </pre></div>
 </div>
@@ -690,7 +691,7 @@ timesteps: [0 1 2 3 4]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([-1.0289857 ,  0.59669715, -0.16999035,  0.03449342,  0.681606  ],      dtype=float32)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([-2.119128  ,  0.39769167, -0.34872147, -2.24236   , -2.4368942 ],      dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -912,7 +913,7 @@ for computing the gradient of the empirical risk with respect to the parameters.
 Essentially, the hierarchical structure of the neural network, i.e. computing the
 output of the network as a composition of functions, allows us to use the chain rule
 to compute the gradient of the output with respect to the parameters of each layer.</p>
-<p><span id="id2">[<a class="reference internal" href="bibliography.html#id13" title="Michael A. Nielsen. Neural Networks and Deep Learning. Determination Press, 2015.">Nielsen, 2015</a>]</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
+<p><span id="id2">[<a class="reference internal" href="bibliography.html#id15" title="Michael A. Nielsen. Neural Networks and Deep Learning. Determination Press, 2015.">Nielsen, 2015</a>]</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
 </section>
 </section>
 <section id="bias-correction-for-q-learning">

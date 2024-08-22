@@ -950,5 +950,3 @@ regret bound. The full details of the analysis can be found in Section 3 of {cit
 +++
 
 ## Summary
-
-

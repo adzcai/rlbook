@@ -353,6 +353,8 @@ policy for that state and $0$ otherwise. In this case, the only
 randomness in sampling trajectories comes from the initial state
 distribution $\mu$ and the state transitions $P$.
 
++++
+
 ### Value functions
 
 The main goal of RL is to find a policy that maximizes the average total

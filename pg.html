@@ -366,23 +366,27 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">6.1. Motivation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-policy-gradient-ascent">6.2. (Stochastic) Policy Gradient Ascent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reinforce-and-importance-sampling">6.3. REINFORCE and Importance Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-ascent">6.1. Gradient Ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-ascent">6.1.1. Stochastic gradient ascent</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-stochastic-gradient-ascent">6.2. Policy (stochastic) gradient ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">6.2.1. Example policy parameterizations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">6.2.1.1. Linear in features</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">6.2.1.2. Neural policies</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">6.2.2. Continuous action spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">6.2.3. Importance Sampling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-policy-gradient">6.3. The REINFORCE policy gradient</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-and-advantages">6.4. Baselines and advantages</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">6.5. Example policy parameterizations</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">6.5.1. Linear in features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">6.5.2. Neural policies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">6.5.3. Continuous action spaces</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-policy-optimization">6.6. Local policy optimization</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation-for-policy-gradient">6.6.1. Motivation for policy gradient</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">6.6.2. Trust region policy optimization</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">6.6.3. Natural policy gradient</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">6.6.4. Proximal policy optimization</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-policy-gradient-algorithms-to-policy-iteration">6.5. Comparing policy gradient algorithms to policy iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">6.6. Trust region policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">6.7. Natural policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">6.8. Proximal policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">6.9. Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -396,298 +400,736 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="policy-gradient-algorithms">
 <h1><span class="section-number">6. </span>Policy Gradient Algorithms<a class="headerlink" href="#policy-gradient-algorithms" title="Link to this heading">#</a></h1>
-<section id="motivation">
-<h2><span class="section-number">6.1. </span>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
-<p>The scope of our problem has been gradually expanding:</p>
+<p>A key task in RL is finding the <strong>optimal policy</strong> in a given environment,
+that is, the policy that achieves the most total reward in all states.
+Given this task, why not optimize directly over <em>policies?</em></p>
+<p>Algorithms based on this idea are called <em>policy optimization algorithms.</em>
+We’ve already seen some examples of this,
+namely <a class="reference internal" href="mdps.html#policy-iteration"><span class="std std-ref">Policy iteration</span></a> for finite MDPs and <a class="reference internal" href="control.html#iterative-lqr"><span class="std std-ref">Iterative LQR</span></a> in continuous control.</p>
+<p><strong>Policy gradient algorithms</strong> form a specific subclass for policies that can be described by a set of <strong>parameters.</strong>
+These are responsible for groundbreaking applications including AlphaGo, OpenAI Five, and large language models,
+many of which use policies parameterized as deep neural networks.</p>
 <ol class="arabic simple">
-<li><p>In the first chapter, we considered the <em>multi-armed bandit setting</em> with a finite number of arms, where the only stochasticity involved was their rewards.</p></li>
-<li><p>In the second chapter, we considered <em>MDPs</em> more generally, involving a finite number of states and actions, where the state transitions are Markovian.</p></li>
-<li><p>In the third chapter, we considered <em>continuous</em> state and action spaces and developed the <em>Linear Quadratic Regulator.</em> We then showed how to use it to find <em>locally optimal solutions</em> to problems with nonlinear dynamics and non-quadratic cost functions.</p></li>
+<li><p>We begin the chapter with a short review of gradient ascent,
+a simple and general <strong>optimization method.</strong></p></li>
+<li><p>We’ll then apply this technique directly to maximize the <em>\hiotal reward</em>.</p></li>
+<li><p>Then we’ll explore some <em>proximal optimization</em> techniques that ensure the steps taken are “not too large”.
+This is helpful to stabilize training and widely used in practice.</p></li>
 </ol>
-<p>Now, we’ll continue to investigate the case of finding optimal policies in large MDPs using the self-explanatory approach of <em>policy optimization.</em> This is a general term encompassing many specific algorithms we’ve already seen:</p>
-<ul class="simple">
-<li><p><em>Policy iteration</em> for finite MDPs,</p></li>
-<li><p><em>Iterative LQR</em> for locally optimal policies in continuous control.</p></li>
-</ul>
-<p>Here we’ll see some algorithms that allow us to optimize policies for <em>general</em> kinds of problems. These algorithms have been used in many groundbreaking applications, including AlphaGo, OpenAI Five, and ChatGPT. (TODO Come up with better examples) These methods also bring us into the domain where we can use <em>deep learning</em> to approximate complex, nonlinear functions.</p>
-</section>
-<section id="stochastic-policy-gradient-ascent">
-<h2><span class="section-number">6.2. </span>(Stochastic) Policy Gradient Ascent<a class="headerlink" href="#stochastic-policy-gradient-ascent" title="Link to this heading">#</a></h2>
-<p>Let’s suppose our policy can be <em>parameterized</em> by some parameters <span class="math notranslate nohighlight">\(\theta\)</span>. For example, in a finite MDP with <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span> states and <span class="math notranslate nohighlight">\(|\mathcal{A}|\)</span> actions, we might assign one scalar value <span class="math notranslate nohighlight">\(\theta_{s, a}\)</span> to each state-action pair, and compute the policy as <span class="math notranslate nohighlight">\(\pi(s) = \argmax_a \theta_{s, a}\)</span>. In a high-dimensional case, the weights and biases of a deep neural network. We’ll talk more about possible parameterizations in <a class="reference internal" href="#parameterizations"><span class="std std-ref">Example policy parameterizations</span></a>.</p>
-<p>Remember that in reinforcement learning, the goal is to <em>maximize reward.</em> Specifically, we seek the parameters that maximize the expected total reward, which we can express concisely using the value function we defined earlier:</p>
-<div class="math notranslate nohighlight" id="equation-objective-fn">
-<span class="eqno">(6.1)<a class="headerlink" href="#equation-objective-fn" title="Link to this equation">#</a></span>\[\begin{split}\begin{split}
-    J(\theta) := \E_{s_0 \sim \mu_0} V^{\pi_\theta} (s_0) = &amp; \E \sum_{t=0}^{T-1} r_t \\
-    \text{where} \quad &amp; s_0 \sim \mu_0 \\
-    &amp; s_{t+1} \sim P(s_t, a_t), \\
-    &amp; a_\hi = \pi_\theta(s_\hi) \\
-    &amp; r_\hi = r(s_\hi, a_\hi).
-\end{split}\end{split}\]</div>
-<p>We call a sequence of states, actions, and rewards a <strong>trajectory</strong> <span class="math notranslate nohighlight">\(\tau = (s_i, a_i, r_i)_{i=0}^{T-1}\)</span>. The total time-discounted reward is also often called the <strong>return</strong> <span class="math notranslate nohighlight">\(R(\tau)\)</span> of a trajectory. Note that the above is the <em>undiscounted, finite-horizon case,</em> which we’ll continue to use throughout the chapter, but analogous results hold for the <em>discounted, infinite-horizon case.</em></p>
-<p>Note that when the state transitions are Markov (i.e. <span class="math notranslate nohighlight">\(s_{t}\)</span> only depends on <span class="math notranslate nohighlight">\(s_{t-1}, a_{t-1}\)</span>) and the policy is stationary (i.e. <span class="math notranslate nohighlight">\(a_t \sim \pi_\theta (s_t)\)</span>), we can write out the <em>likelihood of a trajectory</em> under the policy <span class="math notranslate nohighlight">\(\pi_\theta\)</span>:</p>
-<div class="math notranslate nohighlight" id="equation-trajectory-likelihood">
-<span class="eqno">(6.2)<a class="headerlink" href="#equation-trajectory-likelihood" title="Link to this equation">#</a></span>\[\begin{split}\begin{split}
-        \rho_\theta(\tau) &amp;= \mu(s_0) \pi_\theta(a_0 | s_0) \\
-        &amp;\qquad \times P(s_1 | s_0, a_0) \pi_\theta(a_1 | s_1) \\
-        &amp;\qquad \times \cdots \\
-        &amp;\qquad \times P(s_{H-1} | s_{H-2}, a_{H-2}) \pi_\theta(a_{H-1} | s_{H-1}).
-\end{split}\end{split}\]</div>
-<p>This lets us rewrite <span class="math notranslate nohighlight">\(J(\theta) = \E_{\tau \sim \rho_\theta} R(\tau).\)</span></p>
-<p>Now how do we optimize for this function (the expected total reward)? One very general optimization technique is <em>gradient ascent.</em> Namely, the <strong>gradient</strong> of a function at a given point answers: At this point, which direction should we move to increase the function the most? By repeatedly moving in this direction, we can keep moving up on the graph of this function. Expressing this iteratively, we have: $<span class="math notranslate nohighlight">\(\theta_{t+1} = \theta_t + \eta \nabla_\theta J(\pi_\theta) \Big|_{\theta = \theta_t},\)</span>$</p>
-<p>Where <span class="math notranslate nohighlight">\(\eta\)</span> is a <em>hyperparameter</em> that says how big of a step to take each time.</p>
-<p>In order to apply this technique, we need to be able to evaluate the gradient <span class="math notranslate nohighlight">\(\nabla_\theta J(\pi_\theta).\)</span> How can we do this?</p>
-<p>In practice, it’s often impractical to evaluate the gradient directly. For example, in supervised learning, <span class="math notranslate nohighlight">\(J(\theta)\)</span> might be the sum of squared prediction errors across an entire <strong>training dataset.</strong> However, if our dataset is very large, we might not be able to fit it into our computer’s memory!</p>
-<p>Instead, we can <em>estimate</em> a gradient step using some estimator <span class="math notranslate nohighlight">\(\tilde \nabla J(\theta).\)</span> This is called <strong><em>stochastic</em> gradient descent</strong> (SGD). Ideally, we want this estimator to be <strong>unbiased,</strong> that is, on average, it matches a single true gradient step: $<span class="math notranslate nohighlight">\(\E [\tilde \nabla J(\theta)] = \nabla J(\theta).\)</span><span class="math notranslate nohighlight">\( If \)</span>J$ is defined in terms of some training dataset, we might randomly choose a <em>minibatch</em> of samples and use them to estimate the prediction error across the <em>whole</em> dataset. (This approach is known as <strong><em>minibatch</em> SGD</strong>.)</p>
-<p>Notice that our parameters will stop changing once <span class="math notranslate nohighlight">\(\nabla J(\theta) = 0.\)</span> This implies that our current parameters are ‘locally optimal’ in some sense; it’s impossible to increase the function by moving in any direction. If <span class="math notranslate nohighlight">\(J\)</span> is convex, then the only point where this happens is at the <em>global optimum.</em> Otherwise, if <span class="math notranslate nohighlight">\(J\)</span> is nonconvex, the best we can hope for is a <em>local optimum.</em></p>
-<p>We can actually show that in a finite number of steps, SGD will find a <span class="math notranslate nohighlight">\(\theta\)</span> that is “close” to a local optimum. More formally, suppose we run SGD for <span class="math notranslate nohighlight">\(T\)</span> steps, using an unbiased gradient estimator. Let the step size <span class="math notranslate nohighlight">\(\eta_t\)</span> scale as <span class="math notranslate nohighlight">\(O(1/ \sqrt{t}).\)</span> Then if <span class="math notranslate nohighlight">\(J\)</span> is bounded and <span class="math notranslate nohighlight">\(\beta\)</span>-smooth, and the norm of the gradient estimator has a finite variance, then after <span class="math notranslate nohighlight">\(T\)</span> steps: $<span class="math notranslate nohighlight">\(\|\nabla_\theta J(\theta)\|^2 \le O \left( M \beta \sigma^2 / T\right).\)</span><span class="math notranslate nohighlight">\( In another perspective, the local &quot;landscape&quot; of \)</span>J<span class="math notranslate nohighlight">\( around \)</span>\theta$ becomes flatter and flatter the longer we run SGD.</p>
-</section>
-<section id="reinforce-and-importance-sampling">
-<h2><span class="section-number">6.3. </span>REINFORCE and Importance Sampling<a class="headerlink" href="#reinforce-and-importance-sampling" title="Link to this heading">#</a></h2>
-<p>Note that the objective function above, <span class="math notranslate nohighlight">\(J(\theta) = \E_{\tau \sim \rho_\theta}R(\tau),\)</span> is very difficult, or even intractable, to compute exactly! This is because it involves taking an expectation over all possible trajectories <span class="math notranslate nohighlight">\(\tau.\)</span> Can we rewrite this in a form that’s more convenient to implement?</p>
-<p>Specifically, suppose there is some distribution over trajectories <span class="math notranslate nohighlight">\(\rho(\tau)\)</span> that’s easy to sample from (e.g. a database of existing trajectories). We can then rewrite the gradient of objective function, a.k.a. the <em>policy gradient</em>, as follows (all gradients are being taken w.r.t. <span class="math notranslate nohighlight">\(\theta\)</span>): $<span class="math notranslate nohighlight">\(\begin{aligned}
-    \nabla J(\theta) &amp; = \nabla \E_{\tau \sim \rho_\theta} [ R(\tau) ]                                                                                         \\
-                     &amp; = \nabla \E_{\tau \sim \rho} \left[ \frac{\rho_\theta(\tau)}{\rho(\tau)} R(\tau) \right] &amp;  &amp; \text{likelihood ratio trick}             \\
-                     &amp; = \E_{\tau \sim \rho} \left[ \frac{\nabla \rho_\theta(\tau)}{\rho(\tau)} R(\tau) \right] &amp;  &amp; \text{switching gradient and expectation}
-\end{aligned}\)</span><span class="math notranslate nohighlight">\( Note that setting \)</span>\rho = \rho_\theta<span class="math notranslate nohighlight">\( allows us to express \)</span>\nabla J<span class="math notranslate nohighlight">\( as an expectation. (Notice the swapped order of \)</span>\nabla<span class="math notranslate nohighlight">\( and \)</span>\E<span class="math notranslate nohighlight">\(!) \)</span><span class="math notranslate nohighlight">\(\begin{aligned}
-    \nabla J(\theta) = \E_{\tau \sim \rho_\theta} [ \nabla \log \rho_\theta(\tau) \cdot R(\tau)].
-\end{aligned}\)</span><span class="math notranslate nohighlight">\( Consider expanding out \)</span>\rho_\theta.<span class="math notranslate nohighlight">\( Note that taking its \)</span>\log<span class="math notranslate nohighlight">\( turns it into a sum of \)</span>\log<span class="math notranslate nohighlight">\( terms, of which only the \)</span>\pi_\theta(a_t | s_t)<span class="math notranslate nohighlight">\( terms depend on \)</span>\theta,<span class="math notranslate nohighlight">\( so we can simplify even further to obtain the following expression for the policy gradient, known as the &quot;REINFORCE&quot; policy gradient: \)</span><span class="math notranslate nohighlight">\(\begin{aligned}
-    \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_t | s_t) R(\tau) \right]
-\end{aligned}\)</span><span class="math notranslate nohighlight">\( This expression allows us to estimate the gradient by sampling a few sample trajectories from \)</span>\pi_\theta,$ calculating the likelihoods of the chosen actions, and substituting these into the expression above.</p>
-<p>In fact, we can perform one more simplification. Intuitively, the action taken at step <span class="math notranslate nohighlight">\(t\)</span> does not affect the reward from previous timesteps, since they’re already in the past! You can also show rigorously that this is the case, and that we only need to consider the present and future rewards to calculate the policy gradient:</p>
-<div class="math notranslate nohighlight" id="equation-pg-with-q">
-<span class="eqno">(6.3)<a class="headerlink" href="#equation-pg-with-q" title="Link to this equation">#</a></span>\[\begin{split}\begin{split}
-        \nabla J(\theta) &amp;= \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_t | s_t) \sum_{t' = t}^{T-1} r(s_{t'}, a_{t'}) \right] \\
-        &amp;= \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_t | s_t) Q^{\pi_\theta}(s_{t}, a_{t}) \right]
-    \end{split}\end{split}\]</div>
-<p><strong>Exercise:</strong> Prove that this is equivalent to the previous definitions. What modification to the expression must be made for the discounted, infinite-horizon setting?</p>
-<p>For some intuition into how this method works, recall that we update our parameters according to</p>
+<section id="gradient-ascent">
+<h2><span class="section-number">6.1. </span>Gradient Ascent<a class="headerlink" href="#gradient-ascent" title="Link to this heading">#</a></h2>
+<p><strong>Gradient ascent</strong> is a general optimization algorithm for any differentiable function.
+A suitable analogy for this algorithm is hiking up a mountain,
+where you keep taking steps in the steepest direction upwards.
+Here, your vertical position <span class="math notranslate nohighlight">\(y\)</span> is the function being optimized,
+and your horizontal position <span class="math notranslate nohighlight">\((x, z)\)</span> is the input to the function.
+The <em>slope</em> of the mountain at your current position is given by the <em>gradient</em>,
+written <span class="math notranslate nohighlight">\(\nabla y(x, z) \in \R^2\)</span>.
+For differentiable functions, this can be thought of as the vector of partial derivatives,</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{split}
-    \theta_{t+1} &amp;= \theta_t + \nabla J(\theta_t) \\
-    &amp;= \theta_t + \E_{\tau \sim \rho_{\theta_t}} \nabla \log \rho_{\theta_t}(\tau) \cdot R(\tau).
-\end{split}\end{split}\]</div>
-<p>Consider the “good” trajectories where <span class="math notranslate nohighlight">\(R(\tau)\)</span> is large. Then <span class="math notranslate nohighlight">\(\theta\)</span> gets updated so that these trajectories become more likely. To see why, recall that <span class="math notranslate nohighlight">\(\rho_{\theta}(\tau)\)</span> is the likelihood of the trajectory <span class="math notranslate nohighlight">\(\tau\)</span> under the policy <span class="math notranslate nohighlight">\(\pi_\theta,\)</span> so evaluating the gradient points in the direction that makes <span class="math notranslate nohighlight">\(\tau\)</span> more likely.</p>
-<p>This is an example of <strong>importance sampling:</strong> updating a distribution to put more density on “more important” samples (in this case trajectories).</p>
+\[\begin{split}
+\nabla y(x, z) = \begin{pmatrix}
+\frac{\partial y}{\partial x} \\
+\frac{\partial y}{\partial z}
+\end{pmatrix}.
+\end{split}\]</div>
+<p>To calculate the <em>slope</em> (aka “directional derivative”) of the mountain in a given direction <span class="math notranslate nohighlight">\((\Delta x, \Delta z)\)</span>,
+you take the dot product of the difference vector with the gradient.
+This means that the direction with the highest slope is exactly the gradient itself,
+so we can describe the gradient ascent algorithm as follows:</p>
+<div class="proof algorithm admonition" id="algorithm-0">
+<p class="admonition-title"><span class="caption-number">Algorithm 6.1 </span> (Gradient ascent)</p>
+<section class="algorithm-content" id="proof-content">
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}
+x^{k+1} \\ z^{k+1}
+\end{pmatrix}
+= 
+\begin{pmatrix}
+x^{k} \\ z^{k}
+\end{pmatrix}
++
+\eta \nabla y(x^{k}, z^{k})
+\end{split}\]</div>
 </section>
-<section id="baselines-and-advantages">
-<h2><span class="section-number">6.4. </span>Baselines and advantages<a class="headerlink" href="#baselines-and-advantages" title="Link to this heading">#</a></h2>
-<p>A central idea from supervised learning is the bias-variance tradeoff. So far, our method is <em>unbiased,</em> meaning that its average is the true policy gradient. Can we find ways to reduce the variance of our estimator as well?</p>
-<p>We can instead subtract a <strong>baseline function</strong> <span class="math notranslate nohighlight">\(b_t : \mathcal{S} \to \mathbb{R}\)</span> at each timestep <span class="math notranslate nohighlight">\(t.\)</span> This modifies the policy gradient as follows: $<span class="math notranslate nohighlight">\(\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
-        \sum_{t=0}^{H-1} \nabla \log \pi_\theta (a_t | s_t) \left(
-        \left(
-        \sum_{t' = t}^{H-1} r_t
-        \right)
-        - b_t(s_t)
-        \right)
-        \right].
-    \label{eq:pg_baseline}\)</span>$</p>
-<p>For example, we might want <span class="math notranslate nohighlight">\(b_t\)</span> to estimate the average reward-to-go at a given timestep: <span class="math notranslate nohighlight">\(b_t^\theta = \E_{\tau \sim \rho_\theta} R_t(\tau).\)</span> This way, the random variable <span class="math notranslate nohighlight">\(R_t(\tau) - b_t^\theta\)</span> is centered around zero, making certain algorithms more stable.</p>
-<p>As a better baseline, we could instead choose the <em>value function.</em> Note that the random variable <span class="math notranslate nohighlight">\(Q^\pi_t(s, a) - V^\pi_t(s),\)</span> where the randomness is taken over the actions, is also centered around zero. (Recall <span class="math notranslate nohighlight">\(V^\pi_t(s) = \E_{a \sim \pi} Q^\pi_t(s, a).\)</span>) In fact, this quantity has a particular name: the <strong>advantage function.</strong> This measures how much better this action does than the average for that policy. (Note that for an optimal policy <span class="math notranslate nohighlight">\(\pi^\star,\)</span> the advantage of a given state-action pair is always nonpositive.)</p>
-<p>We can now express the policy gradient as follows. Note that the advantage function effectively replaces the <span class="math notranslate nohighlight">\(Q\)</span>-function from <a class="reference internal" href="#equation-pg-with-q">(6.3)</a>:</p>
-<div class="math notranslate nohighlight" id="equation-pg-advantage">
-<span class="eqno">(6.4)<a class="headerlink" href="#equation-pg-advantage" title="Link to this equation">#</a></span>\[\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
-        \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_t | s_t) A^{\pi_\theta}_t (s_t, a_t)
-        \right].\]</div>
-<p>Note that to avoid correlations between the gradient estimator and the value estimator (i.e. baseline), we must estimate them with independently sampled trajectories:</p>
-<div class="proof definition admonition" id="definition-0">
-<p class="admonition-title"><span class="caption-number">Definition 6.1 </span></p>
-<section class="definition-content" id="proof-content">
-<p>Policy gradient with a learned baselinepg_baseline</p>
-<!-- :::{prf:algorithmic}
-Learning rate $\eta_0, \dots, \eta_{K-1}$ Initialization $\theta^0$ Sample $N$ trajectories from $\pi_{\theta^k}$ to estimate a baseline $\tilde b$ such that $\tilde b_\hi(s) \approx V_\hi^{\theta^k}(s)$ Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho_{\theta^k}$ Compute the policy gradient estimate $$\tilde{\nabla}_\theta J(\theta^k) = \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \nabla \log \pi_{\theta^k} (a_\hi \mid s_\hi) (R_\hi(\tau_m) - \tilde b_\hi(s_\hi))$$ Gradient ascent update $\theta^{k+1} \gets \theta^k + \tilde \nabla_\theta J(\theta^k)$
-::: -->
-<p>The baseline estimation step can be done using any appropriate supervised learning algorithm. Note that the gradient estimator will be unbiased regardless of the baseline.</p>
+</div><p>where <span class="math notranslate nohighlight">\(k\)</span> denotes the iteration of the algorithm and <span class="math notranslate nohighlight">\(\eta &gt; 0\)</span> is a “step size” hyperparameter that controls the size of the steps we take.
+(Note that we could also vary the step size across iterations, that is, <span class="math notranslate nohighlight">\(\eta^0, \dots, \eta^K\)</span>.)</p>
+<p>The case of a two-dimensional input is easy to visualize.
+But this idea can be straightforwardly extended to higher-dimensional inputs.</p>
+<p>From now on, we’ll use <span class="math notranslate nohighlight">\(J\)</span> to denote the function we’re trying to maximize,
+and <span class="math notranslate nohighlight">\(\theta\)</span> to denote the parameters being optimized over.</p>
+<p>Notice that our parameters will stop changing once <span class="math notranslate nohighlight">\(\nabla J(\theta) = 0.\)</span>
+Once we reach this <strong>stationary point,</strong> our current parameters are ‘locally optimal’ in some sense;
+it’s impossible to increase the function by moving in any direction.
+If <span class="math notranslate nohighlight">\(J\)</span> is <em>convex</em>, then the only point where this happens is at the <em>global optimum.</em>
+Otherwise, if <span class="math notranslate nohighlight">\(J\)</span> is nonconvex, the best we can hope for is a <em>local optimum.</em></p>
+<section id="stochastic-gradient-ascent">
+<h3><span class="section-number">6.1.1. </span>Stochastic gradient ascent<a class="headerlink" href="#stochastic-gradient-ascent" title="Link to this heading">#</a></h3>
+<p>In real applications,
+computing the gradient of the target function is not so simple.
+As an example from supervised learning, <span class="math notranslate nohighlight">\(J(\theta)\)</span> might be the sum of squared prediction errors across an entire training dataset.
+However, if our dataset is very large, it might not fit into our computer’s memory!
+In these cases, we often compute some <em>estimate</em> of the gradient at each step, <span class="math notranslate nohighlight">\(\tilde \nabla J(\theta)\)</span>, and walk in that direction instead.
+This is called <strong>stochastic</strong> gradient ascent.
+In the SL example above, we might randomly choose a <em>minibatch</em> of samples and use them to estimate the true prediction error. (This approach is known as <strong><em>minibatch</em> SGD</strong>.)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sgd_pseudocode</span><span class="p">(</span>
+    <span class="n">θ_init</span><span class="p">:</span> <span class="n">Params</span><span class="p">,</span>
+    <span class="n">estimate_gradient</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Params</span><span class="p">],</span> <span class="n">Params</span><span class="p">],</span>
+    <span class="n">η</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">n_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_steps</span><span class="p">):</span>
+        <span class="n">θ</span> <span class="o">+=</span> <span class="n">η</span> <span class="o">*</span> <span class="n">estimate_gradient</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">θ</span>
+</pre></div>
+</div>
+<p>What makes one gradient estimator better than another?
+Ideally, we want this estimator to be <strong>unbiased;</strong> that is, on average, it matches a single true gradient step:</p>
+<div class="math notranslate nohighlight">
+\[\E [\tilde \nabla J(\theta)] = \nabla J(\theta).\]</div>
+<p>We also want the <em>variance</em> of the estimator to be low so that its performance doesn’t change drastically at each step.</p>
+<p>We can actually show that, for many “nice” functions, in a finite number of steps, SGD will find a <span class="math notranslate nohighlight">\(\theta\)</span> that is “close” to a stationary point.
+In another perspective, for such functions, the local “landscape” of <span class="math notranslate nohighlight">\(J\)</span> around <span class="math notranslate nohighlight">\(\theta\)</span> becomes flatter and flatter the longer we run SGD.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SGD convergence
+More formally, suppose we run SGD for <span class="math notranslate nohighlight">\(K\)</span> steps, using an unbiased gradient estimator.
+Let the step size <span class="math notranslate nohighlight">\(\eta^k\)</span> scale as <span class="math notranslate nohighlight">\(O(1/\sqrt{k}).\)</span>
+Then if <span class="math notranslate nohighlight">\(J\)</span> is bounded and <span class="math notranslate nohighlight">\(\beta\)</span>-smooth (see below),
+and the <em>norm</em> of the gradient estimator has a bounded second moment <span class="math notranslate nohighlight">\(\sigma^2,\)</span></p>
+<div class="math notranslate nohighlight">
+\[\|\nabla J(\theta^K)\|^2 \le O \left( M \beta \sigma^2 / K\right).\]</div>
+<p>We call a function <span class="math notranslate nohighlight">\(\beta\)</span>-smooth if its gradient is Lipschitz continuous with constant <span class="math notranslate nohighlight">\(\beta\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\|\nabla J(\theta) - \nabla J(\theta')\| \le \beta \|\theta - \theta'\|.\]</div>
+</div>
+<p>We’ll now see a concrete application of gradient ascent in the context of policy optimization.</p>
 </section>
-</div></section>
+</section>
+<section id="policy-stochastic-gradient-ascent">
+<h2><span class="section-number">6.2. </span>Policy (stochastic) gradient ascent<a class="headerlink" href="#policy-stochastic-gradient-ascent" title="Link to this heading">#</a></h2>
+<p>Remember that in RL, the primary goal is to find the <em>optimal policy</em> that achieves the maximimum total reward, which we can express using the value function we defined in <a class="reference internal" href="mdps.html#value">Definition 3.6</a>:</p>
+<div class="math notranslate nohighlight" id="equation-objective-fn">
+<span class="eqno">(6.1)<a class="headerlink" href="#equation-objective-fn" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+    J(\pi) := \E_{s_0 \sim \mu_0} V^{\pi} (s_0) = &amp; \E \sum_{\hi=0}^{\hor-1} r_\hi \\
+    \text{where} \quad &amp; s_0 \sim \mu_0 \\
+    &amp; s_{t+1} \sim P(s_\hi, a_\hi), \\
+    &amp; a_\hi = \pi(s_\hi) \\
+    &amp; r_\hi = r(s_\hi, a_\hi).
+\end{aligned}\end{split}\]</div>
+<p>(Note that we’ll continue to work in the <em>undiscounted, finite-horizon case.</em> Analogous results hold for the <em>discounted, infinite-horizon case.</em>)</p>
+<p>As shown by the notation, this is exactly the function <span class="math notranslate nohighlight">\(J\)</span> that we want to maximize using gradient ascent.
+What does <span class="math notranslate nohighlight">\(\theta\)</span> correspond to, though?
+In general, <span class="math notranslate nohighlight">\(\pi\)</span> is a function, and optimizing over the space of arbitrary input-output mappings would be intractable.
+Instead, we need to describe <span class="math notranslate nohighlight">\(\pi\)</span> in terms of some finite set of <em>parameters</em> <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
 <section id="example-policy-parameterizations">
-<span id="parameterizations"></span><h2><span class="section-number">6.5. </span>Example policy parameterizations<a class="headerlink" href="#example-policy-parameterizations" title="Link to this heading">#</a></h2>
-<p>What are some different ways we could parameterize our policy?</p>
-<p>If both the state and action spaces are finite, perhaps we could simply learn a preference value <span class="math notranslate nohighlight">\(\theta_{s,a}\)</span> for each state-action pair. Then to turn this into a valid distribution, we perform a “softmax” operation: we exponentiate each of them, and divide by the total: $<span class="math notranslate nohighlight">\(\pi^\text{softmax}_\theta(a | s) = \frac{\exp(\theta_{s,a})}{\sum_{s,a'} \exp (\theta_{s,a'})}.\)</span>$ However, this doesn’t make use of any structure in the states or actions, so while this is flexible, it is also prone to overfitting.</p>
+<span id="parameterizations"></span><h3><span class="section-number">6.2.1. </span>Example policy parameterizations<a class="headerlink" href="#example-policy-parameterizations" title="Link to this heading">#</a></h3>
+<p>What are some ways we could parameterize our policy?</p>
+<p>If both the state and action spaces are finite, perhaps we could simply learn a preference value <span class="math notranslate nohighlight">\(\theta_{s,a}\)</span> for each state-action pair.
+Then to turn this into a valid distribution, we perform a “softmax” operation: we exponentiate each of them, and divide by the total:</p>
+<div class="math notranslate nohighlight">
+\[\pi^\text{softmax}_\theta(a | s) = \frac{\exp(\theta_{s,a})}{\sum_{s,a'} \exp (\theta_{s,a'})}.\]</div>
+<p>However, this doesn’t make use of any structure in the states or actions,
+so while this is flexible, it is also prone to overfitting.</p>
 <section id="linear-in-features">
-<h3><span class="section-number">6.5.1. </span>Linear in features<a class="headerlink" href="#linear-in-features" title="Link to this heading">#</a></h3>
-<p>Instead, what if we map each state-action pair into some <strong>feature space</strong> <span class="math notranslate nohighlight">\(\phi(s, a) \in \mathbb{R}^p\)</span>? Then, to map a feature vector to a probability, we take a linear combination <span class="math notranslate nohighlight">\(\theta \in \mathbb{R}^p\)</span> of the features and take a softmax: $<span class="math notranslate nohighlight">\(\pi^\text{linear in features}_{\theta}(a|s) = \frac{\exp(\theta^\top \phi(s, a))}{\sum_{a'} \exp(\theta^\top \phi(s, a'))}.\)</span><span class="math notranslate nohighlight">\( Another interpretation is that \)</span>\theta<span class="math notranslate nohighlight">\( represents the feature vector of the &quot;ideal&quot; state-action pair, as state-action pairs whose features align closely with \)</span>\theta$ are given higher probability.</p>
+<h4><span class="section-number">6.2.1.1. </span>Linear in features<a class="headerlink" href="#linear-in-features" title="Link to this heading">#</a></h4>
+<p>Another approach is to map each state-action pair into some <strong>feature space</strong> <span class="math notranslate nohighlight">\(\phi(s, a) \in \mathbb{R}^p\)</span>. Then, to map a feature vector to a probability, we take a linear combination of the features and take a softmax:</p>
+<div class="math notranslate nohighlight">
+\[\pi^\text{linear in features}_{\theta}(a|s) = \frac{\exp(\theta^\top \phi(s, a))}{\sum_{a'} \exp(\theta^\top \phi(s, a'))}.\]</div>
+<p>Another interpretation is that <span class="math notranslate nohighlight">\(\theta\)</span> represents the feature vector of the “desired” state-action pair, as state-action pairs whose features align closely with <span class="math notranslate nohighlight">\(\theta\)</span> are given higher probability.</p>
 <p>The score function for this parameterization is also quite elegant:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{split}
+\[\begin{split}
+\begin{aligned}
         \nabla \log \pi_\theta(a|s) &amp;= \nabla \left( \theta^\top \phi(s, a) - \log \left( \sum_{a'} \exp(\theta^\top \phi(s, a')) \right) \right) \\
         &amp;= \phi(s, a) - \E_{a' \sim \pi_\theta(s)} \phi(s, a')
-    \end{split}\end{split}\]</div>
+\end{aligned}
+\end{split}\]</div>
 <p>Plugging this into our policy gradient expression, we get</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
     \nabla J(\theta) &amp; = \E_{\tau \sim \rho_\theta} \left[
-    \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_t | s_t) A_t^{\pi_\theta}
+    \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A_\hi^{\pi_\theta}
     \right]                                                                                                                    \\
                      &amp; = \E_{\tau \sim \rho_\theta} \left[
-    \sum_{t=0}^{T-1} \left( \phi(s_t, a_t) - \E_{a' \sim \pi(s_t)} \phi(s_t, a') \right) A_t^{\pi_\theta}(s_t, a_t)
+    \sum_{t=0}^{T-1} \left( \phi(s_\hi, a_\hi) - \E_{a' \sim \pi(s_\hi)} \phi(s_\hi, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi)
     \right]                                                                                                                    \\
-                     &amp; = \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \phi(s_t, a_t) A_t^{\pi_\theta} (s_t, a_t) \right]
-\end{aligned}\end{split}\]</div>
-<p>Why can we drop the <span class="math notranslate nohighlight">\(\E \phi(s_t, a')\)</span> term? By linearity of expectation, consider the dropped term at a single timestep: <span class="math notranslate nohighlight">\(\E_{\tau \sim \rho_\theta} \left[ \left( \E_{a' \sim \pi(s_t)} \phi(s, a') \right) A_t^{\pi_\theta}(s_t, a_t) \right].\)</span> By Adam’s Law, we can wrap the advantage term in a conditional expectation on the state <span class="math notranslate nohighlight">\(s_t.\)</span> Then we already know that <span class="math notranslate nohighlight">\(\E_{a \sim \pi(s)} A_t^{\pi}(s, a) = 0,\)</span> and so this entire term vanishes.</p>
+                     &amp; = \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \phi(s_\hi, a_\hi) A_\hi^{\pi_\theta} (s_\hi, a_\hi) \right]
+\end{aligned}
+\end{split}\]</div>
+<p>Why can we drop the <span class="math notranslate nohighlight">\(\E \phi(s_\hi, a')\)</span> term? By linearity of expectation, consider the dropped term at a single timestep: <span class="math notranslate nohighlight">\(\E_{\tau \sim \rho_\theta} \left[ \left( \E_{a' \sim \pi(s_\hi)} \phi(s, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi) \right].\)</span> By Adam’s Law, we can wrap the advantage term in a conditional expectation on the state <span class="math notranslate nohighlight">\(s_\hi.\)</span> Then we already know that <span class="math notranslate nohighlight">\(\E_{a \sim \pi(s)} A_\hi^{\pi}(s, a) = 0,\)</span> and so this entire term vanishes.</p>
 </section>
 <section id="neural-policies">
-<h3><span class="section-number">6.5.2. </span>Neural policies<a class="headerlink" href="#neural-policies" title="Link to this heading">#</a></h3>
+<h4><span class="section-number">6.2.1.2. </span>Neural policies<a class="headerlink" href="#neural-policies" title="Link to this heading">#</a></h4>
 <p>More generally, we could map states and actions to unnormalized scores via some parameterized function <span class="math notranslate nohighlight">\(f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},\)</span> such as a neural network, and choose actions according to a softmax: $<span class="math notranslate nohighlight">\(\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.\)</span>$</p>
 <p>The score can then be written as $<span class="math notranslate nohighlight">\(\nabla \log \pi_\theta(a|s) = \nabla f_\theta(s, a) - \E_{a \sim \pi_\theta(s)} \nabla f_\theta (s, a')\)</span>$</p>
 </section>
+</section>
 <section id="continuous-action-spaces">
-<h3><span class="section-number">6.5.3. </span>Continuous action spaces<a class="headerlink" href="#continuous-action-spaces" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">6.2.2. </span>Continuous action spaces<a class="headerlink" href="#continuous-action-spaces" title="Link to this heading">#</a></h3>
 <p>Consider a continuous <span class="math notranslate nohighlight">\(n\)</span>-dimensional action space <span class="math notranslate nohighlight">\(\mathcal{A} = \mathbb{R}^n\)</span>. Then for a stochastic policy, we could use a function to predict the <em>mean</em> action and then add some random noise about it. For example, we could use a neural network to predict the mean action <span class="math notranslate nohighlight">\(\mu_\theta(s)\)</span> and then add some noise <span class="math notranslate nohighlight">\(\epsilon \sim \mathcal{N}(0, \sigma^2 I)\)</span> to it:</p>
 <div class="math notranslate nohighlight">
 \[\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).\]</div>
-<p><strong>Exercise:</strong> Can you extend the “linear in features” policy to continuous action spaces in a similar way?</p>
+<!-- **Exercise:** Can you extend the "linear in features" policy to continuous action spaces in a similar way? --><p>Now that we have seen parameterized policies, we can now write the total reward in terms of the parameters:</p>
+<div class="math notranslate nohighlight">
+\[J(\theta) = \E_{\tau \sim \rho_\theta} R(\tau).\]</div>
+<p>Now how do we maximize this function (the expected total reward) over the parameters?
+One simple idea would be to directly apply gradient ascent:</p>
+<div class="math notranslate nohighlight">
+\[
+\theta^{k+1} = \theta^k + \eta \nabla J(\theta^k).
+\]</div>
+<p>In order to apply this technique, we need to be able to evaluate the gradient <span class="math notranslate nohighlight">\(\nabla J(\theta).\)</span>
+But <span class="math notranslate nohighlight">\(J(\theta)\)</span> is very difficult, or even intractable, to compute exactly, since it involves taking an expectation over all possible trajectories <span class="math notranslate nohighlight">\(\tau.\)</span>
+Can we rewrite it in a form that’s more convenient to implement?</p>
+</section>
+<section id="importance-sampling">
+<span id="id1"></span><h3><span class="section-number">6.2.3. </span>Importance Sampling<a class="headerlink" href="#importance-sampling" title="Link to this heading">#</a></h3>
+<p>There is a general trick called <strong>importance sampling</strong> for evaluating such expectations.
+Suppose we want to estimate <span class="math notranslate nohighlight">\(\E_{x \sim p}[f(x)]\)</span> where <span class="math notranslate nohighlight">\(p\)</span> is hard or expensive to sample from. We can, however, evaluate the likelihood <span class="math notranslate nohighlight">\(p(x)\)</span>.
+Suppose that we <em>can</em> sample from a different distribution <span class="math notranslate nohighlight">\(q\)</span>.
+Since an expectation is just a weighted average, we can sample <span class="math notranslate nohighlight">\(x\)</span> from <span class="math notranslate nohighlight">\(q\)</span>, compute <span class="math notranslate nohighlight">\(f(x)\)</span>, and then reweight the results:
+if <span class="math notranslate nohighlight">\(x\)</span> is very likely under <span class="math notranslate nohighlight">\(p\)</span> but unlikely under <span class="math notranslate nohighlight">\(q\)</span>,
+we should boost its weighting,
+and if it is common under <span class="math notranslate nohighlight">\(q\)</span> but uncommon under <span class="math notranslate nohighlight">\(p\)</span>,
+we should lower its weighting.
+The reweighting factor is exactly the <strong>likelihood ratio</strong> between the target distribution <span class="math notranslate nohighlight">\(p\)</span> and the sampling distribution <span class="math notranslate nohighlight">\(q\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\E_{x \sim p}[f(x)] = \sum_{x \in \mathcal{X}} f(x) p(x) = \sum_{x \in \mathcal{X}} f(x) \frac{p(x)}{q(x)} q(x) = \E_{x \sim q} \left[ \frac{p(x)}{q(x)} f(x) \right].
+\]</div>
+<p>Doesn’t this seem too good to be true? If there were no drawbacks, we could use this to estimate <em>any</em> expectation of any function on any arbitrary distribution! The drawback is that the variance may be very large due to the likelihood ratio term.
+If there are values of <span class="math notranslate nohighlight">\(x\)</span> that are very rare in the sampling distribution <span class="math notranslate nohighlight">\(q\)</span>,
+but common under <span class="math notranslate nohighlight">\(p\)</span>,
+then the likelihood ratio <span class="math notranslate nohighlight">\(p(x)/q(x)\)</span> will cause the variance to blow up.</p>
 </section>
 </section>
-<section id="local-policy-optimization">
-<h2><span class="section-number">6.6. </span>Local policy optimization<a class="headerlink" href="#local-policy-optimization" title="Link to this heading">#</a></h2>
-<section id="motivation-for-policy-gradient">
-<h3><span class="section-number">6.6.1. </span>Motivation for policy gradient<a class="headerlink" href="#motivation-for-policy-gradient" title="Link to this heading">#</a></h3>
-<p>Recall the policy iteration algorithm discussed in the MDP section: We alternate between these two steps:</p>
+<section id="the-reinforce-policy-gradient">
+<h2><span class="section-number">6.3. </span>The REINFORCE policy gradient<a class="headerlink" href="#the-reinforce-policy-gradient" title="Link to this heading">#</a></h2>
+<p>Returning to RL, suppose there is some trajectory distribution <span class="math notranslate nohighlight">\(\rho(\tau)\)</span> that is <strong>easy to sample from,</strong> such as a database of existing trajectories.
+We can then rewrite <span class="math notranslate nohighlight">\(\nabla J(\theta)\)</span>, a.k.a. the <em>policy gradient</em>, as follows.
+All gradients are being taken with respect to <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+    \nabla J(\theta) &amp; = \nabla \E_{\tau \sim \rho_\theta} [ R(\tau) ]                                                                                         \\
+                     &amp; = \nabla \E_{\tau \sim \rho} \left[ \frac{\rho_\theta(\tau)}{\rho(\tau)} R(\tau) \right] &amp;  &amp; \text{likelihood ratio trick}             \\
+                     &amp; = \E_{\tau \sim \rho} \left[ \frac{\nabla \rho_\theta(\tau)}{\rho(\tau)} R(\tau) \right] &amp;  &amp; \text{switching gradient and expectation}
+\end{aligned}
+\end{split}\]</div>
+<p>Note that for <span class="math notranslate nohighlight">\(\rho = \rho_\theta\)</span>, the inside term becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla J(\theta) = \E_{\tau \sim \rho_\theta} [ \nabla \log \rho_\theta(\tau) \cdot R(\tau)].
+\]</div>
+<p>(The order of operations is <span class="math notranslate nohighlight">\(\nabla (\log \rho_\theta)(\tau)\)</span>.)</p>
+<p>Note that when the state transitions are Markov (i.e. <span class="math notranslate nohighlight">\(s_{t}\)</span> only depends on <span class="math notranslate nohighlight">\(s_{t-1}, a_{t-1}\)</span>) and the policy is time-homogeneous (i.e. <span class="math notranslate nohighlight">\(a_\hi \sim \pi_\theta (s_\hi)\)</span>), we can write out the <em>likelihood of a trajectory</em> under the policy <span class="math notranslate nohighlight">\(\pi_\theta\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-trajectory-likelihood">
+<span class="eqno">(6.2)<a class="headerlink" href="#equation-trajectory-likelihood" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+        \rho_\theta(\tau) &amp;= \mu(s_0) \pi_\theta(a_0 | s_0) \\
+        &amp;\qquad \times P(s_1 | s_0, a_0) \pi_\theta(a_1 | s_1) \\
+        &amp;\qquad \times \cdots \\
+        &amp;\qquad \times P(s_{H-1} | s_{H-2}, a_{H-2}) \pi_\theta(a_{H-1} | s_{H-1}).
+\end{aligned}\end{split}\]</div>
+<p>Note that the log-trajectory-likelihood turns into a sum of terms,
+of which only the <span class="math notranslate nohighlight">\(\pi_\theta(a_\hi | s_\hi)\)</span> terms depend on <span class="math notranslate nohighlight">\(\theta,\)</span>
+so we can simplify even further to obtain the following expression for the policy gradient, known as the “REINFORCE” policy gradient:</p>
+<div class="math notranslate nohighlight" id="equation-reinforce-pg">
+<span class="eqno">(6.3)<a class="headerlink" href="#equation-reinforce-pg" title="Link to this equation">#</a></span>\[\begin{aligned}
+    \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) R(\tau) \right]
+\end{aligned}\]</div>
+<p>This expression allows us to estimate the gradient by sampling a few sample trajectories from <span class="math notranslate nohighlight">\(\pi_\theta,\)</span>
+calculating the likelihoods of the chosen actions,
+and substituting these into the expression above.
+We can then use this gradient estimate to apply stochastic gradient ascent.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">estimate_gradient_reinforce_pseudocode</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">,</span> <span class="n">θ</span><span class="p">):</span>
+    <span class="n">τ</span> <span class="o">=</span> <span class="n">sample_trajectory</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">))</span>
+    <span class="n">gradient_hat</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">τ</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">policy_log_likelihood</span><span class="p">(</span><span class="n">θ</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span>
+        <span class="n">gradient_hat</span> <span class="o">+=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">policy_log_likelihood</span><span class="p">)(</span><span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="n">τ</span><span class="o">.</span><span class="n">total_reward</span>
+    <span class="k">return</span> <span class="n">gradient_hat</span>
+</pre></div>
+</div>
+<p>In fact, we can perform one more simplification.
+Intuitively, the action taken at step <span class="math notranslate nohighlight">\(t\)</span> does not affect the reward from previous timesteps, since they’re already in the past!
+You can also show rigorously that this is the case,
+and that we only need to consider the present and future rewards to calculate the policy gradient:</p>
+<div class="math notranslate nohighlight" id="equation-pg-with-q">
+<span class="eqno">(6.4)<a class="headerlink" href="#equation-pg-with-q" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+        \nabla J(\theta) &amp;= \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) \sum_{t' = t}^{T-1} r(s_{t'}, a_{t'}) \right] \\
+        &amp;= \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) Q^{\pi_\theta}(s_{t}, a_{t}) \right]
+\end{aligned}\end{split}\]</div>
+<p><strong>Exercise:</strong> Prove that this is equivalent to the previous definitions. What modification to the expression must be made for the discounted, infinite-horizon setting?</p>
+<p>For some intuition into how this method works, recall that we update our parameters according to</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+    \theta_{t+1} &amp;= \theta_\hi + \eta \nabla J(\theta_\hi) \\
+    &amp;= \theta_\hi + \eta \E_{\tau \sim \rho_{\theta_\hi}} [\nabla \log \rho_{\theta_\hi}(\tau) \cdot R(\tau)].
+\end{aligned}
+\end{split}\]</div>
+<p>Consider the “good” trajectories where <span class="math notranslate nohighlight">\(R(\tau)\)</span> is large. Then <span class="math notranslate nohighlight">\(\theta\)</span> gets updated so that these trajectories become more likely. To see why, recall that <span class="math notranslate nohighlight">\(\rho_{\theta}(\tau)\)</span> is the likelihood of the trajectory <span class="math notranslate nohighlight">\(\tau\)</span> under the policy <span class="math notranslate nohighlight">\(\pi_\theta,\)</span> so evaluating the gradient points in the direction that makes <span class="math notranslate nohighlight">\(\tau\)</span> more likely.</p>
+</section>
+<section id="baselines-and-advantages">
+<h2><span class="section-number">6.4. </span>Baselines and advantages<a class="headerlink" href="#baselines-and-advantages" title="Link to this heading">#</a></h2>
+<p>A central idea from supervised learning is the <strong>bias-variance decomposition</strong>,
+which shows that the mean squared error of an estimator is the sum of its squared bias and its variance.
+The REINFORCE gradient estimator <a class="reference internal" href="#equation-reinforce-pg">(6.3)</a> is already <em>unbiased,</em> meaning that its expectation over trajectories is the true policy gradient.
+Can we find ways to reduce its <em>variance</em> as well?</p>
+<p>One common way is to subtract a <strong>baseline function</strong> <span class="math notranslate nohighlight">\(b_\hi : \mathcal{S} \to \mathbb{R}\)</span> at each timestep <span class="math notranslate nohighlight">\(\hi.\)</span> This modifies the policy gradient as follows:</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
+    \sum_{\hi=0}^{H-1} \nabla \log \pi_\theta (a_\hi | s_\hi) \left(
+    \left(
+    \sum_{\hi' = \hi}^{H-1} r_{\hi'}
+    \right)
+    - b_\hi(s_\hi)
+    \right)
+    \right].
+\label{eq:pg_baseline}
+\]</div>
+<p>For example, we might want <span class="math notranslate nohighlight">\(b_\hi\)</span> to estimate the average reward-to-go at a given timestep:</p>
+<div class="math notranslate nohighlight">
+\[b_\hi^\theta = \E_{\tau \sim \rho_\theta} R_\hi(\tau).\]</div>
+<p>This way, the random variable <span class="math notranslate nohighlight">\(R_\hi(\tau) - b_\hi^\theta\)</span> is centered around zero, making certain algorithms more stable.</p>
+<p>As a better baseline, we could instead choose the <em>value function.</em>
+Note that the random variable <span class="math notranslate nohighlight">\(Q^\pi_\hi(s, a) - V^\pi_\hi(s),\)</span>
+where the randomness is taken over the actions, is also centered around zero.
+(Recall <span class="math notranslate nohighlight">\(V^\pi_\hi(s) = \E_{a \sim \pi} Q^\pi_\hi(s, a).\)</span>)
+In fact, this quantity has a particular name: the <strong>advantage function.</strong>
+This measures how much better this action does than the average for that policy.
+(Note that for an optimal policy <span class="math notranslate nohighlight">\(\pi^\star,\)</span> the advantage of a given state-action pair is always zero or negative.)</p>
+<p>We can now express the policy gradient as follows. Note that the advantage function effectively replaces the <span class="math notranslate nohighlight">\(Q\)</span>-function from <a class="reference internal" href="#equation-pg-with-q">(6.4)</a>:</p>
+<div class="math notranslate nohighlight" id="equation-pg-advantage">
+<span class="eqno">(6.5)<a class="headerlink" href="#equation-pg-advantage" title="Link to this equation">#</a></span>\[\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
+        \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A^{\pi_\theta}_\hi (s_\hi, a_\hi)
+\right].\]</div>
+<p>Note that to avoid correlations between the gradient estimator and the value estimator (i.e. baseline), we must estimate them with independently sampled trajectories:</p>
+<!-- TODO could use more explanation _why_ we want to avoid correlations -->
+<div class="proof definition admonition" id="pg_baseline">
+<p class="admonition-title"><span class="caption-number">Definition 6.1 </span> (Policy gradient with a learned baseline)</p>
+<section class="definition-content" id="proof-content">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pg_with_learned_baseline_pseudocode</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">θ_init</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+        <span class="n">trajectories</span> <span class="o">=</span> <span class="n">sample_trajectories</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">N</span><span class="p">)</span>
+        <span class="n">V_hat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">trajectories</span><span class="p">)</span>  <span class="c1"># estimates the value function of π(θ)</span>
+        <span class="n">τ</span> <span class="o">=</span> <span class="n">sample_trajectories</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">θ</span><span class="p">)</span>  <span class="c1"># gradient estimator</span>
+
+        <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">τ</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="n">θ_</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">(</span><span class="n">θ_</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span>
+            <span class="n">g</span> <span class="o">+=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">log_likelihood</span><span class="p">)(</span><span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">return_to_go</span><span class="p">(</span><span class="n">τ</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="n">V_hat</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+        
+        <span class="n">θ</span> <span class="o">+=</span> <span class="n">η</span> <span class="o">*</span> <span class="n">g</span>
+    <span class="k">return</span> <span class="n">θ</span>
+</pre></div>
+</div>
+<p>Note that you could also generalize this by allowing the learning rate <span class="math notranslate nohighlight">\(\eta\)</span> to vary across steps,
+or take multiple trajectories <span class="math notranslate nohighlight">\(\tau\)</span> and compute the sample average of the gradient estimates.</p>
+<p>The baseline estimation step <code class="docutils literal notranslate"><span class="pre">fit</span></code> can be done using any appropriate supervised learning algorithm.
+Note that the gradient estimator will be unbiased regardless of the baseline.</p>
+</section>
+</div></section>
+<section id="comparing-policy-gradient-algorithms-to-policy-iteration">
+<h2><span class="section-number">6.5. </span>Comparing policy gradient algorithms to policy iteration<a class="headerlink" href="#comparing-policy-gradient-algorithms-to-policy-iteration" title="Link to this heading">#</a></h2>
+<!-- TODO maybe restructure this part -->
+<p>What advantages does the policy gradient algorithm have over <a class="reference internal" href="mdps.html#policy-iteration"><span class="std std-ref">Policy iteration</span></a>?</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Policy iteration recap
+Recall that policy iteration is an algorithm for MDPs with unknown state transitions where we alternate between these two steps:</p>
 <ul class="simple">
-<li><p>Estimating the <span class="math notranslate nohighlight">\(Q\)</span>-function of the current policy</p></li>
-<li><p>Updating the policy to be greedy w.r.t. this approximate <span class="math notranslate nohighlight">\(Q\)</span>-function.</p></li>
+<li><p>Estimating the <span class="math notranslate nohighlight">\(Q\)</span>-function (or advantage function) of the current policy;</p></li>
+<li><p>Updating the policy to be greedy w.r.t. this approximate <span class="math notranslate nohighlight">\(Q\)</span>-function (or advantage function).</p></li>
 </ul>
-<p>(Note that we could equivalently estimate the advantage function.)</p>
-<p>What advantages does the policy gradient algorithm have over policy iteration? Both policy gradient and policy iteration are iterative algorithms.</p>
-<p>To analyze the difference between them, we’ll make use of the <strong>performance difference lemma</strong>.</p>
+</div>
+<p>To analyze the difference between them, we’ll make use of the <strong>performance difference lemma</strong>, which provides an expression for comparing the difference between two value functions.</p>
 <div class="proof theorem admonition" id="pdl">
 <p class="admonition-title"><span class="caption-number">Theorem 6.1 </span> (Performance difference lemma)</p>
 <section class="theorem-content" id="proof-content">
-<p>Suppose Beatrice and Joan are playing a game and want to compare their average rewards starting in state <span class="math notranslate nohighlight">\(s\)</span>.
-However, only Beatrice is allowed to take actions, while Joan can evaluate those actions from her own perspective. That is, she knows how good Beatrice’s action is compared to her typical strategy in that state. (This is her <em>advantage function</em> <span class="math notranslate nohighlight">\(A_\hi^{\text{Joan}}(s_\hi, a_\hi)\)</span>).</p>
-<p>The performance difference lemma says that this is all they need to compare themselves! That is,</p>
+<p>Suppose Alice is playing a game (an MDP).
+Bob is spectating, and can evaluate how good an action is compared to his own strategy.
+(That is, Bob can compute his <em>advantage function</em> <span class="math notranslate nohighlight">\(A_\hi^{\text{Bob}}(s_\hi, a_\hi)\)</span>).
+The performance difference lemma says that Bob can now calculate exactly how much better or worse he is than Alice as follows:</p>
 <div class="math notranslate nohighlight" id="equation-pdl-eq">
-<span class="eqno">(6.5)<a class="headerlink" href="#equation-pdl-eq" title="Link to this equation">#</a></span>\[ \begin{align}\begin{aligned}V_0^{\text{Beatrice}}(s) - V_0^{\text{Joan}}(s) = \E_{\tau \sim \rho_{\text{Beatrice}, s}} \left[ \sum_{h=0}^{H-1} A_\hi^{\text{Joan}} (s_\hi, a_\hi) \right]
-:::{math}\\where $\rho_{\text{Beatrice}, s}$ denotes the distribution over trajectories starting in state $s$ when Beatrice is playing.\\To see why, consider just a single step $\hi$ of the trajectory. At this step we compute how much better actions from Joan are than the actions from Beatrice, on average. But this is exactly the average Joan-evaluated-advantage across actions from Beatrice, as described in the PDL!\\Formally, this corresponds to a nice telescoping simplification when we expand out the definition of the advantage function. Note that\\\begin{split}$$
-\begin{align*}
+<span class="eqno">(6.6)<a class="headerlink" href="#equation-pdl-eq" title="Link to this equation">#</a></span>\[V_0^{\text{Alice}}(s) - V_0^{\text{Bob}}(s) = \E_{\tau \sim \rho_{\text{Alice}, s}} \left[ \sum_{h=0}^{H-1} A_\hi^{\text{Bob}} (s_\hi, a_\hi) \right]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\rho_{\text{Alice}, s}\)</span> denotes the distribution over trajectories starting in state <span class="math notranslate nohighlight">\(s\)</span> when Alice is playing.</p>
+<p>To see why, consider just a single step <span class="math notranslate nohighlight">\(\hi\)</span> of the trajectory.
+At this step we compute how much better actions from Bob are than the actions from Alice, on average.
+But this is exactly the average Bob-advantage across actions from Alice, as described in the PDL!</p>
+<p>Formally, this corresponds to a nice telescoping simplification when we expand out the definition of the advantage function. Note that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
 A^\pi_\hi(s_\hi, a_\hi) &amp;= Q^\pi_\hi(s_\hi, a_\hi) - V^\pi_\hi(s_\hi) \\
 &amp;= r_\hi(s_\hi, a_\hi) + \E_{s_{\hi+1} \sim P(s_\hi, a_\hi)} [V^\pi_{\hi+1}(s_{\hi+1})] - V^\pi_\hi(s_\hi)
-\end{align*}
-$$\end{split}\\so expanding out the r.h.s. expression of {eq}`pdl_eq` and grouping terms together gives\\\begin{split}$$
-\begin{align*}
-\E_{\tau \sim \rho_{\text{Beatrice}, s}} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\text{Joan}} (s_\hi, a_\hi) \right] &amp;= \E_{\tau \sim \rho_{\text{Beatrice}, s}} \left[ \left( \sum_{\hi=0}^{\hor-1} r_\hi(s_\hi, a_\hi) \right) + \left( V^{\text{Joan}}_1(s_1) + \cdots + V^{\text{Joan}}_\hor(s_\hor) \right) - \left( V^{\text{Joan}_0}(s_0) + \cdots + V^{\text{Joan}}_{\hor-1}(s_{\hor-1}) \right) \right] \\
-&amp;= V^{\text{Beatrice}}_0(s) - V^{\text{Joan}}_0(s)
-\end{align*}
-$$\end{split}\\as desired. (Note that the &quot;inner&quot; expectation from expanding the advantage function has the same distribution as the outer one, so omitting it here is valid.)\end{aligned}\end{align} \]</div>
-</section>
-</div><p>Let’s analyze why fitted approaches such as PI don’t work as well in the RL setting. To start, let’s ask, where <em>do</em> fitted approaches work well? They are commonly seen in <em>supervised learning</em>, where a prediction rule is fit using some labelled training set, and then assessed on a test set from the same distribution. Does this assumption still hold when doing PI?</p>
-<p>Let’s consider a single iteration of PI. Suppose the new policy <span class="math notranslate nohighlight">\(\tilde \pi\)</span> chooses some action with a negative advantage w.r.t. <span class="math notranslate nohighlight">\(\pi\)</span>. Define <span class="math notranslate nohighlight">\(\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\hi(s, \tilde \pi(s))\)</span>. If this is negative, then the PDL shows that there may exist some state <span class="math notranslate nohighlight">\(s\)</span> and time <span class="math notranslate nohighlight">\(h\)</span> such that</p>
+\end{aligned}
+\end{split}\]</div>
+<p>so expanding out the r.h.s. expression of <a class="reference internal" href="#equation-pdl-eq">(6.6)</a> and grouping terms together gives</p>
 <div class="math notranslate nohighlight">
-\[V_\hi^{\tilde \pi}(s) \ge V_\hi^{\pi}(s) - H \cdot |\Delta_\infty|.\]</div>
-<p>In general, PI cannot avoid particularly bad situations where the new policy <span class="math notranslate nohighlight">\(\tilde \pi\)</span> often visits these bad states, causing an actual degradation. It does not enforce that the trajectory distributions <span class="math notranslate nohighlight">\(\rho_\pi\)</span> and <span class="math notranslate nohighlight">\(\rho_{\tilde \pi}\)</span> be close to each other. In other words, the “training distribution” that our prediction rule is fitted on, <span class="math notranslate nohighlight">\(\rho_\pi\)</span>, may differ significantly from the “evaluation distribution” <span class="math notranslate nohighlight">\(\rho_{\tilde \pi}\)</span> — we must address this issue of <em>distributional shift</em>.</p>
-<p>How can we enforce that the <em>trajectory distributions</em> do not change much at each step? In fact, policy gradient already does this to a small extent: Supposing that the mapping from parameters to trajectory distributions is relatively smooth, then, by adjusting the parameters a small distance from the current iterate, we end up at a new policy with a similar trajectory distribution. But this is not very rigorous, and in practice the parameter-to-distribution mapping may not be smooth. Can we constrain the distance between the resulting distributions more explicitly? This brings us to the next two methods: <strong>trust region policy optimization</strong> (TRPO) and the <strong>natural policy gradient</strong> (NPG).</p>
+\[\begin{split}
+\begin{aligned}
+\E_{\tau \sim \rho_{\text{Alice}, s}} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\text{Bob}} (s_\hi, a_\hi) \right] &amp;= \E_{\tau \sim \rho_{\text{Alice}, s}} \left[ \left( \sum_{\hi=0}^{\hor-1} r_\hi(s_\hi, a_\hi) \right) + \left( V^{\text{Bob}}_1(s_1) + \cdots + V^{\text{Bob}}_\hor(s_\hor) \right) - \left( V^{\text{Bob}_0}(s_0) + \cdots + V^{\text{Bob}}_{\hor-1}(s_{\hor-1}) \right) \right] \\
+&amp;= V^{\text{Alice}}_0(s) - V^{\text{Bob}}_0(s)
+\end{aligned}
+\end{split}\]</div>
+<p>as desired. (Note that the “inner” expectation from expanding the advantage function has the same distribution as the outer one, so omitting it here is valid.)</p>
+</section>
+</div><p>The PDL gives insight into why fitted approaches such as PI don’t work as well in the “full” RL setting.
+To see why, let’s consider a single iteration of policy iteration, where policy <span class="math notranslate nohighlight">\(\pi\)</span> gets updated to <span class="math notranslate nohighlight">\(\tilde \pi\)</span>. We’ll assume these policies are deterministic.
+Suppose the new policy <span class="math notranslate nohighlight">\(\tilde \pi\)</span> chooses some action with a negative advantage with respect to <span class="math notranslate nohighlight">\(\pi\)</span>.
+That is, when acting according to <span class="math notranslate nohighlight">\(\pi\)</span>, taking the action from <span class="math notranslate nohighlight">\(\tilde \pi\)</span> would perform worse than expected.
+Define <span class="math notranslate nohighlight">\(\Delta_\infty\)</span> to be the most negative advantage, that is, <span class="math notranslate nohighlight">\(\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\hi(s, \tilde \pi(s))\)</span>.
+Plugging this into the <a class="reference internal" href="#pdl">Theorem 6.1</a> gives</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+V_0^{\tilde \pi}(s) - V_0^{\pi}(s) &amp;= \E_{\tau \sim \rho_{\tilde \pi, s}} \left[
+\sum_{\hi=0}^{\hor-1} A_\hi^{\pi}(s_\hi, a_\hi)
+\right] \\
+&amp;\ge H \Delta_\infty \\
+V_0^{\tilde \pi}(s) &amp;\ge V_0^{\pi}(s) - H|\Delta_\infty|.
+\end{aligned}
+\end{split}\]</div>
+<p>That is, for some state <span class="math notranslate nohighlight">\(s\)</span>, the lower bound on the performance of <span class="math notranslate nohighlight">\(\tilde \pi\)</span> is <em>lower</em> than the performance of <span class="math notranslate nohighlight">\(\pi\)</span>.
+This doesn’t state that <span class="math notranslate nohighlight">\(\tilde \pi\)</span> <em>will</em> necessarily perform worse than <span class="math notranslate nohighlight">\(\pi\)</span>,
+only suggests that it might be possible.
+If these worst case states do exist, though,
+PI does not avoid situations where the new policy often visits them;
+It does not enforce that the trajectory distributions <span class="math notranslate nohighlight">\(\rho_\pi\)</span> and <span class="math notranslate nohighlight">\(\rho_{\tilde \pi}\)</span> be close to each other.
+In other words, the “training distribution” that our prediction rule is fitted on, <span class="math notranslate nohighlight">\(\rho_\pi\)</span>, may differ significantly from the “evaluation distribution” <span class="math notranslate nohighlight">\(\rho_{\tilde \pi}\)</span>.</p>
+<!-- 
+This is an instance of *distributional shift*.
+To begin, let's ask, where *do* fitted approaches work well?
+They are commonly seen in SL,
+where a prediction rule is fit using some labelled training set,
+and then assessed on a test set from the same distribution.
+But policy iteration isn't performed in the same scenario:
+there is now _distributional shift_ between the different iterations of the policy. -->
+<p>On the other hand, policy gradient methods <em>do</em>, albeit implicitly,
+encourage <span class="math notranslate nohighlight">\(\rho_\pi\)</span> and <span class="math notranslate nohighlight">\(\rho_{\tilde \pi}\)</span> to be similar.
+Suppose that the mapping from policy parameters to trajectory distributions is relatively smooth.
+Then, by adjusting the parameters only a small distance,
+the new policy will also have a similar trajectory distribution.
+But this is not very rigorous, and in practice the parameter-to-distribution mapping may not be so smooth.
+Can we constrain the distance between the resulting distributions more <em>explicitly</em>?</p>
+<p>This brings us to the next three methods:</p>
+<ul class="simple">
+<li><p><strong>trust region policy optimization</strong> (TRPO), which explicitly constrains the difference between the distributions before and after each step;</p></li>
+<li><p>the <strong>natural policy gradient</strong> (NPG), a first-order approximation of TRPO;</p></li>
+<li><p><strong>proximal policy optimization</strong> (PPO), a “soft relaxation” of TRPO.</p></li>
+</ul>
 </section>
 <section id="trust-region-policy-optimization">
-<h3><span class="section-number">6.6.2. </span>Trust region policy optimization<a class="headerlink" href="#trust-region-policy-optimization" title="Link to this heading">#</a></h3>
-<p>TRPO is another iterative algorithm for policy optimization. It is similar to policy iteration, except we constrain the updated policy to be “close to” the current policy in terms of the trajectory distributions they induce.</p>
-<p>To formalize “close to”, we typically use the <strong>Kullback-Leibler divergence (KLD)</strong>:</p>
-<div class="proof definition admonition" id="definition-2">
-<p class="admonition-title"><span class="caption-number">Definition 6.2 </span></p>
+<h2><span class="section-number">6.6. </span>Trust region policy optimization<a class="headerlink" href="#trust-region-policy-optimization" title="Link to this heading">#</a></h2>
+<p>We saw above that policy gradient methods are effective because they implicitly constrain how much the policy changes at each iteration.
+Can we design an algorithm that <em>explicitly</em> constrains the “step size”?
+That is, we want to <em>improve</em> the policy as much as possible,
+measured in terms of the r.h.s. of the <a class="reference internal" href="#pdl">Theorem 6.1</a>,
+while ensuring that its trajectory distribution does not change too much:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+\theta^{k+1} &amp;\gets \argmax_{\theta^{\text{opt}}} \E_{s_0, \dots, s_{H-1} \sim \pi^{k}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi^{\theta^\text{opt}}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] \\
+&amp; \text{where } \text{distance}(\rho_{\theta^{\text{opt}}}, \rho_{\theta^k}) &lt; \delta
+\end{aligned}
+\end{split}\]</div>
+<p>Note that we have made a small change to the r.h.s. expression:
+we use the <em>states</em> sampled from the old policy, and only use the <em>actions</em> from the new policy.
+It would be computationally infeasible to sample entire trajectories from <span class="math notranslate nohighlight">\(\pi_\theta\)</span> as we are optimizing over <span class="math notranslate nohighlight">\(\theta\)</span>.
+On the other hand, if <span class="math notranslate nohighlight">\(\pi_\theta\)</span> returns a vector representing a probability distribution over actions,
+then evaluating the expected advantage with respect to this distribution only requires taking a dot product.
+This approximation also matches the r.h.s. of the PDL to first order in <span class="math notranslate nohighlight">\(\theta\)</span>.
+(We will elaborate more on this later.)</p>
+<p>How do we describe the distance between <span class="math notranslate nohighlight">\(\rho_{\theta^{\text{opt}}}\)</span> and <span class="math notranslate nohighlight">\(\rho_{\theta^k}\)</span>?
+We’ll use the <strong>Kullback-Leibler divergence (KLD)</strong>:</p>
+<div class="proof definition admonition" id="kld">
+<p class="admonition-title"><span class="caption-number">Definition 6.2 </span> (Kullback-Leibler divergence)</p>
 <section class="definition-content" id="proof-content">
-<p>Kullback-Leibler divergencekld For two PDFs <span class="math notranslate nohighlight">\(p, q\)</span>, $<span class="math notranslate nohighlight">\(\kl{p}{q} := \E_{x \sim p} \left[ \log \frac{p(x)}{q(x)} \right]\)</span><span class="math notranslate nohighlight">\( This can be interpreted in many different ways, many stemming from information theory. Note that \)</span>\kl{p}{q} = 0<span class="math notranslate nohighlight">\( if and only if \)</span>p = q$. Also note that it is generally not symmetric.</p>
+<p>For two PDFs <span class="math notranslate nohighlight">\(p, q\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\kl{p}{q} := \E_{x \sim p} \left[ \log \frac{p(x)}{q(x)} \right]\]</div>
+<p>This can be interpreted in many different ways, many stemming from information theory.
+One such interpretation is that <span class="math notranslate nohighlight">\(\kl{p}{q}\)</span> describes my average “surprise” if I <em>think</em> data is being generated by <span class="math notranslate nohighlight">\(q\)</span> but it’s actually generated by <span class="math notranslate nohighlight">\(p\)</span>.
+(The <strong>surprise</strong> of an event with probability <span class="math notranslate nohighlight">\(p\)</span> is <span class="math notranslate nohighlight">\(- \log_2 p\)</span>.)
+Note that <span class="math notranslate nohighlight">\(\kl{p}{q} = 0\)</span> if and only if <span class="math notranslate nohighlight">\(p = q\)</span>. Also note that it is generally <em>not</em> symmetric.</p>
 </section>
-</div><p>Additionally, rather than estimating the <span class="math notranslate nohighlight">\(Q\)</span>-function of the current policy, we can use the RHS of the Performance Difference Lemma <a class="reference internal" href="#pdl">Theorem 6.1</a> as our optimization target.</p>
+</div><p>Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories.
+This is intractable in general, so we need to estimate the expectation.
+As before, we can do this by taking an empirical average over samples from the trajectory distribution.
+This gives us the following pseudocode:</p>
 <div class="proof definition admonition" id="trpo">
 <p class="admonition-title"><span class="caption-number">Definition 6.3 </span> (Trust region policy optimization (exact))</p>
 <section class="definition-content" id="proof-content">
-<!-- :::{prf:algorithmic}
-Trust region radius $\delta$ Initialize $\theta^0$ $\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_\hi \E_{a_\hi \sim \pi_\theta(s_\hi)} A^{\pi^k}(s_\hi, a_\hi) \right]$ See below where $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}} \le \delta$ $\pi^K$
-::: -->
-<p>Note that the objective function is not identical to the r.h.s. of the Performance Difference Lemma. Here, we still use the <em>states</em> sampled from the old policy, and only use the <em>actions</em> from the new policy. This is because it would be computationally infeasible to sample entire trajectories from <span class="math notranslate nohighlight">\(\pi_\theta\)</span> as we are optimizing over <span class="math notranslate nohighlight">\(\theta\)</span>. This approximation is also reasonable in the sense that it matches the r.h.s. of the Performance Difference Lemma to first order in <span class="math notranslate nohighlight">\(\theta\)</span>. (We will elaborate more on this later.)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">trpo_pseudocode</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">θ_init</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+        <span class="n">trajectories</span> <span class="o">=</span> <span class="n">sample_trajectories</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">M</span><span class="p">)</span>
+        <span class="n">A_hat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">trajectories</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">approximate_gain</span><span class="p">(</span><span class="n">θ_</span><span class="p">):</span>
+            <span class="n">total_advantage</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">τ</span> <span class="ow">in</span> <span class="n">trajectories</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_r</span> <span class="ow">in</span> <span class="n">τ</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="p">:</span>
+                        <span class="n">total_advantage</span> <span class="o">+=</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">A_hat</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">total_advantage</span>
+        
+        <span class="k">def</span> <span class="nf">constraint</span><span class="p">(</span><span class="n">θ_</span><span class="p">):</span>
+            <span class="n">kl_div</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">τ</span> <span class="ow">in</span> <span class="n">trajectories</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">_r</span> <span class="ow">in</span> <span class="n">τ</span><span class="p">:</span>
+                    <span class="n">kl_div</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">(</span><span class="n">θ_</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">kl_div</span> <span class="o">&lt;=</span> <span class="n">δ</span>
+        
+        <span class="n">θ</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">approximate_gain</span><span class="p">,</span> <span class="n">constraint</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">θ</span>
+</pre></div>
+</div>
 </section>
-</div><p>Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories. This is intractable in general, so we need to estimate the expectation. As before, we can do this by taking an empirical average over samples from the trajectory distribution. However, the inner expectation over <span class="math notranslate nohighlight">\(a_\hi \sim \pi_{\theta}\)</span> involves the optimizing variable <span class="math notranslate nohighlight">\(\theta\)</span>, and we’d like an expression that has a closed form in terms of <span class="math notranslate nohighlight">\(\theta\)</span> to make optimization tractable. Otherwise, we’d need to resample many times each time we made an update to <span class="math notranslate nohighlight">\(\theta\)</span>. To address this, we’ll use a common technique known as <strong>importance sampling</strong>.</p>
-<div class="proof definition admonition" id="importance_sampling">
-<p class="admonition-title"><span class="caption-number">Definition 6.4 </span> (Importance sampling)</p>
-<section class="definition-content" id="proof-content">
-<p>Suppose we want to estimate <span class="math notranslate nohighlight">\(\E_{x \sim \tilde p}[f(x)]\)</span>. However, <span class="math notranslate nohighlight">\(\tilde p\)</span> is difficult to sample from, so we can’t take an empirical average directly. Instead, there is some other distribution <span class="math notranslate nohighlight">\(p\)</span> that is easier to sample from, e.g. we could draw samples from an existing dataset, as in the case of <strong>offline RL</strong>.</p>
-<p>Then note that $<span class="math notranslate nohighlight">\(\E_{x \sim \tilde p} [f(x)] = \E_{x \sim p}\left[ \frac{\tilde p(x)}{p(x)} f(x) \right]\)</span><span class="math notranslate nohighlight">\( so, given i.i.d. samples \)</span>x_0, \dots, x_{N-1} \sim p<span class="math notranslate nohighlight">\(, we can construct an unbiased estimate of \)</span>\E_{x \sim \tilde p} [f(x)]<span class="math notranslate nohighlight">\( by *reweighting* these samples according to the likelihood ratio \)</span>\tilde p(x)/p(x)<span class="math notranslate nohighlight">\(: \)</span><span class="math notranslate nohighlight">\(\frac{1}{N} \sum_{n=0}^{N-1} \frac{\tilde p(x_n)}{p(x_n)} f(x_n)\)</span>$</p>
-<p>Doesn’t this seem too good to be true? If there were no drawbacks, we could use this to estimate <em>any</em> expectation of any function on any arbitrary distribution! The drawback is that the variance may be very large due to the likelihood ratio term. If the sampling distribution <span class="math notranslate nohighlight">\(p\)</span> assigns low probability to any region where <span class="math notranslate nohighlight">\(\tilde p\)</span> assigns high probability, then the likelihood ratio will be very large and cause the variance to blow up.</p>
-</section>
-</div><p>Applying importance sampling allows us to estimate the TRPO objective as follows:</p>
-<div class="proof definition admonition" id="trpo_implement">
-<p class="admonition-title"><span class="caption-number">Definition 6.5 </span> (Trust region policy optimization (implementation))</p>
-<section class="definition-content" id="proof-content">
-<!-- :::{prf:algorithmic} TODO
-Initialize $\theta^0$ Sample $N$ trajectories from $\rho^k$ to learn a value estimator $\tilde b_\hi(s) \approx V^{\pi^k}_\hi(s)$ Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho^k$ $$\begin{gathered}
+</div><!--
+Applying importance sampling allows us to estimate the TRPO objective as follows:
+
+::::{prf:definition} Trust region policy optimization (implementation)
+:label: trpo_implement
+
+:::{prf:algorithmic} TODO
+Initialize $\theta^0$
+
+Sample $N$ trajectories from $\rho^k$ to learn a value estimator $\tilde b_\hi(s) \approx V^{\pi^k}_\hi(s)$
+
+Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho^k$
+
+$$\begin{gathered}
             \theta^{k+1} \gets \argmax_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} [ R_\hi(\tau_m) - \tilde b_\hi(s_\hi) ] \\
             \text{where } \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \log \frac{\pi_k(a_\hi^m \mid s_\hi^m)}{\pi_\theta(a_\hi^m \mid s_\hi^m)} \le \delta
         
 \end{gathered}$$
-::: -->
+:::
+:::: -->
+<p>The above isn’t entirely complete:
+we still need to solve the actual optimization problem at each step.
+Unless we know additional properties of the problem,
+this might be an intractable optimization.
+Do we need to solve it exactly, though?
+Instead, if we assume that both the objective function and the constraint are somewhat smooth in terms of the policy parameters,
+we can use their <em>Taylor expansions</em> to give us a simpler optimization problem with a closed-form solution.
+This brings us to the <strong>natural policy gradient</strong> algorithm.</p>
 </section>
-</div></section>
 <section id="natural-policy-gradient">
-<h3><span class="section-number">6.6.3. </span>Natural policy gradient<a class="headerlink" href="#natural-policy-gradient" title="Link to this heading">#</a></h3>
-<p>Instead, we can solve an approximation to the TRPO optimization problem. This will link us back to the policy gradient from before. We take a first-order approximation to the objective function and a second-order approximation to the KLD constraint. This results in the optimization problem $<span class="math notranslate nohighlight">\(\begin{gathered}
-        \max_\theta \nabla_\theta J(\pi_{\theta^k})^\top (\theta - \theta^k) \\
-        \text{where } \frac{1}{2} (\theta - \theta^k)^\top F_{\theta^k} (\theta - \theta^k) \le \delta
-    \end{gathered}
-    \label{npg_optimization}\)</span><span class="math notranslate nohighlight">\( where \)</span>F_{\theta^k}$ is the <strong>Fisher information matrix</strong> defined below.</p>
-<div class="proof definition admonition" id="definition-6">
-<p class="admonition-title"><span class="caption-number">Definition 6.6 </span></p>
+<h2><span class="section-number">6.7. </span>Natural policy gradient<a class="headerlink" href="#natural-policy-gradient" title="Link to this heading">#</a></h2>
+<p>We take a <em>linear</em> (first-order) approximation to the objective function and a <em>quadratic</em> (second-order) approximation to the KL divergence constraint about the current estimate <span class="math notranslate nohighlight">\(\theta^k\)</span>.
+This results in the optimization problem</p>
+<div class="math notranslate nohighlight" id="equation-npg-optimization">
+<span class="eqno">(6.7)<a class="headerlink" href="#equation-npg-optimization" title="Link to this equation">#</a></span>\[\begin{split}\begin{gathered}
+    \max_\theta \nabla_\theta J(\pi_{\theta^k})^\top (\theta - \theta^k) \\
+    \text{where } \frac{1}{2} (\theta - \theta^k)^\top F_{\theta^k} (\theta - \theta^k) \le \delta
+\end{gathered}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(F_{\theta^k}\)</span> is the <strong>Fisher information matrix</strong> defined below.</p>
+<div class="proof definition admonition" id="fisher_matrix">
+<p class="admonition-title"><span class="caption-number">Definition 6.4 </span> (Fisher information matrix)</p>
 <section class="definition-content" id="proof-content">
-<p>Fisher information matrixfisher_matrix Let <span class="math notranslate nohighlight">\(p_\theta\)</span> denote a parameterized distribution. Its Fisher information matrix <span class="math notranslate nohighlight">\(F_\theta\)</span> can be defined equivalently as: $$\begin{aligned}
-F_{\theta} &amp; = \E_{x \sim p_\theta} \left[ (\nabla_\theta \log p_\theta(x)) (\nabla_\theta \log p_\theta(x))^\top \right] &amp; \text{covariance matrix of the Fisher score}          \
-&amp; = \E_{x \sim p_{\theta}} [- \nabla_\theta^2 \log p_\theta(x)]                                                &amp; \text{average Hessian of the negative log-likelihood}</p>
-<p>\end{aligned}$<span class="math notranslate nohighlight">\( Recall that the Hessian of a function describes its curvature: That is, for a vector \)</span>\delta \in \Theta<span class="math notranslate nohighlight">\(, the quantity \)</span>\delta^\top F_\theta \delta<span class="math notranslate nohighlight">\( describes how rapidly the negative log-likelihood changes if we move by \)</span>\delta$.</p>
-<p>In particular, when <span class="math notranslate nohighlight">\(p_\theta = \rho_{\theta}\)</span> denotes a trajectory distribution, we can further simplify the expression: $<span class="math notranslate nohighlight">\(F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]
-        \label{eq:fisher_trajectory}\)</span>$ Note that we’ve used the Markov property to cancel out the cross terms corresponding to two different time steps.</p>
-</section>
-</div><p>This is a convex optimization problem, and so we can find the global optima by setting the gradient of the Lagrangian to zero:</p>
+<p>Let <span class="math notranslate nohighlight">\(p_\theta\)</span> denote a parameterized distribution.
+Its Fisher information matrix <span class="math notranslate nohighlight">\(F_\theta\)</span> can be defined equivalently as:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\begin{aligned}
-    \mathcal{L}(\theta, \eta)                     &amp; = \nabla_\theta J(\pi_{\theta^k})^\top (\theta - \theta^k) - \eta \left[ \frac{1}{2} (\theta - \theta^k)^\top F_{\theta^k} (\theta - \theta^k) - \delta \right] \\
-    \nabla_\theta \mathcal{L}(\theta^{k+1}, \eta) &amp; = 0                                                                                                                                                             \\
-    \nabla_\theta J(\pi_{\theta^k})        &amp; = \eta F_{\theta^k} (\theta^{k+1} - \theta^k)                                                                                                                   \\
-    \theta^{k+1}                           &amp; = \theta^k + \eta F_{\theta^k}^{-1} \nabla_\theta J(\pi_{\theta^k})                                                                                             \\
-    \text{where } \eta                     &amp; = \sqrt{\frac{\delta}{\nabla_\theta J(\pi_{\theta^k})^\top F_{\theta^k} \nabla_\theta J(\pi_{\theta^k})}}
-\end{aligned}\end{split}\]</div>
-<div class="proof definition admonition" id="definition-7">
-<p class="admonition-title"><span class="caption-number">Definition 6.7 </span></p>
-<section class="definition-content" id="proof-content">
-<p>Natural policy gradientnpg</p>
-<!-- :::{prf:algorithmic}
-Learning rate $\eta > 0$ Initialize $\theta^0$ Estimate the policy gradient $\hat g \approx \nabla_\theta J(\pi_{\theta^k})$ See [\[eq:pg_advantage\]](#eq:pg_advantage){reference-type="eqref" reference="eq:pg_advantage"} Estimate the Fisher information matrix $\hat F \approx F_{\theta^k}$ See [\[eq:fisher_trajectory\]](#eq:fisher_trajectory){reference-type="eqref" reference="eq:fisher_trajectory"} $\theta^{k+1} \gets \theta^k + \eta \hat F^{-1} \hat g$ Natural gradient update
-::: -->
-<p>How many trajectory samples do we need to accurately estimate the Fisher information matrix? As a rule of thumb, the sample complexity should scale with the dimension of the parameter space. This makes this approach intractable in the deep learning setting where we might have a very large number of parameters.</p>
+\[\begin{split}
+\begin{aligned}
+        F_{\theta} &amp; = \E_{x \sim p_\theta} \left[ (\nabla_\theta \log p_\theta(x)) (\nabla_\theta \log p_\theta(x))^\top \right] &amp; \text{covariance matrix of the Fisher score}          \\
+                   &amp; = \E_{x \sim p_{\theta}} [- \nabla_\theta^2 \log p_\theta(x)]                                                &amp; \text{average Hessian of the negative log-likelihood}
+\end{aligned}
+\end{split}\]</div>
+<p>Recall that the Hessian of a function describes its curvature:
+for a vector <span class="math notranslate nohighlight">\(\delta \in \Theta\)</span>,
+the quantity <span class="math notranslate nohighlight">\(\delta^\top F_\theta \delta\)</span> describes how rapidly the negative log-likelihood changes if we move by <span class="math notranslate nohighlight">\(\delta\)</span>.
+The Fisher information matrix is precisely the Hessian of the KL divergence (with respect to either one of the parameters).</p>
+<p>In particular, when <span class="math notranslate nohighlight">\(p_\theta = \rho_{\theta}\)</span> denotes a trajectory distribution, we can further simplify the expression:</p>
+<div class="math notranslate nohighlight" id="equation-fisher-trajectory">
+<span class="eqno">(6.8)<a class="headerlink" href="#equation-fisher-trajectory" title="Link to this equation">#</a></span>\[F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]\]</div>
+<p>Note that we’ve used the Markov property to cancel out the cross terms corresponding to two different time steps.</p>
 </section>
-</div><p>For some intuition: The typical gradient descent algorithm treats the parameter space as “flat”, treating the objective function as some black box value. However, in the case here where the parameters map to a <em>distribution</em>, using the natural gradient update is equivalent to optimizing over distribution space rather than distribution space.</p>
-<div class="proof example admonition" id="example-8">
-<p class="admonition-title"><span class="caption-number">Example 6.1 </span></p>
+</div><p>This is a convex optimization problem with a closed-form solution.
+To see why, it helps to visualize the case where <span class="math notranslate nohighlight">\(\theta\)</span> is two-dimensional:
+the constraint describes the inside of an ellipse,
+and the objective function is linear,
+so we can find the extreme point on the boundary of the ellipse.
+We recommend <span id="id2">[<a class="reference internal" href="bibliography.html#id4" title="Stephen Boyd and Lieven Vandenberghe. Convex Optimization. Cambridge University Press, 2004.">Boyd and Vandenberghe, 2004</a>]</span> for a comprehensive treatment of convex optimization.</p>
+<p>More generally, for a higher-dimensional <span class="math notranslate nohighlight">\(\theta\)</span>,
+we can compute the global optima by setting the gradient of the Lagrangian to zero:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+    \mathcal{L}(\theta, \alpha)                     &amp; = \nabla J(\pi_{\theta^k})^\top (\theta - \theta^k) - \alpha \left[ \frac{1}{2} (\theta - \theta^k)^\top F_{\theta^k} (\theta - \theta^k) - \delta \right] \\
+    \nabla \mathcal{L}(\theta^{k+1}, \alpha) &amp; := 0                                                                                                                                                             \\
+    \implies \nabla J(\pi_{\theta^k})        &amp; = \alpha F_{\theta^k} (\theta^{k+1} - \theta^k)                                                                                                                   \\
+    \theta^{k+1}                           &amp; = \theta^k + \eta F_{\theta^k}^{-1} \nabla J(\pi_{\theta^k})                                                                                             \\
+    \text{where } \eta                     &amp; = \sqrt{\frac{2 \delta}{\nabla J(\pi_{\theta^k})^\top F_{\theta^k}^{-1} \nabla J(\pi_{\theta^k})}}
+\end{aligned}
+\end{split}\]</div>
+<p>This gives us the closed-form update.
+Now the only challenge is to estimate the Fisher information matrix,
+since, as with the KL divergence constraint, it is an expectation over trajectories, and computing it exactly is therefore typically intractable.</p>
+<div class="proof definition admonition" id="npg">
+<p class="admonition-title"><span class="caption-number">Definition 6.5 </span> (Natural policy gradient)</p>
+<section class="definition-content" id="proof-content">
+<p>How many trajectory samples do we need to accurately estimate the Fisher information matrix?
+As a rule of thumb, the sample complexity should scale with the dimension of the parameter space.
+This makes this approach intractable in the deep learning setting where we might have a very large number of parameters.</p>
+</section>
+</div><p>As you can see, the NPG is the “basic” policy gradient algorithm we saw above,
+but with the gradient transformed by the inverse Fisher information matrix.
+This matrix can be understood as accounting for the <strong>geometry of the parameter space.</strong>
+The typical gradient descent algorithm implicitly measures distances between parameters using the typical <em>Euclidean distance</em>.
+Here, where the parameters map to a <em>distribution</em>, using the natural gradient update is equivalent to optimizing over <strong>distribution space</strong> rather than parameter space,
+where distance between distributions is measured by the <a class="reference internal" href="#kld">Definition 6.2</a>.</p>
+<div class="proof example admonition" id="natural_simple">
+<p class="admonition-title"><span class="caption-number">Example 6.1 </span> (Natural gradient on a simple problem)</p>
 <section class="example-content" id="proof-content">
-<p>Natural gradient on a simple problemnatural_simple Let’s step away from reinforcement learning specifically and consider the following optimization problem over Bernoulli distributions <span class="math notranslate nohighlight">\(\pi \in \Delta(\{ 0, 1 \})\)</span>: $$\begin{aligned}
-J(\pi) &amp; = 100 \cdot \pi(1) + 1 \cdot \pi(0)</p>
-<p>\end{aligned}$<span class="math notranslate nohighlight">\( Clearly the optimal distribution is the constant one \)</span>\pi(1) = 1<span class="math notranslate nohighlight">\(. Suppose we optimize over the parameterized family \)</span>\pi_\theta(1) = \frac{\exp(\theta)}{1+\exp(\theta)}<span class="math notranslate nohighlight">\(. Then our optimization algorithm should set \)</span>\theta<span class="math notranslate nohighlight">\( to be unboundedly large. Then the vanilla gradient is \)</span><span class="math notranslate nohighlight">\(\nabla_\theta J(\pi_\theta) = \frac{99 \exp(\theta)}{(1 + \exp(\theta))^2}.\)</span><span class="math notranslate nohighlight">\( Note that as \)</span>\theta \to \infty<span class="math notranslate nohighlight">\( that the increments get closer and closer to \)</span>0<span class="math notranslate nohighlight">\(. However, if we compute the Fisher information scalar \)</span>$\begin{aligned}
-F_\theta &amp; = \E_{x \sim \pi_\theta} [ (\nabla_\theta \log \pi_\theta(x))^2 ] \
-&amp; = \frac{\exp(\theta)}{(1 + \exp(\theta))^2}</p>
-<p>\end{aligned}$<span class="math notranslate nohighlight">\( resulting in the natural gradient update \)</span>$\begin{aligned}
-\theta^{k+1} &amp; = \theta^k + \eta F_{\theta^k}^{-1} \nabla_ \theta J(\theta^k) \
-&amp; = \theta^k + 99 \eta</p>
-<p>\end{aligned}$$ which increases at a constant rate, i.e. improves the objective more quickly than vanilla gradient ascent.</p>
+<p>Let’s step away from RL and consider the following optimization problem over Bernoulli distributions <span class="math notranslate nohighlight">\(\pi \in \Delta(\{ 0, 1 \})\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+        J(\pi) &amp; = 100 \cdot \pi(1) + 1 \cdot \pi(0)
+\end{aligned}
+\]</div>
+<p>We can think of the space of such distributions as the line between <span class="math notranslate nohighlight">\((0, 1)\)</span> to <span class="math notranslate nohighlight">\((1, 0)\)</span> on the Cartesian plane:</p>
+<a class="reference internal image-reference" href="_images/npg_line.png"><img alt="a line from (0, 1) to (1, 0)" class="align-center" src="_images/npg_line.png" style="width: 240px;" /></a>
+<p>Clearly the optimal distribution is the constant one <span class="math notranslate nohighlight">\(\pi(1) = 1\)</span>. Suppose we optimize over the parameterized family <span class="math notranslate nohighlight">\(\pi_\theta(1) = \frac{\exp(\theta)}{1+\exp(\theta)}\)</span>.
+Then our optimization algorithm should set <span class="math notranslate nohighlight">\(\theta\)</span> to be unboundedly large.
+Then the “vanilla” gradient is</p>
+<div class="math notranslate nohighlight">
+\[\nabla_\theta J(\pi_\theta) = \frac{99 \exp(\theta)}{(1 + \exp(\theta))^2}.\]</div>
+<p>Note that as <span class="math notranslate nohighlight">\(\theta \to \infty\)</span> that the increments get closer and closer to <span class="math notranslate nohighlight">\(0\)</span>;
+the rate of increase becomes exponentially slow.</p>
+<p>However, if we compute the Fisher information “matrix” (which is just a scalar in this case), we can account for the geometry induced by the parameterization.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+        F_\theta &amp; = \E_{x \sim \pi_\theta} [ (\nabla_\theta \log \pi_\theta(x))^2 ] \\
+                 &amp; = \frac{\exp(\theta)}{(1 + \exp(\theta))^2}.
+\end{aligned}
+\end{split}\]</div>
+<p>This gives the natural gradient update</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+        \theta^{k+1} &amp; = \theta^k + \eta F_{\theta^k}^{-1} \nabla_ \theta J(\theta^k) \\
+                     &amp; = \theta^k + 99 \eta
+\end{aligned}
+\end{split}\]</div>
+<p>which increases at a constant rate, i.e. improves the objective more quickly than “vanilla” gradient ascent.</p>
 </section>
-</div></section>
+</div><p>Though the NPG now gives a closed-form optimization step,
+it requires computing the inverse Fisher information matrix,
+which typically scales as <span class="math notranslate nohighlight">\(O((\dim \Theta)^3)\)</span>.
+This can be expensive if the parameter space is large.
+Can we find an algorithm that works in <em>linear time</em> with respect to the dimension of the parameter space?</p>
+</section>
 <section id="proximal-policy-optimization">
-<h3><span class="section-number">6.6.4. </span>Proximal policy optimization<a class="headerlink" href="#proximal-policy-optimization" title="Link to this heading">#</a></h3>
-<p>Can we improve on the computational efficiency of the above methods?</p>
-<p>We can relax the TRPO objective in a different way: Rather than imposing a hard constraint on the KL distance, we can instead impose a <em>soft</em> constraint by incorporating it into the objective:</p>
-<div class="proof definition admonition" id="definition-9">
-<p class="admonition-title"><span class="caption-number">Definition 6.8 </span></p>
-<section class="definition-content" id="proof-content">
-<p>Proximal policy optimization (exact)ppo</p>
-<!-- :::{prf:algorithmic}
-Regularization parameter $\lambda$ Initialize $\theta^0$ $\theta^{k+1} \gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \pi^k} \left[ \sum_\hi \E_{a_\hi \sim \pi_\theta(s_\hi)} A^{\pi^k}(s_\hi, a_\hi) \right] - \lambda \kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ $\theta^K$
-::: -->
-<p>Note that like the original TRPO algorithm <a class="reference internal" href="#trpo">Definition 6.3</a>, PPO is not gradient-based; rather, at each step, we try to maximize local advantage relative to the current policy.</p>
-</section>
-</div><p>Let us now turn this into an implementable algorithm, assuming we can sample trajectories from <span class="math notranslate nohighlight">\(\pi_{\theta^k}\)</span>.</p>
-<p>Let us simplify the <span class="math notranslate nohighlight">\(\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}\)</span> term first. Expanding gives $<span class="math notranslate nohighlight">\(\begin{aligned}
+<h2><span class="section-number">6.8. </span>Proximal policy optimization<a class="headerlink" href="#proximal-policy-optimization" title="Link to this heading">#</a></h2>
+<p>We can relax the TRPO optimization problem in a different way:
+Rather than imposing a hard constraint on the KL distance,
+we can instead impose a <em>soft</em> constraint by incorporating it into the objective and penalizing parameter values that drastically change the trajectory distribution.</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\theta^{k+1} &amp;\gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \rho_{\pi^{k}}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] - \lambda \kl{\rho_{\theta}}{\rho_{\theta^k}}
+\end{aligned}
+\]</div>
+<p>Here <span class="math notranslate nohighlight">\(\lambda\)</span> is a <strong>regularization hyperparameter</strong> that controls the tradeoff between the two terms.</p>
+<p>Like the original TRPO algorithm <a class="reference internal" href="#trpo">Definition 6.3</a>, PPO is not gradient-based; rather, at each step, we try to maximize local advantage relative to the current policy.</p>
+<p>How do we solve this optimization?
+Let us begin by simplifying the <span class="math notranslate nohighlight">\(\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}\)</span> term. Expanding gives</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
     \kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}} &amp; = \E_{\tau \sim \rho_{\pi^k}} \left[\log \frac{\rho_{\pi^k}(\tau)}{\rho_{\pi_{\theta}}(\tau)}\right]                                                       \\
                                            &amp; = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{\pi^k(a_\hi \mid s_\hi)}{\pi_{\theta}(a_\hi \mid s_\hi)}\right] &amp; \text{state transitions cancel} \\
                                            &amp; = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{1}{\pi_{\theta}(a_\hi \mid s_\hi)}\right] + c
-\end{aligned}\)</span><span class="math notranslate nohighlight">\( where \)</span>c<span class="math notranslate nohighlight">\( is some constant relative to \)</span>\theta$.</p>
-<p>As we did for TRPO <a class="reference internal" href="#trpo">Definition 6.3</a>, we can use importance sampling <a class="reference internal" href="#importance_sampling">Definition 6.4</a> to rewrite the inner expectation. Combining the expectations together, this gives the (exact) objective $<span class="math notranslate nohighlight">\(\max_{\theta} \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} A^{\pi^k}(s_\hi, a_\hi) - \lambda \log \frac{1}{\pi_\theta(a_\hi \mid s_\hi)} \right) \right]\)</span>$</p>
-<p>Now we can use gradient ascent on the parameters <span class="math notranslate nohighlight">\(\theta\)</span> until convergence to maximize this function, completing a single iteration of PPO (i.e. <span class="math notranslate nohighlight">\(\theta^{k+1} \gets \theta\)</span>).</p>
+\end{aligned}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(c\)</span> is some constant with respect to <span class="math notranslate nohighlight">\(\theta\)</span>, and can be ignored.
+This gives the objective</p>
+<div class="math notranslate nohighlight">
+\[
+\ell^k(\theta)
+=
+\E_{s_0, \dots, s_{H-1} \sim \rho_{\pi^{k}}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] - \lambda \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{1}{\pi_{\theta}(a_\hi \mid s_\hi)}\right]
+\]</div>
+<p>Once again, this takes an expectation over trajectories.
+But here we cannot directly sample trajectories from <span class="math notranslate nohighlight">\(\pi^k\)</span>,
+since in the first term, the actions actually come from <span class="math notranslate nohighlight">\(\pi_\theta\)</span>.
+To make this term line up with the other expectation,
+we would need the actions to also come from <span class="math notranslate nohighlight">\(\pi^k\)</span>.</p>
+<p>This should sound familiar:
+we want to estimate an expectation over one distribution by sampling from another.
+We can once again use <a class="reference internal" href="#importance-sampling"><span class="std std-ref">Importance Sampling</span></a> to rewrite the inner expectation:</p>
+<div class="math notranslate nohighlight">
+\[
+\E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi)
+=
+\E_{a_\hi \sim \pi^k(s_\hi)} \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi)
+\]</div>
+<p>Now we can combine the expectations together to get the objective</p>
+<div class="math notranslate nohighlight">
+\[
+\ell^k(\theta) = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} A^{\pi^k}(s_\hi, a_\hi) - \lambda \log \frac{1}{\pi_\theta(a_\hi \mid s_\hi)} \right) \right]
+\]</div>
+<p>Now we can estimate this function by a sample average over trajectories from <span class="math notranslate nohighlight">\(\pi^k\)</span>.
+Remember that to complete a single iteration of PPO,
+we execute</p>
+<div class="math notranslate nohighlight">
+\[
+\theta^{k+1} \gets \arg\max_{\theta} \ell^k(\theta).
+\]</div>
+<p>If <span class="math notranslate nohighlight">\(\ell^k\)</span> is differentiable, we can optimize it by gradient ascent, completing a single iteration of PPO.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ppo_pseudocode</span><span class="p">(</span>
+    <span class="n">env</span><span class="p">,</span>
+    <span class="n">π</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Params</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">State</span><span class="p">,</span> <span class="n">Action</span><span class="p">],</span> <span class="n">Float</span><span class="p">]],</span>
+    <span class="n">λ</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">θ_init</span><span class="p">:</span> <span class="n">Params</span><span class="p">,</span>
+    <span class="n">n_iters</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_fit_trajectories</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_sample_trajectories</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iters</span><span class="p">):</span>
+        <span class="n">fit_trajectories</span> <span class="o">=</span> <span class="n">sample_trajectories</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">n_fit_trajectories</span><span class="p">)</span>
+        <span class="n">A_hat</span> <span class="o">=</span> <span class="n">fit</span><span class="p">(</span><span class="n">fit_trajectories</span><span class="p">)</span>
+
+        <span class="n">sample_trajectories</span> <span class="o">=</span> <span class="n">sample_trajectories</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">),</span> <span class="n">n_sample_trajectories</span><span class="p">)</span>
+        
+        <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">θ_opt</span><span class="p">):</span>
+            <span class="n">total_objective</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">τ</span> <span class="ow">in</span> <span class="n">sample_trajectories</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">_r</span> <span class="ow">in</span> <span class="n">τ</span><span class="p">:</span>
+                    <span class="n">total_objective</span> <span class="o">+=</span> <span class="n">π</span><span class="p">(</span><span class="n">θ_opt</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="n">π</span><span class="p">(</span><span class="n">θ</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">A_hat</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">λ</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">(</span><span class="n">θ_opt</span><span class="p">)(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">total_objective</span> <span class="o">/</span> <span class="n">n_sample_trajectories</span>
+        
+        <span class="n">θ</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">θ</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">θ</span>
+</pre></div>
+</div>
 </section>
+<section id="summary">
+<h2><span class="section-number">6.9. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>Policy gradient methods are a powerful family of algorithms that directly optimize the total reward by iteratively updating the policy parameters.</p>
+<p>TODO</p>
+<ul class="simple">
+<li><p>Vanilla policy gradient</p></li>
+<li><p>Baselines and advantages</p></li>
+<li><p>Trust region policy optimization</p></li>
+<li><p>Natural policy gradient</p></li>
+<li><p>Proximal policy optimization</p></li>
+</ul>
 </section>
 </section>
 
@@ -755,23 +1197,27 @@ Regularization parameter $\lambda$ Initialize $\theta^0$ $\theta^{k+1} \gets \ar
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">6.1. Motivation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-policy-gradient-ascent">6.2. (Stochastic) Policy Gradient Ascent</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reinforce-and-importance-sampling">6.3. REINFORCE and Importance Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-ascent">6.1. Gradient Ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-ascent">6.1.1. Stochastic gradient ascent</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-stochastic-gradient-ascent">6.2. Policy (stochastic) gradient ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">6.2.1. Example policy parameterizations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">6.2.1.1. Linear in features</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">6.2.1.2. Neural policies</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">6.2.2. Continuous action spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">6.2.3. Importance Sampling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-policy-gradient">6.3. The REINFORCE policy gradient</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-and-advantages">6.4. Baselines and advantages</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">6.5. Example policy parameterizations</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">6.5.1. Linear in features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">6.5.2. Neural policies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">6.5.3. Continuous action spaces</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-policy-optimization">6.6. Local policy optimization</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation-for-policy-gradient">6.6.1. Motivation for policy gradient</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">6.6.2. Trust region policy optimization</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">6.6.3. Natural policy gradient</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">6.6.4. Proximal policy optimization</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-policy-gradient-algorithms-to-policy-iteration">6.5. Comparing policy gradient algorithms to policy iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">6.6. Trust region policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">6.7. Natural policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">6.8. Proximal policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">6.9. Summary</a></li>
 </ul>
   </nav></div>
 

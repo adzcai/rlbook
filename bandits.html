@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -216,7 +216,8 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="control.html">5. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Gradient Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exploration.html">7. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">8. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">8. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">9. Bibliography</a></li>
 </ul>
 
     </div>
@@ -786,7 +787,7 @@ random variables:</p>
 <div class="math notranslate nohighlight">
 \[\P\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| &gt; \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.\]</div>
 </section>
-</div><p>The proof of this inequality is beyond the scope of this book. See <span id="id2">[<a class="reference internal" href="bibliography.html#id17" title="Roman Vershynin. High-Dimensional Probability: An Introduction with Applications in Data Science. Cambridge University Press, September 2018. ISBN 978-1-108-41519-4.">Vershynin, 2018</a>]</span> Chapter 2.2.</p>
+</div><p>The proof of this inequality is beyond the scope of this book. See <span id="id2">[<a class="reference internal" href="bibliography.html#id20" title="Roman Vershynin. High-Dimensional Probability: An Introduction with Applications in Data Science. Cambridge University Press, September 2018. ISBN 978-1-108-41519-4.">Vershynin, 2018</a>]</span> Chapter 2.2.</p>
 <p>We can apply this directly to the rewards for a given arm <span class="math notranslate nohighlight">\(k\)</span>, since the rewards from that arm are i.i.d.:</p>
 <div class="math notranslate nohighlight" id="equation-hoeffding-etc">
 <span class="eqno">(2.1)<a class="headerlink" href="#equation-hoeffding-etc" title="Link to this equation">#</a></span>\[\P\left(|\Delta^k | &gt; \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta.\]</div>
@@ -1169,7 +1170,7 @@ the entire posterior distribution from scratch.</p>
 </div>
 </div>
 <p>It turns out that asymptotically, Thompson sampling is optimal in the
-following sense. <span id="id3">[<a class="reference internal" href="bibliography.html#id10" title="T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. Advances in Applied Mathematics, 6(1):4–22, March 1985. doi:10.1016/0196-8858(85)90002-8.">Lai and Robbins, 1985</a>]</span> prove an
+following sense. <span id="id3">[<a class="reference internal" href="bibliography.html#id12" title="T. L Lai and Herbert Robbins. Asymptotically efficient adaptive allocation rules. Advances in Applied Mathematics, 6(1):4–22, March 1985. doi:10.1016/0196-8858(85)90002-8.">Lai and Robbins, 1985</a>]</span> prove an
 <em>instance-dependent</em> lower bound that says for <em>any</em> bandit algorithm,</p>
 <div class="math notranslate nohighlight">
 \[\liminf_{T \to \infty} \frac{\E[N_T^k]}{\ln(T)} \ge \frac{1}{\text{KL}(\mu^k \parallel \mu^\star)}\]</div>
@@ -1315,7 +1316,7 @@ width of the confidence interval. Here, we treat it as a tunable
 parameter, though in a theoretical analysis, it would depend on <span class="math notranslate nohighlight">\(A_t^k\)</span>
 and the probability <span class="math notranslate nohighlight">\(\delta\)</span> with which the bound holds.</p>
 <p>Using similar tools for UCB, we can also prove an <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{T})\)</span>
-regret bound. The full details of the analysis can be found in Section 3 of <span id="id4">[<a class="reference internal" href="bibliography.html#id3">Agarwal <em>et al.</em>, 2022</a>]</span>.</p>
+regret bound. The full details of the analysis can be found in Section 3 of <span id="id4">[<a class="reference internal" href="bibliography.html#id4">Agarwal <em>et al.</em>, 2022</a>]</span>.</p>
 </section>
 </section>
 <section id="summary">
