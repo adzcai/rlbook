@@ -8,46 +8,46 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>2. Multi-Armed Bandits &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>3. Multi-Armed Bandits &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -87,7 +87,7 @@ var addUtterances = () => {
 commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'bandits';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="3. Finite Markov Decision Processes" href="mdps.html" />
-    <link rel="prev" title="1. Introduction" href="intro.html" />
+    <link rel="next" title="4. Fitted Dynamic Programming Algorithms" href="fitted_dp.html" />
+    <link rel="prev" title="2. Linear Quadratic Regulators" href="control.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,23 +108,27 @@ commentsRunWhenDOMLoaded(addUtterances);
 
   
   
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -146,13 +150,8 @@ commentsRunWhenDOMLoaded(addUtterances);
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
     </header>
   
 
@@ -176,8 +175,6 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item">
 
   
-    
-  
 
 <a class="navbar-brand logo" href="index.html">
   
@@ -199,7 +196,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
  <script>
  document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -209,15 +206,16 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Multi-Armed Bandits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="control.html">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Gradient Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">7. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">8. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">9. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
 </ul>
 
     </div>
@@ -233,7 +231,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
       </div>
       
-      <main id="main-content" class="bd-main" role="main">
+      <main id="main-content" class="bd-main">
         
         
 
@@ -242,14 +240,14 @@ commentsRunWhenDOMLoaded(addUtterances);
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article d-print-none">
+              <div class="bd-header-article">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</button></div>
+</label></div>
       
     </div>
   
@@ -327,10 +325,10 @@ commentsRunWhenDOMLoaded(addUtterances);
 
 <script>
 document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -338,14 +336,14 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</button>
+</label>
 </div></div>
       
     </div>
@@ -366,29 +364,25 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">2.1. Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">2.2. Pure exploration (random guessing)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">2.3. Pure greedy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">2.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">2.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">2.4.1.1. Exploration phase.</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">2.4.1.2. Exploitation phase.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">3.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">3.2. Pure exploration (random guessing)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">3.3. Pure greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">3.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">3.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">3.4.1.1. Exploration phase.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">3.4.1.2. Exploitation phase.</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">2.5. Epsilon-greedy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">2.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">2.6.1. UCB regret analysis</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">2.6.2. Lower bound on regret (intuition)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">3.5. Epsilon-greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">3.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">3.6.1. UCB regret analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">3.6.2. Lower bound on regret (intuition)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">2.7. Thompson sampling and Bayesian bandits</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contextual-bandits">2.8. Contextual bandits</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-contextual-bandits">2.8.1. Linear contextual bandits</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">2.9. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">3.7. Thompson sampling and Bayesian bandits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">3.8. Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -401,7 +395,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="multi-armed-bandits">
-<span id="bandits"></span><h1><span class="section-number">2. </span>Multi-Armed Bandits<a class="headerlink" href="#multi-armed-bandits" title="Link to this heading">#</a></h1>
+<span id="bandits"></span><h1><span class="section-number">3. </span>Multi-Armed Bandits<a class="headerlink" href="#multi-armed-bandits" title="Link to this heading">#</a></h1>
 <div class="cell tag_hide-input docutils container">
 <details class="hide above-input">
 <summary aria-label="Toggle hidden content">
@@ -414,7 +408,6 @@ document.write(`
 
 <span class="c1"># from bokeh.plotting import figure, show, output_notebook</span>
 <span class="kn">import</span> <span class="nn">latexify</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>  <span class="c1"># &quot;Abstract Base Class&quot;</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -428,10 +421,12 @@ document.write(`
 
 
 <span class="k">def</span> <span class="nf">random_argmax</span><span class="p">(</span><span class="n">ary</span><span class="p">:</span> <span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Take an argmax and randomize between ties.&quot;&quot;&quot;</span>
     <span class="n">max_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">ary</span> <span class="o">==</span> <span class="n">ary</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">max_idx</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 
 
+<span class="c1"># used as decorator</span>
 <span class="n">latex</span> <span class="o">=</span> <span class="n">latexify</span><span class="o">.</span><span class="n">algorithmic</span><span class="p">(</span>
     <span class="n">prefixes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;mab&quot;</span><span class="p">},</span>
     <span class="n">identifiers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;arm&quot;</span><span class="p">:</span> <span class="s2">&quot;a_t&quot;</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;means&quot;</span><span class="p">:</span> <span class="s2">&quot;mu&quot;</span><span class="p">},</span>
@@ -444,7 +439,7 @@ document.write(`
 </details>
 </div>
 <p>The <strong>multi-armed bandits</strong> (MAB) setting is a simple setting for studying the basic challenges of RL. In this setting, an agent repeatedly chooses from a fixed set of actions, called <strong>arms</strong>, each of which has an associated reward distribution. The agent’s goal is to maximize the total reward it receives over some time period.</p>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="table">
 <thead>
 <tr class="row-odd"><th class="head text-center"><p>States</p></th>
 <th class="head text-center"><p>Actions</p></th>
@@ -458,23 +453,22 @@ document.write(`
 </tr>
 </tbody>
 </table>
-</div>
 <p>In particular, we’ll spend a lot of time discussing the <strong>Exploration-Exploitation Tradeoff</strong>: should the agent choose new actions to learn more about the environment, or should it choose actions that it already knows to be good?</p>
 <div class="proof example admonition" id="advertising">
-<p class="admonition-title"><span class="caption-number">Example 2.1 </span> (Online advertising)</p>
+<p class="admonition-title"><span class="caption-number">Example 3.1 </span> (Online advertising)</p>
 <section class="example-content" id="proof-content">
 <p>Let’s suppose you, the agent, are an advertising company. You have <span class="math notranslate nohighlight">\(K\)</span> different ads that you can show to users; For concreteness, let’s suppose there’s just a single user. You receive <span class="math notranslate nohighlight">\(1\)</span> reward if the user clicks the ad, and <span class="math notranslate nohighlight">\(0\)</span> otherwise. Thus, the unknown <em>reward distribution</em> associated to each ad is a Bernoulli distribution defined by the probability that the user clicks on the ad. Your goal is to maximize the total number of clicks by the user.</p>
 </section>
 </div><div class="proof example admonition" id="clinical_trials">
-<p class="admonition-title"><span class="caption-number">Example 2.2 </span> (Clinical trials)</p>
+<p class="admonition-title"><span class="caption-number">Example 3.2 </span> (Clinical trials)</p>
 <section class="example-content" id="proof-content">
 <p>Suppose you’re a pharmaceutical company, and you’re testing a new drug. You have <span class="math notranslate nohighlight">\(K\)</span> different dosages of the drug that you can administer to patients. You receive <span class="math notranslate nohighlight">\(1\)</span> reward if the patient recovers, and <span class="math notranslate nohighlight">\(0\)</span> otherwise. Thus, the unknown <em>reward distribution</em> associated to each dosage is a Bernoulli distribution defined by the probability that the patient recovers. Your goal is to maximize the total number of patients that recover.</p>
 </section>
 </div><p>In this chapter, we will introduce the multi-armed bandits setting, and discuss some of the challenges that arise when trying to solve problems in this setting. We will also introduce some of the key concepts that we will use throughout the book, such as regret and exploration-exploitation tradeoffs.</p>
 <section id="introduction">
-<h2><span class="section-number">2.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">3.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
 <div class="proof remark admonition" id="multi-armed">
-<p class="admonition-title"><span class="caption-number">Remark 2.1 </span> (Namesake)</p>
+<p class="admonition-title"><span class="caption-number">Remark 3.1 </span> (Namesake)</p>
 <section class="remark-content" id="proof-content">
 <p>The name “multi-armed bandits” comes from slot machines in casinos, which are often called “one-armed bandits” since they have one arm (the lever) and take money from the player.</p>
 </section>
@@ -529,13 +523,13 @@ described by the following process:</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{split} \begin{array}{l} \mathbf{function} \ \mathrm{\mathrm{mab}_\mathrm{loop}}(\mathrm{mab}, \mathrm{agent}) \\ \hspace{1em} \mathbf{for} \ t \in \mathrm{range} \mathopen{}\left( T \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{a_t} \gets \mathrm{agent}.\mathrm{\mathrm{choose}_\mathrm{arm}} \mathopen{}\left( \mathclose{}\right) \\ \hspace{2em} r \gets \mathrm{pull} \mathopen{}\left( \mathrm{a_t} \mathclose{}\right) \\ \hspace{2em} \mathrm{agent}.\mathrm{\mathrm{update}_\mathrm{history}} \mathopen{}\left( \mathrm{a_t}, r \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \mathbf{end \ function} \end{array} \end{split}\]</div>
+\[\begin{split} \begin{array}{l} \mathbf{function} \ \mathrm{mab\_loop}(\mathrm{mab}, \mathrm{agent}) \\ \hspace{1em} \mathbf{for} \ t \in \mathrm{range} \mathopen{}\left( T \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{a\_t} \gets \mathrm{agent}.\mathrm{choose\_arm} \mathopen{}\left( \mathclose{}\right) \\ \hspace{2em} r \gets \mathrm{pull} \mathopen{}\left( \mathrm{a\_t} \mathclose{}\right) \\ \hspace{2em} \mathrm{agent}.\mathrm{update\_history} \mathopen{}\left( \mathrm{a\_t}, r \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \mathbf{end \ function} \end{array} \end{split}\]</div>
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Agent</span></code> class stores the pull history and uses it to decide which arm to pull next. Since we are working with Bernoulli bandits, we can summarize the pull history concisely in a <span class="math notranslate nohighlight">\(\mathbb{N}^{K \times 2}\)</span> array.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Agent</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Agent</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The MAB agent that decides how to choose an arm given the past history.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">K</span>
@@ -544,14 +538,12 @@ described by the following process:</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">K</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
-    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Choose an arm of the MAB. Algorithm-specific.&quot;&quot;&quot;</span>
         <span class="o">...</span>
 
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of pulls made.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The number of pulls made. Also the current step index.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rewards</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arm</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reward</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
@@ -570,7 +562,7 @@ to always pull the arm with the highest expected reward:</p>
 <p>The goal, then, can be rephrased as to minimize the <strong>regret</strong>, defined
 below:</p>
 <div class="proof definition admonition" id="regret">
-<p class="admonition-title"><span class="caption-number">Definition 2.1 </span> (Regret)</p>
+<p class="admonition-title"><span class="caption-number">Definition 3.1 </span> (Regret)</p>
 <section class="definition-content" id="proof-content">
 <p>The agent’s <strong>regret</strong> after <span class="math notranslate nohighlight">\(T\)</span> timesteps is defined as</p>
 <div class="math notranslate nohighlight">
@@ -636,7 +628,7 @@ MAB algorithms.</p>
 </div>
 </section>
 <section id="pure-exploration-random-guessing">
-<h2><span class="section-number">2.2. </span>Pure exploration (random guessing)<a class="headerlink" href="#pure-exploration-random-guessing" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">3.2. </span>Pure exploration (random guessing)<a class="headerlink" href="#pure-exploration-random-guessing" title="Link to this heading">#</a></h2>
 <p>A trivial strategy is to always choose arms at random (i.e. “pure
 exploration”).</p>
 <div class="cell docutils container">
@@ -672,12 +664,12 @@ exploration”).</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/58938b3295ffe4b5ac7521efd6784ba93977317658e7c7999e54199a2348dbf4.png" src="_images/58938b3295ffe4b5ac7521efd6784ba93977317658e7c7999e54199a2348dbf4.png" />
+<img alt="_images/a66372fd76cf354fc59f84c10c66efadd39358a5983776bc48575a7f2ef687ae.png" src="_images/a66372fd76cf354fc59f84c10c66efadd39358a5983776bc48575a7f2ef687ae.png" />
 </div>
 </div>
 </section>
 <section id="pure-greedy">
-<h2><span class="section-number">2.3. </span>Pure greedy<a class="headerlink" href="#pure-greedy" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">3.3. </span>Pure greedy<a class="headerlink" href="#pure-greedy" title="Link to this heading">#</a></h2>
 <p>How might we improve on pure exploration? Instead, we could try each arm
 once, and then commit to the one with the highest observed reward. We’ll
 call this the <strong>pure greedy</strong> strategy.</p>
@@ -720,13 +712,13 @@ expected regret is simply:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/2b5866bf76b1b1282bf3dd9a636c2edb08747f425b3ec6990a8a4f49970d9199.png" src="_images/2b5866bf76b1b1282bf3dd9a636c2edb08747f425b3ec6990a8a4f49970d9199.png" />
+<img alt="_images/2d7116a704b3423448e7d79e7176b5e01fb1c0c7fd87798220ee23cbbca801f9.png" src="_images/2d7116a704b3423448e7d79e7176b5e01fb1c0c7fd87798220ee23cbbca801f9.png" />
 </div>
 </div>
 <p>The cumulative regret is a straight line because the regret only depends on the arms chosen and not the actual reward observed. In fact, if the greedy algorithm happens to get lucky on the first set of pulls, it may act entirely optimally for that episode! But its <em>average</em> regret is what measures its effectiveness.</p>
 </section>
 <section id="explore-then-commit">
-<span id="etc"></span><h2><span class="section-number">2.4. </span>Explore-then-commit<a class="headerlink" href="#explore-then-commit" title="Link to this heading">#</a></h2>
+<span id="etc"></span><h2><span class="section-number">3.4. </span>Explore-then-commit<a class="headerlink" href="#explore-then-commit" title="Link to this heading">#</a></h2>
 <p>We can improve the pure greedy algorithm as follows: let’s reduce the variance of the reward estimates by pulling each arm <span class="math notranslate nohighlight">\(N_{\text{explore}}&gt; 1\)</span> times before committing. This is called the <strong>explore-then-commit</strong> strategy. Note that the “pure greedy” strategy above is just the special case where
 <span class="math notranslate nohighlight">\(N_{\text{explore}}= 1\)</span>.</p>
 <div class="cell docutils container">
@@ -751,22 +743,22 @@ expected regret is simply:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/28e29def663ccd6cdc50809928467bc4218df307aaaa1ff759bbaaa1f2e290db.png" src="_images/28e29def663ccd6cdc50809928467bc4218df307aaaa1ff759bbaaa1f2e290db.png" />
+<img alt="_images/d2c9c60d9eba32cde5d1192dc0685310a1d1ea1d67e5d508545f9d0e9cc56650.png" src="_images/d2c9c60d9eba32cde5d1192dc0685310a1d1ea1d67e5d508545f9d0e9cc56650.png" />
 </div>
 </div>
 <p>Notice that now, the graphs are much more consistent, and the algorithm finds the true optimal arm and sticks with it much more frequently. We would expect ETC to then have a better (i.e. lower) average regret. Can we prove this?</p>
 <section id="etc-regret-analysis">
-<span id="id1"></span><h3><span class="section-number">2.4.1. </span>ETC regret analysis<a class="headerlink" href="#etc-regret-analysis" title="Link to this heading">#</a></h3>
+<span id="id1"></span><h3><span class="section-number">3.4.1. </span>ETC regret analysis<a class="headerlink" href="#etc-regret-analysis" title="Link to this heading">#</a></h3>
 <p>Let’s analyze the expected regret of the explore-then-commit strategy by splitting it up
 into the exploration and exploitation phases.</p>
 <section id="exploration-phase">
-<h4><span class="section-number">2.4.1.1. </span>Exploration phase.<a class="headerlink" href="#exploration-phase" title="Link to this heading">#</a></h4>
+<h4><span class="section-number">3.4.1.1. </span>Exploration phase.<a class="headerlink" href="#exploration-phase" title="Link to this heading">#</a></h4>
 <p>This phase takes <span class="math notranslate nohighlight">\(N_{\text{explore}}K\)</span> timesteps. Since at each step we
 incur at most <span class="math notranslate nohighlight">\(1\)</span> regret, the total regret is at most
 <span class="math notranslate nohighlight">\(N_{\text{explore}}K\)</span>.</p>
 </section>
 <section id="exploitation-phase">
-<h4><span class="section-number">2.4.1.2. </span>Exploitation phase.<a class="headerlink" href="#exploitation-phase" title="Link to this heading">#</a></h4>
+<h4><span class="section-number">3.4.1.2. </span>Exploitation phase.<a class="headerlink" href="#exploitation-phase" title="Link to this heading">#</a></h4>
 <p>This will take a bit more effort. We’ll prove that for any total time <span class="math notranslate nohighlight">\(T\)</span>, we can choose <span class="math notranslate nohighlight">\(N_{\text{explore}}\)</span> such that with arbitrarily high probability, the regret is sublinear.</p>
 <p>Let <span class="math notranslate nohighlight">\(\hat k\)</span> denote the arm chosen after the exploration phase. We know the regret from the
 exploitation phase is</p>
@@ -779,7 +771,7 @@ estimate for arm <span class="math notranslate nohighlight">\(k\)</span> is from
 quantity? We’ll use the following useful inequality for i.i.d. bounded
 random variables:</p>
 <div class="proof theorem admonition" id="hoeffding">
-<p class="admonition-title"><span class="caption-number">Theorem 2.1 </span> (Hoeffding’s inequality)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 3.1 </span> (Hoeffding’s inequality)</p>
 <section class="theorem-content" id="proof-content">
 <p>Let <span class="math notranslate nohighlight">\(X_0, \dots, X_{n-1}\)</span> be i.i.d. random variables with
 <span class="math notranslate nohighlight">\(X_i \in [0, 1]\)</span> almost surely for each <span class="math notranslate nohighlight">\(i \in [n]\)</span>. Then for any
@@ -790,7 +782,7 @@ random variables:</p>
 </div><p>The proof of this inequality is beyond the scope of this book. See <span id="id2">[<a class="reference internal" href="bibliography.html#id20" title="Roman Vershynin. High-Dimensional Probability: An Introduction with Applications in Data Science. Cambridge University Press, September 2018. ISBN 978-1-108-41519-4.">Vershynin, 2018</a>]</span> Chapter 2.2.</p>
 <p>We can apply this directly to the rewards for a given arm <span class="math notranslate nohighlight">\(k\)</span>, since the rewards from that arm are i.i.d.:</p>
 <div class="math notranslate nohighlight" id="equation-hoeffding-etc">
-<span class="eqno">(2.1)<a class="headerlink" href="#equation-hoeffding-etc" title="Link to this equation">#</a></span>\[\P\left(|\Delta^k | &gt; \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta.\]</div>
+<span class="eqno">(3.1)<a class="headerlink" href="#equation-hoeffding-etc" title="Link to this equation">#</a></span>\[\P\left(|\Delta^k | &gt; \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta.\]</div>
 <p>But note that we can’t apply this to arm <span class="math notranslate nohighlight">\(\hat k\)</span> directly since
 <span class="math notranslate nohighlight">\(\hat k\)</span> is itself a random variable. Instead, we need to “uniform-ize”
 this bound across <em>all</em> the arms, i.e. bound the error across all the
@@ -798,7 +790,7 @@ arms simultaneously, so that the resulting bound will apply <em>no matter
 what</em> <span class="math notranslate nohighlight">\(\hat k\)</span> “crystallizes” to.</p>
 <p>The <strong>union bound</strong> provides a simple way to do this:</p>
 <div class="proof theorem admonition" id="union_bound">
-<p class="admonition-title"><span class="caption-number">Theorem 2.2 </span> (Union bound)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 3.2 </span> (Union bound)</p>
 <section class="theorem-content" id="proof-content">
 <p>Consider a set of events <span class="math notranslate nohighlight">\(A_0, \dots, A_{n-1}\)</span>. Then</p>
 <div class="math notranslate nohighlight">
@@ -809,7 +801,7 @@ particular, if <span class="math notranslate nohighlight">\(\P(A_i) \ge 1 - \del
 \[\P(\forall i \in [n]. A_i) \ge 1 - n \delta.\]</div>
 </section>
 </div><p><strong>Exercise:</strong> Prove the second statement above.</p>
-<p>Applying the union bound across the arms for the l.h.s. event of <a class="reference internal" href="#equation-hoeffding-etc">(2.1)</a>, we have</p>
+<p>Applying the union bound across the arms for the l.h.s. event of <a class="reference internal" href="#equation-hoeffding-etc">(3.1)</a>, we have</p>
 <div class="math notranslate nohighlight">
 \[
 \begin{aligned}
@@ -858,7 +850,7 @@ brings us to the <em>epsilon-greedy</em> algorithm.</p>
 </section>
 </section>
 <section id="epsilon-greedy">
-<h2><span class="section-number">2.5. </span>Epsilon-greedy<a class="headerlink" href="#epsilon-greedy" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">3.5. </span>Epsilon-greedy<a class="headerlink" href="#epsilon-greedy" title="Link to this heading">#</a></h2>
 <p>Instead of doing all of the exploration and then all of the exploitation
 separately – which additionally requires knowing the time horizon
 beforehand – we can instead interleave exploration and exploitation by,
@@ -867,9 +859,14 @@ call this the <strong>epsilon-greedy</strong> algorithm.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">EpsilonGreedy</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">get_epsilon</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">float</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">T</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">ε_array</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; T&quot;</span><span class="p">],</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_epsilon</span> <span class="o">=</span> <span class="n">get_epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ε_array</span> <span class="o">=</span> <span class="n">ε_array</span>
 
     <span class="k">def</span> <span class="nf">choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">solutions</span><span class="o">.</span><span class="n">epsilon_greedy_choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -879,14 +876,14 @@ call this the <strong>epsilon-greedy</strong> algorithm.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">EpsilonGreedy</span><span class="p">(</span><span class="n">mab</span><span class="o">.</span><span class="n">K</span><span class="p">,</span> <span class="n">mab</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">EpsilonGreedy</span><span class="p">(</span><span class="n">mab</span><span class="o">.</span><span class="n">K</span><span class="p">,</span> <span class="n">mab</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">mab</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
 <span class="n">mab_loop</span><span class="p">(</span><span class="n">mab</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
 <span class="n">plot_strategy</span><span class="p">(</span><span class="n">mab</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/08611d502939ddee47b7dc77f96c805eb7d02ae190c2fd1b79fa139a35d8f67f.png" src="_images/08611d502939ddee47b7dc77f96c805eb7d02ae190c2fd1b79fa139a35d8f67f.png" />
+<img alt="_images/6de1515e4d749de4dd7aeb6f9d88fb7368ff3307937e0f8bcdf199878c91427b.png" src="_images/6de1515e4d749de4dd7aeb6f9d88fb7368ff3307937e0f8bcdf199878c91427b.png" />
 </div>
 </div>
 <p>Note that we let <span class="math notranslate nohighlight">\(\epsilon\)</span> vary over time. In particular, we might want to gradually <em>decrease</em> <span class="math notranslate nohighlight">\(\epsilon\)</span> as we learn more about the reward distributions and no longer need to spend time exploring.</p>
@@ -899,7 +896,7 @@ call this the <strong>epsilon-greedy</strong> algorithm.</p>
 <p>But the way these algorithms explore is rather naive: we’ve been exploring <em>uniformly</em> across all the arms. But what if we could be smarter about it, and explore <em>more</em> for arms that we’re less certain about?</p>
 </section>
 <section id="upper-confidence-bound-ucb">
-<span id="ucb"></span><h2><span class="section-number">2.6. </span>Upper Confidence Bound (UCB)<a class="headerlink" href="#upper-confidence-bound-ucb" title="Link to this heading">#</a></h2>
+<span id="ucb"></span><h2><span class="section-number">3.6. </span>Upper Confidence Bound (UCB)<a class="headerlink" href="#upper-confidence-bound-ucb" title="Link to this heading">#</a></h2>
 <p>To quantify how <em>certain</em> we are about the mean of each arm, we’ll
 compute <em>confidence intervals</em> for our estimators, and then choose the
 arm with the highest <em>upper confidence bound</em>. This operates on the
@@ -958,7 +955,12 @@ trick as last time, where we uniform-ize across all possible values of
 <p>This bound would then suffice for applying the UCB algorithm! That is, the upper confidence bound for arm <span class="math notranslate nohighlight">\(k\)</span> would be</p>
 <div class="math notranslate nohighlight">
 \[M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},\]</div>
-<p>where we can choose <span class="math notranslate nohighlight">\(\delta'\)</span> depending on how tight we want the interval to be. A smaller <span class="math notranslate nohighlight">\(\delta'\)</span> would give us a larger and higher-confidence interval, and vice versa. We can now use this to define the UCB algorithm.</p>
+<p>where we can choose <span class="math notranslate nohighlight">\(\delta'\)</span> depending on how tight we want the interval to be.</p>
+<ul class="simple">
+<li><p>A smaller <span class="math notranslate nohighlight">\(\delta'\)</span> would give us a larger and higher-confidence interval, emphasizing the exploration term.</p></li>
+<li><p>A larger <span class="math notranslate nohighlight">\(\delta'\)</span> would give a tighter and lower-confidence interval, prioritizing the current sample averages.</p></li>
+</ul>
+<p>We can now use this to define the UCB algorithm.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UCB</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
@@ -983,18 +985,18 @@ uncertain about the arm, and we’d choose it for <em>exploration</em>.</p></li>
 previous algorithms. Does it achieve lower regret?</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">UCB</span><span class="p">(</span><span class="n">mab</span><span class="o">.</span><span class="n">K</span><span class="p">,</span> <span class="n">mab</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">UCB</span><span class="p">(</span><span class="n">mab</span><span class="o">.</span><span class="n">K</span><span class="p">,</span> <span class="n">mab</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
 <span class="n">mab_loop</span><span class="p">(</span><span class="n">mab</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
 <span class="n">plot_strategy</span><span class="p">(</span><span class="n">mab</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/4fd1308a04944fd0b6525506ce0e14fa7692941199ade9f5d1196cedb64eba83.png" src="_images/4fd1308a04944fd0b6525506ce0e14fa7692941199ade9f5d1196cedb64eba83.png" />
+<img alt="_images/0689ef75f66f2e102a24d2ef8b3ab9babccaf2a981007f6511dec0c8d98235d6.png" src="_images/0689ef75f66f2e102a24d2ef8b3ab9babccaf2a981007f6511dec0c8d98235d6.png" />
 </div>
 </div>
 <section id="ucb-regret-analysis">
-<h3><span class="section-number">2.6.1. </span>UCB regret analysis<a class="headerlink" href="#ucb-regret-analysis" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">3.6.1. </span>UCB regret analysis<a class="headerlink" href="#ucb-regret-analysis" title="Link to this heading">#</a></h3>
 <p>First we’ll bound the regret incurred at each timestep. Then we’ll bound
 the <em>total</em> regret across timesteps.</p>
 <p>For the sake of analysis, we’ll use a slightly looser bound that applies
@@ -1043,11 +1045,11 @@ follows:</p>
     &amp;= \tilde O(K\sqrt{T})
 \end{aligned}
 \end{split}\]</div>
-<p>In fact, we can do a more sophisticated analysis to trim off a factor of
-<span class="math notranslate nohighlight">\(\sqrt{K}\)</span> and show <span class="math notranslate nohighlight">\(\text{Regret}_T = \tilde O(\sqrt{TK})\)</span>.</p>
+<p>In fact, we can do a more sophisticated analysis to trim off a factor of <span class="math notranslate nohighlight">\(\sqrt{K}\)</span>
+and show <span class="math notranslate nohighlight">\(\text{Regret}_T = \tilde O(\sqrt{TK})\)</span>.</p>
 </section>
 <section id="lower-bound-on-regret-intuition">
-<h3><span class="section-number">2.6.2. </span>Lower bound on regret (intuition)<a class="headerlink" href="#lower-bound-on-regret-intuition" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">3.6.2. </span>Lower bound on regret (intuition)<a class="headerlink" href="#lower-bound-on-regret-intuition" title="Link to this heading">#</a></h3>
 <p>Is it possible to do better than <span class="math notranslate nohighlight">\(\Omega(\sqrt{T})\)</span> in general? In fact,
 no! We can show that any algorithm must incur <span class="math notranslate nohighlight">\(\Omega(\sqrt{T})\)</span> regret
 in the worst case. We won’t rigorously prove this here, but the
@@ -1064,7 +1066,7 @@ $<span class="math notranslate nohighlight">\(\Omega((T/2) \cdot (1/\sqrt{T})) =
 </section>
 </section>
 <section id="thompson-sampling-and-bayesian-bandits">
-<span id="thompson-sampling"></span><h2><span class="section-number">2.7. </span>Thompson sampling and Bayesian bandits<a class="headerlink" href="#thompson-sampling-and-bayesian-bandits" title="Link to this heading">#</a></h2>
+<span id="thompson-sampling"></span><h2><span class="section-number">3.7. </span>Thompson sampling and Bayesian bandits<a class="headerlink" href="#thompson-sampling-and-bayesian-bandits" title="Link to this heading">#</a></h2>
 <p>So far, we’ve treated the parameters <span class="math notranslate nohighlight">\(\mu^0, \dots, \mu^{K-1}\)</span> of the
 reward distributions as <em>fixed</em>. Instead, we can take a <strong>Bayesian</strong>
 approach where we treat them as random variables from some <strong>prior
@@ -1077,12 +1079,14 @@ follows naturally: just sample from the distribution of the optimal arm,
 given the observations!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Distribution</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; K&quot;</span><span class="p">]:</span> <span class="o">...</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Distribution</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; K&quot;</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample a vector of means for the K arms.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
 
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arm</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reward</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span> <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arm</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reward</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Condition on obtaining `reward` from the given arm.&quot;&quot;&quot;</span>
+        <span class="o">...</span>
 </pre></div>
 </div>
 </div>
@@ -1112,7 +1116,7 @@ less certain about, and exploit more for arms that we’re more certain
 about. Thompson sampling is a simple yet powerful algorithm that
 achieves state-of-the-art performance in many settings.</p>
 <div class="proof example admonition" id="bayesian_bernoulli">
-<p class="admonition-title"><span class="caption-number">Example 2.3 </span> (Bayesian Bernoulli bandit)</p>
+<p class="admonition-title"><span class="caption-number">Example 3.3 </span> (Bayesian Bernoulli bandit)</p>
 <section class="example-content" id="proof-content">
 <p>We’ve been working in the Bernoulli bandit setting, where arm <span class="math notranslate nohighlight">\(k\)</span> yields a reward of <span class="math notranslate nohighlight">\(1\)</span> with probability <span class="math notranslate nohighlight">\(\mu^k\)</span> and no reward otherwise. The vector of success probabilities <span class="math notranslate nohighlight">\(\boldsymbol{\mu} = (\mu^1, \dots, \mu^K)\)</span> thus describes the entire MAB.</p>
 <p>Under the Bayesian perspective, we think of <span class="math notranslate nohighlight">\(\boldsymbol{\mu}\)</span> as a <em>random</em> vector drawn from some prior distribution <span class="math notranslate nohighlight">\(\pi(\boldsymbol{\mu})\)</span>. For example, we might have <span class="math notranslate nohighlight">\(\pi\)</span> be the Uniform distribution over the unit hypercube <span class="math notranslate nohighlight">\([0, 1]^K\)</span>, that is,</p>
@@ -1166,7 +1170,7 @@ the entire posterior distribution from scratch.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/08771a16f85ed1bc7e00735e31aa7db1281614db46c5398717b90065f831ab0e.png" src="_images/08771a16f85ed1bc7e00735e31aa7db1281614db46c5398717b90065f831ab0e.png" />
+<img alt="_images/ec8145277e905790383c189531fca304bb39d3dcc32f543f4033b75cf5d1241f.png" src="_images/ec8145277e905790383c189531fca304bb39d3dcc32f543f4033b75cf5d1241f.png" />
 </div>
 </div>
 <p>It turns out that asymptotically, Thompson sampling is optimal in the
@@ -1183,144 +1187,10 @@ distribution with mean <span class="math notranslate nohighlight">\(\mu^k\)</spa
 bound with equality! That is, not only is the error <em>rate</em> optimal, but
 the <em>constant factor</em> is optimal as well.</p>
 </section>
-<section id="contextual-bandits">
-<h2><span class="section-number">2.8. </span>Contextual bandits<a class="headerlink" href="#contextual-bandits" title="Link to this heading">#</a></h2>
-<p>In the above MAB environment, the reward distributions of the arms
-remain constant. However, in many real-world settings, we might receive
-additional information that affects these distributions. For example, in
-the online advertising case where each arm corresponds to an ad we could
-show the user, we might receive information about the user’s preferences
-that changes how likely they are to click on a given ad. We can model
-such environments using <strong>contextual bandits</strong>.</p>
-<div class="proof definition admonition" id="contextual_bandit">
-<p class="admonition-title"><span class="caption-number">Definition 2.2 </span> (Contextual bandit)</p>
-<section class="definition-content" id="proof-content">
-<p>At each timestep <span class="math notranslate nohighlight">\(t\)</span>, a new <em>context</em>
-<span class="math notranslate nohighlight">\(x_t\)</span> is drawn from some distribution <span class="math notranslate nohighlight">\(\nu_{\text{x}}\)</span>. The learner gets
-to observe the context, and choose an action <span class="math notranslate nohighlight">\(a_t\)</span> according to some
-context-dependent policy <span class="math notranslate nohighlight">\(\pi_t(x_t)\)</span>. Then, the learner observes the
-reward from the chosen arm <span class="math notranslate nohighlight">\(r_t \sim \nu^{a_t}(x_t)\)</span>. The reward
-distribution also depends on the context.</p>
-</section>
-</div><p>Assuming our context is <em>discrete</em>, we can just perform the same
-algorithms, treating each context-arm pair as its own arm. This gives us
-an enlarged MAB of <span class="math notranslate nohighlight">\(K |\mathcal{X}|\)</span> arms.</p>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Write down the UCB algorithm for this enlarged MAB. That is, write an
-expression for <span class="math notranslate nohighlight">\(\pi_t(x_t) = \argmax_a \dots\)</span>.</p>
-</div>
-<p>Recall that running UCB for <span class="math notranslate nohighlight">\(T\)</span> timesteps on an MAB with <span class="math notranslate nohighlight">\(K\)</span> arms
-achieves a regret bound of <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{TK})\)</span>. So in this problem,
-we would achieve regret <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{TK|\mathcal{X}|})\)</span> in the
-contextual MAB, which has a polynomial dependence on <span class="math notranslate nohighlight">\(|\mathcal{X}|\)</span>.
-But in a situation where we have large, or even infinitely many
-contexts, e.g. in the case where our context is a continuous value, this
-becomes intractable.</p>
-<p>Note that this “enlarged MAB” treats the different contexts as entirely
-unrelated to each other, while in practice, often contexts are <em>related</em>
-to each other in some way: for example, we might want to advertise
-similar products to users with similar preferences. How can we
-incorporate this structure into our solution?</p>
-<section id="linear-contextual-bandits">
-<span id="lin-ucb"></span><h3><span class="section-number">2.8.1. </span>Linear contextual bandits<a class="headerlink" href="#linear-contextual-bandits" title="Link to this heading">#</a></h3>
-<p>We want to model the <em>mean reward</em> of arm <span class="math notranslate nohighlight">\(k\)</span> as a function of the
-context, i.e. <span class="math notranslate nohighlight">\(\mu^k(x)\)</span>. One simple model is the <em>linear</em> one:
-<span class="math notranslate nohighlight">\(\mu^k(x) = x^\top \theta^k\)</span>, where <span class="math notranslate nohighlight">\(x \in \mathcal{X} = \mathbb{R}^d\)</span> and
-<span class="math notranslate nohighlight">\(\theta^k \in \mathbb{R}^d\)</span> describes a <em>feature direction</em> for arm <span class="math notranslate nohighlight">\(k\)</span>. Recall
-that <strong>supervised learning</strong> gives us a way to estimate a conditional
-expectation from samples: We learn a <em>least squares</em> estimator from the
-timesteps where arm <span class="math notranslate nohighlight">\(k\)</span> was selected:
-$<span class="math notranslate nohighlight">\(\hat \theta_t^k = \argmin_{\theta \in \mathbb{R}^d} \sum_{\{ i \in [t] : a_i = k \}} (r_i - x_i^\top \theta)^2.\)</span>$
-This has the closed-form solution known as the <em>ordinary least squares</em>
-(OLS) estimator:</p>
-<div class="math notranslate nohighlight" id="equation-ols-bandit">
-<span class="eqno">(2.2)<a class="headerlink" href="#equation-ols-bandit" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
-    \hat \theta_t^k          &amp; = (A_t^k)^{-1} \sum_{\{ i \in [t] : a_i = k \}} x_i r_i \\
-    \text{where} \quad A_t^k &amp; = \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top.
-\end{aligned}\end{split}\]</div>
-<p>We can now apply the UCB algorithm in this environment in order to
-balance <em>exploration</em> of new arms and <em>exploitation</em> of arms that we
-believe to have high reward. But how should we construct the upper
-confidence bound? Previously, we treated the pulls of an arm as i.i.d.
-samples and used Hoeffding’s inequality to bound the distance of the
-sample mean, our estimator, from the true mean. However, now our
-estimator is not a sample mean, but rather the OLS estimator above <a class="reference internal" href="#equation-ols-bandit">(2.2)</a>. Instead, we’ll use <strong>Chebyshev’s
-inequality</strong> to construct an upper confidence bound.</p>
-<div class="proof theorem admonition" id="chebyshev">
-<p class="admonition-title"><span class="caption-number">Theorem 2.3 </span> (Chebyshev’s inequality)</p>
-<section class="theorem-content" id="proof-content">
-<p>For a random variable <span class="math notranslate nohighlight">\(Y\)</span> such that
-<span class="math notranslate nohighlight">\(\E Y = 0\)</span> and <span class="math notranslate nohighlight">\(\E Y^2 = \sigma^2\)</span>,
-$<span class="math notranslate nohighlight">\(|Y| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}\)</span>$</p>
-</section>
-</div><p>Since the OLS estimator is known to be unbiased (try proving this
-yourself), we can apply Chebyshev’s inequality to
-<span class="math notranslate nohighlight">\(x_t^\top (\hat \theta_t^k - \theta^k)\)</span>:</p>
-<div class="math notranslate nohighlight">
-\[\begin{aligned}
-    x_t^\top \theta^k \le x_t^\top \hat \theta_t^k + \beta \sqrt{x_t^\top (A_t^k)^{-1} x_t} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
-\end{aligned}\]</div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>We haven’t explained why <span class="math notranslate nohighlight">\(x_t^\top (A_t^k)^{-1} x_t\)</span> is the correct
-expression for the variance of <span class="math notranslate nohighlight">\(x_t^\top \hat \theta_t^k\)</span>. This result
-follows from some algebra on the definition of the OLS estimator <a class="reference internal" href="#equation-ols-bandit">(2.2)</a>.</p>
-</div>
-<p>The first term is exactly our predicted reward <span class="math notranslate nohighlight">\(\hat \mu^k_t(x_t)\)</span>. To
-interpret the second term, note that
-$<span class="math notranslate nohighlight">\(x_t^\top (A_t^k)^{-1} x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,\)</span><span class="math notranslate nohighlight">\(
-where
-\)</span><span class="math notranslate nohighlight">\(\Sigma_t^k = \frac{1}{N_t^k} \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top\)</span><span class="math notranslate nohighlight">\(
-is the empirical covariance matrix of the contexts (assuming that the
-context has mean zero). That is, the learner is encouraged to choose
-arms when \)</span>x_t<span class="math notranslate nohighlight">\( is *not aligned* with the data seen so far, or if arm
-\)</span>k<span class="math notranslate nohighlight">\( has not been explored much and so \)</span>N_t^k$ is small.</p>
-<p>We can now substitute these quantities into UCB to get the <strong>LinUCB</strong>
-algorithm:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">LinUCBPseudocode</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">T</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">D</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lam</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">get_c</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="n">lam</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_c</span> <span class="o">=</span> <span class="n">get_c</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">contexts</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">lam</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">D</span><span class="p">)[</span><span class="o">...</span><span class="p">],</span> <span class="n">K</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">choose_arm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; D&quot;</span><span class="p">]):</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_c</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
-        <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">@</span> <span class="n">context</span> <span class="o">+</span> <span class="n">c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">random_argmax</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">update_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; D&quot;</span><span class="p">],</span> <span class="n">arm</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reward</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">arm</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">arm</span><span class="p">]</span> <span class="o">+=</span> <span class="n">context</span> <span class="o">*</span> <span class="n">reward</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">[</span><span class="n">arm</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">[</span><span class="n">arm</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">arm</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Note that the matrix <span class="math notranslate nohighlight">\(A_t^k\)</span> above might not be invertible. When does this occur? One way to address this is to include a <span class="math notranslate nohighlight">\(\lambda I\)</span> regularization term to ensure that <span class="math notranslate nohighlight">\(A_t^k\)</span> is invertible. This is equivalent to solving a <em>ridge regression</em> problem instead of the unregularized least squares problem. Implement this solution. TODO SOLUTION CURRENTLY SHOWN</p>
-</div>
-<p><span class="math notranslate nohighlight">\(c_t\)</span> is similar to the <span class="math notranslate nohighlight">\(\log (2t/\delta')\)</span> term of UCB: It controls the
-width of the confidence interval. Here, we treat it as a tunable
-parameter, though in a theoretical analysis, it would depend on <span class="math notranslate nohighlight">\(A_t^k\)</span>
-and the probability <span class="math notranslate nohighlight">\(\delta\)</span> with which the bound holds.</p>
-<p>Using similar tools for UCB, we can also prove an <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{T})\)</span>
-regret bound. The full details of the analysis can be found in Section 3 of <span id="id4">[<a class="reference internal" href="bibliography.html#id4">Agarwal <em>et al.</em>, 2022</a>]</span>.</p>
-</section>
-</section>
 <section id="summary">
-<h2><span class="section-number">2.9. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">3.8. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>In this chapter,
+we explored the <strong>multi-armed bandit</strong> setting for analyzing sequential decision-making in an unknown environment.</p>
 </section>
 </section>
 
@@ -1351,24 +1221,24 @@ regret bound. The full details of the analysis can be found in Section 3 of <spa
               
               
               
-                <footer class="prev-next-footer d-print-none">
+                <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="intro.html"
+       href="control.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">1. </span>Introduction</p>
+        <p class="prev-next-title"><span class="section-number">2. </span>Linear Quadratic Regulators</p>
       </div>
     </a>
     <a class="right-next"
-       href="mdps.html"
+       href="fitted_dp.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">3. </span>Finite Markov Decision Processes</p>
+        <p class="prev-next-title"><span class="section-number">4. </span>Fitted Dynamic Programming Algorithms</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1388,29 +1258,25 @@ regret bound. The full details of the analysis can be found in Section 3 of <spa
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">2.1. Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">2.2. Pure exploration (random guessing)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">2.3. Pure greedy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">2.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">2.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">2.4.1.1. Exploration phase.</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">2.4.1.2. Exploitation phase.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">3.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-exploration-random-guessing">3.2. Pure exploration (random guessing)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pure-greedy">3.3. Pure greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-then-commit">3.4. Explore-then-commit</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#etc-regret-analysis">3.4.1. ETC regret analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-phase">3.4.1.1. Exploration phase.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#exploitation-phase">3.4.1.2. Exploitation phase.</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">2.5. Epsilon-greedy</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">2.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">2.6.1. UCB regret analysis</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">2.6.2. Lower bound on regret (intuition)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epsilon-greedy">3.5. Epsilon-greedy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upper-confidence-bound-ucb">3.6. Upper Confidence Bound (UCB)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-regret-analysis">3.6.1. UCB regret analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-bound-on-regret-intuition">3.6.2. Lower bound on regret (intuition)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">2.7. Thompson sampling and Bayesian bandits</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contextual-bandits">2.8. Contextual bandits</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-contextual-bandits">2.8.1. Linear contextual bandits</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">2.9. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thompson-sampling-and-bayesian-bandits">3.7. Thompson sampling and Bayesian bandits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">3.8. Summary</a></li>
 </ul>
   </nav></div>
 
@@ -1459,8 +1325,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>

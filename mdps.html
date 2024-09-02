@@ -8,46 +8,46 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>3. Finite Markov Decision Processes &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>1. Finite Markov Decision Processes &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -87,7 +87,7 @@ var addUtterances = () => {
 commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'mdps';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="4. Fitted Dynamic Programming Algorithms" href="fitted_dp.html" />
-    <link rel="prev" title="2. Multi-Armed Bandits" href="bandits.html" />
+    <link rel="next" title="2. Linear Quadratic Regulators" href="control.html" />
+    <link rel="prev" title="Introduction" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,23 +108,27 @@ commentsRunWhenDOMLoaded(addUtterances);
 
   
   
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -146,13 +150,8 @@ commentsRunWhenDOMLoaded(addUtterances);
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
     </header>
   
 
@@ -176,8 +175,6 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item">
 
   
-    
-  
 
 <a class="navbar-brand logo" href="index.html">
   
@@ -199,7 +196,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
  <script>
  document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -209,15 +206,16 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bandits.html">2. Multi-Armed Bandits</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="control.html">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Gradient Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">7. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">8. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">9. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
 </ul>
 
     </div>
@@ -233,7 +231,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
       </div>
       
-      <main id="main-content" class="bd-main" role="main">
+      <main id="main-content" class="bd-main">
         
         
 
@@ -242,14 +240,14 @@ commentsRunWhenDOMLoaded(addUtterances);
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article d-print-none">
+              <div class="bd-header-article">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</button></div>
+</label></div>
       
     </div>
   
@@ -327,10 +325,10 @@ commentsRunWhenDOMLoaded(addUtterances);
 
 <script>
 document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -338,14 +336,14 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</button>
+</label>
 </div></div>
       
     </div>
@@ -366,43 +364,43 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-horizon-mdps">3.1. Finite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policies">3.1.1. Policies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trajectories">3.1.2. Trajectories</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions">3.1.3. Value functions</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#greedy-policies">3.1.3.1. Greedy policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-horizon-mdps">1.1. Finite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policies">1.1.1. Policies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trajectories">1.1.2. Trajectories</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions">1.1.3. Value functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#greedy-policies">1.1.3.1. Greedy policies</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-consistency-equation">3.1.4. The one-step (Bellman) consistency equation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-operator">3.1.5. The one-step Bellman operator</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-consistency-equation">1.1.4. The one-step (Bellman) consistency equation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-operator">1.1.5. The one-step Bellman operator</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-finite-horizon-mdps">3.2. Solving finite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-finite-horizon-mdps">3.2.1. Policy evaluation in finite-horizon MDPs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-finite-horizon-mdps">3.2.2. Optimal policies in finite-horizon MDPs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-finite-horizon-mdps">1.2. Solving finite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-finite-horizon-mdps">1.2.1. Policy evaluation in finite-horizon MDPs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-finite-horizon-mdps">1.2.2. Optimal policies in finite-horizon MDPs</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infinite-horizon-mdps">3.3. Infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discounted-rewards">3.3.1. Discounted rewards</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stationary-policies">3.3.2. Stationary policies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions-and-bellman-consistency">3.3.3. Value functions and Bellman consistency</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infinite-horizon-mdps">1.3. Infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discounted-rewards">1.3.1. Discounted rewards</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stationary-policies">1.3.2. Stationary policies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions-and-bellman-consistency">1.3.3. Value functions and Bellman consistency</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-infinite-horizon-mdps">3.4. Solving infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-bellman-operator-is-a-contraction-mapping">3.4.1. The Bellman operator is a contraction mapping</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-infinite-horizon-mdps">3.4.2. Policy evaluation in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-inversion-for-deterministic-policies">3.4.2.1. Matrix inversion for deterministic policies</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-policy-evaluation">3.4.2.2. Iterative policy evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-infinite-horizon-mdps">1.4. Solving infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-bellman-operator-is-a-contraction-mapping">1.4.1. The Bellman operator is a contraction mapping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-infinite-horizon-mdps">1.4.2. Policy evaluation in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-inversion-for-deterministic-policies">1.4.2.1. Matrix inversion for deterministic policies</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-policy-evaluation">1.4.2.2. Iterative policy evaluation</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-infinite-horizon-mdps">3.4.3. Optimal policies in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#value-iteration">3.4.3.1. Value iteration</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-iteration">3.4.3.2. Policy iteration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-infinite-horizon-mdps">1.4.3. Optimal policies in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#value-iteration">1.4.3.1. Value iteration</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-iteration">1.4.3.2. Policy iteration</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">3.5. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">1.5. Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -415,7 +413,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="finite-markov-decision-processes">
-<span id="mdps"></span><h1><span class="section-number">3. </span>Finite Markov Decision Processes<a class="headerlink" href="#finite-markov-decision-processes" title="Link to this heading">#</a></h1>
+<span id="mdps"></span><h1><span class="section-number">1. </span>Finite Markov Decision Processes<a class="headerlink" href="#finite-markov-decision-processes" title="Link to this heading">#</a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#finite-horizon-mdps" id="id6">Finite-horizon MDPs</a></p>
@@ -493,7 +491,7 @@ real-world environment to complete some task.</p></li>
 </ul>
 <p>All of these fit into the RL framework. Furthermore, these are environments where the <strong>state transitions</strong>, the “rules” of the environment, only depend on the <em>most recent</em> state and action. This is called the <strong>Markov property</strong>.</p>
 <div class="proof definition admonition" id="markov">
-<p class="admonition-title"><span class="caption-number">Definition 3.1 </span> (Markov property)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.1 </span> (Markov property)</p>
 <section class="definition-content" id="proof-content">
 <p>An interactive environment satisfies the <strong>Markov property</strong> if the
 probability of transitioning to a new state only depends on the current
@@ -525,9 +523,9 @@ the <strong>optimal policy</strong> for a given MDP. We’ll introduce the <stro
 consistency condition</strong>, which allows us to analyze the whole series of
 interactions in terms of individual timesteps.</p>
 <section id="finite-horizon-mdps">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">3.1. </span>Finite-horizon MDPs</a><a class="headerlink" href="#finite-horizon-mdps" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">1.1. </span>Finite-horizon MDPs</a><a class="headerlink" href="#finite-horizon-mdps" title="Link to this heading">#</a></h2>
 <div class="proof definition admonition" id="finite_mdp">
-<p class="admonition-title"><span class="caption-number">Definition 3.2 </span> (Finite-horizon Markov decision process)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.2 </span> (Finite-horizon Markov decision process)</p>
 <section class="definition-content" id="proof-content">
 <p>The components of a finite-horizon Markov decision process are:</p>
 <ol class="arabic simple">
@@ -582,7 +580,7 @@ values):</p>
 </div>
 </div>
 <div class="proof example admonition" id="tidy_mdp">
-<p class="admonition-title"><span class="caption-number">Example 3.1 </span> (Tidying MDP)</p>
+<p class="admonition-title"><span class="caption-number">Example 1.1 </span> (Tidying MDP)</p>
 <section class="example-content" id="proof-content">
 <p>Let’s consider an extremely simple decision problem throughout this
 chapter: the task of keeping your room tidy!</p>
@@ -646,9 +644,9 @@ is a chore that gives no reward.</p>
 </div>
 </div>
 <section id="policies">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">3.1.1. </span>Policies</a><a class="headerlink" href="#policies" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">1.1.1. </span>Policies</a><a class="headerlink" href="#policies" title="Link to this heading">#</a></h3>
 <div class="proof definition admonition" id="policy">
-<p class="admonition-title"><span class="caption-number">Definition 3.3 </span> (Policies)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.3 </span> (Policies)</p>
 <section class="definition-content" id="proof-content">
 <p>A <strong>policy</strong> <span class="math notranslate nohighlight">\(\pi\)</span> describes the agent’s strategy: which actions it
 takes in a given situation. A key goal of RL is to find the <strong>optimal
@@ -690,9 +688,9 @@ implies that the current state contains all the information we need to
 make the optimal decision. We’ll prove this result constructively later
 in the chapter.</p>
 <div class="proof example admonition" id="tidy_policy">
-<p class="admonition-title"><span class="caption-number">Example 3.2 </span> (Tidying policies)</p>
+<p class="admonition-title"><span class="caption-number">Example 1.2 </span> (Tidying policies)</p>
 <section class="example-content" id="proof-content">
-<p>Here are some possible policies for the tidying MDP <a class="reference internal" href="#tidy_mdp">Example 3.1</a>:</p>
+<p>Here are some possible policies for the tidying MDP <a class="reference internal" href="#tidy_mdp">Example 1.1</a>:</p>
 <ul class="simple">
 <li><p>Always tidy: <span class="math notranslate nohighlight">\(\pi(s) = \text{tidy}\)</span>.</p></li>
 <li><p>Only tidy on weekends: <span class="math notranslate nohighlight">\(\pi_\hi(s) = \text{tidy}\)</span> if
@@ -713,9 +711,9 @@ and <span class="math notranslate nohighlight">\(\pi_\hi(\text{orderly}) = \text
 </div>
 </section>
 <section id="trajectories">
-<span id="id1"></span><h3><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">3.1.2. </span>Trajectories</a><a class="headerlink" href="#trajectories" title="Link to this heading">#</a></h3>
+<span id="id1"></span><h3><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">1.1.2. </span>Trajectories</a><a class="headerlink" href="#trajectories" title="Link to this heading">#</a></h3>
 <div class="proof definition admonition" id="trajectory">
-<p class="admonition-title"><span class="caption-number">Definition 3.4 </span> (Trajectories)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.4 </span> (Trajectories)</p>
 <section class="definition-content" id="proof-content">
 <p>A sequence of states, actions, and rewards is called a <strong>trajectory</strong>:</p>
 <div class="math notranslate nohighlight">
@@ -743,10 +741,10 @@ state transitions, and observing the rewards. That is, a policy induces
 a distribution <span class="math notranslate nohighlight">\(\rho^{\pi}\)</span> over trajectories. (We assume that <span class="math notranslate nohighlight">\(\mu\)</span> and
 <span class="math notranslate nohighlight">\(P\)</span> are clear from context.)</p>
 <div class="proof example admonition" id="tidy_traj">
-<p class="admonition-title"><span class="caption-number">Example 3.3 </span> (Trajectories in the tidying environment)</p>
+<p class="admonition-title"><span class="caption-number">Example 1.3 </span> (Trajectories in the tidying environment)</p>
 <section class="example-content" id="proof-content">
 <p>Here is a possible trajectory for the tidying example:</p>
-<div class="pst-scrollable-table-container"><table class="table">
+<table class="table">
 <thead>
 <tr class="row-odd"><th class="head text-center"><p><span class="math notranslate nohighlight">\(t\)</span></p></th>
 <th class="head text-center"><p><span class="math notranslate nohighlight">\(0\)</span></p></th>
@@ -788,13 +786,12 @@ a distribution <span class="math notranslate nohighlight">\(\rho^{\pi}\)</span> 
 </tr>
 </tbody>
 </table>
-</div>
-<p>Could any of the policies in <a class="reference internal" href="#tidy_policy">Example 3.2</a> have generated this trajectory?</p>
+<p>Could any of the policies in <a class="reference internal" href="#tidy_policy">Example 1.2</a> have generated this trajectory?</p>
 </section>
-</div><p>Note that for a state-dependent policy, using the Markov property <a class="reference internal" href="#markov">Definition 3.1</a>, we can specify this probability distribution in
+</div><p>Note that for a state-dependent policy, using the Markov property <a class="reference internal" href="#markov">Definition 1.1</a>, we can specify this probability distribution in
 an <strong>autoregressive</strong> way (i.e. one timestep at a time):</p>
 <div class="proof definition admonition" id="autoregressive_trajectories">
-<p class="admonition-title"><span class="caption-number">Definition 3.5 </span> (Autoregressive trajectory distribution)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.5 </span> (Autoregressive trajectory distribution)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})\]</div>
@@ -827,14 +824,14 @@ randomness in sampling trajectories comes from the initial state
 distribution <span class="math notranslate nohighlight">\(\mu\)</span> and the state transitions <span class="math notranslate nohighlight">\(P\)</span>.</p>
 </section>
 <section id="value-functions">
-<h3><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">3.1.3. </span>Value functions</a><a class="headerlink" href="#value-functions" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">1.1.3. </span>Value functions</a><a class="headerlink" href="#value-functions" title="Link to this heading">#</a></h3>
 <p>The main goal of RL is to find a policy that maximizes the average total
 reward <span class="math notranslate nohighlight">\(r_0 + \cdots + r_{H-1}\)</span>. (Note that this is a random variable
 that depends on the policy.) Let’s introduce some notation for analyzing
 this quantity.</p>
 <p>A policy’s <strong>value function</strong> at time <span class="math notranslate nohighlight">\(h\)</span> is its expected remaining reward <em>from a given state</em>:</p>
 <div class="proof definition admonition" id="value">
-<p class="admonition-title"><span class="caption-number">Definition 3.6 </span> (Value function)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.6 </span> (Value function)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[V_\hi^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s]\]</div>
@@ -842,7 +839,7 @@ this quantity.</p>
 </div><p>Similarly, we can define the <strong>action-value function</strong> (aka the
 <strong>Q-function</strong>) at time <span class="math notranslate nohighlight">\(h\)</span> as the expected remaining reward <em>from a given state and taking a given action</em>:</p>
 <div class="proof definition admonition" id="action_value">
-<p class="admonition-title"><span class="caption-number">Definition 3.7 </span> (Action-value function)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.7 </span> (Action-value function)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a]\]</div>
@@ -891,7 +888,7 @@ state:</p>
 </div>
 </div>
 <section id="greedy-policies">
-<h4><a class="toc-backref" href="#id10" role="doc-backlink"><span class="section-number">3.1.3.1. </span>Greedy policies</a><a class="headerlink" href="#greedy-policies" title="Link to this heading">#</a></h4>
+<h4><a class="toc-backref" href="#id10" role="doc-backlink"><span class="section-number">1.1.3.1. </span>Greedy policies</a><a class="headerlink" href="#greedy-policies" title="Link to this heading">#</a></h4>
 <p>For any given <span class="math notranslate nohighlight">\(q \in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}\)</span>, we can define the <strong>greedy policy</strong> <span class="math notranslate nohighlight">\(\hat \pi_q\)</span> as the policy that selects the action with the highest <span class="math notranslate nohighlight">\(q\)</span>-value at each state:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -913,14 +910,14 @@ state:</p>
 </section>
 </section>
 <section id="the-one-step-bellman-consistency-equation">
-<span id="bellman-consistency"></span><h3><a class="toc-backref" href="#id11" role="doc-backlink"><span class="section-number">3.1.4. </span>The one-step (Bellman) consistency equation</a><a class="headerlink" href="#the-one-step-bellman-consistency-equation" title="Link to this heading">#</a></h3>
+<span id="bellman-consistency"></span><h3><a class="toc-backref" href="#id11" role="doc-backlink"><span class="section-number">1.1.4. </span>The one-step (Bellman) consistency equation</a><a class="headerlink" href="#the-one-step-bellman-consistency-equation" title="Link to this heading">#</a></h3>
 <p>Note that by simply considering the cumulative reward as the sum of the
 <em>current</em> reward and the <em>future</em> cumulative reward, we can describe the
 value function recursively (in terms of itself). This is named the
 <strong>Bellman consistency equation</strong> after <strong>Richard Bellman</strong> (1920–1984),
 who is credited with introducing dynamic programming in 1953.</p>
 <div class="proof theorem admonition" id="bellman_consistency">
-<p class="admonition-title"><span class="caption-number">Theorem 3.1 </span> (Bellman consistency equation for the value function)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 1.1 </span> (Bellman consistency equation for the value function)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]\end{split}\]</div>
@@ -957,7 +954,7 @@ and <span class="math notranslate nohighlight">\(V_{\hi+1}^\pi(s')\)</span>.</p>
 <p>One can analogously derive the Bellman consistency equation for the
 action-value function:</p>
 <div class="proof theorem admonition" id="bellman_consistency_action">
-<p class="admonition-title"><span class="caption-number">Theorem 3.2 </span> (Bellman consistency equation for action-values)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 1.2 </span> (Bellman consistency equation for action-values)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}(s')}} [Q_{\hi+1}^\pi(s', a')]\end{split}\]</div>
@@ -967,7 +964,7 @@ action-value function:</p>
 <p>Write a <code class="docutils literal notranslate"><span class="pre">check_bellman_consistency_q</span></code> function for the action-value function.</p>
 </div>
 <div class="proof remark admonition" id="bellman_det">
-<p class="admonition-title"><span class="caption-number">Remark 3.1 </span> (The Bellman consistency equation for deterministic policies)</p>
+<p class="admonition-title"><span class="caption-number">Remark 1.1 </span> (The Bellman consistency equation for deterministic policies)</p>
 <section class="remark-content" id="proof-content">
 <p>Note that for deterministic policies, the Bellman consistency equation
 simplifies to</p>
@@ -981,12 +978,12 @@ simplifies to</p>
 </section>
 </div></section>
 <section id="the-one-step-bellman-operator">
-<span id="bellman-operator"></span><h3><a class="toc-backref" href="#id12" role="doc-backlink"><span class="section-number">3.1.5. </span>The one-step Bellman operator</a><a class="headerlink" href="#the-one-step-bellman-operator" title="Link to this heading">#</a></h3>
+<span id="bellman-operator"></span><h3><a class="toc-backref" href="#id12" role="doc-backlink"><span class="section-number">1.1.5. </span>The one-step Bellman operator</a><a class="headerlink" href="#the-one-step-bellman-operator" title="Link to this heading">#</a></h3>
 <p>Fix a policy <span class="math notranslate nohighlight">\(\pi\)</span>. Consider the higher-order operator that takes in a
 “value function” <span class="math notranslate nohighlight">\(v : \mathcal{S} \to \mathbb{R}\)</span> and returns the r.h.s. of the Bellman
 equation for that “value function”:</p>
 <div class="proof definition admonition" id="bellman_operator">
-<p class="admonition-title"><span class="caption-number">Definition 3.8 </span> (Bellman operator)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.8 </span> (Bellman operator)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].\end{split}\]</div>
@@ -1041,7 +1038,7 @@ operator</strong> of <span class="math notranslate nohighlight">\(\pi\)</span>. 
 mapping states to real numbers; <span class="math notranslate nohighlight">\(v\)</span> doesn’t have to be a well-defined
 value function for some policy (hence the lowercase notation). The
 Bellman operator also gives us a concise way to express the Bellman
-consistency equation <a class="reference internal" href="#bellman_consistency">Theorem 3.1</a> for the value function:</p>
+consistency equation <a class="reference internal" href="#bellman_consistency">Theorem 1.1</a> for the value function:</p>
 <div class="math notranslate nohighlight">
 \[V_\hi^\pi = \mathcal{J}^{\pi}(V_{\hi+1}^\pi)\]</div>
 <p>Intuitively, the output of the Bellman operator, a new “value function”,
@@ -1054,16 +1051,16 @@ construct algorithms for computing the optimal policy.</p>
 </section>
 </section>
 <section id="solving-finite-horizon-mdps">
-<span id="id2"></span><h2><a class="toc-backref" href="#id13" role="doc-backlink"><span class="section-number">3.2. </span>Solving finite-horizon MDPs</a><a class="headerlink" href="#solving-finite-horizon-mdps" title="Link to this heading">#</a></h2>
+<span id="id2"></span><h2><a class="toc-backref" href="#id13" role="doc-backlink"><span class="section-number">1.2. </span>Solving finite-horizon MDPs</a><a class="headerlink" href="#solving-finite-horizon-mdps" title="Link to this heading">#</a></h2>
 <section id="policy-evaluation-in-finite-horizon-mdps">
-<span id="eval-dp"></span><h3><a class="toc-backref" href="#id14" role="doc-backlink"><span class="section-number">3.2.1. </span>Policy evaluation in finite-horizon MDPs</a><a class="headerlink" href="#policy-evaluation-in-finite-horizon-mdps" title="Link to this heading">#</a></h3>
+<span id="eval-dp"></span><h3><a class="toc-backref" href="#id14" role="doc-backlink"><span class="section-number">1.2.1. </span>Policy evaluation in finite-horizon MDPs</a><a class="headerlink" href="#policy-evaluation-in-finite-horizon-mdps" title="Link to this heading">#</a></h3>
 <p>How can we actually compute the value function of a given policy? This
 is the task of <strong>policy evaluation</strong>.</p>
 <div class="proof algorithm admonition" id="algorithm-14">
-<p class="admonition-title"><span class="caption-number">Algorithm 3.1 </span> (DP algorithm to evaluate a policy in a finite-horizon MDP)</p>
+<p class="admonition-title"><span class="caption-number">Algorithm 1.1 </span> (DP algorithm to evaluate a policy in a finite-horizon MDP)</p>
 <section class="algorithm-content" id="proof-content">
 <p>The Bellman consistency equation
-<a class="reference internal" href="#bellman_consistency">Theorem 3.1</a>
+<a class="reference internal" href="#bellman_consistency">Theorem 1.1</a>
 gives us a convenient algorithm for
 evaluating stationary policies: it expresses the value function at
 timestep <span class="math notranslate nohighlight">\(\hi\)</span> as a function of the value function at timestep <span class="math notranslate nohighlight">\(\hi+1\)</span>. This
@@ -1091,10 +1088,10 @@ loops.</p>
 this step explicit.</p>
 </div>
 <div class="proof example admonition" id="tidy_eval_finite">
-<p class="admonition-title"><span class="caption-number">Example 3.4 </span> (Tidying policy evaluation)</p>
+<p class="admonition-title"><span class="caption-number">Example 1.4 </span> (Tidying policy evaluation)</p>
 <section class="example-content" id="proof-content">
 <p>Let’s evaluate the policy from
-<a class="reference internal" href="#tidy_policy">Example 3.2</a> in the tidying MDP
+<a class="reference internal" href="#tidy_policy">Example 1.2</a> in the tidying MDP
 that tidies if and only if the room is
 messy. We’ll use the Bellman consistency equation to compute the value
 function at each time step.</p>
@@ -1145,11 +1142,11 @@ other policies to get a better sense of this algorithm.</p>
 </div>
 </section>
 <section id="optimal-policies-in-finite-horizon-mdps">
-<span id="opt-dynamic-programming"></span><h3><a class="toc-backref" href="#id15" role="doc-backlink"><span class="section-number">3.2.2. </span>Optimal policies in finite-horizon MDPs</a><a class="headerlink" href="#optimal-policies-in-finite-horizon-mdps" title="Link to this heading">#</a></h3>
+<span id="opt-dynamic-programming"></span><h3><a class="toc-backref" href="#id15" role="doc-backlink"><span class="section-number">1.2.2. </span>Optimal policies in finite-horizon MDPs</a><a class="headerlink" href="#optimal-policies-in-finite-horizon-mdps" title="Link to this heading">#</a></h3>
 <p>We’ve just seen how to <em>evaluate</em> a given policy. But how can we find
 the <strong>optimal policy</strong> for a given environment?</p>
 <div class="proof definition admonition" id="optimal_policy_finite">
-<p class="admonition-title"><span class="caption-number">Definition 3.9 </span> (Optimal policies)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.9 </span> (Optimal policies)</p>
 <section class="definition-content" id="proof-content">
 <p>We call a policy optimal, and denote it by <span class="math notranslate nohighlight">\(\pi^\star\)</span>, if it does at
 least as well as <em>any</em> other policy <span class="math notranslate nohighlight">\(\pi\)</span> (including stochastic and
@@ -1174,14 +1171,18 @@ policy that is time-dependent and deterministic.</strong> In particular, we can
 construct such a policy by acting <em>greedily</em> with respect to the optimal
 action-value function:</p>
 <div class="proof theorem admonition" id="optimal_greedy">
-<p class="admonition-title"><span class="caption-number">Theorem 3.3 </span> (It is optimal to be greedy w.r.t. the optimal value function)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 1.3 </span> (It is optimal to be greedy w.r.t. the optimal value function)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\pi_\hi^\star(s) = \arg\max_a Q_\hi^\star(s, a).\]</div>
 </section>
 </div><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">Proof</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+Proof<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">Let <span class="math notranslate nohighlight">\(V^{\star}\)</span> and <span class="math notranslate nohighlight">\(Q^{\star}\)</span> denote the optimal value and
 action-value functions. Consider the greedy policy</p>
 <div class="math notranslate nohighlight">
@@ -1196,7 +1197,7 @@ show that the Bellman operator <span class="math notranslate nohighlight">\(\mat
 <span class="math notranslate nohighlight">\(V_\hi^{\star}\)</span>. Then we’ll apply this result recursively to show that
 <span class="math notranslate nohighlight">\(V^{\star} = V^{\hat \pi}\)</span>.</p>
 <div class="proof lemma admonition" id="lemma-18">
-<p class="admonition-title"><span class="caption-number">Lemma 3.1 </span> (The Bellman operator never decreases the optimal value function)</p>
+<p class="admonition-title"><span class="caption-number">Lemma 1.1 </span> (The Bellman operator never decreases the optimal value function)</p>
 <section class="lemma-content" id="proof-content">
 <p class="sd-card-text"><span class="math notranslate nohighlight">\(\mathcal{J}^{\hat \pi}\)</span> never decreases <span class="math notranslate nohighlight">\(V_\hi^{\star}\)</span>
 (elementwise):</p>
@@ -1239,7 +1240,7 @@ notation to make it explicit that we’re sampling a trajectory from it.)</p>
 </div>
 </details><p>Note that this also gives simplified forms of the <a class="reference internal" href="#bellman-consistency"><span class="std std-ref">Bellman consistency</span></a> equations for the optimal policy:</p>
 <div class="proof corollary admonition" id="bellman_consistency_optimal">
-<p class="admonition-title"><span class="caption-number">Corollary 3.1 </span> (Bellman consistency equations for the optimal policy)</p>
+<p class="admonition-title"><span class="caption-number">Corollary 1.1 </span> (Bellman consistency equations for the optimal policy)</p>
 <section class="corollary-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1254,7 +1255,7 @@ need to do is compute the optimal value function and optimal policy. We
 can do this by working backwards in time using <strong>dynamic programming</strong>
 (DP).</p>
 <div class="proof algorithm admonition" id="pi_star_dp">
-<p class="admonition-title"><span class="caption-number">Algorithm 3.2 </span> (DP algorithm to compute an optimal policy in a finite-horizon MDP)</p>
+<p class="admonition-title"><span class="caption-number">Algorithm 1.2 </span> (DP algorithm to compute an optimal policy in a finite-horizon MDP)</p>
 <section class="algorithm-content" id="proof-content">
 <p><strong>Base case.</strong> At the end of the episode (time step <span class="math notranslate nohighlight">\(H-1\)</span>), we can’t
 take any more actions, so the <span class="math notranslate nohighlight">\(Q\)</span>-function is simply the reward that
@@ -1332,7 +1333,7 @@ setting.</p>
 </section>
 </section>
 <section id="infinite-horizon-mdps">
-<span id="id3"></span><h2><a class="toc-backref" href="#id16" role="doc-backlink"><span class="section-number">3.3. </span>Infinite-horizon MDPs</a><a class="headerlink" href="#infinite-horizon-mdps" title="Link to this heading">#</a></h2>
+<span id="id3"></span><h2><a class="toc-backref" href="#id16" role="doc-backlink"><span class="section-number">1.3. </span>Infinite-horizon MDPs</a><a class="headerlink" href="#infinite-horizon-mdps" title="Link to this heading">#</a></h2>
 <p>What happens if a trajectory is allowed to continue forever (i.e.
 <span class="math notranslate nohighlight">\(H = \infty\)</span>)? This is the setting of <strong>infinite horizon</strong> MDPs.</p>
 <p>In this chapter, we’ll describe the necessary adjustments from the
@@ -1344,7 +1345,7 @@ we’ll present and analyze two iterative algorithms, based on the Bellman
 operator, for computing the optimal policy: <strong>value iteration</strong> and
 <strong>policy iteration</strong>.</p>
 <section id="discounted-rewards">
-<h3><a class="toc-backref" href="#id17" role="doc-backlink"><span class="section-number">3.3.1. </span>Discounted rewards</a><a class="headerlink" href="#discounted-rewards" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id17" role="doc-backlink"><span class="section-number">1.3.1. </span>Discounted rewards</a><a class="headerlink" href="#discounted-rewards" title="Link to this heading">#</a></h3>
 <p>First of all, note that maximizing the cumulative reward
 <span class="math notranslate nohighlight">\(r_\hi + r_{\hi+1} + r_{\hi+2} + \cdots\)</span> is no longer a good idea since it
 might blow up to infinity. Instead of a time horizon <span class="math notranslate nohighlight">\(H\)</span>, we now need a
@@ -1371,7 +1372,7 @@ useful to review geometric series.</p>
 <p>The other components of the MDP remain the same:</p>
 <div class="math notranslate nohighlight">
 \[M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).\]</div>
-<p>Code-wise, we can reuse the <code class="docutils literal notranslate"><span class="pre">MDP</span></code> class from before <a class="reference internal" href="#finite_mdp">Definition 3.2</a> and set <code class="docutils literal notranslate"><span class="pre">mdp.H</span> <span class="pre">=</span> <span class="pre">float('inf')</span></code>.</p>
+<p>Code-wise, we can reuse the <code class="docutils literal notranslate"><span class="pre">MDP</span></code> class from before <a class="reference internal" href="#finite_mdp">Definition 1.2</a> and set <code class="docutils literal notranslate"><span class="pre">mdp.H</span> <span class="pre">=</span> <span class="pre">float('inf')</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tidy_mdp_inf</span> <span class="o">=</span> <span class="n">tidy_mdp</span><span class="o">.</span><span class="n">_replace</span><span class="p">(</span><span class="n">H</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span> <span class="n">γ</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
@@ -1381,7 +1382,7 @@ useful to review geometric series.</p>
 </div>
 </section>
 <section id="stationary-policies">
-<h3><a class="toc-backref" href="#id18" role="doc-backlink"><span class="section-number">3.3.2. </span>Stationary policies</a><a class="headerlink" href="#stationary-policies" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id18" role="doc-backlink"><span class="section-number">1.3.2. </span>Stationary policies</a><a class="headerlink" href="#stationary-policies" title="Link to this heading">#</a></h3>
 <p>The time-dependent policies from the finite-horizon case become
 difficult to handle in the infinite-horizon case. In particular, many of
 the DP approaches we saw required us to start at the end of the
@@ -1389,16 +1390,16 @@ trajectory, which is no longer possible. We’ll shift to <strong>stationary</st
 policies <span class="math notranslate nohighlight">\(\pi : \mathcal{S} \to \mathcal{A}\)</span> (deterministic) or <span class="math notranslate nohighlight">\(\Delta(\mathcal{A})\)</span> (stochastic).</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>Which of the policies in <a class="reference internal" href="#tidy_policy">Example 3.2</a> are stationary?</p>
+<p>Which of the policies in <a class="reference internal" href="#tidy_policy">Example 1.2</a> are stationary?</p>
 </div>
 </section>
 <section id="value-functions-and-bellman-consistency">
-<h3><a class="toc-backref" href="#id19" role="doc-backlink"><span class="section-number">3.3.3. </span>Value functions and Bellman consistency</a><a class="headerlink" href="#value-functions-and-bellman-consistency" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id19" role="doc-backlink"><span class="section-number">1.3.3. </span>Value functions and Bellman consistency</a><a class="headerlink" href="#value-functions-and-bellman-consistency" title="Link to this heading">#</a></h3>
 <p>We also consider stationary value functions <span class="math notranslate nohighlight">\(V^\pi : \mathcal{S} \to \mathbb{R}\)</span> and
 <span class="math notranslate nohighlight">\(Q^\pi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span>. We need to insert a factor of <span class="math notranslate nohighlight">\(\gamma\)</span>
-into the Bellman consistency equation <a class="reference internal" href="#bellman_consistency">Theorem 3.1</a> to account for the discounting:</p>
+into the Bellman consistency equation <a class="reference internal" href="#bellman_consistency">Theorem 1.1</a> to account for the discounting:</p>
 <div class="math notranslate nohighlight" id="equation-bellman-consistency-infinite">
-<span class="eqno">(3.1)<a class="headerlink" href="#equation-bellman-consistency-infinite" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(1.1)<a class="headerlink" href="#equation-bellman-consistency-infinite" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     V^\pi(s) &amp;= \E_{\tau \sim \rho^\pi} [r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} \cdots \mid s_\hi = s] &amp;&amp; \text{for any } \hi \in \mathbb{N} \\
     &amp;= \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma V^\pi(s')]\\
     Q^\pi(s, a) &amp;= \E_{\tau \sim \rho^\pi} [r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid s_\hi = s, a_\hi = a] &amp;&amp; \text{for any } \hi \in \mathbb{N} \\
@@ -1412,9 +1413,9 @@ time step we condition on when defining the value function?</p>
 </section>
 </section>
 <section id="solving-infinite-horizon-mdps">
-<h2><a class="toc-backref" href="#id20" role="doc-backlink"><span class="section-number">3.4. </span>Solving infinite-horizon MDPs</a><a class="headerlink" href="#solving-infinite-horizon-mdps" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id20" role="doc-backlink"><span class="section-number">1.4. </span>Solving infinite-horizon MDPs</a><a class="headerlink" href="#solving-infinite-horizon-mdps" title="Link to this heading">#</a></h2>
 <section id="the-bellman-operator-is-a-contraction-mapping">
-<h3><a class="toc-backref" href="#id21" role="doc-backlink"><span class="section-number">3.4.1. </span>The Bellman operator is a contraction mapping</a><a class="headerlink" href="#the-bellman-operator-is-a-contraction-mapping" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id21" role="doc-backlink"><span class="section-number">1.4.1. </span>The Bellman operator is a contraction mapping</a><a class="headerlink" href="#the-bellman-operator-is-a-contraction-mapping" title="Link to this heading">#</a></h3>
 <p>Recall from <a class="reference internal" href="#bellman-operator"><span class="std std-ref">The one-step Bellman operator</span></a> that the Bellman operator <span class="math notranslate nohighlight">\(\mathcal{J}^{\pi}\)</span>
 for a policy <span class="math notranslate nohighlight">\(\pi\)</span> takes in a “value function” <span class="math notranslate nohighlight">\(v : \mathcal{S} \to \mathbb{R}\)</span> and
 returns the r.h.s. of the Bellman equation for that “value function”. In
@@ -1427,7 +1428,7 @@ two “value functions” <span class="math notranslate nohighlight">\(v, u : \m
 Bellman operator to each of them, they will get closer and closer
 together at an exponential rate.</p>
 <div class="proof definition admonition" id="contraction">
-<p class="admonition-title"><span class="caption-number">Definition 3.10 </span> (Contraction mapping)</p>
+<p class="admonition-title"><span class="caption-number">Definition 1.10 </span> (Contraction mapping)</p>
 <section class="definition-content" id="proof-content">
 <p>Let <span class="math notranslate nohighlight">\(X\)</span> be some space with a norm <span class="math notranslate nohighlight">\(\|\cdot\|\)</span>. We call an operator
 <span class="math notranslate nohighlight">\(f: X \to X\)</span> a <strong>contraction mapping</strong> if for any <span class="math notranslate nohighlight">\(x, y \in X\)</span>,</p>
@@ -1450,7 +1451,7 @@ every contraction mapping has a unique <strong>fixed point</strong> <span class=
 that <span class="math notranslate nohighlight">\(f(x^\star) = x^\star\)</span>. This means that if we repeatedly apply <span class="math notranslate nohighlight">\(f\)</span>
 to any starting point, we will eventually converge to <span class="math notranslate nohighlight">\(x^\star\)</span>:</p>
 <div class="math notranslate nohighlight" id="equation-contraction-convergence">
-<span class="eqno">(3.2)<a class="headerlink" href="#equation-contraction-convergence" title="Link to this equation">#</a></span>\[\|f^{(t)}(x) - x^\star\| \le \gamma^t \|x - x^\star\|.\]</div>
+<span class="eqno">(1.2)<a class="headerlink" href="#equation-contraction-convergence" title="Link to this equation">#</a></span>\[\|f^{(t)}(x) - x^\star\| \le \gamma^t \|x - x^\star\|.\]</div>
 <p>Let’s return to the RL setting and apply this result to the Bellman
 operator. How can we measure the distance between two “value functions”
 <span class="math notranslate nohighlight">\(v, u : \mathcal{S} \to \mathbb{R}\)</span>? We’ll take the <strong>supremum norm</strong> as our distance
@@ -1459,15 +1460,15 @@ metric:</p>
 \[\| v - u \|_{\infty} := \sup_{s \in \mathcal{S}} |v(s) - u(s)|,\]</div>
 <p>i.e.
 we compare the “value functions” on the state that causes the biggest
-gap between them. Then <a class="reference internal" href="#equation-contraction-convergence">(3.2)</a> implies that if we repeatedly
+gap between them. Then <a class="reference internal" href="#equation-contraction-convergence">(1.2)</a> implies that if we repeatedly
 apply <span class="math notranslate nohighlight">\(\mathcal{J}^\pi\)</span> to any starting “value function”, we will eventually
 converge to <span class="math notranslate nohighlight">\(V^\pi\)</span>:</p>
 <div class="math notranslate nohighlight" id="equation-bellman-convergence">
-<span class="eqno">(3.3)<a class="headerlink" href="#equation-bellman-convergence" title="Link to this equation">#</a></span>\[\|(\mathcal{J}^\pi)^{(t)}(v) - V^\pi \|_{\infty} \le \gamma^{t} \| v - V^\pi\|_{\infty}.\]</div>
+<span class="eqno">(1.3)<a class="headerlink" href="#equation-bellman-convergence" title="Link to this equation">#</a></span>\[\|(\mathcal{J}^\pi)^{(t)}(v) - V^\pi \|_{\infty} \le \gamma^{t} \| v - V^\pi\|_{\infty}.\]</div>
 <p>We’ll use this useful fact to prove the convergence of several
 algorithms later on.</p>
 <div class="proof theorem admonition" id="bellman_contraction">
-<p class="admonition-title"><span class="caption-number">Theorem 3.4 </span> (The Bellman operator is a contraction mapping)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 1.4 </span> (The Bellman operator is a contraction mapping)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[
@@ -1476,7 +1477,11 @@ algorithms later on.</p>
 </section>
 </div><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">Proof of <a class="reference internal" href="#bellman_contraction">Theorem 3.4</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+Proof of <a class="reference internal" href="#bellman_contraction">Theorem 1.4</a><div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">For all states <span class="math notranslate nohighlight">\(s \in \mathcal{S}\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1492,7 +1497,7 @@ algorithms later on.</p>
 </div>
 </details></section>
 <section id="policy-evaluation-in-infinite-horizon-mdps">
-<h3><a class="toc-backref" href="#id22" role="doc-backlink"><span class="section-number">3.4.2. </span>Policy evaluation in infinite-horizon MDPs</a><a class="headerlink" href="#policy-evaluation-in-infinite-horizon-mdps" title="Link to this heading">#</a></h3>
+<h3><a class="toc-backref" href="#id22" role="doc-backlink"><span class="section-number">1.4.2. </span>Policy evaluation in infinite-horizon MDPs</a><a class="headerlink" href="#policy-evaluation-in-infinite-horizon-mdps" title="Link to this heading">#</a></h3>
 <p>The backwards DP technique we used in <a class="reference internal" href="#eval-dp"><span class="std std-ref">the finite-horizon case</span></a> no
 longer works since there is no “final timestep” to start from. We’ll
 need another approach to policy evaluation.</p>
@@ -1501,7 +1506,7 @@ solve to evaluate a deterministic policy <em>exactly</em>. For a faster approxim
 we can iterate the policy’s Bellman operator, since we know that it has
 a unique fixed point at the true value function.</p>
 <section id="matrix-inversion-for-deterministic-policies">
-<h4><a class="toc-backref" href="#id23" role="doc-backlink"><span class="section-number">3.4.2.1. </span>Matrix inversion for deterministic policies</a><a class="headerlink" href="#matrix-inversion-for-deterministic-policies" title="Link to this heading">#</a></h4>
+<h4><a class="toc-backref" href="#id23" role="doc-backlink"><span class="section-number">1.4.2.1. </span>Matrix inversion for deterministic policies</a><a class="headerlink" href="#matrix-inversion-for-deterministic-policies" title="Link to this heading">#</a></h4>
 <p>Note that when the policy <span class="math notranslate nohighlight">\(\pi\)</span> is deterministic, the actions can be
 determined from the states, and so we can chop off the action dimension
 for the rewards and state transitions:</p>
@@ -1516,7 +1521,7 @@ for the rewards and state transitions:</p>
 columns as the next states. Then <span class="math notranslate nohighlight">\(P^\pi_{s, s'}\)</span> is the probability of
 transitioning from state <span class="math notranslate nohighlight">\(s\)</span> to state <span class="math notranslate nohighlight">\(s'\)</span> under policy <span class="math notranslate nohighlight">\(\pi\)</span>.</p>
 <div class="proof example admonition" id="tidy_tabular">
-<p class="admonition-title"><span class="caption-number">Example 3.5 </span> (Tidying MDP)</p>
+<p class="admonition-title"><span class="caption-number">Example 1.5 </span> (Tidying MDP)</p>
 <section class="example-content" id="proof-content">
 <p>The tabular MDP from before has <span class="math notranslate nohighlight">\(|\mathcal{S}| = 2\)</span> and <span class="math notranslate nohighlight">\(|\mathcal{A}| = 2\)</span>. Let’s write
 down the quantities for the policy <span class="math notranslate nohighlight">\(\pi\)</span> that tidies if and only if the
@@ -1536,7 +1541,7 @@ written in tabular notation as</p>
 <span class="math notranslate nohighlight">\(Q^\pi\)</span>.) This system of equations can be solved with a matrix
 inversion:</p>
 <div class="math notranslate nohighlight" id="equation-matrix-inversion-pe">
-<span class="eqno">(3.4)<a class="headerlink" href="#equation-matrix-inversion-pe" title="Link to this equation">#</a></span>\[V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.\]</div>
+<span class="eqno">(1.4)<a class="headerlink" href="#equation-matrix-inversion-pe" title="Link to this equation">#</a></span>\[V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.\]</div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>Note we’ve assumed that <span class="math notranslate nohighlight">\(I - \gamma P^\pi\)</span> is invertible. Can you see
@@ -1561,7 +1566,7 @@ least one nonzero element.)</p>
 </div>
 </div>
 <div class="proof example admonition" id="tidy_eval_infinite">
-<p class="admonition-title"><span class="caption-number">Example 3.6 </span> (Tidying policy evaluation)</p>
+<p class="admonition-title"><span class="caption-number">Example 1.6 </span> (Tidying policy evaluation)</p>
 <section class="example-content" id="proof-content">
 <p>Let’s use the same policy <span class="math notranslate nohighlight">\(\pi\)</span> that tidies if and only if the room is
 messy. Setting <span class="math notranslate nohighlight">\(\gamma = 0.95\)</span>, we must invert</p>
@@ -1592,7 +1597,7 @@ lower than this.</p>
 </div>
 </section>
 <section id="iterative-policy-evaluation">
-<span id="iterative-pe"></span><h4><a class="toc-backref" href="#id24" role="doc-backlink"><span class="section-number">3.4.2.2. </span>Iterative policy evaluation</a><a class="headerlink" href="#iterative-policy-evaluation" title="Link to this heading">#</a></h4>
+<span id="iterative-pe"></span><h4><a class="toc-backref" href="#id24" role="doc-backlink"><span class="section-number">1.4.2.2. </span>Iterative policy evaluation</a><a class="headerlink" href="#iterative-policy-evaluation" title="Link to this heading">#</a></h4>
 <p>The matrix inversion above takes roughly <span class="math notranslate nohighlight">\(O(|\mathcal{S}|^3)\)</span> time.
 It also only works for deterministic policies.
 Can we trade off the requirement of finding the <em>exact</em> value function for a faster
@@ -1627,7 +1632,7 @@ takes <span class="math notranslate nohighlight">\(O(|\mathcal{S}|^2)\)</span> t
 </div>
 </div>
 </div>
-<p>Then, as we showed in <a class="reference internal" href="#equation-bellman-convergence">(3.3)</a>, by the Banach fixed-point theorem:</p>
+<p>Then, as we showed in <a class="reference internal" href="#equation-bellman-convergence">(1.3)</a>, by the Banach fixed-point theorem:</p>
 <div class="math notranslate nohighlight">
 \[\|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.\]</div>
 <div class="cell docutils container">
@@ -1643,7 +1648,7 @@ takes <span class="math notranslate nohighlight">\(O(|\mathcal{S}|^2)\)</span> t
 </div>
 </div>
 <div class="proof remark admonition" id="iterations_vi">
-<p class="admonition-title"><span class="caption-number">Remark 3.2 </span> (Convergence of iterative policy evaluation)</p>
+<p class="admonition-title"><span class="caption-number">Remark 1.2 </span> (Convergence of iterative policy evaluation)</p>
 <section class="remark-content" id="proof-content">
 <p>How many iterations do we need for an <span class="math notranslate nohighlight">\(\epsilon\)</span>-accurate estimate? We
 can work backwards to solve for <span class="math notranslate nohighlight">\(t\)</span>:</p>
@@ -1668,7 +1673,7 @@ T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \r
 </div></section>
 </section>
 <section id="optimal-policies-in-infinite-horizon-mdps">
-<span id="optimal-policy-finite"></span><h3><a class="toc-backref" href="#id25" role="doc-backlink"><span class="section-number">3.4.3. </span>Optimal policies in infinite-horizon MDPs</a><a class="headerlink" href="#optimal-policies-in-infinite-horizon-mdps" title="Link to this heading">#</a></h3>
+<span id="optimal-policy-finite"></span><h3><a class="toc-backref" href="#id25" role="doc-backlink"><span class="section-number">1.4.3. </span>Optimal policies in infinite-horizon MDPs</a><a class="headerlink" href="#optimal-policies-in-infinite-horizon-mdps" title="Link to this heading">#</a></h3>
 <p>Now let’s move on to solving for an optimal policy in the
 infinite-horizon case. As in <a class="reference internal" href="#optimal_policy_finite">the finite-horizon case</a>, an <strong>optimal policy</strong> <span class="math notranslate nohighlight">\(\pi^\star\)</span>
 is one that does at least as well as any other policy in all situations.
@@ -1676,7 +1681,7 @@ That is, for all policies <span class="math notranslate nohighlight">\(\pi\)</sp
 <span class="math notranslate nohighlight">\(\hi \in \mathbb{N}\)</span>, and initial trajectories
 <span class="math notranslate nohighlight">\(\tau_\hi = (s_0, a_0, r_0, \dots, s_\hi)\)</span> where <span class="math notranslate nohighlight">\(s_\hi = s\)</span>,</p>
 <div class="math notranslate nohighlight" id="equation-optimal-policy-infinite">
-<span class="eqno">(3.5)<a class="headerlink" href="#equation-optimal-policy-infinite" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(1.5)<a class="headerlink" href="#equation-optimal-policy-infinite" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     V^{\pi^\star}(s) &amp;= \E_{\tau \sim \rho^{\pi^{\star}}}[r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2}  + \cdots \mid s_\hi = s] \\
     &amp;\ge \E_{\tau \sim \rho^{\pi}}[r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid \tau_\hi]
 \end{aligned}\end{split}\]</div>
@@ -1684,24 +1689,24 @@ That is, for all policies <span class="math notranslate nohighlight">\(\pi\)</sp
 is optimal.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>Verify this by modifying the proof <a class="reference internal" href="#optimal_greedy">Theorem 3.3</a> from the finite-horizon case.</p>
+<p>Verify this by modifying the proof <a class="reference internal" href="#optimal_greedy">Theorem 1.3</a> from the finite-horizon case.</p>
 </div>
 <p>So how can we compute such an optimal policy? We can’t use the backwards
-DP approach from the finite-horizon case <a class="reference internal" href="#pi_star_dp">Algorithm 3.2</a> since there’s no “final timestep” to start
+DP approach from the finite-horizon case <a class="reference internal" href="#pi_star_dp">Algorithm 1.2</a> since there’s no “final timestep” to start
 from. Instead, we’ll exploit the fact that the Bellman consistency
-equation <a class="reference internal" href="#equation-bellman-consistency-infinite">(3.1)</a> for the optimal value
+equation <a class="reference internal" href="#equation-bellman-consistency-infinite">(1.1)</a> for the optimal value
 function doesn’t depend on any policy:</p>
 <div class="math notranslate nohighlight" id="equation-bellman-optimality">
-<span class="eqno">(3.6)<a class="headerlink" href="#equation-bellman-optimality" title="Link to this equation">#</a></span>\[V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]\]</div>
+<span class="eqno">(1.6)<a class="headerlink" href="#equation-bellman-optimality" title="Link to this equation">#</a></span>\[V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]\]</div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>Verify this by substituting the greedy policy into the
 Bellman consistency equation.</p>
 </div>
-<p>As before, thinking of the r.h.s. of <a class="reference internal" href="#equation-bellman-optimality">(3.6)</a> as an operator on value functions
+<p>As before, thinking of the r.h.s. of <a class="reference internal" href="#equation-bellman-optimality">(1.6)</a> as an operator on value functions
 gives the <strong>Bellman optimality operator</strong></p>
 <div class="math notranslate nohighlight" id="equation-bellman-optimality-operator">
-<span class="eqno">(3.7)<a class="headerlink" href="#equation-bellman-optimality-operator" title="Link to this equation">#</a></span>\[[\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right]\]</div>
+<span class="eqno">(1.7)<a class="headerlink" href="#equation-bellman-optimality-operator" title="Link to this equation">#</a></span>\[[\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right]\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">bellman_optimality_operator</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">]:</span>
@@ -1715,7 +1720,7 @@ gives the <strong>Bellman optimality operator</strong></p>
 </div>
 </div>
 <section id="value-iteration">
-<span id="id4"></span><h4><a class="toc-backref" href="#id26" role="doc-backlink"><span class="section-number">3.4.3.1. </span>Value iteration</a><a class="headerlink" href="#value-iteration" title="Link to this heading">#</a></h4>
+<span id="id4"></span><h4><a class="toc-backref" href="#id26" role="doc-backlink"><span class="section-number">1.4.3.1. </span>Value iteration</a><a class="headerlink" href="#value-iteration" title="Link to this heading">#</a></h4>
 <p>Since the optimal policy is still a policy, our result that the Bellman
 operator is a contracting map still holds, and so we can repeatedly
 apply this operator to converge to the optimal value function! This
@@ -1760,7 +1765,7 @@ well-defined value function for some policy!</p>
 <span class="math notranslate nohighlight">\(\|V^{\hat \pi} - V^\star\|_{\infty} \le \frac{2\gamma}{1-\gamma} \epsilon\)</span>,
 which might potentially be very large.</p>
 <div class="proof theorem admonition" id="greedy_worsen">
-<p class="admonition-title"><span class="caption-number">Theorem 3.5 </span> (Greedy policy value worsening)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 1.5 </span> (Greedy policy value worsening)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}\]</div>
@@ -1770,7 +1775,11 @@ which might potentially be very large.</p>
 </section>
 </div><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">Proof</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+Proof<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">We first have</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1815,13 +1824,13 @@ which might potentially be very large.</p>
 </details><p>So in order to compensate and achieve <span class="math notranslate nohighlight">\(\|V^{\hat \pi} - V^{\star}\| \le \epsilon\)</span>, we must have</p>
 <div class="math notranslate nohighlight">
 \[\|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.\]</div>
-<p>This means, using <a class="reference internal" href="#iterations_vi">Remark 3.2</a>, we need to run value iteration for</p>
+<p>This means, using <a class="reference internal" href="#iterations_vi">Remark 1.2</a>, we need to run value iteration for</p>
 <div class="math notranslate nohighlight">
 \[T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)\]</div>
 <p>iterations to achieve an <span class="math notranslate nohighlight">\(\epsilon\)</span>-accurate estimate of the optimal value function.</p>
 </section>
 <section id="policy-iteration">
-<span id="id5"></span><h4><a class="toc-backref" href="#id27" role="doc-backlink"><span class="section-number">3.4.3.2. </span>Policy iteration</a><a class="headerlink" href="#policy-iteration" title="Link to this heading">#</a></h4>
+<span id="id5"></span><h4><a class="toc-backref" href="#id27" role="doc-backlink"><span class="section-number">1.4.3.2. </span>Policy iteration</a><a class="headerlink" href="#policy-iteration" title="Link to this heading">#</a></h4>
 <p>Can we mitigate this “greedy worsening”? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function <em>together</em>? This is the idea behind <strong>policy iteration</strong>. In each step, we simply set the policy to act greedily with respect to its own value function.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1848,15 +1857,15 @@ which might potentially be very large.</p>
 </div>
 </div>
 </div>
-<p>Although PI appears more complex than VI, we’ll use the same contraction property <a class="reference internal" href="#bellman_contraction">Theorem 3.4</a> to show convergence. This will give us the same runtime bound as value iteration and iterative policy evaluation for an <span class="math notranslate nohighlight">\(\epsilon\)</span>-optimal value function <a class="reference internal" href="#iterations_vi">Remark 3.2</a>, although in practice, PI often converges much faster.</p>
+<p>Although PI appears more complex than VI, we’ll use the same contraction property <a class="reference internal" href="#bellman_contraction">Theorem 1.4</a> to show convergence. This will give us the same runtime bound as value iteration and iterative policy evaluation for an <span class="math notranslate nohighlight">\(\epsilon\)</span>-optimal value function <a class="reference internal" href="#iterations_vi">Remark 1.2</a>, although in practice, PI often converges much faster.</p>
 <div class="proof theorem admonition" id="pi_iter_analysis">
-<p class="admonition-title"><span class="caption-number">Theorem 3.6 </span> (Policy Iteration runtime and convergence)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 1.6 </span> (Policy Iteration runtime and convergence)</p>
 <section class="theorem-content" id="proof-content">
 <p>We aim to show that the number of iterations required for an
 <span class="math notranslate nohighlight">\(\epsilon\)</span>-accurate estimate of the optimal value function is</p>
 <div class="math notranslate nohighlight">
 \[T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \right).\]</div>
-<p>This bound follows from the contraction property <a class="reference internal" href="#equation-bellman-convergence">(3.3)</a>:</p>
+<p>This bound follows from the contraction property <a class="reference internal" href="#equation-bellman-convergence">(1.3)</a>:</p>
 <div class="math notranslate nohighlight">
 \[\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.\]</div>
 <p>We’ll prove that the iterates of PI respect the contraction property by
@@ -1875,7 +1884,7 @@ showing that the policies improve monotonically:</p>
 <p>Since
 <span class="math notranslate nohighlight">\([\mathcal{J}^{\star}(V^{\pi^{t}})](s) \ge V^{\pi^{t}}(s)\)</span>, we then have</p>
 <div class="math notranslate nohighlight" id="equation-pi-iter-proof">
-<span class="eqno">(3.8)<a class="headerlink" href="#equation-pi-iter-proof" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(1.8)<a class="headerlink" href="#equation-pi-iter-proof" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &amp;\ge V^{\pi^{t+1}}(s) - \mathcal{J}^{\star} (V^{\pi^{t}})(s) \\
     &amp;= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right].
 \end{aligned}\end{split}\]</div>
@@ -1894,7 +1903,7 @@ recursively to get</p>
 <p>which implies that <span class="math notranslate nohighlight">\(V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s)\)</span>
 for all <span class="math notranslate nohighlight">\(s\)</span> (since the r.h.s. converges to zero). We can then plug this
 back into
-<a class="reference internal" href="#equation-pi-iter-proof">(3.8)</a>
+<a class="reference internal" href="#equation-pi-iter-proof">(1.8)</a>
 to get the desired result:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1904,7 +1913,7 @@ to get the desired result:</p>
     V^{\pi^{t+1}}(s) &amp;\ge [\mathcal{J}^{\star}(V^{\pi^{t}})](s)
 \end{aligned}
 \end{split}\]</div>
-<p>This means we can now apply the Bellman convergence result <a class="reference internal" href="#equation-bellman-convergence">(3.3)</a> to get</p>
+<p>This means we can now apply the Bellman convergence result <a class="reference internal" href="#equation-bellman-convergence">(1.3)</a> to get</p>
 <div class="math notranslate nohighlight">
 \[\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\mathcal{J}^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.\]</div>
 </section>
@@ -1912,7 +1921,7 @@ to get the desired result:</p>
 </section>
 </section>
 <section id="summary">
-<h2><a class="toc-backref" href="#id28" role="doc-backlink"><span class="section-number">3.5. </span>Summary</a><a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id28" role="doc-backlink"><span class="section-number">1.5. </span>Summary</a><a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>Markov decision processes (MDPs) are a framework for sequential
 decision making under uncertainty. They consist of a state space
@@ -1972,24 +1981,24 @@ using <strong>value iteration</strong> or <strong>policy iteration</strong>.</p>
               
               
               
-                <footer class="prev-next-footer d-print-none">
+                <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="bandits.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">2. </span>Multi-Armed Bandits</p>
+        <p class="prev-next-title">Introduction</p>
       </div>
     </a>
     <a class="right-next"
-       href="fitted_dp.html"
+       href="control.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">4. </span>Fitted Dynamic Programming Algorithms</p>
+        <p class="prev-next-title"><span class="section-number">2. </span>Linear Quadratic Regulators</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -2009,43 +2018,43 @@ using <strong>value iteration</strong> or <strong>policy iteration</strong>.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-horizon-mdps">3.1. Finite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policies">3.1.1. Policies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trajectories">3.1.2. Trajectories</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions">3.1.3. Value functions</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#greedy-policies">3.1.3.1. Greedy policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-horizon-mdps">1.1. Finite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policies">1.1.1. Policies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trajectories">1.1.2. Trajectories</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions">1.1.3. Value functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#greedy-policies">1.1.3.1. Greedy policies</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-consistency-equation">3.1.4. The one-step (Bellman) consistency equation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-operator">3.1.5. The one-step Bellman operator</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-consistency-equation">1.1.4. The one-step (Bellman) consistency equation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-one-step-bellman-operator">1.1.5. The one-step Bellman operator</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-finite-horizon-mdps">3.2. Solving finite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-finite-horizon-mdps">3.2.1. Policy evaluation in finite-horizon MDPs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-finite-horizon-mdps">3.2.2. Optimal policies in finite-horizon MDPs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-finite-horizon-mdps">1.2. Solving finite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-finite-horizon-mdps">1.2.1. Policy evaluation in finite-horizon MDPs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-finite-horizon-mdps">1.2.2. Optimal policies in finite-horizon MDPs</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infinite-horizon-mdps">3.3. Infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discounted-rewards">3.3.1. Discounted rewards</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stationary-policies">3.3.2. Stationary policies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions-and-bellman-consistency">3.3.3. Value functions and Bellman consistency</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infinite-horizon-mdps">1.3. Infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discounted-rewards">1.3.1. Discounted rewards</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stationary-policies">1.3.2. Stationary policies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-functions-and-bellman-consistency">1.3.3. Value functions and Bellman consistency</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-infinite-horizon-mdps">3.4. Solving infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-bellman-operator-is-a-contraction-mapping">3.4.1. The Bellman operator is a contraction mapping</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-infinite-horizon-mdps">3.4.2. Policy evaluation in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-inversion-for-deterministic-policies">3.4.2.1. Matrix inversion for deterministic policies</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-policy-evaluation">3.4.2.2. Iterative policy evaluation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-infinite-horizon-mdps">1.4. Solving infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-bellman-operator-is-a-contraction-mapping">1.4.1. The Bellman operator is a contraction mapping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-evaluation-in-infinite-horizon-mdps">1.4.2. Policy evaluation in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-inversion-for-deterministic-policies">1.4.2.1. Matrix inversion for deterministic policies</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-policy-evaluation">1.4.2.2. Iterative policy evaluation</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-infinite-horizon-mdps">3.4.3. Optimal policies in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#value-iteration">3.4.3.1. Value iteration</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-iteration">3.4.3.2. Policy iteration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-policies-in-infinite-horizon-mdps">1.4.3. Optimal policies in infinite-horizon MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#value-iteration">1.4.3.1. Value iteration</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-iteration">1.4.3.2. Policy iteration</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">3.5. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">1.5. Summary</a></li>
 </ul>
   </nav></div>
 
@@ -2094,8 +2103,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>

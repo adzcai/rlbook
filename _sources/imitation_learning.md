@@ -11,6 +11,7 @@ kernelspec:
   name: python3
 ---
 
+(imitation_learning)=
 # Imitation Learning
 
 Imagine you are tasked with learning how to drive. How do, or did, you go about it?

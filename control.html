@@ -8,46 +8,46 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>5. Linear Quadratic Regulators &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>2. Linear Quadratic Regulators &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -87,7 +87,7 @@ var addUtterances = () => {
 commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'control';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6. Policy Gradient Algorithms" href="pg.html" />
-    <link rel="prev" title="4. Fitted Dynamic Programming Algorithms" href="fitted_dp.html" />
+    <link rel="next" title="3. Multi-Armed Bandits" href="bandits.html" />
+    <link rel="prev" title="1. Finite Markov Decision Processes" href="mdps.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,23 +108,27 @@ commentsRunWhenDOMLoaded(addUtterances);
 
   
   
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -146,13 +150,8 @@ commentsRunWhenDOMLoaded(addUtterances);
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
     </header>
   
 
@@ -176,8 +175,6 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item">
 
   
-    
-  
 
 <a class="navbar-brand logo" href="index.html">
   
@@ -199,7 +196,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
  <script>
  document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -209,15 +206,16 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bandits.html">2. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">2. Linear Quadratic Regulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Gradient Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">7. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">8. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">9. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
 </ul>
 
     </div>
@@ -233,7 +231,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
       </div>
       
-      <main id="main-content" class="bd-main" role="main">
+      <main id="main-content" class="bd-main">
         
         
 
@@ -242,14 +240,14 @@ commentsRunWhenDOMLoaded(addUtterances);
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article d-print-none">
+              <div class="bd-header-article">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</button></div>
+</label></div>
       
     </div>
   
@@ -327,10 +325,10 @@ commentsRunWhenDOMLoaded(addUtterances);
 
 <script>
 document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -338,14 +336,14 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</button>
+</label>
 </div></div>
       
     </div>
@@ -366,26 +364,26 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-control">5.1. Optimal control</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-discretization">5.1.1. A first attempt: Discretization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-control">2.1. Optimal control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-discretization">2.1.1. A first attempt: Discretization</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-quadratic-regulator">5.2. The Linear Quadratic Regulator</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimality-and-the-riccati-equation">5.3. Optimality and the Riccati Equation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-state-at-time-hi">5.3.1. Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-quadratic-regulator">2.2. The Linear Quadratic Regulator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimality-and-the-riccati-equation">2.3. Optimality and the Riccati Equation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-state-at-time-hi">2.3.1. Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions">5.4. Extensions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-dependent-dynamics-and-cost-function">5.4.1. Time-dependent dynamics and cost function</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-general-quadratic-cost-functions">5.4.2. More general quadratic cost functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracking-a-predefined-trajectory">5.4.3. Tracking a predefined trajectory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions">2.4. Extensions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-dependent-dynamics-and-cost-function">2.4.1. Time-dependent dynamics and cost function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-general-quadratic-cost-functions">2.4.2. More general quadratic cost functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracking-a-predefined-trajectory">2.4.3. Tracking a predefined trajectory</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approximating-nonlinear-dynamics">5.5. Approximating nonlinear dynamics</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-linearization">5.5.1. Local linearization</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-differencing">5.5.2. Finite differencing</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-convexification">5.5.3. Local convexification</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-lqr">5.5.4. Iterative LQR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approximating-nonlinear-dynamics">2.5. Approximating nonlinear dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-linearization">2.5.1. Local linearization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-differencing">2.5.2. Finite differencing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-convexification">2.5.3. Local convexification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-lqr">2.5.4. Iterative LQR</a></li>
 </ul>
 </li>
 </ul>
@@ -400,7 +398,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="linear-quadratic-regulators">
-<span id="lqr-chapter"></span><h1><span class="section-number">5. </span>Linear Quadratic Regulators<a class="headerlink" href="#linear-quadratic-regulators" title="Link to this heading">#</a></h1>
+<span id="lqr-chapter"></span><h1><span class="section-number">2. </span>Linear Quadratic Regulators<a class="headerlink" href="#linear-quadratic-regulators" title="Link to this heading">#</a></h1>
 <p>Up to this point, we have considered decision problems with finitely
 many states and actions. However, in many applications, states and
 actions may take on continuous values. For example, consider autonomous
@@ -410,13 +408,13 @@ task of <strong>continuous control</strong>.</p>
 <figure class="align-default" id="control-examples">
 <img alt="_images/rubiks_cube.jpg" src="_images/rubiks_cube.jpg" />
 <figcaption>
-<p><span class="caption-number">Fig. 5.1 </span><span class="caption-text">Solving a Rubik’s Cube with a robot hand.</span><a class="headerlink" href="#control-examples" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 2.1 </span><span class="caption-text">Solving a Rubik’s Cube with a robot hand.</span><a class="headerlink" href="#control-examples" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <figure class="align-default" id="robot-hand">
 <img alt="_images/boston_dynamics.jpg" src="_images/boston_dynamics.jpg" />
 <figcaption>
-<p><span class="caption-number">Fig. 5.2 </span><span class="caption-text">Boston Dynamics’s Spot robot.</span><a class="headerlink" href="#robot-hand" title="Link to this image">#</a></p>
+<p><span class="caption-number">Fig. 2.2 </span><span class="caption-text">Boston Dynamics’s Spot robot.</span><a class="headerlink" href="#robot-hand" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>Aside from the change in the state and action spaces, the general
@@ -428,7 +426,7 @@ carry over to this new setting.</p>
 continuous control problems: the <strong>linear quadratic regulator</strong>. We will
 then extend this basic method to more complex settings.</p>
 <div class="proof example admonition" id="cart_pole">
-<p class="admonition-title"><span class="caption-number">Example 5.1 </span> (CartPole)</p>
+<p class="admonition-title"><span class="caption-number">Example 2.1 </span> (CartPole)</p>
 <section class="example-content" id="proof-content">
 <p>Try to balance a pencil on its point on a flat surface. It’s much more
 difficult than it may first seem: the position of the pencil varies
@@ -448,7 +446,7 @@ classic control problem known as <em>CartPole</em>:</p>
 <span class="math notranslate nohighlight">\((\st^\star, \act^\star)\)</span>.</p>
 </section>
 </div><section id="optimal-control">
-<h2><span class="section-number">5.1. </span>Optimal control<a class="headerlink" href="#optimal-control" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.1. </span>Optimal control<a class="headerlink" href="#optimal-control" title="Link to this heading">#</a></h2>
 <p>Recall that an MDP is defined by its state space <span class="math notranslate nohighlight">\(\mathcal{S}\)</span>, action space
 <span class="math notranslate nohighlight">\(\mathcal{A}\)</span>, state transitions <span class="math notranslate nohighlight">\(P\)</span>, reward function <span class="math notranslate nohighlight">\(r\)</span>, and discount factor
 <span class="math notranslate nohighlight">\(\gamma\)</span> or time horizon <span class="math notranslate nohighlight">\(\hor\)</span>. These have equivalents in the control
@@ -485,7 +483,7 @@ over <span class="math notranslate nohighlight">\(\hor\)</span> timesteps.</em> 
 <span class="math notranslate nohighlight">\(\pi = (\pi_0, \dots, \pi_{H-1})\)</span> where <span class="math notranslate nohighlight">\(\pi_h : \mathcal{S} \to \mathcal{A}\)</span> for each
 <span class="math notranslate nohighlight">\(\hi \in [\hor]\)</span>.</p>
 <div class="proof definition admonition" id="optimal_control">
-<p class="admonition-title"><span class="caption-number">Definition 5.1 </span> (General optimal control problem)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.1 </span> (General optimal control problem)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -501,11 +499,11 @@ over <span class="math notranslate nohighlight">\(\hor\)</span> timesteps.</em> 
 \end{split}\]</div>
 </section>
 </div><section id="a-first-attempt-discretization">
-<h3><span class="section-number">5.1.1. </span>A first attempt: Discretization<a class="headerlink" href="#a-first-attempt-discretization" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">2.1.1. </span>A first attempt: Discretization<a class="headerlink" href="#a-first-attempt-discretization" title="Link to this heading">#</a></h3>
 <p>Can we solve this problem using tools from the finite MDP setting? If
 <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> were finite, then we’d be able to work backwards using the
 DP algorithm for computing the optimal policy in an MDP
-<a class="reference internal" href="mdps.html#pi_star_dp">Algorithm 3.2</a>. This inspires us to try <em>discretizing</em> the
+<a class="reference internal" href="mdps.html#pi_star_dp">Algorithm 1.2</a>. This inspires us to try <em>discretizing</em> the
 problem.</p>
 <p>Suppose <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> are bounded, that is,
 <span class="math notranslate nohighlight">\(\max_{\st \in \mathcal{S}} \|\st\| \le B_\st\)</span> and
@@ -533,9 +531,9 @@ quadratic regulator</strong>.</p>
 </section>
 </section>
 <section id="the-linear-quadratic-regulator">
-<span id="lqr"></span><h2><span class="section-number">5.2. </span>The Linear Quadratic Regulator<a class="headerlink" href="#the-linear-quadratic-regulator" title="Link to this heading">#</a></h2>
+<span id="lqr"></span><h2><span class="section-number">2.2. </span>The Linear Quadratic Regulator<a class="headerlink" href="#the-linear-quadratic-regulator" title="Link to this heading">#</a></h2>
 <p>The optimal control problem
-<a class="reference internal" href="#optimal_control">Definition 5.1</a> seems highly complex in its general
+<a class="reference internal" href="#optimal_control">Definition 2.1</a> seems highly complex in its general
 case. Is there a relevant simplification that we can analyze?</p>
 <p>Let us consider <em>linear dynamics</em> and an <em>upward-curved quadratic cost
 function</em> (in both arguments). We will also consider a time-homogenous
@@ -545,7 +543,7 @@ tool in control theory. Solving the LQR problem will additionally enable
 us to <em>locally approximate</em> more complex setups using <em>Taylor
 approximations</em>.</p>
 <div class="proof definition admonition" id="lqr_definition">
-<p class="admonition-title"><span class="caption-number">Definition 5.2 </span> (The linear quadratic regulator)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.2 </span> (The linear quadratic regulator)</p>
 <section class="definition-content" id="proof-content">
 <p><strong>Linear, time-homogeneous dynamics</strong>: for each timestep <span class="math notranslate nohighlight">\(h \in [H]\)</span>,</p>
 <div class="math notranslate nohighlight">
@@ -596,7 +594,7 @@ without loss of generality. Show that replacing <span class="math notranslate no
 policy to denote the average cost it incurs. These will be instrumental
 in constructing the optimal policy via <strong>dynamic programming</strong>.</p>
 <div class="proof definition admonition" id="value_lqr">
-<p class="admonition-title"><span class="caption-number">Definition 5.3 </span> (Value functions for LQR)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.3 </span> (Value functions for LQR)</p>
 <section class="definition-content" id="proof-content">
 <p>Given a policy <span class="math notranslate nohighlight">\(\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})\)</span>, we can
 define its value function <span class="math notranslate nohighlight">\(V^\pi_\hi : \mathcal{S} \to \mathbb{R}\)</span> at time
@@ -621,10 +619,10 @@ define its value function <span class="math notranslate nohighlight">\(V^\pi_\hi
 </section>
 </div></section>
 <section id="optimality-and-the-riccati-equation">
-<span id="optimal-lqr"></span><h2><span class="section-number">5.3. </span>Optimality and the Riccati Equation<a class="headerlink" href="#optimality-and-the-riccati-equation" title="Link to this heading">#</a></h2>
+<span id="optimal-lqr"></span><h2><span class="section-number">2.3. </span>Optimality and the Riccati Equation<a class="headerlink" href="#optimality-and-the-riccati-equation" title="Link to this heading">#</a></h2>
 <p>In this section, we’ll compute the optimal value function <span class="math notranslate nohighlight">\(V^\star_h\)</span>,
 Q-function <span class="math notranslate nohighlight">\(Q^\star_h\)</span>, and policy <span class="math notranslate nohighlight">\(\pi^\star_h\)</span> in the LQR setting
-<a class="reference internal" href="#lqr_definition">Definition 5.2</a> using
+<a class="reference internal" href="#lqr_definition">Definition 2.2</a> using
 <strong>dynamic programming</strong> in a very similar way to the DP algorithms <a class="reference internal" href="mdps.html#eval-dp"><span class="std std-ref">in the MDP setting</span></a>:</p>
 <ol class="arabic simple">
 <li><p>We’ll compute <span class="math notranslate nohighlight">\(V_H^\star\)</span> (at the end of the horizon) as our base
@@ -637,7 +635,7 @@ very simple structure: <span class="math notranslate nohighlight">\(V_h^\star\)<
 quadratics</em> and <span class="math notranslate nohighlight">\(\pi_h^\star\)</span> is <em>linear</em> and furthermore does not
 depend on the noise!</p>
 <div class="proof definition admonition" id="optimal_value_lqr">
-<p class="admonition-title"><span class="caption-number">Definition 5.4 </span> (Optimal value functions for LQR)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.4 </span> (Optimal value functions for LQR)</p>
 <section class="definition-content" id="proof-content">
 <p>The <strong>optimal value
 function</strong> is the one that, at any time and in any state, achieves
@@ -652,7 +650,7 @@ function</strong> is the one that, at any time and in any state, achieves
 \end{split}\]</div>
 </section>
 </div><div class="proof theorem admonition" id="optimal_value_lqr_quadratic">
-<p class="admonition-title"><span class="caption-number">Theorem 5.1 </span> (Optimal value function in LQR is a upward-curved quadratic)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 2.1 </span> (Optimal value function in LQR is a upward-curved quadratic)</p>
 <section class="theorem-content" id="proof-content">
 <p>At each timestep <span class="math notranslate nohighlight">\(h \in [H]\)</span>,</p>
 <div class="math notranslate nohighlight">
@@ -662,7 +660,7 @@ positive definite matrix <span class="math notranslate nohighlight">\(P_\hi \in 
 <span class="math notranslate nohighlight">\(p_\hi \in \mathbb{R}^{n_\st}\)</span>.</p>
 </section>
 </div><div class="proof theorem admonition" id="optimal_policy_lqr_linear">
-<p class="admonition-title"><span class="caption-number">Theorem 5.2 </span> (Optimal policy in LQR is linear)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 2.2 </span> (Optimal policy in LQR is linear)</p>
 <section class="theorem-content" id="proof-content">
 <p>At each timestep <span class="math notranslate nohighlight">\(h \in [H]\)</span>,</p>
 <div class="math notranslate nohighlight">
@@ -747,7 +745,7 @@ can be expressed as the trace of <span class="math notranslate nohighlight">\(\s
 \[\E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] = \mathrm{Tr}(\sigma^2 P_{\hi+1}).\]</div>
 <p>Substituting this back into the expression for <span class="math notranslate nohighlight">\(Q^\star_\hi\)</span>, we have:</p>
 <div class="math notranslate nohighlight" id="equation-q-star-lqr">
-<span class="eqno">(5.1)<a class="headerlink" href="#equation-q-star-lqr" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(2.1)<a class="headerlink" href="#equation-q-star-lqr" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     Q^\star_\hi(\st, \act) &amp; = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
     + 2\st^\top A^\top P_{\hi+1} B \act                                                                        \\
                             &amp; \qquad + \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
@@ -762,7 +760,7 @@ second derivatives is positive definite:</p>
 <p>This
 is fairly straightforward: recall that in our definition of LQR, we
 assumed that <span class="math notranslate nohighlight">\(R\)</span> is SPD (see
-<a class="reference internal" href="#lqr_definition">Definition 5.2</a>).
+<a class="reference internal" href="#lqr_definition">Definition 2.2</a>).
 Also note that since <span class="math notranslate nohighlight">\(P_{\hi+1}\)</span> is SPD (by the inductive hypothesis),
 so too must be <span class="math notranslate nohighlight">\(B^\top P_{\hi+1} B\)</span>. (If this isn’t clear, try proving
 it as an exercise.) Since the sum of two SPD matrices is also SPD, we
@@ -815,7 +813,7 @@ the <span class="math notranslate nohighlight">\((R+B^\top P_{\hi+1} B)\)</span>
 its inverse, and the remaining terms combine to give the <strong>Riccati
 equation</strong>:</p>
 <div class="proof definition admonition" id="riccati">
-<p class="admonition-title"><span class="caption-number">Definition 5.5 </span> (Riccati equation)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.5 </span> (Riccati equation)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.\]</div>
@@ -838,12 +836,12 @@ the optimal value function <span class="math notranslate nohighlight">\(V^\star_
 <span class="math notranslate nohighlight">\(\pi^\star_\hi\)</span> is linear. We also showed that all of these quantities
 can be calculated using a sequence of symmetric matrices
 <span class="math notranslate nohighlight">\(P_0, \dots, P_H\)</span> that can be defined recursively using the Riccati
-equation <a class="reference internal" href="#riccati">Definition 5.5</a>.</p>
+equation <a class="reference internal" href="#riccati">Definition 2.5</a>.</p>
 <p>Before we move on to some extensions of LQR, let’s consider how the
 state at time <span class="math notranslate nohighlight">\(\hi\)</span> behaves when we act according to this optimal
 policy.</p>
 <section id="expected-state-at-time-hi">
-<h3><span class="section-number">5.3.1. </span>Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span><a class="headerlink" href="#expected-state-at-time-hi" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">2.3.1. </span>Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span><a class="headerlink" href="#expected-state-at-time-hi" title="Link to this heading">#</a></h3>
 <p>How can we compute the expected state at time <span class="math notranslate nohighlight">\(\hi\)</span> when acting
 according to the optimal policy? Let’s first express <span class="math notranslate nohighlight">\(\st_\hi\)</span> in a
 cleaner way in terms of the history. Note that having linear dynamics
@@ -889,7 +887,7 @@ Now consider the maximum eigenvalue <span class="math notranslate nohighlight">\
 </section>
 </section>
 <section id="extensions">
-<h2><span class="section-number">5.4. </span>Extensions<a class="headerlink" href="#extensions" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">2.4. </span>Extensions<a class="headerlink" href="#extensions" title="Link to this heading">#</a></h2>
 <p>We’ve now formulated an optimal solution for the time-homogeneous LQR
 and computed the expected state under the optimal policy. However, real
 world tasks rarely have such simple dynamics, and we may wish to design
@@ -908,7 +906,7 @@ state-action pair.</p></li>
 complex setups by taking <em>Taylor approximations</em> of the dynamics and
 cost functions.</p>
 <section id="time-dependent-dynamics-and-cost-function">
-<span id="time-dep-lqr"></span><h3><span class="section-number">5.4.1. </span>Time-dependent dynamics and cost function<a class="headerlink" href="#time-dependent-dynamics-and-cost-function" title="Link to this heading">#</a></h3>
+<span id="time-dep-lqr"></span><h3><span class="section-number">2.4.1. </span>Time-dependent dynamics and cost function<a class="headerlink" href="#time-dependent-dynamics-and-cost-function" title="Link to this heading">#</a></h3>
 <p>So far, we’ve considered the <em>time-homogeneous</em> case, where the dynamics
 and cost function stay the same at every timestep. However, this might
 not always be the case. As an example, in many sports, the rules and
@@ -923,7 +921,7 @@ dynamics and the matrices <span class="math notranslate nohighlight">\(Q\)</span
 </div>
 <p>The modified problem is now defined as follows:</p>
 <div class="proof definition admonition" id="time_dependent_lqr">
-<p class="admonition-title"><span class="caption-number">Definition 5.6 </span> (Time-dependent LQR)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.6 </span> (Time-dependent LQR)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -940,12 +938,12 @@ dynamics and the matrices <span class="math notranslate nohighlight">\(Q\)</span
 remains almost exactly the same, and we can modify the Riccati equation
 accordingly:</p>
 <div class="proof definition admonition" id="riccati_time_dependent">
-<p class="admonition-title"><span class="caption-number">Definition 5.7 </span> (Time-dependent Riccati Equation)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.7 </span> (Time-dependent Riccati Equation)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[P_\hi = Q_\hi + A_\hi^\top P_{\hi+1} A_\hi - A_\hi^\top P_{\hi+1} B_\hi (R_\hi + B_\hi^\top P_{\hi+1} B_\hi)^{-1} B_\hi^\top P_{\hi+1} A_\hi.\]</div>
 <p>Note that this is just the time-homogeneous Riccati equation
-(<a class="reference internal" href="#riccati">Definition 5.5</a>), but with the time index added to each of the
+(<a class="reference internal" href="#riccati">Definition 2.5</a>), but with the time index added to each of the
 relevant matrices.</p>
 </section>
 </div><p>Additionally, by allowing the dynamics to vary across time, we gain the
@@ -953,7 +951,7 @@ ability to <em>locally approximate</em> nonlinear dynamics at each timestep.
 We’ll discuss this later in the chapter.</p>
 </section>
 <section id="more-general-quadratic-cost-functions">
-<h3><span class="section-number">5.4.2. </span>More general quadratic cost functions<a class="headerlink" href="#more-general-quadratic-cost-functions" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">2.4.2. </span>More general quadratic cost functions<a class="headerlink" href="#more-general-quadratic-cost-functions" title="Link to this heading">#</a></h3>
 <p>Our original cost function had only second-order terms with respect to
 the state and action, incentivizing staying as close as possible to
 <span class="math notranslate nohighlight">\((\st^\star, \act^\star) = (0, 0)\)</span>. We can also consider more general
@@ -963,7 +961,7 @@ following expression, where we introduce a new matrix <span class="math notransl
 cross term, linear coefficients <span class="math notranslate nohighlight">\(q_\hi\)</span> and <span class="math notranslate nohighlight">\(r_\hi\)</span> for the state and
 action respectively, and a constant term <span class="math notranslate nohighlight">\(c_\hi\)</span>:</p>
 <div class="math notranslate nohighlight" id="equation-general-quadratic-cost">
-<span class="eqno">(5.2)<a class="headerlink" href="#equation-general-quadratic-cost" title="Link to this equation">#</a></span>\[c_\hi(\st_\hi, \act_\hi) = ( \st_\hi^\top Q_\hi \st_\hi + \st_\hi^\top M_\hi \act_\hi + \act_\hi^\top R_\hi \act_\hi ) + (\st_\hi^\top q_\hi + \act_\hi^\top r_\hi) + c_\hi.\]</div>
+<span class="eqno">(2.2)<a class="headerlink" href="#equation-general-quadratic-cost" title="Link to this equation">#</a></span>\[c_\hi(\st_\hi, \act_\hi) = ( \st_\hi^\top Q_\hi \st_\hi + \st_\hi^\top M_\hi \act_\hi + \act_\hi^\top R_\hi \act_\hi ) + (\st_\hi^\top q_\hi + \act_\hi^\top r_\hi) + c_\hi.\]</div>
 <p>Similarly, we can also include a
 constant term <span class="math notranslate nohighlight">\(v_\hi \in \mathbb{R}^{n_\st}\)</span> in the dynamics (note that this is
 <em>deterministic</em> at each timestep, unlike the stochastic noise <span class="math notranslate nohighlight">\(w_\hi\)</span>):</p>
@@ -975,7 +973,7 @@ proof.)</p>
 </div>
 </section>
 <section id="tracking-a-predefined-trajectory">
-<h3><span class="section-number">5.4.3. </span>Tracking a predefined trajectory<a class="headerlink" href="#tracking-a-predefined-trajectory" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">2.4.3. </span>Tracking a predefined trajectory<a class="headerlink" href="#tracking-a-predefined-trajectory" title="Link to this heading">#</a></h3>
 <p>Consider applying LQR to a task like autonomous driving, where the
 target state-action pair changes over time. We might want the vehicle to
 follow a predefined <em>trajectory</em> of states and actions
@@ -988,25 +986,25 @@ function:</p>
 intended trajectory. By expanding out these multiplications, we can see
 that this is actually a special case of the more general quadratic cost
 function above
-(<a class="reference internal" href="#equation-general-quadratic-cost">(5.2)</a>):</p>
+(<a class="reference internal" href="#equation-general-quadratic-cost">(2.2)</a>):</p>
 <div class="math notranslate nohighlight">
 \[M_\hi = 0, \qquad q_\hi = -2Q \st^\star_\hi, \qquad r_\hi = -2R \act^\star_\hi, \qquad c_\hi = (\st^\star_\hi)^\top Q (\st^\star_\hi) + (\act^\star_\hi)^\top R (\act^\star_\hi).\]</div>
 </section>
 </section>
 <section id="approximating-nonlinear-dynamics">
-<span id="approx-nonlinear"></span><h2><span class="section-number">5.5. </span>Approximating nonlinear dynamics<a class="headerlink" href="#approximating-nonlinear-dynamics" title="Link to this heading">#</a></h2>
+<span id="approx-nonlinear"></span><h2><span class="section-number">2.5. </span>Approximating nonlinear dynamics<a class="headerlink" href="#approximating-nonlinear-dynamics" title="Link to this heading">#</a></h2>
 <p>The LQR algorithm solves for the optimal policy when the dynamics are
 <em>linear</em> and the cost function is an <em>upward-curved quadratic</em>. However,
 real settings are rarely this simple! Let’s return to the CartPole
 example from the start of the chapter
-(<a class="reference internal" href="#cart_pole">Example 5.1</a>). The dynamics (physics) aren’t linear. How
+(<a class="reference internal" href="#cart_pole">Example 2.1</a>). The dynamics (physics) aren’t linear. How
 can we approximate this by an LQR problem?</p>
 <p>Concretely, let’s consider a <em>noise-free</em> problem since, as we saw, the
 noise doesn’t factor into the optimal policy. Let’s assume the dynamics
 and cost function are stationary, and ignore the terminal state for
 simplicity:</p>
 <div class="proof definition admonition" id="nonlinear_control">
-<p class="admonition-title"><span class="caption-number">Definition 5.8 </span> (Nonlinear control problem)</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.8 </span> (Nonlinear control problem)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1023,7 +1021,7 @@ simplicity:</p>
 </section>
 </div><p>This is now only slightly simplified from the general optimal control
 problem (see
-<a class="reference internal" href="#optimal_control">Definition 5.1</a>). Here, we don’t know an analytical form
+<a class="reference internal" href="#optimal_control">Definition 2.1</a>). Here, we don’t know an analytical form
 for the dynamics <span class="math notranslate nohighlight">\(f\)</span> or the cost function <span class="math notranslate nohighlight">\(c\)</span>, but we assume that we’re
 able to <em>query/sample/simulate</em> them to get their values at a given
 state and action. To clarify, consider the case where the dynamics are
@@ -1033,7 +1031,7 @@ However, we can still <em>simulate</em> the dynamics and cost function by
 running a real-world experiment and measuring the resulting states and
 costs. How can we adapt LQR to this more general nonlinear case?</p>
 <section id="local-linearization">
-<h3><span class="section-number">5.5.1. </span>Local linearization<a class="headerlink" href="#local-linearization" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">2.5.1. </span>Local linearization<a class="headerlink" href="#local-linearization" title="Link to this heading">#</a></h3>
 <p>How can we apply LQR when the dynamics are nonlinear or the cost
 function is more complex? We’ll exploit the useful fact that we can take
 a function that’s <em>locally continuous</em> around <span class="math notranslate nohighlight">\((s^\star, a^\star)\)</span> and
@@ -1078,11 +1076,11 @@ bring us back to the regime of LQR.</p>
 \end{split}\]</div>
 <p><strong>Exercise:</strong> Note that this cost can be expressed in the general
 quadratic form seen in
-<a class="reference internal" href="#equation-general-quadratic-cost">(5.2)</a>. Derive the corresponding
+<a class="reference internal" href="#equation-general-quadratic-cost">(2.2)</a>. Derive the corresponding
 quantities <span class="math notranslate nohighlight">\(Q, R, M, q, r, c\)</span>.</p>
 </section>
 <section id="finite-differencing">
-<h3><span class="section-number">5.5.2. </span>Finite differencing<a class="headerlink" href="#finite-differencing" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">2.5.2. </span>Finite differencing<a class="headerlink" href="#finite-differencing" title="Link to this heading">#</a></h3>
 <p>To calculate these gradients and Hessians in practice, we use a method
 known as <strong>finite differencing</strong> for numerically computing derivatives.
 Namely, we can simply use the limit definition of the derivative, and
@@ -1095,7 +1093,7 @@ to have an analytical expression for it, which is why it’s so useful in
 practice.</p>
 </section>
 <section id="local-convexification">
-<h3><span class="section-number">5.5.3. </span>Local convexification<a class="headerlink" href="#local-convexification" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">2.5.3. </span>Local convexification<a class="headerlink" href="#local-convexification" title="Link to this heading">#</a></h3>
 <p>However, simply taking the second-order approximation of the cost
 function is insufficient, since for the LQR setup we required that the
 <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(R\)</span> matrices were positive definite, i.e. that all of their
@@ -1125,20 +1123,20 @@ We’ll see how to address this in the next section using the <strong>iterative 
 <figure class="align-default" id="id1">
 <img alt="_images/log_taylor.png" src="_images/log_taylor.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 5.3 </span><span class="caption-text">Local linearization might only be accurate in a small region around the
+<p><span class="caption-number">Fig. 2.3 </span><span class="caption-text">Local linearization might only be accurate in a small region around the
 point of linearization.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="iterative-lqr">
-<span id="id2"></span><h3><span class="section-number">5.5.4. </span>Iterative LQR<a class="headerlink" href="#iterative-lqr" title="Link to this heading">#</a></h3>
+<span id="id2"></span><h3><span class="section-number">2.5.4. </span>Iterative LQR<a class="headerlink" href="#iterative-lqr" title="Link to this heading">#</a></h3>
 <p>To address these issues with local linearization, we’ll use an iterative
 approach, where we repeatedly linearize around different points to
 create a <em>time-dependent</em> approximation of the dynamics, and then solve
 the resulting time-dependent LQR problem to obtain a better policy. This
 is known as <strong>iterative LQR</strong> or <strong>iLQR</strong>:</p>
 <div class="proof definition admonition" id="ilqr">
-<p class="admonition-title"><span class="caption-number">Definition 5.9 </span> (Iterative LQR (high-level))</p>
+<p class="admonition-title"><span class="caption-number">Definition 2.9 </span> (Iterative LQR (high-level))</p>
 <section class="definition-content" id="proof-content">
 <p>For each iteration of the algorithm:</p>
 <div class="steps docutils">
@@ -1226,7 +1224,7 @@ space).</p>
 <h2 class="rubric" id="summary">Summary</h2>
 <p>This chapter introduced some approaches to solving different variants of
 the optimal control problem
-<a class="reference internal" href="#optimal_control">Definition 5.1</a>. We began with the simple case of linear
+<a class="reference internal" href="#optimal_control">Definition 2.1</a>. We began with the simple case of linear
 dynamics and an upward-curved quadratic cost. This model is called the
 LQR and we solved for the optimal policy using dynamic programming. We
 then extended these results to the more general nonlinear case via local
@@ -1264,24 +1262,24 @@ nonlinear control problems.</p>
               
               
               
-                <footer class="prev-next-footer d-print-none">
+                <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="fitted_dp.html"
+       href="mdps.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">4. </span>Fitted Dynamic Programming Algorithms</p>
+        <p class="prev-next-title"><span class="section-number">1. </span>Finite Markov Decision Processes</p>
       </div>
     </a>
     <a class="right-next"
-       href="pg.html"
+       href="bandits.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">6. </span>Policy Gradient Algorithms</p>
+        <p class="prev-next-title"><span class="section-number">3. </span>Multi-Armed Bandits</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1301,26 +1299,26 @@ nonlinear control problems.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-control">5.1. Optimal control</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-discretization">5.1.1. A first attempt: Discretization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimal-control">2.1. Optimal control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-discretization">2.1.1. A first attempt: Discretization</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-quadratic-regulator">5.2. The Linear Quadratic Regulator</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimality-and-the-riccati-equation">5.3. Optimality and the Riccati Equation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-state-at-time-hi">5.3.1. Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-quadratic-regulator">2.2. The Linear Quadratic Regulator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimality-and-the-riccati-equation">2.3. Optimality and the Riccati Equation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-state-at-time-hi">2.3.1. Expected state at time <span class="math notranslate nohighlight">\(\hi\)</span></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions">5.4. Extensions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-dependent-dynamics-and-cost-function">5.4.1. Time-dependent dynamics and cost function</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-general-quadratic-cost-functions">5.4.2. More general quadratic cost functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracking-a-predefined-trajectory">5.4.3. Tracking a predefined trajectory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions">2.4. Extensions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-dependent-dynamics-and-cost-function">2.4.1. Time-dependent dynamics and cost function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-general-quadratic-cost-functions">2.4.2. More general quadratic cost functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracking-a-predefined-trajectory">2.4.3. Tracking a predefined trajectory</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approximating-nonlinear-dynamics">5.5. Approximating nonlinear dynamics</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-linearization">5.5.1. Local linearization</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-differencing">5.5.2. Finite differencing</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-convexification">5.5.3. Local convexification</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-lqr">5.5.4. Iterative LQR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#approximating-nonlinear-dynamics">2.5. Approximating nonlinear dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-linearization">2.5.1. Local linearization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-differencing">2.5.2. Finite differencing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-convexification">2.5.3. Local convexification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#iterative-lqr">2.5.4. Iterative LQR</a></li>
 </ul>
 </li>
 </ul>
@@ -1371,8 +1369,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>

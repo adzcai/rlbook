@@ -8,46 +8,46 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>7. Exploration in MDPs &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>8. Exploration in MDPs &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -87,7 +87,7 @@ var addUtterances = () => {
 commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'exploration';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="8. Imitation Learning" href="imitation_learning.html" />
-    <link rel="prev" title="6. Policy Gradient Algorithms" href="pg.html" />
+    <link rel="next" title="9. Contextual bandits" href="contextual_bandits.html" />
+    <link rel="prev" title="7. Planning" href="planning.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,23 +108,27 @@ commentsRunWhenDOMLoaded(addUtterances);
 
   
   
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -146,13 +150,8 @@ commentsRunWhenDOMLoaded(addUtterances);
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
     </header>
   
 
@@ -176,8 +175,6 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item">
 
   
-    
-  
 
 <a class="navbar-brand logo" href="index.html">
   
@@ -199,7 +196,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
  <script>
  document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -209,15 +206,16 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bandits.html">2. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="control.html">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Gradient Algorithms</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">7. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">8. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">9. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">8. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
 </ul>
 
     </div>
@@ -233,7 +231,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
       </div>
       
-      <main id="main-content" class="bd-main" role="main">
+      <main id="main-content" class="bd-main">
         
         
 
@@ -242,14 +240,14 @@ commentsRunWhenDOMLoaded(addUtterances);
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article d-print-none">
+              <div class="bd-header-article">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</button></div>
+</label></div>
       
     </div>
   
@@ -327,10 +325,10 @@ commentsRunWhenDOMLoaded(addUtterances);
 
 <script>
 document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -338,14 +336,14 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</button>
+</label>
 </div></div>
       
     </div>
@@ -366,29 +364,29 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">7.1. Introduction</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sparse-reward">7.1.1. Sparse reward</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-in-deterministic-mdps">7.1.2. Exploration in deterministic MDPs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">8.1. Introduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sparse-reward">8.1.1. Sparse reward</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-in-deterministic-mdps">8.1.2. Exploration in deterministic MDPs</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treating-an-unknown-mdp-as-a-mab">7.2. Treating an unknown MDP as a MAB</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi">7.3. UCB-VI</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelling-the-transitions">7.3.1. Modelling the transitions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-bonus">7.3.2. Reward bonus</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-of-ucb-vi">7.3.3. Performance of UCB-VI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treating-an-unknown-mdp-as-a-mab">8.2. Treating an unknown MDP as a MAB</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi">8.3. UCB-VI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelling-the-transitions">8.3.1. Modelling the transitions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-bonus">8.3.2. Reward bonus</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-of-ucb-vi">8.3.3. Performance of UCB-VI</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-mdps">7.4. Linear MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#planning-in-a-linear-mdp">7.4.1. Planning in a linear MDP</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi-in-a-linear-mdp">7.4.2. UCB-VI in a linear MDP</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">7.4.2.1. Modelling the transitions</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">7.4.2.2. Reward bonus</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#performance">7.4.2.3. Performance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-mdps">8.4. Linear MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#planning-in-a-linear-mdp">8.4.1. Planning in a linear MDP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi-in-a-linear-mdp">8.4.2. UCB-VI in a linear MDP</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">8.4.2.1. Modelling the transitions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">8.4.2.2. Reward bonus</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#performance">8.4.2.3. Performance</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">7.5. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">8.5. Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -401,13 +399,13 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="exploration-in-mdps">
-<h1><span class="section-number">7. </span>Exploration in MDPs<a class="headerlink" href="#exploration-in-mdps" title="Link to this heading">#</a></h1>
+<span id="exploration"></span><h1><span class="section-number">8. </span>Exploration in MDPs<a class="headerlink" href="#exploration-in-mdps" title="Link to this heading">#</a></h1>
 <section id="introduction">
-<h2><span class="section-number">7.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">8.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
 <p>One of the key challenges of reinforcement learning is the <em>exploration-exploitation tradeoff</em>. Should we <em>exploit</em> actions we know will give high reward, or should we <em>explore</em> different actions to discover potentially better strategies? An algorithm that doesn’t explore effectively might easily <em>overfit</em> to certain areas of the state space, and fail to generalize once they enter a region they haven’t yet seen. The algorithms we saw in the chapter on fitted DP <a class="reference internal" href="fitted_dp.html#fitted-dp"><span class="std std-ref">Fitted Dynamic Programming Algorithms</span></a> suffer from this issue.</p>
 <p>In the multi-armed bandits chapter <a class="reference internal" href="bandits.html#bandits"><span class="std std-ref">Multi-Armed Bandits</span></a>, where the state never changes so all we care about are the actions, we saw algorithms like UCB <a class="reference internal" href="bandits.html#ucb"><span class="std std-ref">Upper Confidence Bound (UCB)</span></a> and Thompson sampling <a class="reference internal" href="bandits.html#thompson-sampling"><span class="std std-ref">Thompson sampling and Bayesian bandits</span></a> that incentivize the learner to explore arms that it is uncertain about. In this chapter, we will see how to generalize these ideas to the MDP setting.</p>
 <div class="proof definition admonition" id="per_episode_regret">
-<p class="admonition-title"><span class="caption-number">Definition 7.1 </span> (Per-episode regret)</p>
+<p class="admonition-title"><span class="caption-number">Definition 8.1 </span> (Per-episode regret)</p>
 <section class="definition-content" id="proof-content">
 <p>To quantify the performance of a learning algorithm, we will consider its per-episode regret over <span class="math notranslate nohighlight">\(T\)</span> timesteps/episodes:</p>
 <div class="math notranslate nohighlight">
@@ -415,11 +413,11 @@ document.write(`
 <p>where <span class="math notranslate nohighlight">\(\pi^t\)</span> is the policy generated by the algorithm at the <span class="math notranslate nohighlight">\(t\)</span>th iteration.</p>
 </section>
 </div><section id="sparse-reward">
-<h3><span class="section-number">7.1.1. </span>Sparse reward<a class="headerlink" href="#sparse-reward" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">8.1.1. </span>Sparse reward<a class="headerlink" href="#sparse-reward" title="Link to this heading">#</a></h3>
 <p>Exploration is especially crucial in <strong>sparse reward</strong> problems where reward doesn’t come until after many steps, and algorithms which do not <em>systematically</em> explore new states may fail to learn anything meaningful (within a reasonable amount of time).</p>
 <p>For example, policy gradient algorithms require the gradient to be nonzero in order to learn. If we never observe any reward, the gradient will always be zero, and the policy will never change or improve.</p>
 <div class="proof example admonition" id="sparse_reward_mdp">
-<p class="admonition-title"><span class="caption-number">Example 7.1 </span> (Sparse Reward MDP)</p>
+<p class="admonition-title"><span class="caption-number">Example 8.1 </span> (Sparse Reward MDP)</p>
 <section class="example-content" id="proof-content">
 <p>Here’s a simple example of an MDP with sparse reward:</p>
 <p><img alt="image" src="_images/sparse_reward_mdp.png" /></p>
@@ -427,10 +425,10 @@ document.write(`
 </section>
 </div></section>
 <section id="exploration-in-deterministic-mdps">
-<h3><span class="section-number">7.1.2. </span>Exploration in deterministic MDPs<a class="headerlink" href="#exploration-in-deterministic-mdps" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">8.1.2. </span>Exploration in deterministic MDPs<a class="headerlink" href="#exploration-in-deterministic-mdps" title="Link to this heading">#</a></h3>
 <p>Let us address the exploration problem in a <em>deterministic</em> MDP where taking action <span class="math notranslate nohighlight">\(a\)</span> in state <span class="math notranslate nohighlight">\(s\)</span> always leads to the state <span class="math notranslate nohighlight">\(P(s, a) \in \mathcal{S}\)</span>. In this simple setting, there will be no “automatic” exploration due to randomness, so our strategy must actively explore new states. One simple strategy is to visit every possible state-action pair to learn the entire MDP. Then, once the MDP is known, we can use DP to solve for the optimal policy. (This should remind you of the <a class="reference internal" href="bandits.html#etc"><span class="std std-ref">Explore-then-commit</span></a> algorithm.)</p>
 <div class="proof definition admonition" id="explore_then_exploit">
-<p class="admonition-title"><span class="caption-number">Definition 7.2 </span> (Explore-then-exploit (for deterministic MDPs))</p>
+<p class="admonition-title"><span class="caption-number">Definition 8.2 </span> (Explore-then-exploit (for deterministic MDPs))</p>
 <section class="definition-content" id="proof-content">
 <p>We’ll keep a set <span class="math notranslate nohighlight">\(K\)</span> of all the <span class="math notranslate nohighlight">\((s, a, r, s')\)</span> pairs we’ve observed. Each episode, we’ll choose an unseen state-action pair for which the reward and the next state are unknown, and take the shortest path there. We assume that every state can be reached from the initial state within a single episode.</p>
 <!-- :::{algorithmic}
@@ -454,14 +452,14 @@ $K \gets \emptyset$ Using our known transitions $K$, compute the shortest path $
 </div>
 </div>
 <div class="proof theorem admonition" id="theorem-3">
-<p class="admonition-title"><span class="caption-number">Theorem 7.1 </span></p>
+<p class="admonition-title"><span class="caption-number">Theorem 8.1 </span></p>
 <section class="theorem-content" id="proof-content">
 <p>Performance of explore-then-exploitexplore_then_exploit_performance As long as every state can be reached from <span class="math notranslate nohighlight">\(s_0\)</span> within a single episode, i.e. <span class="math notranslate nohighlight">\(|\mathcal{S}| \le \hor\)</span>, this will eventually be able to explore all <span class="math notranslate nohighlight">\(|\mathcal{S}| |\mathcal{A}|\)</span> state-action pairs, adding one new transition per episode. We know it will take at most <span class="math notranslate nohighlight">\(|\mathcal{S}| |\mathcal{A}|\)</span> iterations to explore the entire MDP, after which <span class="math notranslate nohighlight">\(\pi^t = \pi^\star\)</span>, incurring no additional regret. For each <span class="math notranslate nohighlight">\(\pi^t\)</span> up until then, corresponding to the shortest-path policies <span class="math notranslate nohighlight">\(\tilde \pi\)</span>, the value of policy <span class="math notranslate nohighlight">\(\pi^t\)</span> will differ from that of <span class="math notranslate nohighlight">\(\pi^\star\)</span> by at most <span class="math notranslate nohighlight">\(\hor\)</span>, since the policies will differ by at most <span class="math notranslate nohighlight">\(1\)</span> reward at each timestep. So, $<span class="math notranslate nohighlight">\(\sum_{t=0}^{T-1} V^\star_0 - V_0^{\pi^t} \le |\mathcal{S}||\mathcal{A}| \hor.\)</span>$ (Note that this MDP and algorithm are deterministic, so the regret is not random.)</p>
 </section>
 </div></section>
 </section>
 <section id="treating-an-unknown-mdp-as-a-mab">
-<span id="mdp-mab"></span><h2><span class="section-number">7.2. </span>Treating an unknown MDP as a MAB<a class="headerlink" href="#treating-an-unknown-mdp-as-a-mab" title="Link to this heading">#</a></h2>
+<span id="mdp-mab"></span><h2><span class="section-number">8.2. </span>Treating an unknown MDP as a MAB<a class="headerlink" href="#treating-an-unknown-mdp-as-a-mab" title="Link to this heading">#</a></h2>
 <p>We also explored the exploration-exploitation tradeoff in the chapter on <a class="reference internal" href="bandits.html#bandits"><span class="std std-ref">Multi-Armed Bandits</span></a>. Recall tthat in the MAB setting, we have <span class="math notranslate nohighlight">\(K\)</span> arms, each of which has an unknown reward distribution, and we want to learn which of the arms is <em>optimal</em>, i.e. has the highest mean reward.</p>
 <p>One algorithm that struck a good balance between exploration and exploitation was the <strong>upper confidence bound</strong> algorithm <a class="reference internal" href="bandits.html#ucb"><span class="std std-ref">Upper Confidence Bound (UCB)</span></a>: For each arm, we construct a <em>confidence interval</em> for its true mean award, and then choose the arm with the highest upper confidence bound. In summary, $<span class="math notranslate nohighlight">\(k_{t+1} \gets \argmax_{k \in [K]} \frac{R^{k}_t}{N^{k}_t} + \sqrt{\frac{\ln(2t/\delta)}{2 N^{k}_t}}\)</span><span class="math notranslate nohighlight">\( where \)</span>N_t^k<span class="math notranslate nohighlight">\( indicates the number of times arm \)</span>k<span class="math notranslate nohighlight">\( has been pulled up until time \)</span>t<span class="math notranslate nohighlight">\(, \)</span>R_t^k<span class="math notranslate nohighlight">\( indicates the total reward obtained by pulling arm \)</span>k<span class="math notranslate nohighlight">\( up until time \)</span>t<span class="math notranslate nohighlight">\(, and \)</span>\delta &gt; 0$ controls the width of the confidence interval. How might we extend UCB to the MDP case?</p>
 <p>Let us formally describe an unknown MDP as an MAB problem. In an unknown MDP, we want to learn which <em>policy</em> is optimal. So if we want to apply MAB techniques to solving an MDP, it makes sense to think of <em>arms</em> as <em>policies</em>. There are <span class="math notranslate nohighlight">\(K = (|\mathcal{A}|^{|\mathcal{S}|})^\hor\)</span> deterministic policies in a finite MDP. Then, “pulling” arm <span class="math notranslate nohighlight">\(\pi\)</span> corresponds to using <span class="math notranslate nohighlight">\(\pi\)</span> to act through a trajectory in the MDP, and observing the total reward.</p>
@@ -471,17 +469,17 @@ $K \gets \emptyset$ Using our known transitions $K$, compute the shortest path $
 </div>
 <p>Recall that UCB incurs regret <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{TK})\)</span>, where <span class="math notranslate nohighlight">\(T\)</span> is the number of pulls and <span class="math notranslate nohighlight">\(K\)</span> is the number of arms. So in the MDP-as-MAB problem, using UCB for <span class="math notranslate nohighlight">\(T\)</span> episodes would achieve regret</p>
 <div class="math notranslate nohighlight" id="equation-mdp-as-mab">
-<span class="eqno">(7.1)<a class="headerlink" href="#equation-mdp-as-mab" title="Link to this equation">#</a></span>\[\tilde{O}(\sqrt{|\mathcal{A}|^{|\mathcal{S}|\hor} T})\]</div>
+<span class="eqno">(8.1)<a class="headerlink" href="#equation-mdp-as-mab" title="Link to this equation">#</a></span>\[\tilde{O}(\sqrt{|\mathcal{A}|^{|\mathcal{S}|\hor} T})\]</div>
 <p>This scales <em>exponentially</em> in <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span> and <span class="math notranslate nohighlight">\(\hor\)</span>, which quickly becomes intractable. Notably, this method doesn’t consider the information that we gain across different policies. We can illustrate this with the following example:</p>
 <div class="proof example admonition" id="ineffective_mdp">
-<p class="admonition-title"><span class="caption-number">Example 7.2 </span> (Treating an MDP as a MAB)</p>
+<p class="admonition-title"><span class="caption-number">Example 8.2 </span> (Treating an MDP as a MAB)</p>
 <section class="example-content" id="proof-content">
 <p>Consider a “coin MDP” with two states “heads” and “tails”, two actions “Y” and “N”, and a time horizon of <span class="math notranslate nohighlight">\(\hor=2\)</span>. The state transition flips the coin, and doesn’t depend on the action. The reward only depends on the action: Taking action Y gives reward <span class="math notranslate nohighlight">\(1\)</span>, and taking action N gives reward <span class="math notranslate nohighlight">\(0\)</span>.</p>
 <p>Suppose we collect data from the two constant policies <span class="math notranslate nohighlight">\(\pi_{\text{Y}}(s) = \text{Y}\)</span> and <span class="math notranslate nohighlight">\(\pi_{\text{N}}(s) = \text{N}\)</span>. Now we want to learn about the policy <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> that takes action Y and then N. Do we need to collect data from <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> to evaluate it? No: Since the reward only depends on the action, we can infer its value from our data on the policies <span class="math notranslate nohighlight">\(\pi_{\text{Y}}\)</span> and <span class="math notranslate nohighlight">\(\pi_{\text{N}}\)</span>. However, if we treat the MDP as a bandit in which <span class="math notranslate nohighlight">\(\tilde{\pi}\)</span> is a new, unknown arm, we ignore the known correlation between the action and the reward.</p>
 </section>
 </div></section>
 <section id="ucb-vi">
-<h2><span class="section-number">7.3. </span>UCB-VI<a class="headerlink" href="#ucb-vi" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">8.3. </span>UCB-VI<a class="headerlink" href="#ucb-vi" title="Link to this heading">#</a></h2>
 <p>The approach above is inefficient: We shouldn’t need to consider all <span class="math notranslate nohighlight">\(|\mathcal{A}|^{|\mathcal{S}| H}\)</span> deterministic policies to achieve low regret. Rather, all we need to describe the optimal policy is <span class="math notranslate nohighlight">\(Q^\star\)</span>, which has <span class="math notranslate nohighlight">\(H |\mathcal{S}||\mathcal{A}|\)</span> entries to be learned. Can we borrow ideas from UCB to reduce the regret to this order (i.e. polynomial in <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span>, <span class="math notranslate nohighlight">\(|\mathcal{A}|\)</span>, and <span class="math notranslate nohighlight">\(H\)</span>)?</p>
 <p>One way to frame the UCB algorithm is that, when choosing arms, we optimize over a <em>proxy reward</em> that is the sum of the estimated mean reward and an exploration term. In the <strong>UCB-VI</strong> algorithm, we will extend this idea to the case of an unknown MDP <span class="math notranslate nohighlight">\(\mathcal{M}^{?}\)</span> by modelling a proxy MDP <span class="math notranslate nohighlight">\(\tilde{\mathcal{M}}\)</span> with a reward function that encourages exploration. Then, we will use DP to solve for the optimal policy in <span class="math notranslate nohighlight">\(\tilde{\mathcal{M}}\)</span>.</p>
 <p><strong>Assumptions:</strong> For simplicity, here we assume the reward function of <span class="math notranslate nohighlight">\(\mathcal{M}^{?}\)</span> is known, so we only need to model the state transitions, though the rewards can be modelled similarly. We will also consider the more general case of a <strong>time-varying</strong> MDP, where the transition and reward functions can change over time. We take the convention that <span class="math notranslate nohighlight">\(P_\hi\)</span> is the distribution of <span class="math notranslate nohighlight">\(s_{h+1} \mid s_{h}, a_{h}\)</span> and <span class="math notranslate nohighlight">\(r_\hi\)</span> is applied to <span class="math notranslate nohighlight">\(s_\hi, a_\hi\)</span>.</p>
@@ -492,21 +490,21 @@ $K \gets \emptyset$ Using our known transitions $K$, compute the shortest path $
 <li><p><strong>Optimistic planning:</strong> Use DP to compute the optimal policy <span class="math notranslate nohighlight">\(\hat \pi_\hi(s)\)</span> in the modelled MDP $<span class="math notranslate nohighlight">\(\tilde{\mathcal{M}} = (\mathcal{S}, \mathcal{A}, \{ \hat{P}_\hi \}_{h \in [H]}, \{ r_\hi + b_\hi \}_{h \in [H]}, H).\)</span>$</p></li>
 <li><p><strong>Execution:</strong> Use <span class="math notranslate nohighlight">\(\hat \pi_\hi(s)\)</span> to collect a new trajectory, and repeat.</p></li>
 </ol>
-<p>We detail each of these steps below. The full definition follows in <a class="reference internal" href="#ucb_vi">Definition 7.3</a>.</p>
+<p>We detail each of these steps below. The full definition follows in <a class="reference internal" href="#ucb_vi">Definition 8.3</a>.</p>
 <section id="modelling-the-transitions">
-<h3><span class="section-number">7.3.1. </span>Modelling the transitions<a class="headerlink" href="#modelling-the-transitions" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">8.3.1. </span>Modelling the transitions<a class="headerlink" href="#modelling-the-transitions" title="Link to this heading">#</a></h3>
 <p>We seek to approximate <span class="math notranslate nohighlight">\(P_\hi(s_{h+1} \mid s_\hi, a_\hi) = \frac{\P(s_\hi, a_\hi, s_{h+1})}{\P(s_\hi, a_\hi)}\)</span>. We can estimate these using their sample probabilities from the dataset. That is, define $<span class="math notranslate nohighlight">\(\begin{aligned}
     N_\hi^t(s, a, s') &amp; := \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s, a, s') } \\
     N_\hi^t(s, a)     &amp; := \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) }                \\
 \end{aligned}\)</span><span class="math notranslate nohighlight">\( Then we can model \)</span><span class="math notranslate nohighlight">\(\hat{P}_\hi^t(s' \mid s, a) = \frac{N_\hi^t(s, a, s')}{N_\hi^t(s, a)}.\)</span>$</p>
 <div class="proof remark admonition" id="remark-5">
-<p class="admonition-title"><span class="caption-number">Remark 7.1 </span></p>
+<p class="admonition-title"><span class="caption-number">Remark 8.1 </span></p>
 <section class="remark-content" id="proof-content">
 <p>Note that this is also a fairly naive, nonparametric estimator that doesn’t assume any underlying structure of the MDP. We’ll see how to incorporate assumptions about the MDP in the following section.</p>
 </section>
 </div></section>
 <section id="reward-bonus">
-<h3><span class="section-number">7.3.2. </span>Reward bonus<a class="headerlink" href="#reward-bonus" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">8.3.2. </span>Reward bonus<a class="headerlink" href="#reward-bonus" title="Link to this heading">#</a></h3>
 <p>To motivate the reward bonus term <span class="math notranslate nohighlight">\(b_\hi^t(s, a)\)</span>, recall how we designed the reward bonus term for UCB:</p>
 <ol class="arabic simple">
 <li><p>We used Hoeffding’s inequality to bound, with high probability, how far the sample mean <span class="math notranslate nohighlight">\(\hat \mu_t^k\)</span> deviated from the true mean <span class="math notranslate nohighlight">\(\mu^k\)</span>.</p></li>
@@ -516,7 +514,7 @@ $K \gets \emptyset$ Using our known transitions $K$, compute the shortest path $
 <p>We’d like to do the same for UCB-VI, and construct the bonus term such that <span class="math notranslate nohighlight">\(V^\star_\hi(s) \le \hat{V}_\hi^t(s)\)</span> with high probability. However, our construction will be more complex than the MAB case, since <span class="math notranslate nohighlight">\(\hat{V}_\hi^t(s)\)</span> depends on the bonus <span class="math notranslate nohighlight">\(b_\hi^t(s, a)\)</span> implicitly via DP. We claim that the bonus term that gives the proper bound is $<span class="math notranslate nohighlight">\(b_\hi^t(s, a) = 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_\hi^t(s, a)}}.
     \label{eq:ucb_vi_bonus}\)</span>$ We will only provide a heuristic sketch of the proof; see <code class="docutils literal notranslate"><span class="pre">\cite[Section</span> <span class="pre">7.3]{agarwal_reinforcement_2022}</span></code>{=latex} for a full proof.</p>
 <div class="proof remark admonition" id="ucb_vi_bonus">
-<p class="admonition-title"><span class="caption-number">Remark 7.2 </span> (UCB-VI reward bonus construction)</p>
+<p class="admonition-title"><span class="caption-number">Remark 8.2 </span> (UCB-VI reward bonus construction)</p>
 <section class="remark-content" id="proof-content">
 <p>We aim to show that, with high probability, $<span class="math notranslate nohighlight">\(V_\hi^\star(s) \le \hat{V}_\hi^t(s) \quad \forall t \in [T], h \in [H], s \in \mathcal{S}.\)</span><span class="math notranslate nohighlight">\( We'll do this by bounding the error incurred at each step of DP. Recall that DP solves for \)</span>\hat{V}<em>\hi^t(s)<span class="math notranslate nohighlight">\( recursively as follows: \)</span><span class="math notranslate nohighlight">\(\hat{V}_\hi^t(s) = \max_{a \in \mathcal{A}} \left[ \tilde r^t_\hi(s, a) + \E_{s' \sim \hat{P}_\hi^t(\cdot \mid s, a)} \left[ \hat{V}_{h+1}^t(s') \right] \right]\)</span><span class="math notranslate nohighlight">\( where \)</span>\tilde r^t</em>\hi(s, a) = r_\hi(s, a) + b_\hi^t(s, a)<span class="math notranslate nohighlight">\( is the reward function of our modelled MDP \)</span>\tilde{\mathcal{M}}^t<span class="math notranslate nohighlight">\(. On the other hand, we know that \)</span>V^\star<span class="math notranslate nohighlight">\( must satisfy \)</span><span class="math notranslate nohighlight">\(V^\star_\hi(s) = \max_{a \in \mathcal{A}} \left[ \tilde r^t_\hi(s, a) + \E_{s' \sim P^?_\hi(\cdot \mid s, a)} [V^\star_{\hi+1}(s')] \right]\)</span>$ so it suffices to bound the difference between the two inner expectations. There are two sources of error:</p>
 <ol class="arabic simple">
@@ -525,14 +523,14 @@ $K \gets \emptyset$ Using our known transitions $K$, compute the shortest path $
 </ol>
 <p>We can bound these individually, and then combine them by the triangle inequality. For the former, we can simply bound the difference by <span class="math notranslate nohighlight">\(H\)</span>, assuming that the rewards are within <span class="math notranslate nohighlight">\([0, 1]\)</span>. Now, all that is left is to bound the error from the transition probabilities:</p>
 <div class="math notranslate nohighlight" id="equation-err">
-<span class="eqno">(7.2)<a class="headerlink" href="#equation-err" title="Link to this equation">#</a></span>\[\text{error} = \left| \E_{s' \sim \hat{P}_\hi^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] - \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]. \right|\]</div>
+<span class="eqno">(8.2)<a class="headerlink" href="#equation-err" title="Link to this equation">#</a></span>\[\text{error} = \left| \E_{s' \sim \hat{P}_\hi^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] - \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]. \right|\]</div>
 </section>
 </div><p>Let us bound this term for a fixed <span class="math notranslate nohighlight">\(s, a, h, t\)</span>. (Later we can make this uniform across <span class="math notranslate nohighlight">\(s, a, h, t\)</span> using the union bound.) Note that expanding out the definition of <span class="math notranslate nohighlight">\(\hat{P}_\hi^t\)</span> gives $$\begin{aligned}
 \E_{s’ \sim \hat{P}<em>\hi^t(\cdot \mid s, a)} \left[ V^\star</em>{h+1}(s’) \right] &amp; = \sum_{s’ \in \mathcal{S}} \frac{N^t_\hi(s, a, s’)}{N^t_\hi(s, a)} V^\star_{h+1}(s’)                                                     \
 &amp; = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \sum_{s’ \in \mathcal{S}} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s, a, s’) } V^\star_{h+1}(s’) \
 &amp; = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \underbrace{\ind{ (s_\hi^i, a_\hi^i) = (s, a) } V^\star_{h+1}(s_{h+1}^i)}_{X^i}</p>
 <p>\end{aligned}$<span class="math notranslate nohighlight">\( since the terms where \)</span>s’ \neq s_{h+1}^i$ vanish.</p>
-<p>Now, in order to apply Hoeffding’s inequality, we would like to express the second term in <a class="reference internal" href="#equation-err">(7.2)</a> as a sum over <span class="math notranslate nohighlight">\(t\)</span> random variables as well. We will do this by redundantly averaging over all desired trajectories (i.e. where we visit state <span class="math notranslate nohighlight">\(s\)</span> and action <span class="math notranslate nohighlight">\(a\)</span> at time <span class="math notranslate nohighlight">\(h\)</span>): $$\begin{aligned}
+<p>Now, in order to apply Hoeffding’s inequality, we would like to express the second term in <a class="reference internal" href="#equation-err">(8.2)</a> as a sum over <span class="math notranslate nohighlight">\(t\)</span> random variables as well. We will do this by redundantly averaging over all desired trajectories (i.e. where we visit state <span class="math notranslate nohighlight">\(s\)</span> and action <span class="math notranslate nohighlight">\(a\)</span> at time <span class="math notranslate nohighlight">\(h\)</span>): $$\begin{aligned}
 \E_{s’ \sim P^?<em>\hi(\cdot \mid s, a)} \left[ V^\star</em>{h+1}(s’) \right]
 &amp; = \sum_{s’ \in \mathcal{S}} P^?<em>\hi(s’ \mid s, a) V^\star</em>{h+1}(s’)                                                                              \
 &amp; = \sum_{s’ \in \mathcal{S}} \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) } P^?<em>\hi(s’ \mid s, a) V^\star</em>{h+1}(s’) \
@@ -542,7 +540,7 @@ $K \gets \emptyset$ Using our known transitions $K$, compute the shortest path $
 <h3 class="rubric" id="definition">Definition</h3>
 <p>Putting these parts together, we can define the algorithm as follows:</p>
 <div class="proof definition admonition" id="ucb_vi">
-<p class="admonition-title"><span class="caption-number">Definition 7.3 </span> (UCB-VI)</p>
+<p class="admonition-title"><span class="caption-number">Definition 8.3 </span> (UCB-VI)</p>
 <section class="definition-content" id="proof-content">
 <!-- TODO :::{algorithmic}
 $N_\hi(s, a, s') \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s, a, s') }$ $N_\hi(s, a) \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) }$ $\hat P_\hi \gets \frac{N_\hi(s, a, s')}{N_\hi(s, a)}$ $b_\hi(s, a) \gets 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_\hi(s, a)}}$ $\tilde{\mathcal{M}} \gets (\mathcal{S}, \mathcal{A}, \{ \hat{P}_\hi \}_{h \in [H-1]}, \{ r_\hi + b_\hi \}_{h \in [H-1]}, H)$ $\hat \pi \gets \text{VI}(\tilde{\mathcal{M}})$ Use $\hat \pi_h(s)$ to collect a new trajectory $(s^t_\hi, a^t_\hi, s^t_{\hi+1})_{\hi \in [\hor]}$
@@ -551,26 +549,26 @@ $N_\hi(s, a, s') \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s
 </div></div>
 </section>
 <section id="performance-of-ucb-vi">
-<h3><span class="section-number">7.3.3. </span>Performance of UCB-VI<a class="headerlink" href="#performance-of-ucb-vi" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">8.3.3. </span>Performance of UCB-VI<a class="headerlink" href="#performance-of-ucb-vi" title="Link to this heading">#</a></h3>
 <p>How exactly does UCB-VI strike a good balance between exploration and exploitation? In UCB for MABs, the bonus exploration term is simple to interpret: It encourages the learner to take actions with a high exploration term. Here, the policy depends on the bonus term indirectly: The policy is obtained by planning in an MDP where the bonus term is added to the reward function. Note that the bonuses <em>propagate backwards</em> in DP, effectively enabling the learner to <em>plan to explore</em> unknown states. This effect takes some further interpretation.</p>
 <p>Recall we constructed <span class="math notranslate nohighlight">\(b^t_\hi\)</span> so that, with high probability, <span class="math notranslate nohighlight">\(V^\star_\hi(s) \le \hat{V}_\hi^t(s)\)</span> and so $<span class="math notranslate nohighlight">\(V^\star_\hi(s) - V^{\pi^t}_\hi(s) \le \hat{V}_\hi^t(s) - V^{\pi^t}_\hi(s).\)</span><span class="math notranslate nohighlight">\( That is, the l.h.s. measures how suboptimal policy \)</span>\pi^t<span class="math notranslate nohighlight">\( is in the true environment, while the r.h.s. is the difference in the policy's value when acting in the modelled MDP \)</span>\tilde{\mathcal{M}}^t<span class="math notranslate nohighlight">\( instead of the true one \)</span>\mathcal{M}^{?}$.</p>
 <p>If the r.h.s. is <em>small</em>, this implies that the l.h.s. difference is also small, i.e. that <span class="math notranslate nohighlight">\(\pi^t\)</span> is <em>exploiting</em> actions that are giving high reward.</p>
 <p>If the r.h.s. is <em>large</em>, then we have overestimated the value: <span class="math notranslate nohighlight">\(\pi^t\)</span>, the optimal policy of <span class="math notranslate nohighlight">\(\tilde{\mathcal{M}}^t\)</span>, does not perform well in the true environment <span class="math notranslate nohighlight">\(\mathcal{M}^{?}\)</span>. This indicates that one of the <span class="math notranslate nohighlight">\(b_h^t(s, a)\)</span> terms must be large, or some <span class="math notranslate nohighlight">\(\hat P^t_\hi(\cdot \mid s, a)\)</span> must be inaccurate, indicating a state-action pair with a low visit count <span class="math notranslate nohighlight">\(N^t_\hi(s, a)\)</span> that the learner was encouraged to explore.</p>
 <p>It turns out that UCB-VI achieves a per-episode regret of</p>
 <div class="proof theorem admonition" id="ucb_vi_regret">
-<p class="admonition-title"><span class="caption-number">Theorem 7.2 </span> (UCB-VI regret)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 8.2 </span> (UCB-VI regret)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\E \left[ \sum_{t=0}^{T-1} \left(V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right) \right] = \tilde{O}(H^2 \sqrt{|\mathcal{S}| |\mathcal{A}| T})\]</div>
 </section>
-</div><p>Comparing this to the UCB regret bound <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{T K})\)</span>, where <span class="math notranslate nohighlight">\(K\)</span> is the number of arms of the MAB, we see that we’ve reduced the number of effective arms from <span class="math notranslate nohighlight">\(|\mathcal{A}|^{|\mathcal{S}|\hor}\)</span> (in <a class="reference internal" href="#equation-mdp-as-mab">(7.1)</a>) to <span class="math notranslate nohighlight">\(H^4 |\mathcal{S}||\mathcal{A}|\)</span>, which is indeed polynomial in <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span>, <span class="math notranslate nohighlight">\(|\mathcal{A}|\)</span>, and <span class="math notranslate nohighlight">\(H\)</span>, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret: $<span class="math notranslate nohighlight">\(\frac{1}{T} \E[\text{Regret}_T] = \tilde{O}\left(\sqrt{\frac{H^4 |\mathcal{S}||\mathcal{A}|}{T}}\right)\)</span><span class="math notranslate nohighlight">\( Note that the time-dependent transition matrix has \)</span>H |\mathcal{S}|^2 |\mathcal{A}|<span class="math notranslate nohighlight">\( entries. Assuming \)</span>H \ll |\mathcal{S}|<span class="math notranslate nohighlight">\(, this shows that it's possible to achieve low regret, and achieve a near-optimal policy, while only understanding a \)</span>1/|\mathcal{S}|$ fraction of the world’s dynamics.</p>
+</div><p>Comparing this to the UCB regret bound <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{T K})\)</span>, where <span class="math notranslate nohighlight">\(K\)</span> is the number of arms of the MAB, we see that we’ve reduced the number of effective arms from <span class="math notranslate nohighlight">\(|\mathcal{A}|^{|\mathcal{S}|\hor}\)</span> (in <a class="reference internal" href="#equation-mdp-as-mab">(8.1)</a>) to <span class="math notranslate nohighlight">\(H^4 |\mathcal{S}||\mathcal{A}|\)</span>, which is indeed polynomial in <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span>, <span class="math notranslate nohighlight">\(|\mathcal{A}|\)</span>, and <span class="math notranslate nohighlight">\(H\)</span>, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret: $<span class="math notranslate nohighlight">\(\frac{1}{T} \E[\text{Regret}_T] = \tilde{O}\left(\sqrt{\frac{H^4 |\mathcal{S}||\mathcal{A}|}{T}}\right)\)</span><span class="math notranslate nohighlight">\( Note that the time-dependent transition matrix has \)</span>H |\mathcal{S}|^2 |\mathcal{A}|<span class="math notranslate nohighlight">\( entries. Assuming \)</span>H \ll |\mathcal{S}|<span class="math notranslate nohighlight">\(, this shows that it's possible to achieve low regret, and achieve a near-optimal policy, while only understanding a \)</span>1/|\mathcal{S}|$ fraction of the world’s dynamics.</p>
 </section>
 </section>
 <section id="linear-mdps">
-<h2><span class="section-number">7.4. </span>Linear MDPs<a class="headerlink" href="#linear-mdps" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">8.4. </span>Linear MDPs<a class="headerlink" href="#linear-mdps" title="Link to this heading">#</a></h2>
 <p>A polynomial dependency on <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span> and <span class="math notranslate nohighlight">\(|\mathcal{A}|\)</span> is manageable when the state and action spaces are small. But for large or continuous state and action spaces, even this polynomial factor will become intractable. Can we find algorithms that don’t depend on <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span> or <span class="math notranslate nohighlight">\(|\mathcal{A}|\)</span> at all, effectively reducing the dimensionality of the MDP? In this section, we’ll explore <strong>linear MDPs</strong>: an example of a <em>parameterized</em> MDP where the rewards and state transitions depend only on some parameter space of dimension <span class="math notranslate nohighlight">\(d\)</span> that is independent from <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span> or <span class="math notranslate nohighlight">\(|\mathcal{A}|\)</span>.</p>
 <div class="proof definition admonition" id="linear_mdp">
-<p class="admonition-title"><span class="caption-number">Definition 7.4 </span> (Linear MDP)</p>
+<p class="admonition-title"><span class="caption-number">Definition 8.4 </span> (Linear MDP)</p>
 <section class="definition-content" id="proof-content">
 <p>We assume that the transition probabilities and rewards are <em>linear</em> in some feature vector</p>
 <p><span class="math notranslate nohighlight">\(\phi(s, a) \in \mathbb{R}^d\)</span>:</p>
@@ -582,7 +580,7 @@ $N_\hi(s, a, s') \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s
 <p>Note that we can also think of <span class="math notranslate nohighlight">\(P_\hi(\cdot \mid s, a) = \mu_\hi^\star\)</span> as an <span class="math notranslate nohighlight">\(|\mathcal{S}| \times d\)</span> matrix, and think of <span class="math notranslate nohighlight">\(\mu^\star_\hi(s')\)</span> as indexing into the <span class="math notranslate nohighlight">\(s'\)</span>-th row of this matrix (treating it as a column vector). Thinking of <span class="math notranslate nohighlight">\(V^\star_{\hi+1}\)</span> as an <span class="math notranslate nohighlight">\(|\mathcal{S}|\)</span>-dimensional vector, this allows us to write $<span class="math notranslate nohighlight">\(\E_{s' \sim P_\hi(\cdot \mid s, a)}[V^\star_{\hi+1}(s)] = (\mu^\star_\hi \phi(s, a))^\top V^\star_{\hi+1}.\)</span><span class="math notranslate nohighlight">\( The \)</span>\phi<span class="math notranslate nohighlight">\( feature mapping can be designed to capture interactions between the state \)</span>s<span class="math notranslate nohighlight">\( and action \)</span>a<span class="math notranslate nohighlight">\(. In this book, we'll assume that the feature map \)</span>\phi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}^d<span class="math notranslate nohighlight">\( and the reward function (described by \)</span>\theta_\hi^\star$) are known to the learner.</p>
 </section>
 </div><section id="planning-in-a-linear-mdp">
-<h3><span class="section-number">7.4.1. </span>Planning in a linear MDP<a class="headerlink" href="#planning-in-a-linear-mdp" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">8.4.1. </span>Planning in a linear MDP<a class="headerlink" href="#planning-in-a-linear-mdp" title="Link to this heading">#</a></h3>
 <p>It turns out that <span class="math notranslate nohighlight">\(Q^\star_\hi\)</span> is also linear with respect to this feature mapping. We can prove this by simply computing it using DP. We initialize <span class="math notranslate nohighlight">\(V_{H}^\star(s) = 0 \forall s\)</span>. Then we iterate: $<span class="math notranslate nohighlight">\(\begin{aligned}
     Q^\star_\hi(s, a)  &amp; = r_\hi(s, a) + \E_{s' \sim P_\hi(\cdot \mid s, a)} [V^\star_{h+1}(s')]                          \\
                      &amp; = \phi(s, a)^\top \theta_\hi^\star + (\mu_\hi^\star \phi(s, a))^\top V^\star_{h+1}               \\
@@ -596,23 +594,23 @@ $N_\hi(s, a, s') \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s
 </div>
 </section>
 <section id="ucb-vi-in-a-linear-mdp">
-<span id="lin-ucb-vi"></span><h3><span class="section-number">7.4.2. </span>UCB-VI in a linear MDP<a class="headerlink" href="#ucb-vi-in-a-linear-mdp" title="Link to this heading">#</a></h3>
+<span id="lin-ucb-vi"></span><h3><span class="section-number">8.4.2. </span>UCB-VI in a linear MDP<a class="headerlink" href="#ucb-vi-in-a-linear-mdp" title="Link to this heading">#</a></h3>
 <section id="id1">
-<h4><span class="section-number">7.4.2.1. </span>Modelling the transitions<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
+<h4><span class="section-number">8.4.2.1. </span>Modelling the transitions<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
 <p>This linear assumption on the MDP will also allow us to model the unknown dynamics <span class="math notranslate nohighlight">\(P^?_\hi(s' \mid s, a)\)</span> with techniques from <strong>supervised learning</strong> (SL). Recall that SL is useful for estimating conditional expectations by minimizing mean squared error. We can rephrase the estimation of <span class="math notranslate nohighlight">\(P^?_\hi(s' \mid s, a)\)</span> as a least-squares problem as follows: Write <span class="math notranslate nohighlight">\(\delta_s\)</span> to denote a one-hot vector in <span class="math notranslate nohighlight">\(\mathbb{R}^{|\mathcal{S}|}\)</span>, with a <span class="math notranslate nohighlight">\(1\)</span> in the <span class="math notranslate nohighlight">\(s\)</span>-th entry and <span class="math notranslate nohighlight">\(0\)</span> everywhere else. Note that $<span class="math notranslate nohighlight">\(\E_{s' \sim P_h(\cdot \mid s, a)} [\delta_{s'}] = P_h(\cdot \mid s, a) = \mu_h^\star \phi(s, a).\)</span><span class="math notranslate nohighlight">\( Furthermore, since the expectation here is linear with respect to \)</span>\phi(s, a)<span class="math notranslate nohighlight">\(, we can directly apply least-squares multi-target linear regression to construct the estimate \)</span><span class="math notranslate nohighlight">\(\hat \mu = \argmin_{\mu \in \mathbb{R}^{|\mathcal{S}| \times d}} \sum_{t=0}^{T-1} \|\mu \phi(s_h^i, a_h^i) - \delta_{s_{h+1}^i} \|_2^2.\)</span><span class="math notranslate nohighlight">\( This has a well-known closed-form solution: \)</span><span class="math notranslate nohighlight">\(\begin{aligned}
     \hat \mu^\top            &amp; = (A_h^t)^{-1} \sum_{i=0}^{t-1} \phi(s_h^i, a_h^i) \delta_{s_{h+1}^i}^\top \\
     \text{where} \quad A_h^t &amp; = \sum_{i=0}^{t-1} \phi(s_h^i, a_h^i) \phi(s_h^i, a_h^i)^\top + \lambda I
 \end{aligned}\)</span><span class="math notranslate nohighlight">\( where we include a \)</span>\lambda I<span class="math notranslate nohighlight">\( term to ensure that the matrix \)</span>A^t_h<span class="math notranslate nohighlight">\( is invertible. (This can also be derived by adding a \)</span>\lambda |\mu|_{\text{F}}^2<span class="math notranslate nohighlight">\( regularization term to the objective.) We can directly plug in this estimate into \)</span>\hat{P}^t_h(\cdot \mid s, a) = \hat \mu^t_h \phi(s, a)$.</p>
 </section>
 <section id="id2">
-<h4><span class="section-number">7.4.2.2. </span>Reward bonus<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
-<p>Now, to design the reward bonus, we can’t apply Hoeffding anymore, since the terms no longer involve sample means of bounded random variables; Instead, we’re incorporating information across different states and actions. Rather, we can construct an upper bound using <em>Chebyshev’s inequality</em> in the same way we did for the LinUCB algorithm in the MAB setting <a class="reference internal" href="bandits.html#lin-ucb"><span class="std std-ref">Linear contextual bandits</span></a>: $<span class="math notranslate nohighlight">\(b^t_\hi(s, a) = \beta \sqrt{\phi(s, a)^\top (A^t_h)^{-1} \phi(s, a)}, \quad \beta = \tilde O(d \hor).\)</span><span class="math notranslate nohighlight">\( Note that this isn't explicitly inversely proportional to \)</span>N_h^t(s, a)<span class="math notranslate nohighlight">\( as in the original UCB-VI bonus term {prf:ref}`eq:ucb_vi_bonus`. Rather, it is inversely proportional to the amount that the direction \)</span>\phi(s, a)<span class="math notranslate nohighlight">\( has been explored in the history. That is, if \)</span>A_h^t<span class="math notranslate nohighlight">\( has a large component in the direction \)</span>\phi(s, a)$, implying that this direction is well explored, then the bonus term will be small, and vice versa.</p>
-<p>We can now plug in these transition estimates and reward bonuses into the UCB-VI algorithm <a class="reference internal" href="#ucb_vi">Definition 7.3</a>.</p>
+<h4><span class="section-number">8.4.2.2. </span>Reward bonus<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<p>Now, to design the reward bonus, we can’t apply Hoeffding anymore, since the terms no longer involve sample means of bounded random variables; Instead, we’re incorporating information across different states and actions. Rather, we can construct an upper bound using <em>Chebyshev’s inequality</em> in the same way we did for the LinUCB algorithm in the MAB setting <a class="reference internal" href="contextual_bandits.html#lin-ucb"><span class="std std-ref">Linear contextual bandits</span></a>: $<span class="math notranslate nohighlight">\(b^t_\hi(s, a) = \beta \sqrt{\phi(s, a)^\top (A^t_h)^{-1} \phi(s, a)}, \quad \beta = \tilde O(d \hor).\)</span><span class="math notranslate nohighlight">\( Note that this isn't explicitly inversely proportional to \)</span>N_h^t(s, a)<span class="math notranslate nohighlight">\( as in the original UCB-VI bonus term {prf:ref}`eq:ucb_vi_bonus`. Rather, it is inversely proportional to the amount that the direction \)</span>\phi(s, a)<span class="math notranslate nohighlight">\( has been explored in the history. That is, if \)</span>A_h^t<span class="math notranslate nohighlight">\( has a large component in the direction \)</span>\phi(s, a)$, implying that this direction is well explored, then the bonus term will be small, and vice versa.</p>
+<p>We can now plug in these transition estimates and reward bonuses into the UCB-VI algorithm <a class="reference internal" href="#ucb_vi">Definition 8.3</a>.</p>
 </section>
 <section id="performance">
-<h4><span class="section-number">7.4.2.3. </span>Performance<a class="headerlink" href="#performance" title="Link to this heading">#</a></h4>
+<h4><span class="section-number">8.4.2.3. </span>Performance<a class="headerlink" href="#performance" title="Link to this heading">#</a></h4>
 <div class="proof theorem admonition" id="lin_ucb_vi_regret">
-<p class="admonition-title"><span class="caption-number">Theorem 7.3 </span> (LinUCB-VI regret)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 8.3 </span> (LinUCB-VI regret)</p>
 <section class="theorem-content" id="proof-content">
 <p>The LinUCB-VI algorithm achieves expected regret $<span class="math notranslate nohighlight">\(\E[\text{Regret}_T] = \E\left[\sum_{t=0}^{T-1} V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right] \le \tilde O(H^2 d^{1.5} \sqrt{T})\)</span>$</p>
 </section>
@@ -621,12 +619,12 @@ $N_\hi(s, a, s') \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s
 </section>
 </section>
 <section id="summary">
-<h2><span class="section-number">7.5. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">8.5. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 <p>In this chapter, we’ve explored how to explore in an unknown MDP.</p>
 <ul class="simple">
-<li><p>We first discussed the explore-then-exploit algorithm <a class="reference internal" href="#explore_then_exploit">Definition 7.2</a>, a simple way to explore a deterministic MDP by visiting all state-action pairs.</p></li>
+<li><p>We first discussed the explore-then-exploit algorithm <a class="reference internal" href="#explore_then_exploit">Definition 8.2</a>, a simple way to explore a deterministic MDP by visiting all state-action pairs.</p></li>
 <li><p>We then discussed how to treat an unknown MDP as a MAB <a class="reference internal" href="#mdp-mab"><span class="std std-ref">Treating an unknown MDP as a MAB</span></a>, and how this approach is inefficient since it doesn’t make use of relationships between policies.</p></li>
-<li><p>We then introduced the UCB-VI algorithm <a class="reference internal" href="#ucb_vi">Definition 7.3</a>, which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration.</p></li>
+<li><p>We then introduced the UCB-VI algorithm <a class="reference internal" href="#ucb_vi">Definition 8.3</a>, which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration.</p></li>
 <li><p>Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCB-VI algorithm <a class="reference internal" href="#lin-ucb-vi"><span class="std std-ref">UCB-VI in a linear MDP</span></a>, which has a sample complexity independent of the size of the state and action spaces.</p></li>
 </ul>
 </section>
@@ -659,24 +657,24 @@ $N_\hi(s, a, s') \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s
               
               
               
-                <footer class="prev-next-footer d-print-none">
+                <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="pg.html"
+       href="planning.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">6. </span>Policy Gradient Algorithms</p>
+        <p class="prev-next-title"><span class="section-number">7. </span>Planning</p>
       </div>
     </a>
     <a class="right-next"
-       href="imitation_learning.html"
+       href="contextual_bandits.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">8. </span>Imitation Learning</p>
+        <p class="prev-next-title"><span class="section-number">9. </span>Contextual bandits</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -696,29 +694,29 @@ $N_\hi(s, a, s') \gets \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">7.1. Introduction</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sparse-reward">7.1.1. Sparse reward</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-in-deterministic-mdps">7.1.2. Exploration in deterministic MDPs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">8.1. Introduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sparse-reward">8.1.1. Sparse reward</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exploration-in-deterministic-mdps">8.1.2. Exploration in deterministic MDPs</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treating-an-unknown-mdp-as-a-mab">7.2. Treating an unknown MDP as a MAB</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi">7.3. UCB-VI</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelling-the-transitions">7.3.1. Modelling the transitions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-bonus">7.3.2. Reward bonus</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-of-ucb-vi">7.3.3. Performance of UCB-VI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treating-an-unknown-mdp-as-a-mab">8.2. Treating an unknown MDP as a MAB</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi">8.3. UCB-VI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelling-the-transitions">8.3.1. Modelling the transitions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-bonus">8.3.2. Reward bonus</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-of-ucb-vi">8.3.3. Performance of UCB-VI</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-mdps">7.4. Linear MDPs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#planning-in-a-linear-mdp">7.4.1. Planning in a linear MDP</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi-in-a-linear-mdp">7.4.2. UCB-VI in a linear MDP</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">7.4.2.1. Modelling the transitions</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">7.4.2.2. Reward bonus</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#performance">7.4.2.3. Performance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-mdps">8.4. Linear MDPs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#planning-in-a-linear-mdp">8.4.1. Planning in a linear MDP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ucb-vi-in-a-linear-mdp">8.4.2. UCB-VI in a linear MDP</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">8.4.2.1. Modelling the transitions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">8.4.2.2. Reward bonus</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#performance">8.4.2.3. Performance</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">7.5. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">8.5. Summary</a></li>
 </ul>
   </nav></div>
 
@@ -767,8 +765,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>

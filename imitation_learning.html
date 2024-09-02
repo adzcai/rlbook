@@ -8,46 +8,46 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>8. Imitation Learning &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>6. Imitation Learning &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/proof.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/proof.css?v=ca93fcec" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
@@ -87,7 +87,7 @@ var addUtterances = () => {
 commentsRunWhenDOMLoaded(addUtterances);
 </script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/design-tabs.js?v=36754332"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'imitation_learning';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="9. Bibliography" href="bibliography.html" />
-    <link rel="prev" title="7. Exploration in MDPs" href="exploration.html" />
+    <link rel="next" title="7. Planning" href="planning.html" />
+    <link rel="prev" title="5. Policy Optimization" href="pg.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -108,23 +108,27 @@ commentsRunWhenDOMLoaded(addUtterances);
 
   
   
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
 
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -146,13 +150,8 @@ commentsRunWhenDOMLoaded(addUtterances);
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
     </header>
   
 
@@ -176,8 +175,6 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item">
 
   
-    
-  
 
 <a class="navbar-brand logo" href="index.html">
   
@@ -199,7 +196,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
  <script>
  document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -209,15 +206,16 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">1. Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bandits.html">2. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mdps.html">3. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="control.html">5. Linear Quadratic Regulators</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Gradient Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">7. Exploration in MDPs</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">8. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">9. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">6. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
 </ul>
 
     </div>
@@ -233,7 +231,7 @@ commentsRunWhenDOMLoaded(addUtterances);
 
       </div>
       
-      <main id="main-content" class="bd-main" role="main">
+      <main id="main-content" class="bd-main">
         
         
 
@@ -242,14 +240,14 @@ commentsRunWhenDOMLoaded(addUtterances);
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article d-print-none">
+              <div class="bd-header-article">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</button></div>
+</label></div>
       
     </div>
   
@@ -327,10 +325,10 @@ commentsRunWhenDOMLoaded(addUtterances);
 
 <script>
 document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
@@ -338,14 +336,14 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</button>
+</label>
 </div></div>
       
     </div>
@@ -366,9 +364,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">8.1. Behavioural cloning</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">8.2. Distribution shift</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">8.3. Dataset aggregation (DAgger)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">6.1. Behavioural cloning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">6.2. Distribution shift</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">6.3. Dataset aggregation (DAgger)</a></li>
 </ul>
             </nav>
         </div>
@@ -381,7 +379,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="imitation-learning">
-<h1><span class="section-number">8. </span>Imitation Learning<a class="headerlink" href="#imitation-learning" title="Link to this heading">#</a></h1>
+<span id="id1"></span><h1><span class="section-number">6. </span>Imitation Learning<a class="headerlink" href="#imitation-learning" title="Link to this heading">#</a></h1>
 <p>Imagine you are tasked with learning how to drive. How do, or did, you go about it?
 At first, this task might seem insurmountable: there are a vast array of controls, and the cost of making a single mistake could be extremely high, making it hard to explore by trial and error.
 Luckily, there are already people in the world who know how to drive who can get you started.
@@ -392,7 +390,7 @@ In such cases, the machine learning algorithm is the one learning the new skill,
 We’ll see that the most naive form of imitation learning, called <strong>behavioural cloning</strong>, is really an application of supervised learning to interactive tasks.
 We’ll then explore <strong>dataset aggregation</strong> (DAgger) as a way to query an expert and learn even more effectively.</p>
 <section id="behavioural-cloning">
-<h2><span class="section-number">8.1. </span>Behavioural cloning<a class="headerlink" href="#behavioural-cloning" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.1. </span>Behavioural cloning<a class="headerlink" href="#behavioural-cloning" title="Link to this heading">#</a></h2>
 <p>This notion of “learning from human-provided data” may remind you of the basic premise of <a class="reference internal" href="fitted_dp.html#supervised-learning"><span class="std std-ref">Supervised learning</span></a>,
 in which there is some mapping from <em>inputs</em> to <em>outputs</em> that us humans can implicitly compute, such as seeing a photo and being able to recognize its constituents.
 To teach a machine to calculate this mapping, we first collect a large <em>training dataset</em> by getting people to label a lot of inputs,
@@ -402,7 +400,7 @@ Here, the input is the observation seen by the agent and the output is the actio
 What’s stopping us from applying supervised learning techniques?
 In practice, nothing! This is called <strong>behavioural cloning.</strong></p>
 <div class="proof algorithm admonition" id="algorithm-0">
-<p class="admonition-title"><span class="caption-number">Algorithm 8.1 </span></p>
+<p class="admonition-title"><span class="caption-number">Algorithm 6.1 </span></p>
 <section class="algorithm-content" id="proof-content">
 <ol class="arabic simple">
 <li><p>Collect a training dataset of trajectories generated by an expert policy <span class="math notranslate nohighlight">\(\pi_\text{data}\)</span>. Here, we treat each state-action pair as independent, resuling in a dataset <span class="math notranslate nohighlight">\(\mathcal{D} = (s^n, a^n)_{n=1}^{N}\)</span>. (For concreteness, if there are <span class="math notranslate nohighlight">\(M\)</span> trajectories with a horizon <span class="math notranslate nohighlight">\(H\)</span>, then <span class="math notranslate nohighlight">\(N = M \times H\)</span>.)</p>
@@ -435,9 +433,9 @@ the learned policy chooses a different action at most <span class="math notransl
 \[| V^{\pi_{\text{data}}} - V^{\tilde \pi} | \le H^2 \varepsilon\]</div>
 <p>where <span class="math notranslate nohighlight">\(H\)</span> is the horizon.</p>
 <div class="proof theorem admonition" id="theorem-1">
-<p class="admonition-title"><span class="caption-number">Theorem 8.1 </span> (Performance of behavioural cloning)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 6.1 </span> (Performance of behavioural cloning)</p>
 <section class="theorem-content" id="proof-content">
-<p>Recall the <a class="reference internal" href="pg.html#pdl">Theorem 6.1</a> allows us to express the difference between <span class="math notranslate nohighlight">\(\pi_{\text{data}}\)</span> and <span class="math notranslate nohighlight">\(\tilde \pi\)</span> as</p>
+<p>Recall the <a class="reference internal" href="pg.html#pdl">Theorem 5.1</a> allows us to express the difference between <span class="math notranslate nohighlight">\(\pi_{\text{data}}\)</span> and <span class="math notranslate nohighlight">\(\tilde \pi\)</span> as</p>
 <div class="math notranslate nohighlight">
 \[
 V_0^{\pi_{\text{data}}}(s) - V_0^{\tilde \pi} (s) = \E_{\tau \sim \rho^{\pi_{\text{data}}} \mid s_0 = s} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\tilde \pi} (s_\hi, a_\hi) \right].
@@ -454,7 +452,7 @@ A^{\pi_{\text{data}}}(s, \pi_{\text{data}}(s)) = Q^{\pi_{\text{data}}}(s, \pi_{\
 </div><!-- TODO ADD DISTRIBUTION SHIFT EXAMPLE FROM SLIDES -->
 </section>
 <section id="distribution-shift">
-<h2><span class="section-number">8.2. </span>Distribution shift<a class="headerlink" href="#distribution-shift" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.2. </span>Distribution shift<a class="headerlink" href="#distribution-shift" title="Link to this heading">#</a></h2>
 <p>Let us return to the driving analogy. Suppose you have taken some driving lessons and now feel comfortable in your neighbourhood. But today you have to travel to an area you haven’t visited before, such as a highway, where it would be dangerous to try and apply the techniques you’ve already learned.
 This is the issue of <em>distribution shift</em>: a policy learned under some distribution of states may not perform well if this distribution changes.</p>
 <p>This is already a common issue in supervised learning, where the training dataset for a model might not resemble the environment where it gets deployed. In interactive environments, this issue is further exacerbated by the dependency between the observations and the agent’s behaviour; if you take a wrong turn early on, it may be difficult or impossible to recover in that trajectory.</p>
@@ -465,8 +463,8 @@ You could then repeat this training as many times as desired, thereby collecting
 This is the key idea behind <em>dataset aggregation</em>.</p>
 </section>
 <section id="dataset-aggregation-dagger">
-<h2><span class="section-number">8.3. </span>Dataset aggregation (DAgger)<a class="headerlink" href="#dataset-aggregation-dagger" title="Link to this heading">#</a></h2>
-<p>The DAgger algorithm is due to <span id="id1">[<a class="reference internal" href="bibliography.html#id16" title="Stéphane Ross, Geoffrey J. Gordon, and J. Bagnell. A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning. In International Conference on Artificial Intelligence and Statistics. November 2010.">Ross <em>et al.</em>, 2010</a>]</span>.</p>
+<h2><span class="section-number">6.3. </span>Dataset aggregation (DAgger)<a class="headerlink" href="#dataset-aggregation-dagger" title="Link to this heading">#</a></h2>
+<p>The DAgger algorithm is due to <span id="id2">[<a class="reference internal" href="bibliography.html#id16" title="Stéphane Ross, Geoffrey J. Gordon, and J. Bagnell. A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning. In International Conference on Artificial Intelligence and Statistics. November 2010.">Ross <em>et al.</em>, 2010</a>]</span>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dagger_pseudocode</span><span class="p">(</span>
     <span class="n">env</span><span class="p">:</span> <span class="n">MAB</span><span class="p">,</span>
     <span class="n">π_init</span><span class="p">:</span> <span class="n">Policy</span><span class="p">,</span>
@@ -521,24 +519,24 @@ This is the key idea behind <em>dataset aggregation</em>.</p>
               
               
               
-                <footer class="prev-next-footer d-print-none">
+                <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="exploration.html"
+       href="pg.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">7. </span>Exploration in MDPs</p>
+        <p class="prev-next-title"><span class="section-number">5. </span>Policy Optimization</p>
       </div>
     </a>
     <a class="right-next"
-       href="bibliography.html"
+       href="planning.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">9. </span>Bibliography</p>
+        <p class="prev-next-title"><span class="section-number">7. </span>Planning</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -558,9 +556,9 @@ This is the key idea behind <em>dataset aggregation</em>.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">8.1. Behavioural cloning</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">8.2. Distribution shift</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">8.3. Dataset aggregation (DAgger)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">6.1. Behavioural cloning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">6.2. Distribution shift</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">6.3. Dataset aggregation (DAgger)</a></li>
 </ul>
   </nav></div>
 
@@ -609,8 +607,8 @@ By Alexander D. Cai
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script src="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
