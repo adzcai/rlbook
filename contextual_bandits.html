@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>9. Contextual bandits &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>10. Contextual bandits &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'contextual_bandits';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="10. Bibliography" href="bibliography.html" />
-    <link rel="prev" title="8. Exploration in MDPs" href="exploration.html" />
+    <link rel="next" title="11. Bibliography" href="bibliography.html" />
+    <link rel="prev" title="9. Exploration in MDPs" href="exploration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -209,13 +209,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">9. Contextual bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised_learning.html">4. Supervised learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">5. Fitted Dynamic Programming Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">7. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">8. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">9. Exploration in MDPs</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">10. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">11. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">12. Appendix: Background</a></li>
 </ul>
 
     </div>
@@ -364,7 +366,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-contextual-bandits">9.1. Linear contextual bandits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-contextual-bandits">10.1. Linear contextual bandits</a></li>
 </ul>
             </nav>
         </div>
@@ -377,7 +379,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="contextual-bandits">
-<span id="id1"></span><h1><span class="section-number">9. </span>Contextual bandits<a class="headerlink" href="#contextual-bandits" title="Link to this heading">#</a></h1>
+<span id="id1"></span><h1><span class="section-number">10. </span>Contextual bandits<a class="headerlink" href="#contextual-bandits" title="Link to this heading">#</a></h1>
 <p>In the above MAB environment, the reward distributions of the arms
 remain constant. However, in many real-world settings, we might receive
 additional information that affects these distributions. For example, in
@@ -386,7 +388,7 @@ show the user, we might receive information about the user’s preferences
 that changes how likely they are to click on a given ad. We can model
 such environments using <strong>contextual bandits</strong>.</p>
 <div class="proof definition admonition" id="contextual_bandit">
-<p class="admonition-title"><span class="caption-number">Definition 9.1 </span> (Contextual bandit)</p>
+<p class="admonition-title"><span class="caption-number">Definition 10.1 </span> (Contextual bandit)</p>
 <section class="definition-content" id="proof-content">
 <p>At each timestep <span class="math notranslate nohighlight">\(t\)</span>, a new <em>context</em>
 <span class="math notranslate nohighlight">\(x_t\)</span> is drawn from some distribution <span class="math notranslate nohighlight">\(\nu_{\text{x}}\)</span>. The learner gets
@@ -416,7 +418,7 @@ to each other in some way: for example, we might want to advertise
 similar products to users with similar preferences. How can we
 incorporate this structure into our solution?</p>
 <section id="linear-contextual-bandits">
-<span id="lin-ucb"></span><h2><span class="section-number">9.1. </span>Linear contextual bandits<a class="headerlink" href="#linear-contextual-bandits" title="Link to this heading">#</a></h2>
+<span id="lin-ucb"></span><h2><span class="section-number">10.1. </span>Linear contextual bandits<a class="headerlink" href="#linear-contextual-bandits" title="Link to this heading">#</a></h2>
 <p>We want to model the <em>mean reward</em> of arm <span class="math notranslate nohighlight">\(k\)</span> as a function of the
 context, i.e. <span class="math notranslate nohighlight">\(\mu^k(x)\)</span>. One simple model is the <em>linear</em> one:
 <span class="math notranslate nohighlight">\(\mu^k(x) = x^\top \theta^k\)</span>, where <span class="math notranslate nohighlight">\(x \in \mathcal{X} = \mathbb{R}^d\)</span> and
@@ -428,7 +430,7 @@ $<span class="math notranslate nohighlight">\(\hat \theta_t^k = \argmin_{\theta 
 This has the closed-form solution known as the <em>ordinary least squares</em>
 (OLS) estimator:</p>
 <div class="math notranslate nohighlight" id="equation-ols-bandit">
-<span class="eqno">(9.1)<a class="headerlink" href="#equation-ols-bandit" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(10.1)<a class="headerlink" href="#equation-ols-bandit" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     \hat \theta_t^k          &amp; = (A_t^k)^{-1} \sum_{\{ i \in [t] : a_i = k \}} x_i r_i \\
     \text{where} \quad A_t^k &amp; = \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top.
 \end{aligned}\end{split}\]</div>
@@ -438,10 +440,10 @@ believe to have high reward. But how should we construct the upper
 confidence bound? Previously, we treated the pulls of an arm as i.i.d.
 samples and used Hoeffding’s inequality to bound the distance of the
 sample mean, our estimator, from the true mean. However, now our
-estimator is not a sample mean, but rather the OLS estimator above <a class="reference internal" href="#equation-ols-bandit">(9.1)</a>. Instead, we’ll use <strong>Chebyshev’s
+estimator is not a sample mean, but rather the OLS estimator above <a class="reference internal" href="#equation-ols-bandit">(10.1)</a>. Instead, we’ll use <strong>Chebyshev’s
 inequality</strong> to construct an upper confidence bound.</p>
 <div class="proof theorem admonition" id="chebyshev">
-<p class="admonition-title"><span class="caption-number">Theorem 9.1 </span> (Chebyshev’s inequality)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 10.1 </span> (Chebyshev’s inequality)</p>
 <section class="theorem-content" id="proof-content">
 <p>For a random variable <span class="math notranslate nohighlight">\(Y\)</span> such that
 <span class="math notranslate nohighlight">\(\E Y = 0\)</span> and <span class="math notranslate nohighlight">\(\E Y^2 = \sigma^2\)</span>,
@@ -458,7 +460,7 @@ yourself), we can apply Chebyshev’s inequality to
 <p class="admonition-title">Attention</p>
 <p>We haven’t explained why <span class="math notranslate nohighlight">\(x_t^\top (A_t^k)^{-1} x_t\)</span> is the correct
 expression for the variance of <span class="math notranslate nohighlight">\(x_t^\top \hat \theta_t^k\)</span>. This result
-follows from some algebra on the definition of the OLS estimator <a class="reference internal" href="#equation-ols-bandit">(9.1)</a>.</p>
+follows from some algebra on the definition of the OLS estimator <a class="reference internal" href="#equation-ols-bandit">(10.1)</a>.</p>
 </div>
 <p>The first term is exactly our predicted reward <span class="math notranslate nohighlight">\(\hat \mu^k_t(x_t)\)</span>. To
 interpret the second term, note that
@@ -523,7 +525,7 @@ width of the confidence interval. Here, we treat it as a tunable
 parameter, though in a theoretical analysis, it would depend on <span class="math notranslate nohighlight">\(A_t^k\)</span>
 and the probability <span class="math notranslate nohighlight">\(\delta\)</span> with which the bound holds.</p>
 <p>Using similar tools for UCB, we can also prove an <span class="math notranslate nohighlight">\(\tilde{O}(\sqrt{T})\)</span>
-regret bound. The full details of the analysis can be found in Section 3 of <span id="id2">[<a class="reference internal" href="bibliography.html#id4">Agarwal <em>et al.</em>, 2022</a>]</span>.</p>
+regret bound. The full details of the analysis can be found in Section 3 of <span id="id2">[<a class="reference internal" href="bibliography.html#id5">Agarwal <em>et al.</em>, 2022</a>]</span>.</p>
 </section>
 </section>
 
@@ -563,7 +565,7 @@ regret bound. The full details of the analysis can be found in Section 3 of <spa
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">8. </span>Exploration in MDPs</p>
+        <p class="prev-next-title"><span class="section-number">9. </span>Exploration in MDPs</p>
       </div>
     </a>
     <a class="right-next"
@@ -571,7 +573,7 @@ regret bound. The full details of the analysis can be found in Section 3 of <spa
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">10. </span>Bibliography</p>
+        <p class="prev-next-title"><span class="section-number">11. </span>Bibliography</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -591,7 +593,7 @@ regret bound. The full details of the analysis can be found in Section 3 of <spa
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-contextual-bandits">9.1. Linear contextual bandits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-contextual-bandits">10.1. Linear contextual bandits</a></li>
 </ul>
   </nav></div>
 

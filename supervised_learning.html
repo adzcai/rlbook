@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>&lt;no title&gt; &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>4. Supervised learning &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
@@ -92,10 +92,12 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"tex": {"macros": {"E": "\\mathop{\\mathbb{E}}", "P": "\\mathop{\\mathbb{P}}", "kl": ["\\mathrm{KL}\\left(#1\\parallel#2\\right)", 2], "ind": ["\\mathbf{1}\\left\\{#1\\right\\}", 1], "hi": "h", "hor": "H", "st": "s", "act": "a"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'supervised_learning';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="4. Fitted Dynamic Programming Algorithms" href="fitted_dp.html" />
+    <link rel="next" title="5. Fitted Dynamic Programming Algorithms" href="fitted_dp.html" />
     <link rel="prev" title="3. Multi-Armed Bandits" href="bandits.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -203,17 +205,19 @@ commentsRunWhenDOMLoaded(addUtterances);
  </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
-        <ul class="nav bd-sidenav">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">4. Supervised learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">5. Fitted Dynamic Programming Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">7. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">8. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">9. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">10. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">11. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">12. Appendix: Background</a></li>
 </ul>
 
     </div>
@@ -352,7 +356,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1><no title></h1>
+    <h1>Supervised learning</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -361,9 +365,10 @@ document.write(`
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="simple visible nav section-nav flex-column">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.1. Linear regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.2. Neural networks</a></li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -374,7 +379,120 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  
+  <section class="tex2jax_ignore mathjax_ignore" id="supervised-learning">
+<span id="id1"></span><h1><span class="section-number">4. </span>Supervised learning<a class="headerlink" href="#supervised-learning" title="Link to this heading">#</a></h1>
+<p>This section will cover the details of implementing the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function above:
+That is, how to use a dataset of labelled samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span> to find a function <span class="math notranslate nohighlight">\(f\)</span> that minimizes the empirical risk.
+This requires two ingredients:</p>
+<ol class="arabic simple">
+<li><p>A <strong>function class</strong> <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> to search over</p></li>
+<li><p>A <strong>fitting method</strong> for minimizing the empirical risk over this class</p></li>
+</ol>
+<p>The two main function classes we will cover are <strong>linear models</strong> and <strong>neural networks</strong>.
+Both of these function classes are <em>parameterized</em> by some parameters <span class="math notranslate nohighlight">\(\theta\)</span>,
+and the fitting method will search over these parameters to minimize the empirical risk:</p>
+<div class="proof definition admonition" id="parameterized_empirical_risk_minimization">
+<p class="admonition-title"><span class="caption-number">Definition 4.1 </span> (Parameterized empirical risk minimization)</p>
+<section class="definition-content" id="proof-content">
+<p>Given a dataset of samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span> and a class of functions <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> parameterized by <span class="math notranslate nohighlight">\(\theta\)</span>,
+we to find a parameter (vector) <span class="math notranslate nohighlight">\(\hat \theta\)</span> that minimizes the empirical risk:</p>
+<div class="math notranslate nohighlight">
+\[
+\hat \theta = \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^N (y_i - f_\theta(x_i))^2
+\]</div>
+</section>
+</div><p>The most common fitting method for parameterized models is <strong>gradient descent</strong>.</p>
+<div class="proof algorithm admonition" id="algorithm-1">
+<p class="admonition-title"><span class="caption-number">Algorithm 4.1 </span> (Gradient descent)</p>
+<section class="algorithm-content" id="proof-content">
+<p>Letting <span class="math notranslate nohighlight">\(L(\theta) \in \mathbb{R}\)</span> denote the empirical risk in terms of the parameters,
+the gradient descent algorithm updates the parameters according to the rule</p>
+<div class="math notranslate nohighlight">
+\[
+\theta^{t+1} = \theta^t - \eta \nabla_\theta L(\theta^t)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong>.</p>
+</section>
+</div><div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jaxtyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Array</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Params</span> <span class="o">=</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; D&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">gradient_descent</span><span class="p">(</span>
+    <span class="n">loss</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Params</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="n">θ_init</span><span class="p">:</span> <span class="n">Params</span><span class="p">,</span>
+    <span class="n">η</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run gradient descent to minimize the given loss function</span>
+<span class="sd">    (expressed in terms of the parameters).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="n">θ</span> <span class="o">=</span> <span class="n">θ</span> <span class="o">-</span> <span class="n">η</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">)(</span><span class="n">θ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">θ</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="linear-regression">
+<h2><span class="section-number">4.1. </span>Linear regression<a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h2>
+<p>In linear regression, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is linear in the parameters:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{F} = \{ x \mapsto \theta^\top x \mid \theta \in \mathbb{R}^D \}
+\]</div>
+<p>This function class is extremely simple and only contains linear functions.
+To expand its expressivity, we can <em>transform</em> the input <span class="math notranslate nohighlight">\(x\)</span> using some feature function <span class="math notranslate nohighlight">\(\phi\)</span>,
+i.e. <span class="math notranslate nohighlight">\(\widetilde x = \phi(x)\)</span>, and then fit a linear model in the transformed space instead.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit_linear</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;N D&quot;</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; N&quot;</span><span class="p">],</span> <span class="n">φ</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit a linear model to the given dataset using ordinary least squares.&quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">vmap</span><span class="p">(</span><span class="n">φ</span><span class="p">)(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">φ</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">θ</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="neural-networks">
+<h2><span class="section-number">4.2. </span>Neural networks<a class="headerlink" href="#neural-networks" title="Link to this heading">#</a></h2>
+<p>In neural networks, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is a composition of linear functions (represented by matrices <span class="math notranslate nohighlight">\(W_i\)</span>) and non-linear activation functions (denoted by <span class="math notranslate nohighlight">\(\sigma\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{F} = \{ x \mapsto \sigma(W_L \sigma(W_{L-1} \dots \sigma(W_1 x + b_1) \dots + b_{L-1}) + b_L) \}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(W_i \in \mathbb{R}^{D_{i+1} \times D_i}\)</span> and <span class="math notranslate nohighlight">\(b_i \in \mathbb{R}^{D_{i+1}}\)</span> are the parameters of the <span class="math notranslate nohighlight">\(i\)</span>-th layer, and <span class="math notranslate nohighlight">\(\sigma\)</span> is the activation function.</p>
+<p>This function class is much more expressive and contains many more parameters.
+This makes it more susceptible to overfitting on smaller datasets,
+but also allows it to represent more complex functions.
+In practice, however, neural networks exhibit interesting phenomena during training,
+and are often able to generalize well even with many parameters.</p>
+<p>Another reason for their popularity is the efficient <strong>backpropagation</strong> algorithm for computing the gradient of the empirical risk with respect to the parameters.
+Essentially, the hierarchical structure of the neural network,
+i.e. computing the output of the network as a composition of functions,
+allows us to use the chain rule to compute the gradient of the output with respect to the parameters of each layer.</p>
+<p><span id="id2">[<a class="reference internal" href="bibliography.html#id16" title="Michael A. Nielsen. Neural Networks and Deep Learning. Determination Press, 2015.">Nielsen, 2015</a>]</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
+</section>
+</section>
+
     <script type="text/x-thebe-config">
     {
         requestKernel: true,
@@ -419,7 +537,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">4. </span>Fitted Dynamic Programming Algorithms</p>
+        <p class="prev-next-title"><span class="section-number">5. </span>Fitted Dynamic Programming Algorithms</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -438,9 +556,10 @@ document.write(`
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav class="bd-toc-nav page-toc">
-    <ul class="simple visible nav section-nav flex-column">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.1. Linear regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.2. Neural networks</a></li>
 </ul>
-
   </nav></div>
 
 </div></div>

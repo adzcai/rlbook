@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>4. Fitted Dynamic Programming Algorithms &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>5. Fitted Dynamic Programming Algorithms &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'fitted_dp';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="5. Policy Optimization" href="pg.html" />
-    <link rel="prev" title="3. Multi-Armed Bandits" href="bandits.html" />
+    <link rel="next" title="6. Policy Optimization" href="pg.html" />
+    <link rel="prev" title="4. Supervised learning" href="supervised_learning.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -209,13 +209,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised_learning.html">4. Supervised learning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Fitted Dynamic Programming Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">7. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">8. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">9. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">10. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">11. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">12. Appendix: Background</a></li>
 </ul>
 
     </div>
@@ -364,15 +366,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">4.1. Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-risk-minimization">4.2. Empirical risk minimization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">4.3. Fitted value iteration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supervised-learning">4.4. Supervised learning</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.4.1. Linear regression</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.4.2. Neural networks</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-correction-for-q-learning">4.5. Bias correction for Q-learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">5.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-risk-minimization">5.2. Empirical risk minimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">5.3. Fitted value iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">5.4. Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -385,19 +382,13 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="fitted-dynamic-programming-algorithms">
-<span id="fitted-dp"></span><h1><span class="section-number">4. </span>Fitted Dynamic Programming Algorithms<a class="headerlink" href="#fitted-dynamic-programming-algorithms" title="Link to this heading">#</a></h1>
+<span id="fitted-dp"></span><h1><span class="section-number">5. </span>Fitted Dynamic Programming Algorithms<a class="headerlink" href="#fitted-dynamic-programming-algorithms" title="Link to this heading">#</a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#introduction" id="id3">Introduction</a></p></li>
-<li><p><a class="reference internal" href="#empirical-risk-minimization" id="id4">Empirical risk minimization</a></p></li>
-<li><p><a class="reference internal" href="#fitted-value-iteration" id="id5">Fitted value iteration</a></p></li>
-<li><p><a class="reference internal" href="#supervised-learning" id="id6">Supervised learning</a></p>
-<ul>
-<li><p><a class="reference internal" href="#linear-regression" id="id7">Linear regression</a></p></li>
-<li><p><a class="reference internal" href="#neural-networks" id="id8">Neural networks</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#bias-correction-for-q-learning" id="id9">Bias correction for Q-learning</a></p></li>
+<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#empirical-risk-minimization" id="id2">Empirical risk minimization</a></p></li>
+<li><p><a class="reference internal" href="#fitted-value-iteration" id="id3">Fitted value iteration</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id4">Summary</a></p></li>
 </ul>
 </nav>
 <p>We borrow these definitions from the <a class="reference internal" href="mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a> chapter:</p>
@@ -452,7 +443,7 @@ document.write(`
 </div>
 </div>
 <section id="introduction">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">4.1. </span>Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id1" role="doc-backlink"><span class="section-number">5.1. </span>Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
 <p>The <a class="reference internal" href="mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a> chapter discussed the case of <strong>finite</strong> MDPs, where the state and action spaces <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> were finite.
 This gave us a closed-form expression for computing the r.h.s. of <a class="reference internal" href="mdps.html#bellman_consistency">the Bellman one-step consistency equation</a>.
 In this chapter, we consider the case of <strong>large</strong> or <strong>continuous</strong> state spaces, where the state space is too large to be enumerated.
@@ -462,7 +453,7 @@ We will then see its application to <em>fitted</em> RL algorithms,
 which attempt to learn the optimal value function (and the optimal policy) from a dataset of trajectories.</p>
 </section>
 <section id="empirical-risk-minimization">
-<span id="erm"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">4.2. </span>Empirical risk minimization</a><a class="headerlink" href="#empirical-risk-minimization" title="Link to this heading">#</a></h2>
+<span id="erm"></span><h2><a class="toc-backref" href="#id2" role="doc-backlink"><span class="section-number">5.2. </span>Empirical risk minimization</a><a class="headerlink" href="#empirical-risk-minimization" title="Link to this heading">#</a></h2>
 <p>The <strong>supervised learning</strong> task is as follows:
 We seek to learn the relationship between some input variables <span class="math notranslate nohighlight">\(x\)</span> and some output variable <span class="math notranslate nohighlight">\(y\)</span>
 (drawn from their joint distribution).
@@ -474,7 +465,7 @@ Precisely, we want to find a function <span class="math notranslate nohighlight"
 \]</div>
 <p>An equivalent framing is that we seek to approximate the <em>conditional expectation</em> of <span class="math notranslate nohighlight">\(y\)</span> given <span class="math notranslate nohighlight">\(x\)</span>:</p>
 <div class="proof theorem admonition" id="conditional_expectation_minimizes_mse">
-<p class="admonition-title"><span class="caption-number">Theorem 4.1 </span> (Conditional expectation minimizes mean squared error)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 5.1 </span> (Conditional expectation minimizes mean squared error)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[
@@ -505,14 +496,14 @@ Then we use a <em>fitting method</em> to find a function <span class="math notra
 and thus approximates the conditional expectation.
 This approach is called <strong>empirical risk minimization</strong>.</p>
 <div class="proof definition admonition" id="empirical_risk_minimization">
-<p class="admonition-title"><span class="caption-number">Definition 4.1 </span> (Empirical risk minimization)</p>
+<p class="admonition-title"><span class="caption-number">Definition 5.1 </span> (Empirical risk minimization)</p>
 <section class="definition-content" id="proof-content">
 <p>Given a dataset of samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span>, empirical risk minimization seeks to find a function <span class="math notranslate nohighlight">\(f\)</span> (from some class of functions <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>) that minimizes the empirical risk:</p>
 <div class="math notranslate nohighlight">
 \[
 \hat f = \arg\min_{f \in \mathcal{F}} \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2
 \]</div>
-<p>We will cover the details of the minimization process in <a class="reference internal" href="#supervised-learning"><span class="std std-ref">the next section</span></a>.</p>
+<p>We will cover the details of the minimization process in <a class="reference internal" href="supervised_learning.html#supervised-learning"><span class="std std-ref">the next section</span></a>.</p>
 </section>
 </div><div class="admonition attention">
 <p class="admonition-title">Attention</p>
@@ -521,7 +512,7 @@ This approach is called <strong>empirical risk minimization</strong>.</p>
 </div>
 </section>
 <section id="fitted-value-iteration">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">4.3. </span>Fitted value iteration</a><a class="headerlink" href="#fitted-value-iteration" title="Link to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">5.3. </span>Fitted value iteration</a><a class="headerlink" href="#fitted-value-iteration" title="Link to this heading">#</a></h2>
 <p>Let us apply ERM to the RL problem of computing the optimal policy / value function.</p>
 <p>How did we compute the optimal value function in MDPs with <em>finite</em> state and action spaces?</p>
 <ul class="simple">
@@ -574,43 +565,49 @@ Let us indicate the trajectory index in the superscript, so that</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|                                                                                                                                                           | 0/100 [00:00&lt;?, ?it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  0%|                                                                                                                                                                                                | 0/100 [00:00&lt;?, ?it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 15%|█████████████████████▊                                                                                                                           | 15/100 [00:00&lt;00:00, 141.86it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 11%|████████████████████                                                                                                                                                                  | 11/100 [00:00&lt;00:00, 105.91it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 30%|███████████████████████████████████████████▌                                                                                                     | 30/100 [00:00&lt;00:00, 106.20it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 22%|████████████████████████████████████████▎                                                                                                                                              | 22/100 [00:00&lt;00:01, 77.61it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 43%|██████████████████████████████████████████████████████████████▎                                                                                  | 43/100 [00:00&lt;00:00, 113.57it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 32%|██████████████████████████████████████████████████████████▌                                                                                                                            | 32/100 [00:00&lt;00:00, 83.42it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 58%|████████████████████████████████████████████████████████████████████████████████████                                                             | 58/100 [00:00&lt;00:00, 124.28it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 44%|████████████████████████████████████████████████████████████████████████████████▌                                                                                                      | 44/100 [00:00&lt;00:00, 93.45it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 73%|█████████████████████████████████████████████████████████████████████████████████████████████████████████▊                                       | 73/100 [00:00&lt;00:00, 131.19it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 57%|███████████████████████████████████████████████████████████████████████████████████████████████████████▋                                                                              | 57/100 [00:00&lt;00:00, 102.16it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 87%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                  | 87/100 [00:00&lt;00:00, 131.58it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 71%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                    | 71/100 [00:00&lt;00:00, 112.76it/s]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 100/100 [00:00&lt;00:00, 128.81it/s]
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 84%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                             | 84/100 [00:00&lt;00:00, 115.60it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> 98%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎   | 98/100 [00:00&lt;00:00, 122.12it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 100/100 [00:00&lt;00:00, 108.07it/s]
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Transition(s=array([-0.00767412,  1.4020356 , -0.77731264, -0.39489663,  0.00889908,
-         0.17607279,  0.        ,  0.        ], dtype=float32), a=0, r=-1.0289856614218138),
- Transition(s=array([-0.01534882,  1.3925751 , -0.77626234, -0.42053902,  0.01759942,
-         0.17402388,  0.        ,  0.        ], dtype=float32), a=0, r=-1.1791549838601725),
- Transition(s=array([-0.0230237 ,  1.3825151 , -0.7762892 , -0.44723922,  0.02629464,
-         0.1739208 ,  0.        ,  0.        ], dtype=float32), a=0, r=-1.1819872957226778),
- Transition(s=array([-0.03069887,  1.3718561 , -0.77631474, -0.4739167 ,  0.03498873,
-         0.1738982 ,  0.        ,  0.        ], dtype=float32), a=1, r=-2.1775844567972897),
- Transition(s=array([-0.03844767,  1.3605961 , -0.7855227 , -0.50072145,  0.04552352,
-         0.21071556,  0.        ,  0.        ], dtype=float32), a=1, r=-2.3705542032284073)]
+         0.17607279,  0.        ,  0.        ], dtype=float32), a=2, r=0.4116697539428856),
+ Transition(s=array([-0.015343  ,  1.3934507 , -0.7757339 , -0.3816226 ,  0.0176519 ,
+         0.17507371,  0.        ,  0.        ], dtype=float32), a=2, r=0.521110008516058),
+ Transition(s=array([-0.0229064 ,  1.3848708 , -0.7657348 , -0.38147786,  0.02694122,
+         0.18580344,  0.        ,  0.        ], dtype=float32), a=0, r=-1.2505839552063946),
+ Transition(s=array([-0.03047018,  1.3756915 , -0.7657622 , -0.40815678,  0.03622892,
+         0.18577108,  0.        ,  0.        ], dtype=float32), a=3, r=-0.14553357267450792),
+ Transition(s=array([-0.03795023,  1.3659201 , -0.7552518 , -0.4344905 ,  0.0433989 ,
+         0.14341286,  0.        ,  0.        ], dtype=float32), a=1, r=-2.0988040694638515)]
 </pre></div>
 </div>
 </div>
@@ -680,15 +677,15 @@ x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \ma
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>states: [[-0.00767412  1.4020356  -0.77731264 -0.39489663  0.00889908  0.17607279
    0.          0.        ]
- [-0.01534882  1.3925751  -0.77626234 -0.42053902  0.01759942  0.17402388
+ [-0.015343    1.3934507  -0.7757339  -0.3816226   0.0176519   0.17507371
    0.          0.        ]
- [-0.0230237   1.3825151  -0.7762892  -0.44723922  0.02629464  0.1739208
+ [-0.0229064   1.3848708  -0.7657348  -0.38147786  0.02694122  0.18580344
    0.          0.        ]
- [-0.03069887  1.3718561  -0.77631474 -0.4739167   0.03498873  0.1738982
+ [-0.03047018  1.3756915  -0.7657622  -0.40815678  0.03622892  0.18577108
    0.          0.        ]
- [-0.03844767  1.3605961  -0.7855227  -0.50072145  0.04552352  0.21071556
+ [-0.03795023  1.3659201  -0.7552518  -0.4344905   0.0433989   0.14341286
    0.          0.        ]]
-actions: [0 0 0 1 1]
+actions: [2 2 0 3 1]
 timesteps: [0 1 2 3 4]
 </pre></div>
 </div>
@@ -701,7 +698,7 @@ timesteps: [0 1 2 3 4]
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([-1.0289856, -1.179155 , -1.1819873, -2.1775844, -2.3705542],      dtype=float32)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([ 0.41166976,  0.52111   , -1.250584  , -0.14553358, -2.098804  ],      dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -721,7 +718,7 @@ Recall that we faced the same issue <a class="reference internal" href="mdps.htm
 We can apply the same strategy here, using the <span class="math notranslate nohighlight">\(\hat f\)</span> from the previous iteration to compute the labels <span class="math notranslate nohighlight">\(y_{i \hi}\)</span>,
 and then using this new dataset to fit the next iterate.</p>
 <div class="proof algorithm admonition" id="fitted_q_iteration">
-<p class="admonition-title"><span class="caption-number">Algorithm 4.1 </span> (Fitted Q-function iteration)</p>
+<p class="admonition-title"><span class="caption-number">Algorithm 5.1 </span> (Fitted Q-function iteration)</p>
 <section class="algorithm-content" id="proof-content">
 <ol class="arabic">
 <li><p>Initialize some function <span class="math notranslate nohighlight">\(\hat f(s, a, h) \in \mathbb{R}\)</span>.</p></li>
@@ -760,7 +757,7 @@ and then using this new dataset to fit the next iterate.</p>
 </div>
 <p>We can also use this fixed-point interation to <em>evaluate</em> a policy using the dataset (not necessarily the one used to generate the trajectories):</p>
 <div class="proof algorithm admonition" id="fitted_evaluation">
-<p class="admonition-title"><span class="caption-number">Algorithm 4.2 </span> (Fitted policy evaluation)</p>
+<p class="admonition-title"><span class="caption-number">Algorithm 5.2 </span> (Fitted policy evaluation)</p>
 <section class="algorithm-content" id="proof-content">
 <p><strong>Input:</strong> Policy <span class="math notranslate nohighlight">\(\pi : \mathcal{S} \times [H] \to \Delta(\mathcal{A})\)</span> to be evaluated.</p>
 <p><strong>Output:</strong> An approximation of the value function <span class="math notranslate nohighlight">\(Q^\pi\)</span> of the policy.</p>
@@ -826,108 +823,8 @@ How would you modify this algorithm to evaluate the data collection policy?</p>
 </div>
 </div>
 </section>
-<section id="supervised-learning">
-<span id="id1"></span><h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">4.4. </span>Supervised learning</a><a class="headerlink" href="#supervised-learning" title="Link to this heading">#</a></h2>
-<p>This section will cover the details of implementing the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function above:
-That is, how to use a dataset of labelled samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span> to find a function <span class="math notranslate nohighlight">\(f\)</span> that minimizes the empirical risk.
-This requires two ingredients:</p>
-<ol class="arabic simple">
-<li><p>A <strong>function class</strong> <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> to search over</p></li>
-<li><p>A <strong>fitting method</strong> for minimizing the empirical risk over this class</p></li>
-</ol>
-<p>The two main function classes we will cover are <strong>linear models</strong> and <strong>neural networks</strong>.
-Both of these function classes are <em>parameterized</em> by some parameters <span class="math notranslate nohighlight">\(\theta\)</span>,
-and the fitting method will search over these parameters to minimize the empirical risk:</p>
-<div class="proof definition admonition" id="parameterized_empirical_risk_minimization">
-<p class="admonition-title"><span class="caption-number">Definition 4.2 </span> (Parameterized empirical risk minimization)</p>
-<section class="definition-content" id="proof-content">
-<p>Given a dataset of samples <span class="math notranslate nohighlight">\((x_1, y_1), \dots, (x_N, y_N)\)</span> and a class of functions <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> parameterized by <span class="math notranslate nohighlight">\(\theta\)</span>,
-we to find a parameter (vector) <span class="math notranslate nohighlight">\(\hat \theta\)</span> that minimizes the empirical risk:</p>
-<div class="math notranslate nohighlight">
-\[
-\hat \theta = \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^N (y_i - f_\theta(x_i))^2
-\]</div>
-</section>
-</div><p>The most common fitting method for parameterized models is <strong>gradient descent</strong>.</p>
-<div class="proof algorithm admonition" id="algorithm-5">
-<p class="admonition-title"><span class="caption-number">Algorithm 4.3 </span> (Gradient descent)</p>
-<section class="algorithm-content" id="proof-content">
-<p>Letting <span class="math notranslate nohighlight">\(L(\theta) \in \mathbb{R}\)</span> denote the empirical risk in terms of the parameters,
-the gradient descent algorithm updates the parameters according to the rule</p>
-<div class="math notranslate nohighlight">
-\[
-\theta^{t+1} = \theta^t - \eta \nabla_\theta L(\theta^t)
-\]</div>
-<p>where <span class="math notranslate nohighlight">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong>.</p>
-</section>
-</div><div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Params</span> <span class="o">=</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; D&quot;</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">gradient_descent</span><span class="p">(</span>
-    <span class="n">loss</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Params</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
-    <span class="n">θ_init</span><span class="p">:</span> <span class="n">Params</span><span class="p">,</span>
-    <span class="n">η</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Run gradient descent to minimize the given loss function</span>
-<span class="sd">    (expressed in terms of the parameters).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
-        <span class="n">θ</span> <span class="o">=</span> <span class="n">θ</span> <span class="o">-</span> <span class="n">η</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">loss</span><span class="p">)(</span><span class="n">θ</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">θ</span>
-</pre></div>
-</div>
-</div>
-</div>
-<section id="linear-regression">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">4.4.1. </span>Linear regression</a><a class="headerlink" href="#linear-regression" title="Link to this heading">#</a></h3>
-<p>In linear regression, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is linear in the parameters:</p>
-<div class="math notranslate nohighlight">
-\[
-\mathcal{F} = \{ x \mapsto \theta^\top x \mid \theta \in \mathbb{R}^D \}
-\]</div>
-<p>This function class is extremely simple and only contains linear functions.
-To expand its expressivity, we can <em>transform</em> the input <span class="math notranslate nohighlight">\(x\)</span> using some feature function <span class="math notranslate nohighlight">\(\phi\)</span>,
-i.e. <span class="math notranslate nohighlight">\(\widetilde x = \phi(x)\)</span>, and then fit a linear model in the transformed space instead.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit_linear</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;N D&quot;</span><span class="p">],</span> <span class="n">y</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; N&quot;</span><span class="p">],</span> <span class="n">φ</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit a linear model to the given dataset using ordinary least squares.&quot;&quot;&quot;</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">vmap</span><span class="p">(</span><span class="n">φ</span><span class="p">)(</span><span class="n">X</span><span class="p">)</span>
-    <span class="n">θ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">φ</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">θ</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="neural-networks">
-<h3><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">4.4.2. </span>Neural networks</a><a class="headerlink" href="#neural-networks" title="Link to this heading">#</a></h3>
-<p>In neural networks, we assume that the function <span class="math notranslate nohighlight">\(f\)</span> is a composition of linear functions (represented by matrices <span class="math notranslate nohighlight">\(W_i\)</span>) and non-linear activation functions (denoted by <span class="math notranslate nohighlight">\(\sigma\)</span>):</p>
-<div class="math notranslate nohighlight">
-\[
-\mathcal{F} = \{ x \mapsto \sigma(W_L \sigma(W_{L-1} \dots \sigma(W_1 x + b_1) \dots + b_{L-1}) + b_L) \}
-\]</div>
-<p>where <span class="math notranslate nohighlight">\(W_i \in \mathbb{R}^{D_{i+1} \times D_i}\)</span> and <span class="math notranslate nohighlight">\(b_i \in \mathbb{R}^{D_{i+1}}\)</span> are the parameters of the <span class="math notranslate nohighlight">\(i\)</span>-th layer, and <span class="math notranslate nohighlight">\(\sigma\)</span> is the activation function.</p>
-<p>This function class is much more expressive and contains many more parameters.
-This makes it more susceptible to overfitting on smaller datasets,
-but also allows it to represent more complex functions.
-In practice, however, neural networks exhibit interesting phenomena during training,
-and are often able to generalize well even with many parameters.</p>
-<p>Another reason for their popularity is the efficient <strong>backpropagation</strong> algorithm
-for computing the gradient of the empirical risk with respect to the parameters.
-Essentially, the hierarchical structure of the neural network, i.e. computing the
-output of the network as a composition of functions, allows us to use the chain rule
-to compute the gradient of the output with respect to the parameters of each layer.</p>
-<p><span id="id2">[<a class="reference internal" href="bibliography.html#id15" title="Michael A. Nielsen. Neural Networks and Deep Learning. Determination Press, 2015.">Nielsen, 2015</a>]</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
-</section>
-</section>
-<section id="bias-correction-for-q-learning">
-<h2><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">4.5. </span>Bias correction for Q-learning</a><a class="headerlink" href="#bias-correction-for-q-learning" title="Link to this heading">#</a></h2>
+<section id="summary">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">5.4. </span>Summary</a><a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -962,12 +859,12 @@ to compute the gradient of the output with respect to the parameters of each lay
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="bandits.html"
+       href="supervised_learning.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">3. </span>Multi-Armed Bandits</p>
+        <p class="prev-next-title"><span class="section-number">4. </span>Supervised learning</p>
       </div>
     </a>
     <a class="right-next"
@@ -975,7 +872,7 @@ to compute the gradient of the output with respect to the parameters of each lay
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">5. </span>Policy Optimization</p>
+        <p class="prev-next-title"><span class="section-number">6. </span>Policy Optimization</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -995,15 +892,10 @@ to compute the gradient of the output with respect to the parameters of each lay
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">4.1. Introduction</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-risk-minimization">4.2. Empirical risk minimization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">4.3. Fitted value iteration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supervised-learning">4.4. Supervised learning</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-regression">4.4.1. Linear regression</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-networks">4.4.2. Neural networks</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bias-correction-for-q-learning">4.5. Bias correction for Q-learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">5.1. Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#empirical-risk-minimization">5.2. Empirical risk minimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fitted-value-iteration">5.3. Fitted value iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">5.4. Summary</a></li>
 </ul>
   </nav></div>
 

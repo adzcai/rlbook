@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>5. Policy Optimization &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>6. Policy Optimization &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'pg';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6. Imitation Learning" href="imitation_learning.html" />
-    <link rel="prev" title="4. Fitted Dynamic Programming Algorithms" href="fitted_dp.html" />
+    <link rel="next" title="7. Imitation Learning" href="imitation_learning.html" />
+    <link rel="prev" title="5. Fitted Dynamic Programming Algorithms" href="fitted_dp.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -209,13 +209,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. Policy Optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">6. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised_learning.html">4. Supervised learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">5. Fitted Dynamic Programming Algorithms</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">6. Policy Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="imitation_learning.html">7. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">8. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">9. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">10. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">11. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">12. Appendix: Background</a></li>
 </ul>
 
     </div>
@@ -364,28 +366,28 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-ascent">5.1. Gradient Ascent</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-ascent">5.1.1. Stochastic gradient ascent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-ascent">6.1. Gradient Ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-ascent">6.1.1. Stochastic gradient ascent</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-stochastic-gradient-ascent">5.2. Policy (stochastic) gradient ascent</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">5.2.1. Example policy parameterizations</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tabular-representation">5.2.1.1. Tabular representation</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">5.2.1.2. Linear in features</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">5.2.1.3. Neural policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-stochastic-gradient-ascent">6.2. Policy (stochastic) gradient ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">6.2.1. Example policy parameterizations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tabular-representation">6.2.1.1. Tabular representation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">6.2.1.2. Linear in features</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">6.2.1.3. Neural policies</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">5.2.2. Continuous action spaces</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">5.2.3. Importance Sampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">6.2.2. Continuous action spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">6.2.3. Importance Sampling</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-policy-gradient">5.3. The REINFORCE policy gradient</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-and-advantages">5.4. Baselines and advantages</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-policy-gradient-algorithms-to-policy-iteration">5.5. Comparing policy gradient algorithms to policy iteration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">5.6. Trust region policy optimization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">5.7. Natural policy gradient</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">5.8. Proximal policy optimization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">5.9. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-policy-gradient">6.3. The REINFORCE policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-and-advantages">6.4. Baselines and advantages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-policy-gradient-algorithms-to-policy-iteration">6.5. Comparing policy gradient algorithms to policy iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">6.6. Trust region policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">6.7. Natural policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">6.8. Proximal policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">6.9. Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -398,7 +400,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="policy-optimization">
-<span id="pg"></span><h1><span class="section-number">5. </span>Policy Optimization<a class="headerlink" href="#policy-optimization" title="Link to this heading">#</a></h1>
+<span id="pg"></span><h1><span class="section-number">6. </span>Policy Optimization<a class="headerlink" href="#policy-optimization" title="Link to this heading">#</a></h1>
 <p>The core task of RL is finding the <strong>optimal policy</strong> in a given environment.
 This is essentially an <em>optimization problem:</em>
 out of some space of policies,
@@ -767,7 +769,7 @@ function(Bokeh) {
 }(window));</script></div>
 </div>
 <section id="gradient-ascent">
-<h2><span class="section-number">5.1. </span>Gradient Ascent<a class="headerlink" href="#gradient-ascent" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.1. </span>Gradient Ascent<a class="headerlink" href="#gradient-ascent" title="Link to this heading">#</a></h2>
 <p><strong>Gradient ascent</strong> is a general optimization algorithm for any differentiable function.
 A suitable analogy for this algorithm is hiking up a mountain,
 where you keep taking steps in the steepest direction upwards.
@@ -853,7 +855,7 @@ you take the dot product of the difference vector with the gradient.
 This means that the direction with the highest slope is exactly the gradient itself,
 so we can describe the gradient ascent algorithm as follows:</p>
 <div class="proof algorithm admonition" id="algorithm-0">
-<p class="admonition-title"><span class="caption-number">Algorithm 5.1 </span> (Gradient ascent)</p>
+<p class="admonition-title"><span class="caption-number">Algorithm 6.1 </span> (Gradient ascent)</p>
 <section class="algorithm-content" id="proof-content">
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -910,7 +912,7 @@ This allows us to differentiate through programming constructs such as branches 
 and doesn’t involve any arbitrarily small values.</p>
 </div>
 <section id="stochastic-gradient-ascent">
-<h3><span class="section-number">5.1.1. </span>Stochastic gradient ascent<a class="headerlink" href="#stochastic-gradient-ascent" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">6.1.1. </span>Stochastic gradient ascent<a class="headerlink" href="#stochastic-gradient-ascent" title="Link to this heading">#</a></h3>
 <p>In real applications,
 computing the gradient of the target function is not so simple.
 As an example from supervised learning, <span class="math notranslate nohighlight">\(J(\theta)\)</span> might be the sum of squared prediction errors across an entire training dataset.
@@ -964,10 +966,10 @@ and the <em>norm</em> of the gradient estimator has a bounded second moment <spa
 </section>
 </section>
 <section id="policy-stochastic-gradient-ascent">
-<h2><span class="section-number">5.2. </span>Policy (stochastic) gradient ascent<a class="headerlink" href="#policy-stochastic-gradient-ascent" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.2. </span>Policy (stochastic) gradient ascent<a class="headerlink" href="#policy-stochastic-gradient-ascent" title="Link to this heading">#</a></h2>
 <p>Remember that in RL, the primary goal is to find the <em>optimal policy</em> that achieves the maximimum total reward, which we can express using the value function we defined in <a class="reference internal" href="mdps.html#value">Definition 1.6</a>:</p>
 <div class="math notranslate nohighlight" id="equation-objective-fn">
-<span class="eqno">(5.1)<a class="headerlink" href="#equation-objective-fn" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(6.1)<a class="headerlink" href="#equation-objective-fn" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
     J(\pi) := \E_{s_0 \sim \mu_0} V^{\pi} (s_0) = &amp; \E \sum_{\hi=0}^{\hor-1} r_\hi \\
     \text{where} \quad &amp; s_0 \sim \mu_0 \\
     &amp; s_{t+1} \sim P(s_\hi, a_\hi), \\
@@ -980,10 +982,10 @@ What does <span class="math notranslate nohighlight">\(\theta\)</span> correspon
 In general, <span class="math notranslate nohighlight">\(\pi\)</span> is a function, and optimizing over the space of arbitrary input-output mappings would be intractable.
 Instead, we need to describe <span class="math notranslate nohighlight">\(\pi\)</span> in terms of some finite set of <em>parameters</em> <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
 <section id="example-policy-parameterizations">
-<span id="parameterizations"></span><h3><span class="section-number">5.2.1. </span>Example policy parameterizations<a class="headerlink" href="#example-policy-parameterizations" title="Link to this heading">#</a></h3>
+<span id="parameterizations"></span><h3><span class="section-number">6.2.1. </span>Example policy parameterizations<a class="headerlink" href="#example-policy-parameterizations" title="Link to this heading">#</a></h3>
 <p>What are some ways we could parameterize our policy?</p>
 <section id="tabular-representation">
-<h4><span class="section-number">5.2.1.1. </span>Tabular representation<a class="headerlink" href="#tabular-representation" title="Link to this heading">#</a></h4>
+<h4><span class="section-number">6.2.1.1. </span>Tabular representation<a class="headerlink" href="#tabular-representation" title="Link to this heading">#</a></h4>
 <p>If both the state and action spaces are finite, perhaps we could simply learn a preference value <span class="math notranslate nohighlight">\(\theta_{s,a}\)</span> for each state-action pair.
 Then to turn this into a valid distribution, we perform a <strong>softmax</strong> operation:
 we exponentiate each of them,
@@ -994,7 +996,7 @@ and then normalize to form a valid distribution:</p>
 so while this is flexible, it is also prone to overfitting.</p>
 </section>
 <section id="linear-in-features">
-<h4><span class="section-number">5.2.1.2. </span>Linear in features<a class="headerlink" href="#linear-in-features" title="Link to this heading">#</a></h4>
+<h4><span class="section-number">6.2.1.2. </span>Linear in features<a class="headerlink" href="#linear-in-features" title="Link to this heading">#</a></h4>
 <p>Another approach is to map each state-action pair into some <strong>feature space</strong> <span class="math notranslate nohighlight">\(\phi(s, a) \in \mathbb{R}^p\)</span>. Then, to map a feature vector to a probability, we take a linear combination of the features and take a softmax:</p>
 <div class="math notranslate nohighlight">
 \[\pi^\text{linear in features}_{\theta}(a|s) = \frac{\exp(\theta^\top \phi(s, a))}{\sum_{a'} \exp(\theta^\top \phi(s, a'))}.\]</div>
@@ -1022,13 +1024,13 @@ so while this is flexible, it is also prone to overfitting.</p>
 <p>Why can we drop the <span class="math notranslate nohighlight">\(\E \phi(s_\hi, a')\)</span> term? By linearity of expectation, consider the dropped term at a single timestep: <span class="math notranslate nohighlight">\(\E_{\tau \sim \rho_\theta} \left[ \left( \E_{a' \sim \pi(s_\hi)} \phi(s, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi) \right].\)</span> By Adam’s Law, we can wrap the advantage term in a conditional expectation on the state <span class="math notranslate nohighlight">\(s_\hi.\)</span> Then we already know that <span class="math notranslate nohighlight">\(\E_{a \sim \pi(s)} A_\hi^{\pi}(s, a) = 0,\)</span> and so this entire term vanishes.</p>
 </section>
 <section id="neural-policies">
-<h4><span class="section-number">5.2.1.3. </span>Neural policies<a class="headerlink" href="#neural-policies" title="Link to this heading">#</a></h4>
+<h4><span class="section-number">6.2.1.3. </span>Neural policies<a class="headerlink" href="#neural-policies" title="Link to this heading">#</a></h4>
 <p>More generally, we could map states and actions to unnormalized scores via some parameterized function <span class="math notranslate nohighlight">\(f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},\)</span> such as a neural network, and choose actions according to a softmax: $<span class="math notranslate nohighlight">\(\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.\)</span>$</p>
 <p>The score can then be written as $<span class="math notranslate nohighlight">\(\nabla \log \pi_\theta(a|s) = \nabla f_\theta(s, a) - \E_{a \sim \pi_\theta(s)} \nabla f_\theta (s, a')\)</span>$</p>
 </section>
 </section>
 <section id="continuous-action-spaces">
-<h3><span class="section-number">5.2.2. </span>Continuous action spaces<a class="headerlink" href="#continuous-action-spaces" title="Link to this heading">#</a></h3>
+<h3><span class="section-number">6.2.2. </span>Continuous action spaces<a class="headerlink" href="#continuous-action-spaces" title="Link to this heading">#</a></h3>
 <p>Consider a continuous <span class="math notranslate nohighlight">\(n\)</span>-dimensional action space <span class="math notranslate nohighlight">\(\mathcal{A} = \mathbb{R}^n\)</span>. Then for a stochastic policy, we could use a function to predict the <em>mean</em> action and then add some random noise about it. For example, we could use a neural network to predict the mean action <span class="math notranslate nohighlight">\(\mu_\theta(s)\)</span> and then add some noise <span class="math notranslate nohighlight">\(\epsilon \sim \mathcal{N}(0, \sigma^2 I)\)</span> to it:</p>
 <div class="math notranslate nohighlight">
 \[\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).\]</div>
@@ -1046,7 +1048,7 @@ But <span class="math notranslate nohighlight">\(J(\theta)\)</span> is very diff
 Can we rewrite it in a form that’s more convenient to implement?</p>
 </section>
 <section id="importance-sampling">
-<span id="id1"></span><h3><span class="section-number">5.2.3. </span>Importance Sampling<a class="headerlink" href="#importance-sampling" title="Link to this heading">#</a></h3>
+<span id="id1"></span><h3><span class="section-number">6.2.3. </span>Importance Sampling<a class="headerlink" href="#importance-sampling" title="Link to this heading">#</a></h3>
 <p>There is a general trick called <strong>importance sampling</strong> for evaluating such expectations.
 Suppose we want to estimate <span class="math notranslate nohighlight">\(\E_{x \sim p}[f(x)]\)</span> where <span class="math notranslate nohighlight">\(p\)</span> is hard or expensive to sample from. We can, however, evaluate the likelihood <span class="math notranslate nohighlight">\(p(x)\)</span>.
 Suppose that we <em>can</em> sample from a different distribution <span class="math notranslate nohighlight">\(q\)</span>.
@@ -1067,7 +1069,7 @@ then the likelihood ratio <span class="math notranslate nohighlight">\(p(x)/q(x)
 </section>
 </section>
 <section id="the-reinforce-policy-gradient">
-<h2><span class="section-number">5.3. </span>The REINFORCE policy gradient<a class="headerlink" href="#the-reinforce-policy-gradient" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.3. </span>The REINFORCE policy gradient<a class="headerlink" href="#the-reinforce-policy-gradient" title="Link to this heading">#</a></h2>
 <p>Returning to RL, suppose there is some trajectory distribution <span class="math notranslate nohighlight">\(\rho(\tau)\)</span> that is <strong>easy to sample from,</strong> such as a database of existing trajectories.
 We can then rewrite <span class="math notranslate nohighlight">\(\nabla J(\theta)\)</span>, a.k.a. the <em>policy gradient</em>, as follows.
 All gradients are being taken with respect to <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
@@ -1087,7 +1089,7 @@ All gradients are being taken with respect to <span class="math notranslate nohi
 <p>(The order of operations is <span class="math notranslate nohighlight">\(\nabla (\log \rho_\theta)(\tau)\)</span>.)</p>
 <p>Note that when the state transitions are Markov (i.e. <span class="math notranslate nohighlight">\(s_{t}\)</span> only depends on <span class="math notranslate nohighlight">\(s_{t-1}, a_{t-1}\)</span>) and the policy is time-homogeneous (i.e. <span class="math notranslate nohighlight">\(a_\hi \sim \pi_\theta (s_\hi)\)</span>), we can write out the <em>likelihood of a trajectory</em> under the policy <span class="math notranslate nohighlight">\(\pi_\theta\)</span>:</p>
 <div class="math notranslate nohighlight" id="equation-trajectory-likelihood">
-<span class="eqno">(5.2)<a class="headerlink" href="#equation-trajectory-likelihood" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(6.2)<a class="headerlink" href="#equation-trajectory-likelihood" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
         \rho_\theta(\tau) &amp;= \mu(s_0) \pi_\theta(a_0 | s_0) \\
         &amp;\qquad \times P(s_1 | s_0, a_0) \pi_\theta(a_1 | s_1) \\
         &amp;\qquad \times \cdots \\
@@ -1097,7 +1099,7 @@ All gradients are being taken with respect to <span class="math notranslate nohi
 of which only the <span class="math notranslate nohighlight">\(\pi_\theta(a_\hi | s_\hi)\)</span> terms depend on <span class="math notranslate nohighlight">\(\theta,\)</span>
 so we can simplify even further to obtain the following expression for the policy gradient, known as the “REINFORCE” policy gradient:</p>
 <div class="math notranslate nohighlight" id="equation-reinforce-pg">
-<span class="eqno">(5.3)<a class="headerlink" href="#equation-reinforce-pg" title="Link to this equation">#</a></span>\[\begin{aligned}
+<span class="eqno">(6.3)<a class="headerlink" href="#equation-reinforce-pg" title="Link to this equation">#</a></span>\[\begin{aligned}
     \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) R(\tau) \right]
 \end{aligned}\]</div>
 <p>This expression allows us to estimate the gradient by sampling a few sample trajectories from <span class="math notranslate nohighlight">\(\pi_\theta,\)</span>
@@ -1119,7 +1121,7 @@ Intuitively, the action taken at step <span class="math notranslate nohighlight"
 You can also show rigorously that this is the case,
 and that we only need to consider the present and future rewards to calculate the policy gradient:</p>
 <div class="math notranslate nohighlight" id="equation-pg-with-q">
-<span class="eqno">(5.4)<a class="headerlink" href="#equation-pg-with-q" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(6.4)<a class="headerlink" href="#equation-pg-with-q" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
         \nabla J(\theta) &amp;= \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) \sum_{t' = t}^{T-1} r(s_{t'}, a_{t'}) \right] \\
         &amp;= \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) Q^{\pi_\theta}(s_{t}, a_{t}) \right]
 \end{aligned}\end{split}\]</div>
@@ -1135,10 +1137,10 @@ and that we only need to consider the present and future rewards to calculate th
 <p>Consider the “good” trajectories where <span class="math notranslate nohighlight">\(R(\tau)\)</span> is large. Then <span class="math notranslate nohighlight">\(\theta\)</span> gets updated so that these trajectories become more likely. To see why, recall that <span class="math notranslate nohighlight">\(\rho_{\theta}(\tau)\)</span> is the likelihood of the trajectory <span class="math notranslate nohighlight">\(\tau\)</span> under the policy <span class="math notranslate nohighlight">\(\pi_\theta,\)</span> so evaluating the gradient points in the direction that makes <span class="math notranslate nohighlight">\(\tau\)</span> more likely.</p>
 </section>
 <section id="baselines-and-advantages">
-<h2><span class="section-number">5.4. </span>Baselines and advantages<a class="headerlink" href="#baselines-and-advantages" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.4. </span>Baselines and advantages<a class="headerlink" href="#baselines-and-advantages" title="Link to this heading">#</a></h2>
 <p>A central idea from supervised learning is the <strong>bias-variance decomposition</strong>,
 which shows that the mean squared error of an estimator is the sum of its squared bias and its variance.
-The REINFORCE gradient estimator <a class="reference internal" href="#equation-reinforce-pg">(5.3)</a> is already <em>unbiased,</em> meaning that its expectation over trajectories is the true policy gradient.
+The REINFORCE gradient estimator <a class="reference internal" href="#equation-reinforce-pg">(6.3)</a> is already <em>unbiased,</em> meaning that its expectation over trajectories is the true policy gradient.
 Can we find ways to reduce its <em>variance</em> as well?</p>
 <p>One common way is to subtract a <strong>baseline function</strong> <span class="math notranslate nohighlight">\(b_\hi : \mathcal{S} \to \mathbb{R}\)</span> at each timestep <span class="math notranslate nohighlight">\(\hi.\)</span> This modifies the policy gradient as follows:</p>
 <div class="math notranslate nohighlight">
@@ -1164,15 +1166,15 @@ where the randomness is taken over the actions, is also centered around zero.
 In fact, this quantity has a particular name: the <strong>advantage function.</strong>
 This measures how much better this action does than the average for that policy.
 (Note that for an optimal policy <span class="math notranslate nohighlight">\(\pi^\star,\)</span> the advantage of a given state-action pair is always zero or negative.)</p>
-<p>We can now express the policy gradient as follows. Note that the advantage function effectively replaces the <span class="math notranslate nohighlight">\(Q\)</span>-function from <a class="reference internal" href="#equation-pg-with-q">(5.4)</a>:</p>
+<p>We can now express the policy gradient as follows. Note that the advantage function effectively replaces the <span class="math notranslate nohighlight">\(Q\)</span>-function from <a class="reference internal" href="#equation-pg-with-q">(6.4)</a>:</p>
 <div class="math notranslate nohighlight" id="equation-pg-advantage">
-<span class="eqno">(5.5)<a class="headerlink" href="#equation-pg-advantage" title="Link to this equation">#</a></span>\[\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
+<span class="eqno">(6.5)<a class="headerlink" href="#equation-pg-advantage" title="Link to this equation">#</a></span>\[\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
         \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A^{\pi_\theta}_\hi (s_\hi, a_\hi)
 \right].\]</div>
 <p>Note that to avoid correlations between the gradient estimator and the value estimator (i.e. baseline), we must estimate them with independently sampled trajectories:</p>
 <!-- TODO could use more explanation _why_ we want to avoid correlations -->
 <div class="proof definition admonition" id="pg_baseline">
-<p class="admonition-title"><span class="caption-number">Definition 5.1 </span> (Policy gradient with a learned baseline)</p>
+<p class="admonition-title"><span class="caption-number">Definition 6.1 </span> (Policy gradient with a learned baseline)</p>
 <section class="definition-content" id="proof-content">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pg_with_learned_baseline_pseudocode</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">π</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">θ_init</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
     <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
@@ -1198,7 +1200,7 @@ Note that the gradient estimator will be unbiased regardless of the baseline.</p
 </section>
 </div></section>
 <section id="comparing-policy-gradient-algorithms-to-policy-iteration">
-<h2><span class="section-number">5.5. </span>Comparing policy gradient algorithms to policy iteration<a class="headerlink" href="#comparing-policy-gradient-algorithms-to-policy-iteration" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.5. </span>Comparing policy gradient algorithms to policy iteration<a class="headerlink" href="#comparing-policy-gradient-algorithms-to-policy-iteration" title="Link to this heading">#</a></h2>
 <!-- TODO maybe restructure this part -->
 <p>What advantages does the policy gradient algorithm have over <a class="reference internal" href="mdps.html#policy-iteration"><span class="std std-ref">Policy iteration</span></a>?</p>
 <div class="admonition note">
@@ -1212,14 +1214,14 @@ Recall that policy iteration is an algorithm for MDPs with unknown state transit
 </div>
 <p>To analyze the difference between them, we’ll make use of the <strong>performance difference lemma</strong>, which provides an expression for comparing the difference between two value functions.</p>
 <div class="proof theorem admonition" id="pdl">
-<p class="admonition-title"><span class="caption-number">Theorem 5.1 </span> (Performance difference lemma)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 6.1 </span> (Performance difference lemma)</p>
 <section class="theorem-content" id="proof-content">
 <p>Suppose Alice is playing a game (an MDP).
 Bob is spectating, and can evaluate how good an action is compared to his own strategy.
 (That is, Bob can compute his <em>advantage function</em> <span class="math notranslate nohighlight">\(A_\hi^{\text{Bob}}(s_\hi, a_\hi)\)</span>).
 The performance difference lemma says that Bob can now calculate exactly how much better or worse he is than Alice as follows:</p>
 <div class="math notranslate nohighlight" id="equation-pdl-eq">
-<span class="eqno">(5.6)<a class="headerlink" href="#equation-pdl-eq" title="Link to this equation">#</a></span>\[V_0^{\text{Alice}}(s) - V_0^{\text{Bob}}(s) = \E_{\tau \sim \rho_{\text{Alice}, s}} \left[ \sum_{h=0}^{H-1} A_\hi^{\text{Bob}} (s_\hi, a_\hi) \right]\]</div>
+<span class="eqno">(6.6)<a class="headerlink" href="#equation-pdl-eq" title="Link to this equation">#</a></span>\[V_0^{\text{Alice}}(s) - V_0^{\text{Bob}}(s) = \E_{\tau \sim \rho_{\text{Alice}, s}} \left[ \sum_{h=0}^{H-1} A_\hi^{\text{Bob}} (s_\hi, a_\hi) \right]\]</div>
 <p>where <span class="math notranslate nohighlight">\(\rho_{\text{Alice}, s}\)</span> denotes the distribution over trajectories starting in state <span class="math notranslate nohighlight">\(s\)</span> when Alice is playing.</p>
 <p>To see why, consider just a single step <span class="math notranslate nohighlight">\(\hi\)</span> of the trajectory.
 At this step we compute how much better actions from Bob are than the actions from Alice, on average.
@@ -1232,7 +1234,7 @@ A^\pi_\hi(s_\hi, a_\hi) &amp;= Q^\pi_\hi(s_\hi, a_\hi) - V^\pi_\hi(s_\hi) \\
 &amp;= r_\hi(s_\hi, a_\hi) + \E_{s_{\hi+1} \sim P(s_\hi, a_\hi)} [V^\pi_{\hi+1}(s_{\hi+1})] - V^\pi_\hi(s_\hi)
 \end{aligned}
 \end{split}\]</div>
-<p>so expanding out the r.h.s. expression of <a class="reference internal" href="#equation-pdl-eq">(5.6)</a> and grouping terms together gives</p>
+<p>so expanding out the r.h.s. expression of <a class="reference internal" href="#equation-pdl-eq">(6.6)</a> and grouping terms together gives</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -1247,7 +1249,7 @@ To see why, let’s consider a single iteration of policy iteration, where polic
 Suppose the new policy <span class="math notranslate nohighlight">\(\tilde \pi\)</span> chooses some action with a negative advantage with respect to <span class="math notranslate nohighlight">\(\pi\)</span>.
 That is, when acting according to <span class="math notranslate nohighlight">\(\pi\)</span>, taking the action from <span class="math notranslate nohighlight">\(\tilde \pi\)</span> would perform worse than expected.
 Define <span class="math notranslate nohighlight">\(\Delta_\infty\)</span> to be the most negative advantage, that is, <span class="math notranslate nohighlight">\(\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\hi(s, \tilde \pi(s))\)</span>.
-Plugging this into the <a class="reference internal" href="#pdl">Theorem 5.1</a> gives</p>
+Plugging this into the <a class="reference internal" href="#pdl">Theorem 6.1</a> gives</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -1288,11 +1290,11 @@ Can we constrain the distance between the resulting distributions more <em>expli
 </ul>
 </section>
 <section id="trust-region-policy-optimization">
-<h2><span class="section-number">5.6. </span>Trust region policy optimization<a class="headerlink" href="#trust-region-policy-optimization" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.6. </span>Trust region policy optimization<a class="headerlink" href="#trust-region-policy-optimization" title="Link to this heading">#</a></h2>
 <p>We saw above that policy gradient methods are effective because they implicitly constrain how much the policy changes at each iteration.
 Can we design an algorithm that <em>explicitly</em> constrains the “step size”?
 That is, we want to <em>improve</em> the policy as much as possible,
-measured in terms of the r.h.s. of the <a class="reference internal" href="#pdl">Theorem 5.1</a>,
+measured in terms of the r.h.s. of the <a class="reference internal" href="#pdl">Theorem 6.1</a>,
 while ensuring that its trajectory distribution does not change too much:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -1311,7 +1313,7 @@ This approximation also matches the r.h.s. of the PDL to first order in <span cl
 <p>How do we describe the distance between <span class="math notranslate nohighlight">\(\rho_{\theta^{\text{opt}}}\)</span> and <span class="math notranslate nohighlight">\(\rho_{\theta^k}\)</span>?
 We’ll use the <strong>Kullback-Leibler divergence (KLD)</strong>:</p>
 <div class="proof definition admonition" id="kld">
-<p class="admonition-title"><span class="caption-number">Definition 5.2 </span> (Kullback-Leibler divergence)</p>
+<p class="admonition-title"><span class="caption-number">Definition 6.2 </span> (Kullback-Leibler divergence)</p>
 <section class="definition-content" id="proof-content">
 <p>For two PDFs <span class="math notranslate nohighlight">\(p, q\)</span>,</p>
 <div class="math notranslate nohighlight">
@@ -1326,7 +1328,7 @@ This is intractable in general, so we need to estimate the expectation.
 As before, we can do this by taking an empirical average over samples from the trajectory distribution.
 This gives us the following pseudocode:</p>
 <div class="proof definition admonition" id="trpo">
-<p class="admonition-title"><span class="caption-number">Definition 5.3 </span> (Trust region policy optimization (exact))</p>
+<p class="admonition-title"><span class="caption-number">Definition 6.3 </span> (Trust region policy optimization (exact))</p>
 <section class="definition-content" id="proof-content">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">trpo_pseudocode</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">θ_init</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
     <span class="n">θ</span> <span class="o">=</span> <span class="n">θ_init</span>
@@ -1385,17 +1387,17 @@ we can use their <em>Taylor expansions</em> to give us a simpler optimization pr
 This brings us to the <strong>natural policy gradient</strong> algorithm.</p>
 </section>
 <section id="natural-policy-gradient">
-<h2><span class="section-number">5.7. </span>Natural policy gradient<a class="headerlink" href="#natural-policy-gradient" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.7. </span>Natural policy gradient<a class="headerlink" href="#natural-policy-gradient" title="Link to this heading">#</a></h2>
 <p>We take a <em>linear</em> (first-order) approximation to the objective function and a <em>quadratic</em> (second-order) approximation to the KL divergence constraint about the current estimate <span class="math notranslate nohighlight">\(\theta^k\)</span>.
 This results in the optimization problem</p>
 <div class="math notranslate nohighlight" id="equation-npg-optimization">
-<span class="eqno">(5.7)<a class="headerlink" href="#equation-npg-optimization" title="Link to this equation">#</a></span>\[\begin{split}\begin{gathered}
+<span class="eqno">(6.7)<a class="headerlink" href="#equation-npg-optimization" title="Link to this equation">#</a></span>\[\begin{split}\begin{gathered}
     \max_\theta \nabla_\theta J(\pi_{\theta^k})^\top (\theta - \theta^k) \\
     \text{where } \frac{1}{2} (\theta - \theta^k)^\top F_{\theta^k} (\theta - \theta^k) \le \delta
 \end{gathered}\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(F_{\theta^k}\)</span> is the <strong>Fisher information matrix</strong> defined below.</p>
 <div class="proof definition admonition" id="fisher_matrix">
-<p class="admonition-title"><span class="caption-number">Definition 5.4 </span> (Fisher information matrix)</p>
+<p class="admonition-title"><span class="caption-number">Definition 6.4 </span> (Fisher information matrix)</p>
 <section class="definition-content" id="proof-content">
 <p>Let <span class="math notranslate nohighlight">\(p_\theta\)</span> denote a parameterized distribution.
 Its Fisher information matrix <span class="math notranslate nohighlight">\(F_\theta\)</span> can be defined equivalently as:</p>
@@ -1412,7 +1414,7 @@ the quantity <span class="math notranslate nohighlight">\(\delta^\top F_\theta \
 The Fisher information matrix is precisely the Hessian of the KL divergence (with respect to either one of the parameters).</p>
 <p>In particular, when <span class="math notranslate nohighlight">\(p_\theta = \rho_{\theta}\)</span> denotes a trajectory distribution, we can further simplify the expression:</p>
 <div class="math notranslate nohighlight" id="equation-fisher-trajectory">
-<span class="eqno">(5.8)<a class="headerlink" href="#equation-fisher-trajectory" title="Link to this equation">#</a></span>\[F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]\]</div>
+<span class="eqno">(6.8)<a class="headerlink" href="#equation-fisher-trajectory" title="Link to this equation">#</a></span>\[F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]\]</div>
 <p>Note that we’ve used the Markov property to cancel out the cross terms corresponding to two different time steps.</p>
 </section>
 </div><p>This is a convex optimization problem with a closed-form solution.
@@ -1420,7 +1422,7 @@ To see why, it helps to visualize the case where <span class="math notranslate n
 the constraint describes the inside of an ellipse,
 and the objective function is linear,
 so we can find the extreme point on the boundary of the ellipse.
-We recommend <span id="id2">[]</span> for a comprehensive treatment of convex optimization.</p>
+We recommend <span id="id2">[<a class="reference internal" href="bibliography.html#id7" title="Stephen Boyd and Lieven Vandenberghe. Convex Optimization. Cambridge University Press, 2004.">Boyd and Vandenberghe, 2004</a>]</span> for a comprehensive treatment of convex optimization.</p>
 <p>More generally, for a higher-dimensional <span class="math notranslate nohighlight">\(\theta\)</span>,
 we can compute the global optima by setting the gradient of the Lagrangian to zero:</p>
 <div class="math notranslate nohighlight">
@@ -1437,7 +1439,7 @@ we can compute the global optima by setting the gradient of the Lagrangian to ze
 Now the only challenge is to estimate the Fisher information matrix,
 since, as with the KL divergence constraint, it is an expectation over trajectories, and computing it exactly is therefore typically intractable.</p>
 <div class="proof definition admonition" id="npg">
-<p class="admonition-title"><span class="caption-number">Definition 5.5 </span> (Natural policy gradient)</p>
+<p class="admonition-title"><span class="caption-number">Definition 6.5 </span> (Natural policy gradient)</p>
 <section class="definition-content" id="proof-content">
 <p>How many trajectory samples do we need to accurately estimate the Fisher information matrix?
 As a rule of thumb, the sample complexity should scale with the dimension of the parameter space.
@@ -1448,9 +1450,9 @@ but with the gradient transformed by the inverse Fisher information matrix.
 This matrix can be understood as accounting for the <strong>geometry of the parameter space.</strong>
 The typical gradient descent algorithm implicitly measures distances between parameters using the typical <em>Euclidean distance</em>.
 Here, where the parameters map to a <em>distribution</em>, using the natural gradient update is equivalent to optimizing over <strong>distribution space</strong> rather than parameter space,
-where distance between distributions is measured by the <a class="reference internal" href="#kld">Definition 5.2</a>.</p>
+where distance between distributions is measured by the <a class="reference internal" href="#kld">Definition 6.2</a>.</p>
 <div class="proof example admonition" id="natural_simple">
-<p class="admonition-title"><span class="caption-number">Example 5.1 </span> (Natural gradient on a simple problem)</p>
+<p class="admonition-title"><span class="caption-number">Example 6.1 </span> (Natural gradient on a simple problem)</p>
 <section class="example-content" id="proof-content">
 <p>Let’s step away from RL and consider the following optimization problem over Bernoulli distributions <span class="math notranslate nohighlight">\(\pi \in \Delta(\{ 0, 1 \})\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -1460,6 +1462,7 @@ where distance between distributions is measured by the <a class="reference inte
 \end{aligned}
 \]</div>
 <p>We can think of the space of such distributions as the line between <span class="math notranslate nohighlight">\((0, 1)\)</span> to <span class="math notranslate nohighlight">\((1, 0)\)</span> on the Cartesian plane:</p>
+<a class="reference internal image-reference" href="_images/npg_line.png"><img alt="a line from (0, 1) to (1, 0)" class="align-center" src="_images/npg_line.png" style="width: 240px;" /></a>
 <p>Clearly the optimal distribution is the constant one <span class="math notranslate nohighlight">\(\pi(1) = 1\)</span>. Suppose we optimize over the parameterized family <span class="math notranslate nohighlight">\(\pi_\theta(1) = \frac{\exp(\theta)}{1+\exp(\theta)}\)</span>.
 Then our optimization algorithm should set <span class="math notranslate nohighlight">\(\theta\)</span> to be unboundedly large.
 Then the “vanilla” gradient is</p>
@@ -1492,7 +1495,7 @@ This can be expensive if the parameter space is large.
 Can we find an algorithm that works in <em>linear time</em> with respect to the dimension of the parameter space?</p>
 </section>
 <section id="proximal-policy-optimization">
-<h2><span class="section-number">5.8. </span>Proximal policy optimization<a class="headerlink" href="#proximal-policy-optimization" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.8. </span>Proximal policy optimization<a class="headerlink" href="#proximal-policy-optimization" title="Link to this heading">#</a></h2>
 <p>We can relax the TRPO optimization problem in a different way:
 Rather than imposing a hard constraint on the KL distance,
 we can instead impose a <em>soft</em> constraint by incorporating it into the objective and penalizing parameter values that drastically change the trajectory distribution.</p>
@@ -1503,7 +1506,7 @@ we can instead impose a <em>soft</em> constraint by incorporating it into the ob
 \end{aligned}
 \]</div>
 <p>Here <span class="math notranslate nohighlight">\(\lambda\)</span> is a <strong>regularization hyperparameter</strong> that controls the tradeoff between the two terms.</p>
-<p>Like the original TRPO algorithm <a class="reference internal" href="#trpo">Definition 5.3</a>, PPO is not gradient-based; rather, at each step, we try to maximize local advantage relative to the current policy.</p>
+<p>Like the original TRPO algorithm <a class="reference internal" href="#trpo">Definition 6.3</a>, PPO is not gradient-based; rather, at each step, we try to maximize local advantage relative to the current policy.</p>
 <p>How do we solve this optimization?
 Let us begin by simplifying the <span class="math notranslate nohighlight">\(\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}\)</span> term. Expanding gives</p>
 <div class="math notranslate nohighlight">
@@ -1579,7 +1582,7 @@ we execute</p>
 </div>
 </section>
 <section id="summary">
-<h2><span class="section-number">5.9. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">6.9. </span>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 <p>Policy gradient methods are a powerful family of algorithms that directly optimize the total reward by iteratively updating the policy parameters.</p>
 <p>TODO</p>
 <ul class="simple">
@@ -1628,7 +1631,7 @@ we execute</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">4. </span>Fitted Dynamic Programming Algorithms</p>
+        <p class="prev-next-title"><span class="section-number">5. </span>Fitted Dynamic Programming Algorithms</p>
       </div>
     </a>
     <a class="right-next"
@@ -1636,7 +1639,7 @@ we execute</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">6. </span>Imitation Learning</p>
+        <p class="prev-next-title"><span class="section-number">7. </span>Imitation Learning</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1656,28 +1659,28 @@ we execute</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-ascent">5.1. Gradient Ascent</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-ascent">5.1.1. Stochastic gradient ascent</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-ascent">6.1. Gradient Ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stochastic-gradient-ascent">6.1.1. Stochastic gradient ascent</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-stochastic-gradient-ascent">5.2. Policy (stochastic) gradient ascent</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">5.2.1. Example policy parameterizations</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tabular-representation">5.2.1.1. Tabular representation</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">5.2.1.2. Linear in features</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">5.2.1.3. Neural policies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-stochastic-gradient-ascent">6.2. Policy (stochastic) gradient ascent</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-policy-parameterizations">6.2.1. Example policy parameterizations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tabular-representation">6.2.1.1. Tabular representation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-in-features">6.2.1.2. Linear in features</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-policies">6.2.1.3. Neural policies</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">5.2.2. Continuous action spaces</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">5.2.3. Importance Sampling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-action-spaces">6.2.2. Continuous action spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#importance-sampling">6.2.3. Importance Sampling</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-policy-gradient">5.3. The REINFORCE policy gradient</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-and-advantages">5.4. Baselines and advantages</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-policy-gradient-algorithms-to-policy-iteration">5.5. Comparing policy gradient algorithms to policy iteration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">5.6. Trust region policy optimization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">5.7. Natural policy gradient</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">5.8. Proximal policy optimization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">5.9. Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-reinforce-policy-gradient">6.3. The REINFORCE policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baselines-and-advantages">6.4. Baselines and advantages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparing-policy-gradient-algorithms-to-policy-iteration">6.5. Comparing policy gradient algorithms to policy iteration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trust-region-policy-optimization">6.6. Trust region policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#natural-policy-gradient">6.7. Natural policy gradient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proximal-policy-optimization">6.8. Proximal policy optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">6.9. Summary</a></li>
 </ul>
   </nav></div>
 

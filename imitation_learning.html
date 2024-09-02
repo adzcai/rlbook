@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>6. Imitation Learning &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>7. Imitation Learning &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
@@ -97,8 +97,8 @@ commentsRunWhenDOMLoaded(addUtterances);
     <script>DOCUMENTATION_OPTIONS.pagename = 'imitation_learning';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="7. Planning" href="planning.html" />
-    <link rel="prev" title="5. Policy Optimization" href="pg.html" />
+    <link rel="next" title="8. Planning" href="planning.html" />
+    <link rel="prev" title="6. Policy Optimization" href="pg.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -209,13 +209,15 @@ commentsRunWhenDOMLoaded(addUtterances);
 <li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">4. Fitted Dynamic Programming Algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pg.html">5. Policy Optimization</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">6. Imitation Learning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="planning.html">7. Planning</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exploration.html">8. Exploration in MDPs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">9. Contextual bandits</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">10. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="supervised_learning.html">4. Supervised learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fitted_dp.html">5. Fitted Dynamic Programming Algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pg.html">6. Policy Optimization</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">7. Imitation Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">8. Planning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exploration.html">9. Exploration in MDPs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contextual_bandits.html">10. Contextual bandits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">11. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background.html">12. Appendix: Background</a></li>
 </ul>
 
     </div>
@@ -364,9 +366,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">6.1. Behavioural cloning</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">6.2. Distribution shift</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">6.3. Dataset aggregation (DAgger)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">7.1. Behavioural cloning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">7.2. Distribution shift</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">7.3. Dataset aggregation (DAgger)</a></li>
 </ul>
             </nav>
         </div>
@@ -379,7 +381,7 @@ document.write(`
                 <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="imitation-learning">
-<span id="id1"></span><h1><span class="section-number">6. </span>Imitation Learning<a class="headerlink" href="#imitation-learning" title="Link to this heading">#</a></h1>
+<span id="id1"></span><h1><span class="section-number">7. </span>Imitation Learning<a class="headerlink" href="#imitation-learning" title="Link to this heading">#</a></h1>
 <p>Imagine you are tasked with learning how to drive. How do, or did, you go about it?
 At first, this task might seem insurmountable: there are a vast array of controls, and the cost of making a single mistake could be extremely high, making it hard to explore by trial and error.
 Luckily, there are already people in the world who know how to drive who can get you started.
@@ -390,8 +392,8 @@ In such cases, the machine learning algorithm is the one learning the new skill,
 We’ll see that the most naive form of imitation learning, called <strong>behavioural cloning</strong>, is really an application of supervised learning to interactive tasks.
 We’ll then explore <strong>dataset aggregation</strong> (DAgger) as a way to query an expert and learn even more effectively.</p>
 <section id="behavioural-cloning">
-<h2><span class="section-number">6.1. </span>Behavioural cloning<a class="headerlink" href="#behavioural-cloning" title="Link to this heading">#</a></h2>
-<p>This notion of “learning from human-provided data” may remind you of the basic premise of <a class="reference internal" href="fitted_dp.html#supervised-learning"><span class="std std-ref">Supervised learning</span></a>,
+<h2><span class="section-number">7.1. </span>Behavioural cloning<a class="headerlink" href="#behavioural-cloning" title="Link to this heading">#</a></h2>
+<p>This notion of “learning from human-provided data” may remind you of the basic premise of <a class="reference internal" href="supervised_learning.html#supervised-learning"><span class="std std-ref">Supervised learning</span></a>,
 in which there is some mapping from <em>inputs</em> to <em>outputs</em> that us humans can implicitly compute, such as seeing a photo and being able to recognize its constituents.
 To teach a machine to calculate this mapping, we first collect a large <em>training dataset</em> by getting people to label a lot of inputs,
 and then use some optimization algorithm to produce a predictor that maps from the inputs to the outputs as closely as possible.
@@ -400,7 +402,7 @@ Here, the input is the observation seen by the agent and the output is the actio
 What’s stopping us from applying supervised learning techniques?
 In practice, nothing! This is called <strong>behavioural cloning.</strong></p>
 <div class="proof algorithm admonition" id="algorithm-0">
-<p class="admonition-title"><span class="caption-number">Algorithm 6.1 </span></p>
+<p class="admonition-title"><span class="caption-number">Algorithm 7.1 </span></p>
 <section class="algorithm-content" id="proof-content">
 <ol class="arabic simple">
 <li><p>Collect a training dataset of trajectories generated by an expert policy <span class="math notranslate nohighlight">\(\pi_\text{data}\)</span>. Here, we treat each state-action pair as independent, resuling in a dataset <span class="math notranslate nohighlight">\(\mathcal{D} = (s^n, a^n)_{n=1}^{N}\)</span>. (For concreteness, if there are <span class="math notranslate nohighlight">\(M\)</span> trajectories with a horizon <span class="math notranslate nohighlight">\(H\)</span>, then <span class="math notranslate nohighlight">\(N = M \times H\)</span>.)</p>
@@ -433,9 +435,9 @@ the learned policy chooses a different action at most <span class="math notransl
 \[| V^{\pi_{\text{data}}} - V^{\tilde \pi} | \le H^2 \varepsilon\]</div>
 <p>where <span class="math notranslate nohighlight">\(H\)</span> is the horizon.</p>
 <div class="proof theorem admonition" id="theorem-1">
-<p class="admonition-title"><span class="caption-number">Theorem 6.1 </span> (Performance of behavioural cloning)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 7.1 </span> (Performance of behavioural cloning)</p>
 <section class="theorem-content" id="proof-content">
-<p>Recall the <a class="reference internal" href="pg.html#pdl">Theorem 5.1</a> allows us to express the difference between <span class="math notranslate nohighlight">\(\pi_{\text{data}}\)</span> and <span class="math notranslate nohighlight">\(\tilde \pi\)</span> as</p>
+<p>Recall the <a class="reference internal" href="pg.html#pdl">Theorem 6.1</a> allows us to express the difference between <span class="math notranslate nohighlight">\(\pi_{\text{data}}\)</span> and <span class="math notranslate nohighlight">\(\tilde \pi\)</span> as</p>
 <div class="math notranslate nohighlight">
 \[
 V_0^{\pi_{\text{data}}}(s) - V_0^{\tilde \pi} (s) = \E_{\tau \sim \rho^{\pi_{\text{data}}} \mid s_0 = s} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\tilde \pi} (s_\hi, a_\hi) \right].
@@ -452,7 +454,7 @@ A^{\pi_{\text{data}}}(s, \pi_{\text{data}}(s)) = Q^{\pi_{\text{data}}}(s, \pi_{\
 </div><!-- TODO ADD DISTRIBUTION SHIFT EXAMPLE FROM SLIDES -->
 </section>
 <section id="distribution-shift">
-<h2><span class="section-number">6.2. </span>Distribution shift<a class="headerlink" href="#distribution-shift" title="Link to this heading">#</a></h2>
+<h2><span class="section-number">7.2. </span>Distribution shift<a class="headerlink" href="#distribution-shift" title="Link to this heading">#</a></h2>
 <p>Let us return to the driving analogy. Suppose you have taken some driving lessons and now feel comfortable in your neighbourhood. But today you have to travel to an area you haven’t visited before, such as a highway, where it would be dangerous to try and apply the techniques you’ve already learned.
 This is the issue of <em>distribution shift</em>: a policy learned under some distribution of states may not perform well if this distribution changes.</p>
 <p>This is already a common issue in supervised learning, where the training dataset for a model might not resemble the environment where it gets deployed. In interactive environments, this issue is further exacerbated by the dependency between the observations and the agent’s behaviour; if you take a wrong turn early on, it may be difficult or impossible to recover in that trajectory.</p>
@@ -463,8 +465,8 @@ You could then repeat this training as many times as desired, thereby collecting
 This is the key idea behind <em>dataset aggregation</em>.</p>
 </section>
 <section id="dataset-aggregation-dagger">
-<h2><span class="section-number">6.3. </span>Dataset aggregation (DAgger)<a class="headerlink" href="#dataset-aggregation-dagger" title="Link to this heading">#</a></h2>
-<p>The DAgger algorithm is due to <span id="id2">[<a class="reference internal" href="bibliography.html#id16" title="Stéphane Ross, Geoffrey J. Gordon, and J. Bagnell. A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning. In International Conference on Artificial Intelligence and Statistics. November 2010.">Ross <em>et al.</em>, 2010</a>]</span>.</p>
+<h2><span class="section-number">7.3. </span>Dataset aggregation (DAgger)<a class="headerlink" href="#dataset-aggregation-dagger" title="Link to this heading">#</a></h2>
+<p>The DAgger algorithm is due to <span id="id2">[<a class="reference internal" href="bibliography.html#id26" title="Stéphane Ross, Geoffrey J. Gordon, and J. Bagnell. A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning. In International Conference on Artificial Intelligence and Statistics. November 2010.">Ross <em>et al.</em>, 2010</a>]</span>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dagger_pseudocode</span><span class="p">(</span>
     <span class="n">env</span><span class="p">:</span> <span class="n">MAB</span><span class="p">,</span>
     <span class="n">π_init</span><span class="p">:</span> <span class="n">Policy</span><span class="p">,</span>
@@ -528,7 +530,7 @@ This is the key idea behind <em>dataset aggregation</em>.</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">5. </span>Policy Optimization</p>
+        <p class="prev-next-title"><span class="section-number">6. </span>Policy Optimization</p>
       </div>
     </a>
     <a class="right-next"
@@ -536,7 +538,7 @@ This is the key idea behind <em>dataset aggregation</em>.</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">7. </span>Planning</p>
+        <p class="prev-next-title"><span class="section-number">8. </span>Planning</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -556,9 +558,9 @@ This is the key idea behind <em>dataset aggregation</em>.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">6.1. Behavioural cloning</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">6.2. Distribution shift</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">6.3. Dataset aggregation (DAgger)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#behavioural-cloning">7.1. Behavioural cloning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution-shift">7.2. Distribution shift</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-aggregation-dagger">7.3. Dataset aggregation (DAgger)</a></li>
 </ul>
   </nav></div>
 

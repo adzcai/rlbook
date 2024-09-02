@@ -128,25 +128,30 @@ We will extend ideas from multi-armed bandits to the MDP setting.
 
 ## Notation
 
-We will use the following notation throughout the book. This notation is
-inspired by {cite}`sutton_reinforcement_2018` and {cite}`agarwal_reinforcement_2022`.
+We will use the following notation throughout the book.
+This notation is inspired by {cite}`sutton_reinforcement_2018` and {cite}`agarwal_reinforcement_2022`.
+We use $[N]$ as shorthand for the set $\{ 0, 1, \dots, N-1 \}$.
 
-| Notation      | Definition                |
-|:-------------:|:--------------------------|
-|      $s$      | A state.                  |
-|      $a$      | An action.                |
-|      $r$      | A reward.                 |
-|      $p$      | A probability.            |
-|     $\pi$     | A policy.                 |
-|      $V$      | A value function.         |
-|      $Q$      | An action-value function. |
-|      $A$      | An advantage function.    |
-|   $\gamma$    | A discount factor.        |
-|    $\tau$     | A trajectory.             |
-| $\mathcal{S}$ | A state space.            |
-| $\mathcal{A}$ | An action space.          |
+| Element      | Space                    | Definition (of element)   |
+|:------------:|:------------------------:|:--------------------------|
+|      $s$     | $\mathcal{S}$            | A state.                  |
+|      $a$     | $\mathcal{A}$            | An action.                |
+|      $r$     |                          | A reward.                 |
+|   $\gamma$   |                          | A discount factor.        |
+|    $\tau$    | $\mathcal{T}             | A trajectory.             |
+|     $\pi$    | $\Pi$                    | A policy.                 |
+|   $V^\pi$    | $\mathcal{S} \to \mathbb{R}$                         | The value function of policy $\pi$.                               |
+|   $Q^\pi$    | $\mathcal{S} \times \mathcal{A} \to \mathbb{R}$                         | The action-value function (a.k.a. Q function) of policy $\pi$. |
+|   $A^\pi$    |                          | The advantage function of policy $\pi$.    |
+|              | $\triangle(\mathcal{X})$ | A distribution supported on $\mathcal{X}$. |
+|      $\mu$   | $\triangle(\mathcal{S})$ | A distribution over states.        |
+|    $\hi$     |   $[\hor]$               | Time horizon index of an MDP.    |
+|    $k$       |   $[K]$                  | Arm index of a multi-armed bandit. |
+|    $t$       |   $[T]$                  | Iteration index of an algorithm.  |
+|    $\theta$  | $\Theta$                 | A set of parameters. |
 
-Note that throughout the text, certain symbols will stand for either random variables or fixed values. We aim to clarify in ambiguous settings.
+Note that throughout the text, certain symbols will stand for either random variables or fixed values.
+We aim to clarify in ambiguous settings.
 
 +++
 

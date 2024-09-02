@@ -847,21 +847,11 @@ $$
 
 We can think of the space of such distributions as the line between $(0, 1)$ to $(1, 0)$ on the Cartesian plane:
 
-```{code-cell}
-# Coordinates of the points
-x = [0, 1]
-y = [1, 0]
-
-# Plotting the line
-plt.plot(x, y, marker='o')
-plt.title("Line between (0, 1) and (1, 0)")
-plt.xlabel("X-axis")
-plt.ylabel("Y-axis")
-plt.grid(True)
-
-# Display the plot
-plt.show()
-```
+:::{image} shared/npg_line.png
+:alt: a line from (0, 1) to (1, 0)
+:width: 240px
+:align: center
+:::
 
 Clearly the optimal distribution is the constant one $\pi(1) = 1$. Suppose we optimize over the parameterized family $\pi_\theta(1) = \frac{\exp(\theta)}{1+\exp(\theta)}$.
 Then our optimization algorithm should set $\theta$ to be unboundedly large.
