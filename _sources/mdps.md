@@ -283,14 +283,17 @@ class Transition(NamedTuple):
     s: int
     a: int
     r: float
-
-
-Trajectory = list[Transition]
 ```
 
 Once we've chosen a policy,
 we can sample trajectories by repeatedly choosing actions according to the policy,
 transitioning according to the state transitions, and observing the rewards.
+
+:::{image} shared/trajectory.png
+:width: 240px
+:align: center
+:::
+
 That is, a policy induces a distribution $\rho^{\pi}$ over trajectories.
 (We assume that $\mu$ and $P$ are clear from context.)
 

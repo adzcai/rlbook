@@ -18,27 +18,31 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-def trajectory_log_likelihood(mdp: MDP, tau: Trajectory, pi: Policy) -> float:
-    """
-    Compute the log likelihood of a trajectory under a given MDP and policy.
-    """
-    total = np.log(mdp.μ[tau[0].s])
-    total += np.log(pi[tau[0].s, tau[0].a])
+def trajectory_log_likelihood(
+    mdp: MDP,
+    τ: Trajectory,
+    π: Float[Array, "S A"],
+) -> float:
+    """Compute the log-likelihood of a trajectory under a given MDP and policy."""
+    total = jnp.log(mdp.μ[τ[0].s])
+    total += jnp.log(π[τ[0].s, τ[0].a])
     for i in range(1, mdp.H):
-        total += np.log(mdp.P[tau[i - 1].s, tau[i - 1].a, tau[i].s])
-        total += np.log(pi[tau[i].s, tau[i].a])
+        total += jnp.log(mdp.P[τ[i - 1].s, τ[i - 1].a, τ[i].s])
+        total += jnp.log(π[τ[i].s, τ[i].a])
     return total
 ------------------
 
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mNameError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[7], line 1[0m
-[0;32m----> 1[0m [38;5;28;01mdef[39;00m [38;5;21mtrajectory_log_likelihood[39m(mdp: [43mMDP[49m, tau: Trajectory, pi: Policy) [38;5;241m-[39m[38;5;241m>[39m [38;5;28mfloat[39m:
-[1;32m      2[0m [38;5;250m    [39m[38;5;124;03m"""[39;00m
-[1;32m      3[0m [38;5;124;03m    Compute the log likelihood of a trajectory under a given MDP and policy.[39;00m
-[1;32m      4[0m [38;5;124;03m    """[39;00m
-[1;32m      5[0m     total [38;5;241m=[39m np[38;5;241m.[39mlog(mdp[38;5;241m.[39mμ[tau[[38;5;241m0[39m][38;5;241m.[39ms])
+Cell [0;32mIn[6], line 3[0m
+[1;32m      1[0m [38;5;28;01mdef[39;00m [38;5;21mtrajectory_log_likelihood[39m(
+[1;32m      2[0m     mdp: MDP,
+[0;32m----> 3[0m     τ: [43mTrajectory[49m,
+[1;32m      4[0m     π: Float[Array, [38;5;124m"[39m[38;5;124mS A[39m[38;5;124m"[39m],
+[1;32m      5[0m ) [38;5;241m-[39m[38;5;241m>[39m [38;5;28mfloat[39m:
+[1;32m      6[0m [38;5;250m    [39m[38;5;124;03m"""Compute the log-likelihood of a trajectory under a given MDP and policy."""[39;00m
+[1;32m      7[0m     total [38;5;241m=[39m jnp[38;5;241m.[39mlog(mdp[38;5;241m.[39mμ[τ[[38;5;241m0[39m][38;5;241m.[39ms])
 
-[0;31mNameError[0m: name 'MDP' is not defined
+[0;31mNameError[0m: name 'Trajectory' is not defined
 

@@ -717,17 +717,15 @@ and <span class="math notranslate nohighlight">\(\pi_\hi(\text{orderly}) = \text
     <span class="n">s</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">r</span><span class="p">:</span> <span class="nb">float</span>
-
-
-<span class="n">Trajectory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">Transition</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 </div>
 <p>Once we’ve chosen a policy,
 we can sample trajectories by repeatedly choosing actions according to the policy,
-transitioning according to the state transitions, and observing the rewards.
-That is, a policy induces a distribution <span class="math notranslate nohighlight">\(\rho^{\pi}\)</span> over trajectories.
+transitioning according to the state transitions, and observing the rewards.</p>
+<a class="reference internal image-reference" href="_images/trajectory.png"><img alt="_images/trajectory.png" class="align-center" src="_images/trajectory.png" style="width: 240px;" /></a>
+<p>That is, a policy induces a distribution <span class="math notranslate nohighlight">\(\rho^{\pi}\)</span> over trajectories.
 (We assume that <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(P\)</span> are clear from context.)</p>
 <div class="proof example admonition" id="tidy_traj">
 <p class="admonition-title"><span class="caption-number">Example 1.3 </span> (Trajectories in the tidying environment)</p>
@@ -799,6 +797,22 @@ we can write down the likelihood function of this probability distribution in an
         <span class="n">total</span> <span class="o">+=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">τ</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">])</span>
         <span class="n">total</span> <span class="o">+=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">[</span><span class="n">τ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">total</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">line</span> <span class="mi">3</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="k">def</span> <span class="nf">trajectory_log_likelihood</span><span class="p">(</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span>     <span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span>
+<span class="ne">----&gt; </span><span class="mi">3</span>     <span class="n">τ</span><span class="p">:</span> <span class="n">Trajectory</span><span class="p">,</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span>     <span class="n">π</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">],</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Compute the log-likelihood of a trajectory under a given MDP and policy.&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span>     <span class="n">total</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">μ</span><span class="p">[</span><span class="n">τ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">])</span>
+
+<span class="ne">NameError</span>: name &#39;Trajectory&#39; is not defined
 </pre></div>
 </div>
 </div>
@@ -1126,17 +1140,6 @@ other policies to get a better sense of this algorithm.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([[5.5621696, 4.7927704],
-       [4.7927704, 4.0241003],
-       [4.0241003, 3.253    ],
-       [3.253    , 2.49     ],
-       [2.49     , 1.7      ],
-       [1.7      , 1.       ],
-       [1.       , 0.       ]], dtype=float32)
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section id="optimal-policies-in-finite-horizon-mdps">
@@ -1319,11 +1322,6 @@ setting.</p>
 <span class="k">assert</span> <span class="n">jnp</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">V_opt</span><span class="p">,</span> <span class="n">V_messy</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">jnp</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Q_opt</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">v_ary_to_q_ary</span><span class="p">(</span><span class="n">tidy_mdp</span><span class="p">,</span> <span class="n">V_messy</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
 <span class="s2">&quot;Assertions passed (the &#39;tidy when messy&#39; policy is optimal)&quot;</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&quot;Assertions passed (the &#39;tidy when messy&#39; policy is optimal)&quot;
 </pre></div>
 </div>
 </div>
@@ -1587,11 +1585,6 @@ lower than this.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([15.56419, 14.78598], dtype=float32)
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 <section id="iterative-policy-evaluation">
@@ -1636,11 +1629,6 @@ takes <span class="math notranslate nohighlight">\(O(|\mathcal{S}|^2)\)</span> t
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">iterative_evaluation</span><span class="p">(</span><span class="n">tidy_mdp_inf</span><span class="p">,</span> <span class="n">tidy_policy_messy_only</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([15.564166, 14.785956], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -1736,11 +1724,6 @@ algorithm is known as <strong>value iteration</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">value_iteration</span><span class="p">(</span><span class="n">tidy_mdp_inf</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([15.564166, 14.785956], dtype=float32)
 </pre></div>
 </div>
 </div>
@@ -1845,12 +1828,6 @@ Proof<div class="sd-summary-down docutils">
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">policy_iteration</span><span class="p">(</span><span class="n">tidy_mdp_inf</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array([[1., 0.],
-       [0., 1.]], dtype=float32)
 </pre></div>
 </div>
 </div>
