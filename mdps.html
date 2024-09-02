@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>1. Finite Markov Decision Processes &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
+    <title>1. Markov Decision Processes &#8212; CS/STAT 184: Introduction to Reinforcement Learning</title>
   
   
   
@@ -206,7 +206,7 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supervised_learning.html">4. Supervised learning</a></li>
@@ -356,7 +356,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Finite Markov Decision Processes</h1>
+    <h1>Markov Decision Processes</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -414,8 +414,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="finite-markov-decision-processes">
-<span id="mdps"></span><h1><span class="section-number">1. </span>Finite Markov Decision Processes<a class="headerlink" href="#finite-markov-decision-processes" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="markov-decision-processes">
+<span id="mdps"></span><h1><span class="section-number">1. </span>Markov Decision Processes<a class="headerlink" href="#markov-decision-processes" title="Link to this heading">#</a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#finite-horizon-mdps" id="id6">Finite-horizon MDPs</a></p>
@@ -473,7 +473,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span>
 <span class="kn">from</span> <span class="nn">jaxtyping</span> <span class="kn">import</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Array</span>
-<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
 <span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">vmap</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 </pre></div>
@@ -484,14 +484,18 @@ document.write(`
 <p>The field of RL studies how an agent can learn to make sequential decisions in an interactive environment. This is a very general problem! How can we <em>formalize</em> this task in a way that is both <em>sufficiently general</em> yet also tractable enough for <em>fruitful analysis</em>?</p>
 <p>Let’s consider some examples of sequential decision problems to identify the key common properties we’d like to capture:</p>
 <ul class="simple">
-<li><p><strong>Board games</strong> like chess or Go, where the player takes turns with
-the opponent to make moves on the board.</p></li>
-<li><p><strong>Video games</strong> like Breakout, where the player
-controls a character to reach the goal.</p></li>
-<li><p><strong>Robotic control</strong>, where the robot can move and interact with the
-real-world environment to complete some task.</p></li>
+<li><p><strong>Board games and video games,</strong> where a player takes actions in a virtual environment.</p></li>
+<li><p><strong>Inventory management,</strong> where a company must efficiently move resources from producers to consumers.</p></li>
+<li><p><strong>Robotic control</strong>, where a robot can move and interact with the real world to complete some task.</p></li>
 </ul>
-<p>All of these fit into the RL framework. Furthermore, these are environments where the <strong>state transitions</strong>, the “rules” of the environment, only depend on the <em>most recent</em> state and action. This is called the <strong>Markov property</strong>.</p>
+<p>In these environments and many others, the <strong>state transitions</strong>,
+the “rules” of the environment,
+only depend on the <em>most recent</em> state and action (generally speaking).
+For example, if you want to take a break while playing a game of chess,
+you could take a picture of the board,
+and later on reset the board to that state and continue playing;
+the past history of moves taken doesn’t matter (generally speaking).
+This is called the <strong>Markov property.</strong></p>
 <div class="proof definition admonition" id="markov">
 <p class="admonition-title"><span class="caption-number">Definition 1.1 </span> (Markov property)</p>
 <section class="definition-content" id="proof-content">
@@ -500,25 +504,20 @@ probability of transitioning to a new state only depends on the current
 state and action:</p>
 <div class="math notranslate nohighlight">
 \[\P(s_{\hi+1} \mid s_0, a_0, \dots, s_\hi, a_\hi) = P(s_{\hi+1} \mid s_\hi, a_\hi)\]</div>
-<p>where <span class="math notranslate nohighlight">\(P : \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})\)</span> describes the state transitions.
+<p>where <span class="math notranslate nohighlight">\(P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})\)</span> describes the state transitions.
 (We’ll elaborate on this notation later in the chapter.)</p>
 </section>
-</div><p>We’ll see that this simple assumption leads to a rich set of problems
-and algorithms. Environments with the Markov property are called
-<strong>Markov decision processes</strong> (MDPs) and will be the focus of this
-chapter.</p>
+</div><p>Environments that satisfy the Markov property are called <strong>Markov decision processes</strong> (MDPs).
+This chapter will focus on introducing core vocabulary for MDPs that will be useful throughout the book.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>What information might be encoded in the state for each of
-the above examples? What might the valid set of actions be? Describe the
-state transitions heuristically and verify that they satisfy the Markov
-property.</p>
+<p>What information might be encoded in the <em>state</em> for each of the above examples?
+What might the valid set of <em>actions</em> be?
+Describe the <em>state transitions</em> heuristically and verify that they satisfy the Markov property.</p>
 </div>
-<p>MDPs are usually classified as <strong>finite-horizon</strong>, where the
-interactions end after some finite number of time steps, or
-<strong>infinite-horizon</strong>, where the interactions can continue indefinitely.
-We’ll begin with the finite-horizon case and discuss the
-infinite-horizon case in the second half of the chapter.</p>
+<p>MDPs are usually classified as <strong>finite-horizon</strong>, where the interactions end after some finite number of time steps,
+or <strong>infinite-horizon</strong>, where the interactions can continue indefinitely.
+We’ll begin with the finite-horizon case and discuss the infinite-horizon case in the second half of the chapter.</p>
 <p>In each setting, we’ll describe how to evaluate different <strong>policies</strong>
 (strategies for choosing actions) and how to compute (or approximate)
 the <strong>optimal policy</strong> for a given MDP. We’ll introduce the <strong>Bellman
@@ -526,7 +525,7 @@ consistency condition</strong>, which allows us to analyze the whole series of
 interactions in terms of individual timesteps.</p>
 <section id="finite-horizon-mdps">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">1.1. </span>Finite-horizon MDPs</a><a class="headerlink" href="#finite-horizon-mdps" title="Link to this heading">#</a></h2>
-<div class="proof definition admonition" id="finite_mdp">
+<div class="proof definition admonition" id="finite_horizon_mdp">
 <p class="admonition-title"><span class="caption-number">Definition 1.2 </span> (Finite-horizon Markov decision process)</p>
 <section class="definition-content" id="proof-content">
 <p>The components of a finite-horizon Markov decision process are:</p>
@@ -535,21 +534,21 @@ interactions in terms of individual timesteps.</p>
 the set of possible states, called the <strong>state space</strong>.</p></li>
 <li><p>The <strong>actions</strong> that the agent can take. We use <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> to denote the
 set of possible actions, called the <strong>action space</strong>.</p></li>
-<li><p>Some <strong>initial state distribution</strong> <span class="math notranslate nohighlight">\(\mu \in \Delta(\mathcal{S})\)</span>.</p></li>
+<li><p>Some <strong>initial state distribution</strong> <span class="math notranslate nohighlight">\(\mu \in \triangle(\mathcal{S})\)</span>.</p></li>
 <li><p>The <strong>state transitions</strong> (a.k.a. <strong>dynamics</strong>)
-<span class="math notranslate nohighlight">\(P : \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})\)</span> that describe what state the agent
+<span class="math notranslate nohighlight">\(P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})\)</span> that describe what state the agent
 transitions to after taking an action.</p></li>
 <li><p>The <strong>reward</strong> signal. In this course we’ll take it to be a
 deterministic function on state-action pairs,
 <span class="math notranslate nohighlight">\(r : \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span>, but in general many results will
 extend to a <em>stochastic</em> reward signal.</p></li>
-<li><p>A time horizon <span class="math notranslate nohighlight">\(H \in \mathbb{N}\)</span> that specifies the number of
+<li><p>A time horizon <span class="math notranslate nohighlight">\(\hor \in \mathbb{N}\)</span> that specifies the number of
 interactions in an <strong>episode</strong>.</p></li>
 </ol>
 <p>Combined together, these objects specify a finite-horizon Markov
 decision process:</p>
 <div class="math notranslate nohighlight">
-\[M = (\mathcal{S}, \mathcal{A}, \mu, P, r, H).\]</div>
+\[M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \hor).\]</div>
 <p>When there are <strong>finitely</strong> many states and actions, i.e.
 <span class="math notranslate nohighlight">\(|\mathcal{S}|, |\mathcal{A}| &lt; \infty\)</span>, we can express
 the relevant quantities as vectors and matrices (i.e. <em>tables</em> of
@@ -557,23 +556,24 @@ values):</p>
 <div class="math notranslate nohighlight">
 \[
 \begin{aligned}
-    r &amp;\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|} &amp;
+    \mu &amp;\in [0, 1]^{|\mathcal{S}|} &amp;
     P &amp;\in [0, 1]^{(|\mathcal{S} \times \mathcal{A}|) \times |\mathcal{S}|} &amp;
-    \mu &amp;\in [0, 1]^{|\mathcal{S}|}
+    r &amp;\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}
 \end{aligned}
 \]</div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Verify that these types make sense!</p>
-</div>
 </section>
-</div><div class="cell docutils container">
+</div><div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Verify that the types and shapes provided above make sense!</p>
+</div>
+<div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MDP</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A description of a Markov decision process with finitely many states and actions.&quot;&quot;&quot;</span>
     <span class="n">S</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># number of states</span>
     <span class="n">A</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># number of actions</span>
     <span class="n">μ</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">]</span>
-    <span class="n">P</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A S&quot;</span><span class="p">]</span>
+    <span class="n">P</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A S&quot;</span><span class="p">]</span>  <span class="c1"># &quot;current&quot; state, &quot;current&quot; action, &quot;next&quot; state</span>
     <span class="n">r</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">]</span>
     <span class="n">H</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">γ</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># discount factor (used later)</span>
@@ -584,19 +584,18 @@ values):</p>
 <div class="proof example admonition" id="tidy_mdp">
 <p class="admonition-title"><span class="caption-number">Example 1.1 </span> (Tidying MDP)</p>
 <section class="example-content" id="proof-content">
-<p>Let’s consider an extremely simple decision problem throughout this
-chapter: the task of keeping your room tidy!</p>
+<p>Let’s consider a simple decision problem throughout this chapter:
+the task of keeping your room tidy!</p>
 <p>Your room has the possible states
-<span class="math notranslate nohighlight">\(\mathcal{S} = \{ \text{orderly}, \text{messy} \}\)</span>. You can take either
-of the actions <span class="math notranslate nohighlight">\(\mathcal{A} = \{ \text{ignore}, \text{tidy} \}\)</span>. The room starts
-off orderly.</p>
-<p>The <strong>state transitions</strong> are as follows: if you tidy the room, it becomes
-(or remains) orderly; if you ignore the room, it <em>might</em> become messy (see table
-below).</p>
-<p>The <strong>rewards</strong> are as follows: You get penalized for tidying an orderly
-room (a waste of time) or ignoring a messy room, but you get rewarded
-for ignoring an orderly room (since you can enjoy). Tidying a messy room
-is a chore that gives no reward.</p>
+<span class="math notranslate nohighlight">\(\mathcal{S} = \{ \text{orderly}, \text{messy} \}.\)</span>
+You can take either of the actions <span class="math notranslate nohighlight">\(\mathcal{A} = \{ \text{ignore}, \text{tidy} \}.\)</span>
+The room starts off orderly.</p>
+<p>The <strong>state transitions</strong> are as follows:
+if you tidy the room, it becomes (or remains) orderly;
+if you ignore the room, it <em>might</em> become messy (see table below).</p>
+<p>The <strong>rewards</strong> are as follows: You get penalized for tidying an orderly room (a waste of time) or ignoring a messy room,
+but you get rewarded for ignoring an orderly room (since you can enjoy your additional time).
+Tidying a messy room is a chore that gives no reward.</p>
 <p>These are summarized in the following table:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{ccccc}
@@ -606,7 +605,7 @@ is a chore that gives no reward.</p>
     \text{messy} &amp; \text{ignore} &amp; 0 &amp; 1 &amp; -1 \\
     \text{messy} &amp; \text{tidy} &amp; 1 &amp; 0 &amp; 0 \\
 \end{array}\end{split}\]</div>
-<p>Consider a time horizon of <span class="math notranslate nohighlight">\(H = 7\)</span> days (one interaction per day). Let
+<p>Consider a time horizon of <span class="math notranslate nohighlight">\(\hor = 7\)</span> days (one interaction per day). Let
 <span class="math notranslate nohighlight">\(t = 0\)</span> correspond to Monday and <span class="math notranslate nohighlight">\(t = 6\)</span> correspond to Sunday.</p>
 </section>
 </div><div class="cell docutils container">
@@ -614,8 +613,8 @@ is a chore that gives no reward.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tidy_mdp</span> <span class="o">=</span> <span class="n">MDP</span><span class="p">(</span>
     <span class="n">S</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># 0 = orderly, 1 = messy</span>
     <span class="n">A</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># 0 = ignore, 1 = tidy</span>
-    <span class="n">μ</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>  <span class="c1"># start in orderly state</span>
-    <span class="n">P</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="n">μ</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span>  <span class="c1"># start in orderly state</span>
+    <span class="n">P</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="p">[</span>
                 <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>  <span class="c1"># orderly, ignore</span>
@@ -627,15 +626,15 @@ is a chore that gives no reward.</p>
             <span class="p">],</span>
         <span class="p">]</span>
     <span class="p">),</span>
-    <span class="n">r</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="n">r</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
         <span class="p">[</span>
             <span class="p">[</span>
-                <span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># orderly, ignore</span>
+                <span class="mf">1.0</span><span class="p">,</span>   <span class="c1"># orderly, ignore</span>
                 <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># orderly, tidy</span>
             <span class="p">],</span>
             <span class="p">[</span>
                 <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># messy, ignore</span>
-                <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># messy, tidy</span>
+                <span class="mf">0.0</span><span class="p">,</span>   <span class="c1"># messy, tidy</span>
             <span class="p">],</span>
         <span class="p">]</span>
     <span class="p">),</span>
@@ -650,11 +649,11 @@ is a chore that gives no reward.</p>
 <div class="proof definition admonition" id="policy">
 <p class="admonition-title"><span class="caption-number">Definition 1.3 </span> (Policies)</p>
 <section class="definition-content" id="proof-content">
-<p>A <strong>policy</strong> <span class="math notranslate nohighlight">\(\pi\)</span> describes the agent’s strategy: which actions it
-takes in a given situation. A key goal of RL is to find the <strong>optimal
-policy</strong> that maximizes the total reward on average.</p>
+<p>A <strong>policy</strong> <span class="math notranslate nohighlight">\(\pi\)</span> describes the agent’s strategy:
+which actions it takes in a given situation.
+A key goal of RL is to find the <strong>optimal policy</strong> that maximizes the total reward on average.</p>
 <p>There are three axes along which policies can vary: their outputs,
-inputs, and time-dependence. We’ll discuss each of these in turn.</p>
+inputs, and time-dependence.</p>
 <ol class="arabic simple">
 <li><p><strong>Deterministic or stochastic.</strong> A deterministic policy outputs
 actions while a stochastic policy outputs <em>distributions</em> over
@@ -664,33 +663,21 @@ actions.</p></li>
 history-dependent policy depends on the sequence of past states,
 actions, and rewards. We’ll only consider state-dependent policies
 in this course.</p></li>
-<li><p><strong>Stationary or time-dependent.</strong> A stationary policy remains the
-same function at all time steps, while a time-dependent policy
-<span class="math notranslate nohighlight">\(\pi = \{ \pi_0, \dots, \pi_{H-1} \}\)</span> specifies a different function
-<span class="math notranslate nohighlight">\(\pi_\hi\)</span> at each time step <span class="math notranslate nohighlight">\(\hi\)</span>.</p></li>
+<li><p><strong>Stationary or time-dependent.</strong> A stationary (a.k.a. time-homogeneous) policy
+remains the same function at all time steps, while a time-dependent policy can depend on the current timestep.
+For consistency with states and actions, we will denote the timestep as a subscript,
+i.e. <span class="math notranslate nohighlight">\(\pi = \{ \pi_0, \dots, \pi_{\hor-1} \}.\)</span></p></li>
 </ol>
 </section>
 </div><p>Note that for finite state and action spaces,
 we can represent a randomized mapping <span class="math notranslate nohighlight">\(\mathcal{S} \to \Delta(\mathcal{A})\)</span>
-as a matrix <span class="math notranslate nohighlight">\(\pi \in [0, 1]^{\mathcal{S}, \mathcal{A}}\)</span> where each row describes
+as a matrix <span class="math notranslate nohighlight">\(\pi \in [0, 1]^{\mathcal{S} \times \mathcal{A}}\)</span> where each row describes
 the policy’s distribution over actions for the corresponding state.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># In code, we use the `Policy` type to represent a randomized mapping from states to actions.</span>
-<span class="c1"># In the finite-horizon case, an array of `H` of these, one for at each time step,</span>
-<span class="c1"># would constitute a time-dependent policy.</span>
-<span class="n">Policy</span> <span class="o">=</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>A fascinating result is that every finite-horizon MDP has an optimal
-deterministic time-dependent policy! Intuitively, the Markov property
-implies that the current state contains all the information we need to
-make the optimal decision. We’ll prove this result constructively later
-in the chapter.</p>
+<p>A fascinating result is that every finite-horizon MDP has an optimal deterministic time-dependent policy!
+Intuitively, the Markov property implies that the current state contains all the information we need to make the optimal decision.
+We’ll prove this result constructively later in the chapter.</p>
 <div class="proof example admonition" id="tidy_policy">
-<p class="admonition-title"><span class="caption-number">Example 1.2 </span> (Tidying policies)</p>
+<p class="admonition-title"><span class="caption-number">Example 1.2 </span> (Policies for the tidying MDP)</p>
 <section class="example-content" id="proof-content">
 <p>Here are some possible policies for the tidying MDP <a class="reference internal" href="#tidy_mdp">Example 1.1</a>:</p>
 <ul class="simple">
@@ -704,9 +691,9 @@ and <span class="math notranslate nohighlight">\(\pi_\hi(\text{orderly}) = \text
 </div><div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># arrays of shape (H, S, A) represent time-dependent policies</span>
-<span class="n">tidy_policy_always_tidy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">at</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="n">tidy_policy_weekends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="n">tidy_policy_messy_only</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">at</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">tidy_policy_always_tidy</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">at</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">tidy_policy_weekends</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">tidy_policy_messy_only</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">at</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">at</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -720,13 +707,13 @@ and <span class="math notranslate nohighlight">\(\pi_\hi(\text{orderly}) = \text
 <p>A sequence of states, actions, and rewards is called a <strong>trajectory</strong>:</p>
 <div class="math notranslate nohighlight">
 \[\tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})\]</div>
-<p>where
-<span class="math notranslate nohighlight">\(r_\hi = r(s_\hi, a_\hi)\)</span>. (Note that sources differ as to whether to include
-the reward at the final time step. This is a minor detail.)</p>
+<p>where <span class="math notranslate nohighlight">\(r_\hi = r(s_\hi, a_\hi)\)</span>.
+(Note that some sources omit the reward at the final time step. This is a minor detail.)</p>
 </section>
 </div><div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Transition</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A single state-action-reward interaction with the environment.&quot;&quot;&quot;</span>
     <span class="n">s</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">r</span><span class="p">:</span> <span class="nb">float</span>
@@ -737,18 +724,18 @@ the reward at the final time step. This is a minor detail.)</p>
 </div>
 </div>
 </div>
-<p>Once we’ve chosen a policy, we can sample trajectories by repeatedly
-choosing actions according to the policy, transitioning according to the
-state transitions, and observing the rewards. That is, a policy induces
-a distribution <span class="math notranslate nohighlight">\(\rho^{\pi}\)</span> over trajectories. (We assume that <span class="math notranslate nohighlight">\(\mu\)</span> and
-<span class="math notranslate nohighlight">\(P\)</span> are clear from context.)</p>
+<p>Once we’ve chosen a policy,
+we can sample trajectories by repeatedly choosing actions according to the policy,
+transitioning according to the state transitions, and observing the rewards.
+That is, a policy induces a distribution <span class="math notranslate nohighlight">\(\rho^{\pi}\)</span> over trajectories.
+(We assume that <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(P\)</span> are clear from context.)</p>
 <div class="proof example admonition" id="tidy_traj">
 <p class="admonition-title"><span class="caption-number">Example 1.3 </span> (Trajectories in the tidying environment)</p>
 <section class="example-content" id="proof-content">
 <p>Here is a possible trajectory for the tidying example:</p>
 <table class="table">
 <thead>
-<tr class="row-odd"><th class="head text-center"><p><span class="math notranslate nohighlight">\(t\)</span></p></th>
+<tr class="row-odd"><th class="head text-center"><p><span class="math notranslate nohighlight">\(\hi\)</span></p></th>
 <th class="head text-center"><p><span class="math notranslate nohighlight">\(0\)</span></p></th>
 <th class="head text-center"><p><span class="math notranslate nohighlight">\(1\)</span></p></th>
 <th class="head text-center"><p><span class="math notranslate nohighlight">\(2\)</span></p></th>
@@ -790,48 +777,52 @@ a distribution <span class="math notranslate nohighlight">\(\rho^{\pi}\)</span> 
 </table>
 <p>Could any of the policies in <a class="reference internal" href="#tidy_policy">Example 1.2</a> have generated this trajectory?</p>
 </section>
-</div><p>Note that for a state-dependent policy, using the Markov property <a class="reference internal" href="#markov">Definition 1.1</a>, we can specify this probability distribution in
-an <strong>autoregressive</strong> way (i.e. one timestep at a time):</p>
+</div><p>Note that for a state-dependent policy, using the Markov property <a class="reference internal" href="#markov">Definition 1.1</a>,
+we can write down the likelihood function of this probability distribution in an <strong>autoregressive</strong> way (i.e. one timestep at a time):</p>
 <div class="proof definition admonition" id="autoregressive_trajectories">
 <p class="admonition-title"><span class="caption-number">Definition 1.5 </span> (Autoregressive trajectory distribution)</p>
 <section class="definition-content" id="proof-content">
 <div class="math notranslate nohighlight">
-\[\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})\]</div>
+\[\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})\]</div>
 </section>
 </div><div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">trajectory_log_likelihood</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">tau</span><span class="p">:</span> <span class="n">Trajectory</span><span class="p">,</span> <span class="n">pi</span><span class="p">:</span> <span class="n">Policy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the log likelihood of a trajectory under a given MDP and policy.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">μ</span><span class="p">[</span><span class="n">tau</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">])</span>
-    <span class="n">total</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pi</span><span class="p">[</span><span class="n">tau</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">tau</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">trajectory_log_likelihood</span><span class="p">(</span>
+    <span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span>
+    <span class="n">τ</span><span class="p">:</span> <span class="n">Trajectory</span><span class="p">,</span>
+    <span class="n">π</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the log-likelihood of a trajectory under a given MDP and policy.&quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">μ</span><span class="p">[</span><span class="n">τ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">])</span>
+    <span class="n">total</span> <span class="o">+=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">[</span><span class="n">τ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">H</span><span class="p">):</span>
-        <span class="n">total</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">tau</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">])</span>
-        <span class="n">total</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pi</span><span class="p">[</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">])</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">τ</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">])</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">π</span><span class="p">[</span><span class="n">τ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">τ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">total</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
 <p>How would you modify this to include stochastic rewards?</p>
 </div>
-<p>For a deterministic policy <span class="math notranslate nohighlight">\(\pi\)</span>, we have that
-<span class="math notranslate nohighlight">\(\pi_\hi(a \mid s) = \mathbb{I}[a = \pi_\hi(s)]\)</span>; that is, the probability
-of taking an action is <span class="math notranslate nohighlight">\(1\)</span> if it’s the unique action prescribed by the
-policy for that state and <span class="math notranslate nohighlight">\(0\)</span> otherwise. In this case, the only
-randomness in sampling trajectories comes from the initial state
-distribution <span class="math notranslate nohighlight">\(\mu\)</span> and the state transitions <span class="math notranslate nohighlight">\(P\)</span>.</p>
+<p>For a deterministic policy <span class="math notranslate nohighlight">\(\pi\)</span>, we have that <span class="math notranslate nohighlight">\(\pi_\hi(a \mid s) = \mathbb{I}[a = \pi_\hi(s)]\)</span>;
+that is, the probability of taking an action is <span class="math notranslate nohighlight">\(1\)</span> if it’s the unique action prescribed by the policy for that state and <span class="math notranslate nohighlight">\(0\)</span> otherwise.
+In this case, the only randomness in sampling trajectories comes from the initial state distribution <span class="math notranslate nohighlight">\(\mu\)</span> and the state transitions <span class="math notranslate nohighlight">\(P\)</span>.</p>
 </section>
 <section id="value-functions">
 <h3><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">1.1.3. </span>Value functions</a><a class="headerlink" href="#value-functions" title="Link to this heading">#</a></h3>
-<p>The main goal of RL is to find a policy that maximizes the average total
-reward <span class="math notranslate nohighlight">\(r_0 + \cdots + r_{H-1}\)</span>. (Note that this is a random variable
-that depends on the policy.) Let’s introduce some notation for analyzing
-this quantity.</p>
-<p>A policy’s <strong>value function</strong> at time <span class="math notranslate nohighlight">\(h\)</span> is its expected remaining reward <em>from a given state</em>:</p>
+<p>The main goal of RL is to find a policy that maximizes the expected total
+reward <span class="math notranslate nohighlight">\(\E [r_0 + \cdots + r_{\hor-1}]\)</span>.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Note that <span class="math notranslate nohighlight">\(r_0 + \cdots + r_{\hor-1}\)</span> is a random variable.
+What sources of randomness does it depend on?
+Describe the generating process.</p>
+</div>
+<p>Let’s introduce some notation for analyzing this quantity.</p>
+<p>A policy’s <strong>value function</strong> at time <span class="math notranslate nohighlight">\(\hor\)</span> is its expected remaining reward <em>from a given state</em>:</p>
 <div class="proof definition admonition" id="value">
 <p class="admonition-title"><span class="caption-number">Definition 1.6 </span> (Value function)</p>
 <section class="definition-content" id="proof-content">
@@ -860,7 +851,7 @@ actions drawn from the policy:</p>
 <span class="sd">    Compute the value function for a given policy in a known finite MDP</span>
 <span class="sd">    at a single timestep from its action-value function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">policy</span> <span class="o">*</span> <span class="n">q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">policy</span> <span class="o">*</span> <span class="n">q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -884,6 +875,7 @@ state:</p>
     <span class="k">return</span> <span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">v</span>
 
 
+<span class="c1"># convert a list of v functions to a list of q functions</span>
 <span class="n">v_ary_to_q_ary</span> <span class="o">=</span> <span class="n">vmap</span><span class="p">(</span><span class="n">v_to_q</span><span class="p">,</span> <span class="n">in_axes</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -891,7 +883,7 @@ state:</p>
 </div>
 <section id="greedy-policies">
 <h4><a class="toc-backref" href="#id10" role="doc-backlink"><span class="section-number">1.1.3.1. </span>Greedy policies</a><a class="headerlink" href="#greedy-policies" title="Link to this heading">#</a></h4>
-<p>For any given <span class="math notranslate nohighlight">\(q \in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}\)</span>, we can define the <strong>greedy policy</strong> <span class="math notranslate nohighlight">\(\hat \pi_q\)</span> as the policy that selects the action with the highest <span class="math notranslate nohighlight">\(q\)</span>-value at each state:</p>
+<p>For any given <span class="math notranslate nohighlight">\(Q \in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}\)</span>, we can define the <strong>greedy policy</strong> <span class="math notranslate nohighlight">\(\hat \pi_Q\)</span> as the policy that selects the action with the highest <span class="math notranslate nohighlight">\(Q\)</span>-value at each state:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">q_to_greedy</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">]:</span>
@@ -899,7 +891,9 @@ state:</p>
 <span class="sd">    Get the (deterministic) greedy policy w.r.t. an action-value function.</span>
 <span class="sd">    Return the policy as a matrix of shape (S, A) where each row is a one-hot vector.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">a_ary</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">A</span><span class="p">)[</span><span class="n">a_ary</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">v_to_greedy</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">]:</span>
@@ -922,7 +916,9 @@ who is credited with introducing dynamic programming in 1953.</p>
 <p class="admonition-title"><span class="caption-number">Theorem 1.1 </span> (Bellman consistency equation for the value function)</p>
 <section class="theorem-content" id="proof-content">
 <div class="math notranslate nohighlight">
-\[\begin{split}V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]\end{split}\]</div>
+\[\begin{split}
+V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]
+\end{split}\]</div>
 </section>
 </div><div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -936,11 +932,11 @@ who is credited with introducing dynamic programming in 1953.</p>
 <span class="sd">    satisfies the Bellman consistency equation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+        <span class="n">jnp</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
             <span class="c1"># lhs</span>
             <span class="n">v_ary</span><span class="p">[</span><span class="n">h</span><span class="p">],</span>
             <span class="c1"># rhs</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">policy</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">v_ary</span><span class="p">[</span><span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">policy</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">v_ary</span><span class="p">[</span><span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">H</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="p">)</span>
@@ -1006,7 +1002,7 @@ equation for that “value function”:</p>
 <span class="sd">    Looping definition of the Bellman operator.</span>
 <span class="sd">    Concise version is below</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">v_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+    <span class="n">v_new</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">A</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">s_next</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">):</span>
@@ -1029,7 +1025,7 @@ equation for that “value function”:</p>
     <span class="n">v</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;For a known finite MDP, the Bellman operator can be exactly evaluated.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">policy</span> <span class="o">*</span> <span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">v</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">policy</span> <span class="o">*</span> <span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">v</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">q_to_v</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">v_to_q</span><span class="p">(</span><span class="n">mdp</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>  <span class="c1"># equivalent</span>
 </pre></div>
 </div>
@@ -1074,10 +1070,10 @@ equation to compute the value function at each time step.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dp_eval_finite</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">policy</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;H S&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate a policy using dynamic programming.&quot;&quot;&quot;</span>
-    <span class="n">V_ary</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)]</span>  <span class="c1"># initialize to 0 at end of time horizon</span>
+    <span class="n">V_ary</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)]</span>  <span class="c1"># initialize to 0 at end of time horizon</span>
     <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">H</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">V_ary</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">bellman_operator</span><span class="p">(</span><span class="n">mdp</span><span class="p">,</span> <span class="n">policy</span><span class="p">[</span><span class="n">h</span><span class="p">],</span> <span class="n">V_ary</span><span class="p">[</span><span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">V_ary</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">V_ary</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1290,16 +1286,16 @@ end, using our consistency equations! i.e. for each
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_optimal_policy</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">):</span>
     <span class="n">Q</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">H</span>
     <span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">H</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)]</span>  <span class="c1"># initialize to 0 at end of time horizon</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">H</span> <span class="o">+</span> <span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)]</span>  <span class="c1"># initialize to 0 at end of time horizon</span>
 
     <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">H</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">Q</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">V</span><span class="p">[</span><span class="n">h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">pi</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">h</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># one-hot</span>
-        <span class="n">V</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">h</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pi</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)[</span><span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">h</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># one-hot</span>
+        <span class="n">V</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">h</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
-    <span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">V</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+    <span class="n">pi</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">V</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">pi</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Q</span>
 </pre></div>
@@ -1319,9 +1315,9 @@ setting.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">π_opt</span><span class="p">,</span> <span class="n">V_opt</span><span class="p">,</span> <span class="n">Q_opt</span> <span class="o">=</span> <span class="n">find_optimal_policy</span><span class="p">(</span><span class="n">tidy_mdp</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">π_opt</span><span class="p">,</span> <span class="n">tidy_policy_messy_only</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">V_opt</span><span class="p">,</span> <span class="n">V_messy</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Q_opt</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">v_ary_to_q_ary</span><span class="p">(</span><span class="n">tidy_mdp</span><span class="p">,</span> <span class="n">V_messy</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+<span class="k">assert</span> <span class="n">jnp</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">π_opt</span><span class="p">,</span> <span class="n">tidy_policy_messy_only</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">jnp</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">V_opt</span><span class="p">,</span> <span class="n">V_messy</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">jnp</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Q_opt</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">v_ary_to_q_ary</span><span class="p">(</span><span class="n">tidy_mdp</span><span class="p">,</span> <span class="n">V_messy</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
 <span class="s2">&quot;Assertions passed (the &#39;tidy when messy&#39; policy is optimal)&quot;</span>
 </pre></div>
 </div>
@@ -1374,7 +1370,7 @@ useful to review geometric series.</p>
 <p>The other components of the MDP remain the same:</p>
 <div class="math notranslate nohighlight">
 \[M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).\]</div>
-<p>Code-wise, we can reuse the <code class="docutils literal notranslate"><span class="pre">MDP</span></code> class from before <a class="reference internal" href="#finite_mdp">Definition 1.2</a> and set <code class="docutils literal notranslate"><span class="pre">mdp.H</span> <span class="pre">=</span> <span class="pre">float('inf')</span></code>.</p>
+<p>Code-wise, we can reuse the <code class="docutils literal notranslate"><span class="pre">MDP</span></code> class from before <a class="reference internal" href="#finite_horizon_mdp">Definition 1.2</a> and set <code class="docutils literal notranslate"><span class="pre">mdp.H</span> <span class="pre">=</span> <span class="pre">float('inf')</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tidy_mdp_inf</span> <span class="o">=</span> <span class="n">tidy_mdp</span><span class="o">.</span><span class="n">_replace</span><span class="p">(</span><span class="n">H</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span> <span class="n">γ</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
@@ -1559,10 +1555,10 @@ least one nonzero element.)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">eval_deterministic_infinite</span><span class="p">(</span>
     <span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">policy</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">]:</span>
-    <span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># un-one-hot</span>
-    <span class="n">P_π</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">pi</span><span class="p">]</span>
-    <span class="n">r_π</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">pi</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)</span> <span class="o">-</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">P_π</span><span class="p">,</span> <span class="n">r_π</span><span class="p">)</span>
+    <span class="n">pi</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># un-one-hot</span>
+    <span class="n">P_π</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span><span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">pi</span><span class="p">]</span>
+    <span class="n">r_π</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="n">jnp</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">pi</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">)</span> <span class="o">-</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">P_π</span><span class="p">,</span> <span class="n">r_π</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1615,7 +1611,7 @@ takes <span class="math notranslate nohighlight">\(O(|\mathcal{S}|^2)\)</span> t
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">supremum_norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>  <span class="c1"># same as np.linalg.norm(v, np.inf)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>  <span class="c1"># same as jnp.linalg.norm(v, jnp.inf)</span>
 
 
 <span class="k">def</span> <span class="nf">loop_until_convergence</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ε</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
@@ -1629,7 +1625,7 @@ takes <span class="math notranslate nohighlight">\(O(|\mathcal{S}|^2)\)</span> t
 
 <span class="k">def</span> <span class="nf">iterative_evaluation</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">pi</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot;S A&quot;</span><span class="p">],</span> <span class="n">ε</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">]:</span>
     <span class="n">op</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">bellman_operator</span><span class="p">,</span> <span class="n">mdp</span><span class="p">,</span> <span class="n">pi</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">loop_until_convergence</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">ε</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loop_until_convergence</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">ε</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1712,11 +1708,11 @@ gives the <strong>Bellman optimality operator</strong></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">bellman_optimality_operator</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">mdp</span><span class="o">.</span><span class="n">γ</span> <span class="o">*</span> <span class="n">mdp</span><span class="o">.</span><span class="n">P</span> <span class="o">@</span> <span class="n">v</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">check_optimal</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">],</span> <span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">bellman_optimality_operator</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">mdp</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">bellman_optimality_operator</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">mdp</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1732,7 +1728,7 @@ algorithm is known as <strong>value iteration</strong>.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">value_iteration</span><span class="p">(</span><span class="n">mdp</span><span class="p">:</span> <span class="n">MDP</span><span class="p">,</span> <span class="n">ε</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Float</span><span class="p">[</span><span class="n">Array</span><span class="p">,</span> <span class="s2">&quot; S&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterate the Bellman optimality operator until convergence.&quot;&quot;&quot;</span>
     <span class="n">op</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">bellman_optimality_operator</span><span class="p">,</span> <span class="n">mdp</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">loop_until_convergence</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">ε</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loop_until_convergence</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">),</span> <span class="n">ε</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1840,7 +1836,7 @@ Proof<div class="sd-summary-down docutils">
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Iteratively improve the policy and value function.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">pi</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">v_to_greedy</span><span class="p">(</span><span class="n">mdp</span><span class="p">,</span> <span class="n">eval_deterministic_infinite</span><span class="p">(</span><span class="n">mdp</span><span class="p">,</span> <span class="n">pi</span><span class="p">))</span>
-    <span class="n">π_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">A</span><span class="p">))</span> <span class="o">/</span> <span class="n">mdp</span><span class="o">.</span><span class="n">A</span>  <span class="c1"># uniform random policy</span>
+    <span class="n">π_init</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">mdp</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">A</span><span class="p">))</span> <span class="o">/</span> <span class="n">mdp</span><span class="o">.</span><span class="n">A</span>  <span class="c1"># uniform random policy</span>
     <span class="k">return</span> <span class="n">loop_until_convergence</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">π_init</span><span class="p">,</span> <span class="n">ε</span><span class="p">)</span>
 </pre></div>
 </div>

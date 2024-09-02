@@ -31,3 +31,7 @@ Occasionally, we will also use $O(f(t))$ (or one of the other symbols)
 as shorthand to manipulate function classes. For example, we might write
 $O(f(t)) + O(g(t)) = O(f(t) + g(t))$ to mean that the sum of two
 functions in $O(f(t))$ and $O(g(t))$ is in $O(f(t) + g(t))$.
+
+## Python
+
+

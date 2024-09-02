@@ -113,7 +113,7 @@ We will extend ideas from multi-armed bandits to the MDP setting.
 
 {ref}`contextual_bandits` extends the multi-armed bandit setting with some observed state.
 
-{ref}`background` contains an overview of selected background mathematical content.
+{ref}`background` contains an overview of selected background mathematical content and programming content.
 
 <!-- 
 | Chapter | States | Actions | Rewards (or costs) |
@@ -138,13 +138,13 @@ We use $[N]$ as shorthand for the set $\{ 0, 1, \dots, N-1 \}$.
 |      $a$     | $\mathcal{A}$            | An action.                |
 |      $r$     |                          | A reward.                 |
 |   $\gamma$   |                          | A discount factor.        |
-|    $\tau$    | $\mathcal{T}             | A trajectory.             |
+|    $\tau$    | $\mathcal{T}$             | A trajectory.             |
 |     $\pi$    | $\Pi$                    | A policy.                 |
 |   $V^\pi$    | $\mathcal{S} \to \mathbb{R}$                         | The value function of policy $\pi$.                               |
-|   $Q^\pi$    | $\mathcal{S} \times \mathcal{A} \to \mathbb{R}$                         | The action-value function (a.k.a. Q function) of policy $\pi$. |
-|   $A^\pi$    |                          | The advantage function of policy $\pi$.    |
+|   $Q^\pi$    | $\mathcal{S} \times \mathcal{A} \to \mathbb{R}$                         | The action-value function (a.k.a. Q-function) of policy $\pi$. |
+|   $A^\pi$    | $\mathcal{S} \times \mathcal{A} \to \mathbb{R}$                         | The advantage function of policy $\pi$.    |
 |              | $\triangle(\mathcal{X})$ | A distribution supported on $\mathcal{X}$. |
-|      $\mu$   | $\triangle(\mathcal{S})$ | A distribution over states.        |
+<!-- |   $\mu$      | $\triangle(\mathcal{S})$ | A distribution over states.        | -->
 |    $\hi$     |   $[\hor]$               | Time horizon index of an MDP.    |
 |    $k$       |   $[K]$                  | Arm index of a multi-armed bandit. |
 |    $t$       |   $[T]$                  | Iteration index of an algorithm.  |
@@ -164,12 +164,14 @@ mathematical notation can often abstract away details,
 while a computer must be given every single instruction.
 We have sought to write readable Python code that is self-contained within each file.
 This approach is inspired by {cite}`sussman_functional_2013`.
-There are some ways in which the code style differs from that of a typical software project:
+There are some ways in which the code style differs from typical software projects:
 
 - We keep use of language features to a minimum,
   even if it leads to code that could otherwise be more concisely or idiomatically expressed.
 - The variable names used in the code match those used in the main text.
   For example, the variable `s` will be used instead of the more explicit `state`.
+
+We also make extensive use of Python _type annotations_ to explicitly specify variable types, including shapes of vectors and matrices using the [jaxtyping](https://github.com/patrick-kidger/jaxtyping) library.
 
 This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html).
 It uses [Python 3.11](https://docs.python.org/3.11/contents.html).

@@ -206,7 +206,7 @@ commentsRunWhenDOMLoaded(addUtterances);
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Finite Markov Decision Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mdps.html">1. Markov Decision Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">2. Linear Quadratic Regulators</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bandits.html">3. Multi-Armed Bandits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="supervised_learning.html">4. Supervised learning</a></li>
@@ -391,7 +391,7 @@ document.write(`
 <li><p><a class="reference internal" href="#summary" id="id4">Summary</a></p></li>
 </ul>
 </nav>
-<p>We borrow these definitions from the <a class="reference internal" href="mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a> chapter:</p>
+<p>We borrow these definitions from the <a class="reference internal" href="mdps.html#mdps"><span class="std std-ref">Markov Decision Processes</span></a> chapter:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
@@ -444,7 +444,7 @@ document.write(`
 </div>
 <section id="introduction">
 <h2><a class="toc-backref" href="#id1" role="doc-backlink"><span class="section-number">5.1. </span>Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
-<p>The <a class="reference internal" href="mdps.html#mdps"><span class="std std-ref">Finite Markov Decision Processes</span></a> chapter discussed the case of <strong>finite</strong> MDPs, where the state and action spaces <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> were finite.
+<p>The <a class="reference internal" href="mdps.html#mdps"><span class="std std-ref">Markov Decision Processes</span></a> chapter discussed the case of <strong>finite</strong> MDPs, where the state and action spaces <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> were finite.
 This gave us a closed-form expression for computing the r.h.s. of <a class="reference internal" href="mdps.html#bellman_consistency">the Bellman one-step consistency equation</a>.
 In this chapter, we consider the case of <strong>large</strong> or <strong>continuous</strong> state spaces, where the state space is too large to be enumerated.
 In this case, we need to <em>approximate</em> the value function and Q-function using methods from <strong>supervised learning</strong>.</p>
