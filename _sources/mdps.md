@@ -14,9 +14,7 @@ kernelspec:
 (mdps)=
 # Markov Decision Processes
 
-```{contents}
-:local:
-```
+## Introduction
 
 ```{code-cell}
 :tags: [hide-input]
@@ -78,6 +76,8 @@ consistency condition**, which allows us to analyze the whole series of
 interactions in terms of individual timesteps.
 
 ## Finite-horizon MDPs
+
+### Definition
 
 ::::{prf:definition} Finite-horizon Markov decision process
 :label: finite_horizon_mdp
@@ -323,7 +323,7 @@ $$\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P
 ```{code-cell}
 def trajectory_log_likelihood(
     mdp: MDP,
-    τ: Trajectory,
+    τ: list[Transition],
     π: Float[Array, "S A"],
 ) -> float:
     """Compute the log-likelihood of a trajectory under a given MDP and policy."""
@@ -358,7 +358,7 @@ Describe the generating process.
 
 Let's introduce some notation for analyzing this quantity.
 
-A policy's **value function** at time $\hor$ is its expected remaining reward *from a given state*:
+A policy's **value function** at time $\hi$ is its expected remaining reward *from a given state*:
 
 :::{prf:definition} Value function
 :label: value
