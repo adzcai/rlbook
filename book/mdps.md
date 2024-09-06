@@ -12,18 +12,16 @@ kernelspec:
 ---
 
 (mdps)=
-# Finite Markov Decision Processes
+# Markov Decision Processes
 
-```{contents}
-:local:
-```
+## Introduction
 
 ```{code-cell}
 :tags: [hide-input]
 
 from typing import NamedTuple
 from jaxtyping import Float, Array
-import jax.numpy as np
+import jax.numpy as jnp
 from jax import vmap
 from functools import partial
 ```
@@ -32,16 +30,18 @@ The field of RL studies how an agent can learn to make sequential decisions in a
 
 Let’s consider some examples of sequential decision problems to identify the key common properties we’d like to capture:
 
--   **Board games** like chess or Go, where the player takes turns with
-    the opponent to make moves on the board.
+- **Board games and video games,** where a player takes actions in a virtual environment.
+- **Inventory management,** where a company must efficiently move resources from producers to consumers.
+- **Robotic control**, where a robot can move and interact with the real world to complete some task.
 
--   **Video games** like Breakout, where the player
-    controls a character to reach the goal.
-
--   **Robotic control**, where the robot can move and interact with the
-    real-world environment to complete some task.
-
-All of these fit into the RL framework. Furthermore, these are environments where the **state transitions**, the “rules” of the environment, only depend on the *most recent* state and action. This is called the **Markov property**.
+In these environments and many others, the **state transitions**,
+the “rules” of the environment,
+only depend on the *most recent* state and action (generally speaking).
+For example, if you want to take a break while playing a game of chess,
+you could take a picture of the board,
+and later on reset the board to that state and continue playing;
+the past history of moves doesn't matter (generally speaking).
+This is called the **Markov property.**
 
 :::{prf:definition} Markov property
 :label: markov
@@ -52,38 +52,33 @@ state and action:
 
 $$\P(s_{\hi+1} \mid s_0, a_0, \dots, s_\hi, a_\hi) = P(s_{\hi+1} \mid s_\hi, a_\hi)$$
 
-where $P : \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$ describes the state transitions.
+where $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$ describes the state transitions.
 (We’ll elaborate on this notation later in the chapter.)
 :::
 
-We’ll see that this simple assumption leads to a rich set of problems
-and algorithms. Environments with the Markov property are called
-**Markov decision processes** (MDPs) and will be the focus of this
-chapter.
+Environments that satisfy the Markov property are called **Markov decision processes** (MDPs).
+This chapter will focus on introducing core vocabulary for MDPs that will be useful throughout the book.
 
 :::{attention}
-What information might be encoded in the state for each of
-the above examples? What might the valid set of actions be? Describe the
-state transitions heuristically and verify that they satisfy the Markov
-property.
+What information might be encoded in the _state_ for each of the above examples?
+What might the valid set of _actions_ be?
+Describe the _state transitions_ heuristically and verify that they satisfy the Markov property.
 :::
 
-MDPs are usually classified as **finite-horizon**, where the
-interactions end after some finite number of time steps, or
-**infinite-horizon**, where the interactions can continue indefinitely.
-We’ll begin with the finite-horizon case and discuss the
-infinite-horizon case in the second half of the chapter.
+MDPs are usually classified as **finite-horizon**, where the interactions end after some finite number of time steps,
+or **infinite-horizon**, where the interactions can continue indefinitely.
+We’ll begin with the finite-horizon case and discuss the infinite-horizon case in the second half of the chapter.
 
-In each setting, we’ll describe how to evaluate different **policies**
-(strategies for choosing actions) and how to compute (or approximate)
-the **optimal policy** for a given MDP. We’ll introduce the **Bellman
-consistency condition**, which allows us to analyze the whole series of
-interactions in terms of individual timesteps.
+We’ll describe how to _evaluate_ different strategies, called **policies,** and how to compute (or approximate)
+the **optimal policy** for a given MDP.
+We’ll introduce the **Bellman consistency condition**, which allows us to analyze the whole sequence of interactions in terms of individual timesteps.
 
 ## Finite-horizon MDPs
 
+### Definition
+
 ::::{prf:definition} Finite-horizon Markov decision process
-:label: finite_mdp
+:label: finite_horizon_mdp
 
 The components of a finite-horizon Markov decision process are:
 
@@ -93,10 +88,10 @@ The components of a finite-horizon Markov decision process are:
 2.  The **actions** that the agent can take. We use $\mathcal{A}$ to denote the
     set of possible actions, called the **action space**.
 
-3.  Some **initial state distribution** $\mu \in \Delta(\mathcal{S})$.
+3.  Some **initial state distribution** $\mu \in \triangle(\mathcal{S})$.
 
 4.  The **state transitions** (a.k.a. **dynamics**)
-    $P : \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$ that describe what state the agent
+    $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$ that describe what state the agent
     transitions to after taking an action.
 
 5.  The **reward** signal. In this course we'll take it to be a
@@ -104,13 +99,13 @@ The components of a finite-horizon Markov decision process are:
     $r : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$, but in general many results will
     extend to a *stochastic* reward signal.
 
-6.  A time horizon $H \in \mathbb{N}$ that specifies the number of
+6.  A time horizon $\hor \in \mathbb{N}$ that specifies the number of
     interactions in an **episode**.
 
 Combined together, these objects specify a finite-horizon Markov
 decision process:
 
-$$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, H).$$
+$$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \hor).$$
 
 When there are **finitely** many states and actions, i.e.
 $|\mathcal{S}|, |\mathcal{A}| < \infty$, we can express
@@ -119,23 +114,24 @@ values):
 
 $$
 \begin{aligned}
-    r &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|} &
+    \mu &\in [0, 1]^{|\mathcal{S}|} &
     P &\in [0, 1]^{(|\mathcal{S} \times \mathcal{A}|) \times |\mathcal{S}|} &
-    \mu &\in [0, 1]^{|\mathcal{S}|}
+    r &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}
 \end{aligned}
 $$
+::::
 
 :::{attention}
-Verify that these types make sense!
+Verify that the types and shapes provided above make sense!
 :::
-::::
 
 ```{code-cell}
 class MDP(NamedTuple):
+    """A description of a Markov decision process with finitely many states and actions."""
     S: int  # number of states
     A: int  # number of actions
     μ: Float[Array, " S"]
-    P: Float[Array, "S A S"]
+    P: Float[Array, "S A S"]  # "current" state, "current" action, "next" state
     r: Float[Array, "S A"]
     H: int
     γ: float = 1.0  # discount factor (used later)
@@ -144,22 +140,21 @@ class MDP(NamedTuple):
 :::{prf:example} Tidying MDP
 :label: tidy_mdp
 
-Let's consider an extremely simple decision problem throughout this
-chapter: the task of keeping your room tidy!
+Let's consider a simple decision problem throughout this chapter:
+the task of keeping your room tidy!
 
 Your room has the possible states
-$\mathcal{S} = \{ \text{orderly}, \text{messy} \}$. You can take either
-of the actions $\mathcal{A} = \{ \text{ignore}, \text{tidy} \}$. The room starts
-off orderly.
+$\mathcal{S} = \{ \text{orderly}, \text{messy} \}.$
+You can take either of the actions $\mathcal{A} = \{ \text{ignore}, \text{tidy} \}.$
+The room starts off orderly.
 
-The **state transitions** are as follows: if you tidy the room, it becomes
-(or remains) orderly; if you ignore the room, it _might_ become messy (see table
-below).
+The **state transitions** are as follows:
+if you tidy the room, it becomes (or remains) orderly;
+if you ignore the room, it _might_ become messy (see table below).
 
-The **rewards** are as follows: You get penalized for tidying an orderly
-room (a waste of time) or ignoring a messy room, but you get rewarded
-for ignoring an orderly room (since you can enjoy). Tidying a messy room
-is a chore that gives no reward.
+The **rewards** are as follows: You get penalized for tidying an orderly room (a waste of time) or ignoring a messy room,
+but you get rewarded for ignoring an orderly room (since you can enjoy your additional time).
+Tidying a messy room is a chore that gives no reward.
 
 These are summarized in the following table:
 
@@ -171,7 +166,7 @@ $$\begin{array}{ccccc}
     \text{messy} & \text{tidy} & 1 & 0 & 0 \\
 \end{array}$$
 
-Consider a time horizon of $H = 7$ days (one interaction per day). Let
+Consider a time horizon of $\hor = 7$ days (one interaction per day). Let
 $t = 0$ correspond to Monday and $t = 6$ correspond to Sunday.
 :::
 
@@ -179,8 +174,8 @@ $t = 0$ correspond to Monday and $t = 6$ correspond to Sunday.
 tidy_mdp = MDP(
     S=2,  # 0 = orderly, 1 = messy
     A=2,  # 0 = ignore, 1 = tidy
-    μ=np.array([1.0, 0.0]),  # start in orderly state
-    P=np.array(
+    μ=jnp.array([1.0, 0.0]),  # start in orderly state
+    P=jnp.array(
         [
             [
                 [0.7, 0.3],  # orderly, ignore
@@ -192,15 +187,15 @@ tidy_mdp = MDP(
             ],
         ]
     ),
-    r=np.array(
+    r=jnp.array(
         [
             [
-                1.0,  # orderly, ignore
+                1.0,   # orderly, ignore
                 -1.0,  # orderly, tidy
             ],
             [
                 -1.0,  # messy, ignore
-                0.0,  # messy, tidy
+                0.0,   # messy, tidy
             ],
         ]
     ),
@@ -213,12 +208,12 @@ tidy_mdp = MDP(
 :::{prf:definition} Policies
 :label: policy
 
-A **policy** $\pi$ describes the agent's strategy: which actions it
-takes in a given situation. A key goal of RL is to find the **optimal
-policy** that maximizes the total reward on average.
+A **policy** $\pi$ describes the agent's strategy:
+which actions it takes in a given situation.
+A key goal of RL is to find the **optimal policy** that maximizes the total reward on average.
 
 There are three axes along which policies can vary: their outputs,
-inputs, and time-dependence. We'll discuss each of these in turn.
+inputs, and time-dependence.
 
 1.  **Deterministic or stochastic.** A deterministic policy outputs
     actions while a stochastic policy outputs *distributions* over
@@ -230,31 +225,22 @@ inputs, and time-dependence. We'll discuss each of these in turn.
     actions, and rewards. We'll only consider state-dependent policies
     in this course.
 
-3.  **Stationary or time-dependent.** A stationary policy remains the
-    same function at all time steps, while a time-dependent policy
-    $\pi = \{ \pi_0, \dots, \pi_{H-1} \}$ specifies a different function
-    $\pi_\hi$ at each time step $\hi$.
+3.  **Stationary or time-dependent.** A stationary (a.k.a. time-homogeneous) policy
+    remains the same function at all time steps, while a time-dependent policy can depend on the current timestep.
+    For consistency with states and actions, we will denote the timestep as a subscript,
+    i.e. $\pi = \{ \pi_0, \dots, \pi_{\hor-1} \}.$
 :::
 
 Note that for finite state and action spaces,
 we can represent a randomized mapping $\mathcal{S} \to \Delta(\mathcal{A})$
-as a matrix $\pi \in [0, 1]^{\mathcal{S}, \mathcal{A}}$ where each row describes
+as a matrix $\pi \in [0, 1]^{\mathcal{S} \times \mathcal{A}}$ where each row describes
 the policy's distribution over actions for the corresponding state.
 
-```{code-cell}
-# In code, we use the `Policy` type to represent a randomized mapping from states to actions.
-# In the finite-horizon case, an array of `H` of these, one for at each time step,
-# would constitute a time-dependent policy.
-Policy = Float[Array, "S A"]
-```
+A fascinating result is that every finite-horizon MDP has an optimal deterministic time-dependent policy!
+Intuitively, the Markov property implies that the current state contains all the information we need to make the optimal decision.
+We'll prove this result constructively later in the chapter.
 
-A fascinating result is that every finite-horizon MDP has an optimal
-deterministic time-dependent policy! Intuitively, the Markov property
-implies that the current state contains all the information we need to
-make the optimal decision. We'll prove this result constructively later
-in the chapter.
-
-:::{prf:example} Tidying policies
+:::{prf:example} Policies for the tidying MDP
 :label: tidy_policy
 
 Here are some possible policies for the tidying MDP {prf:ref}`tidy_mdp`:
@@ -270,9 +256,9 @@ Here are some possible policies for the tidying MDP {prf:ref}`tidy_mdp`:
 
 ```{code-cell}
 # arrays of shape (H, S, A) represent time-dependent policies
-tidy_policy_always_tidy = np.zeros((7, 2, 2)).at[:, :, 1].set(1.0)
-tidy_policy_weekends = np.zeros((7, 2, 2)).at[5:7, :, 1].set(1.0).at[0:5, :, 0].set(1.0)
-tidy_policy_messy_only = np.zeros((7, 2, 2)).at[:, 1, 1].set(1.0).at[:, 0, 0].set(1.0)
+tidy_policy_always_tidy = jnp.zeros((7, 2, 2)).at[:, :, 1].set(1.0)
+tidy_policy_weekends = jnp.zeros((7, 2, 2)).at[5:7, :, 1].set(1.0).at[0:5, :, 0].set(1.0)
+tidy_policy_messy_only = jnp.zeros((7, 2, 2)).at[:, 1, 1].set(1.0).at[:, 0, 0].set(1.0)
 ```
 
 (trajectories)=
@@ -285,84 +271,92 @@ A sequence of states, actions, and rewards is called a **trajectory**:
 
 $$\tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})$$
 
-where
-$r_\hi = r(s_\hi, a_\hi)$. (Note that sources differ as to whether to include
-the reward at the final time step. This is a minor detail.)
+where $r_\hi = r(s_\hi, a_\hi)$.
+(Note that some sources omit the reward at the final time step. This is a minor detail.)
 :::
 
 ```{code-cell}
 class Transition(NamedTuple):
+    """A single state-action-reward interaction with the environment."""
     s: int
     a: int
     r: float
-
-
-Trajectory = list[Transition]
 ```
 
-Once we've chosen a policy, we can sample trajectories by repeatedly
-choosing actions according to the policy, transitioning according to the
-state transitions, and observing the rewards. That is, a policy induces
-a distribution $\rho^{\pi}$ over trajectories. (We assume that $\mu$ and
-$P$ are clear from context.)
+Once we've chosen a policy,
+we can sample trajectories by repeatedly choosing actions according to the policy,
+transitioning according to the state transitions, and observing the rewards.
+
+:::{image} shared/trajectory.png
+:width: 240px
+:align: center
+:::
+
+That is, a policy induces a distribution $\rho^{\pi}$ over trajectories.
+(We assume that $\mu$ and $P$ are clear from context.)
 
 :::{prf:example} Trajectories in the tidying environment
 :label: tidy_traj
 
 Here is a possible trajectory for the tidying example:
 
-| $t$ |   $0$   |   $1$   |   $2$   |  $3$   |  $4$  |   $5$   |   $6$   |
-|:---:|:-------:|:-------:|:-------:|:------:|:-----:|:-------:|:-------:|
-| $s$ | orderly | orderly | orderly | messy  | messy | orderly | orderly |
-| $a$ |  tidy   | ignore  | ignore  | ignore | tidy  | ignore  | ignore  |
-| $r$ |  $-1$   |   $1$   |   $1$   |  $-1$  |  $0$  |   $1$   |   $1$   |
+| $\hi$ |   $0$   |   $1$   |   $2$   |  $3$   |  $4$  |   $5$   |   $6$   |
+|:-----:|:-------:|:-------:|:-------:|:------:|:-----:|:-------:|:-------:|
+| $s$   | orderly | orderly | orderly | messy  | messy | orderly | orderly |
+| $a$   |  tidy   | ignore  | ignore  | ignore | tidy  | ignore  | ignore  |
+| $r$   |  $-1$   |   $1$   |   $1$   |  $-1$  |  $0$  |   $1$   |   $1$   |
 
 Could any of the policies in {prf:ref}`tidy_policy` have generated this trajectory?
 :::
 
-Note that for a state-dependent policy, using the Markov property {prf:ref}`markov`, we can specify this probability distribution in
-an **autoregressive** way (i.e. one timestep at a time):
+Note that for a state-dependent policy, using the Markov property {prf:ref}`markov`,
+we can write down the likelihood function of this probability distribution in an **autoregressive** way (i.e. one timestep at a time):
 
 :::{prf:definition} Autoregressive trajectory distribution
 :label: autoregressive_trajectories
 
-$$\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{H-1} \mid s_{H-2}, a_{H-2}) \pi_{H-1}(a_{H-1} \mid s_{H-1})$$
+$$\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})$$
 :::
 
 ```{code-cell}
-def trajectory_log_likelihood(mdp: MDP, tau: Trajectory, pi: Policy) -> float:
-    """
-    Compute the log likelihood of a trajectory under a given MDP and policy.
-    """
-    total = np.log(mdp.μ[tau[0].s])
-    total += np.log(pi[tau[0].s, tau[0].a])
+def trajectory_log_likelihood(
+    mdp: MDP,
+    τ: list[Transition],
+    π: Float[Array, "S A"],
+) -> float:
+    """Compute the log-likelihood of a trajectory under a given MDP and policy."""
+    total = jnp.log(mdp.μ[τ[0].s])
+    total += jnp.log(π[τ[0].s, τ[0].a])
     for i in range(1, mdp.H):
-        total += np.log(mdp.P[tau[i - 1].s, tau[i - 1].a, tau[i].s])
-        total += np.log(pi[tau[i].s, tau[i].a])
+        total += jnp.log(mdp.P[τ[i - 1].s, τ[i - 1].a, τ[i].s])
+        total += jnp.log(π[τ[i].s, τ[i].a])
     return total
 ```
 
-:::{tip}
+:::{attention}
 How would you modify this to include stochastic rewards?
 :::
 
-For a deterministic policy $\pi$, we have that
-$\pi_\hi(a \mid s) = \mathbb{I}[a = \pi_\hi(s)]$; that is, the probability
-of taking an action is $1$ if it's the unique action prescribed by the
-policy for that state and $0$ otherwise. In this case, the only
-randomness in sampling trajectories comes from the initial state
-distribution $\mu$ and the state transitions $P$.
+For a deterministic policy $\pi$, we have that $\pi_\hi(a \mid s) = \mathbb{I}[a = \pi_\hi(s)]$;
+that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise.
+In this case, the only randomness in sampling trajectories comes from the initial state distribution $\mu$ and the state transitions $P$.
 
 +++
 
 ### Value functions
 
-The main goal of RL is to find a policy that maximizes the average total
-reward $r_0 + \cdots + r_{H-1}$. (Note that this is a random variable
-that depends on the policy.) Let's introduce some notation for analyzing
-this quantity.
+The main goal of RL is to find a policy that maximizes the expected total
+reward $\E [r_0 + \cdots + r_{\hor-1}]$.
 
-A policy's **value function** at time $h$ is its expected remaining reward *from a given state*:
+:::{attention}
+Note that $r_0 + \cdots + r_{\hor-1}$ is a random variable.
+What sources of randomness does it depend on?
+Describe the generating process.
+:::
+
+Let's introduce some notation for analyzing this quantity.
+
+A policy's **value function** at time $\hi$ is its expected remaining reward *from a given state*:
 
 :::{prf:definition} Value function
 :label: value
@@ -393,7 +387,7 @@ def q_to_v(
     Compute the value function for a given policy in a known finite MDP
     at a single timestep from its action-value function.
     """
-    return np.sum(policy * q, axis=1)
+    return jnp.sum(policy * q, axis=1)
 ```
 
 and the
@@ -415,12 +409,13 @@ def v_to_q(
     return mdp.r + mdp.γ * mdp.P @ v
 
 
+# convert a list of v functions to a list of q functions
 v_ary_to_q_ary = vmap(v_to_q, in_axes=(None, 0))
 ```
 
 #### Greedy policies
 
-For any given $q \in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}$, we can define the **greedy policy** $\hat \pi_q$ as the policy that selects the action with the highest $q$-value at each state:
+For any given $Q \in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}$, we can define the **greedy policy** $\hat \pi_Q$ as the policy that selects the action with the highest $Q$-value at each state:
 
 ```{code-cell}
 def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
@@ -428,7 +423,9 @@ def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
     Get the (deterministic) greedy policy w.r.t. an action-value function.
     Return the policy as a matrix of shape (S, A) where each row is a one-hot vector.
     """
-    return np.eye(q.shape[1])[np.argmax(q, axis=1)]
+    A = q.shape[1]
+    a_ary = jnp.argmax(q, axis=1)
+    return jnp.eye(A)[a_ary]
 
 
 def v_to_greedy(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, "S A"]:
@@ -448,7 +445,9 @@ who is credited with introducing dynamic programming in 1953.
 :::{prf:theorem} Bellman consistency equation for the value function
 :label: bellman_consistency
 
-$$V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]$$
+$$
+V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]
+$$
 :::
 
 ```{code-cell}
@@ -462,11 +461,11 @@ def check_bellman_consistency_v(
     satisfies the Bellman consistency equation.
     """
     return all(
-        np.allclose(
+        jnp.allclose(
             # lhs
             v_ary[h],
             # rhs
-            np.sum(policy[h] * (mdp.r + mdp.γ * mdp.P @ v_ary[h + 1]), axis=1),
+            jnp.sum(policy[h] * (mdp.r + mdp.γ * mdp.P @ v_ary[h + 1]), axis=1),
         )
         for h in range(mdp.H - 1)
     )
@@ -529,7 +528,7 @@ def bellman_operator_looping(
     Looping definition of the Bellman operator.
     Concise version is below
     """
-    v_new = np.zeros(mdp.S)
+    v_new = jnp.zeros(mdp.S)
     for s in range(mdp.S):
         for a in range(mdp.A):
             for s_next in range(mdp.S):
@@ -548,7 +547,7 @@ def bellman_operator(
     v: Float[Array, " S"],
 ) -> Float[Array, " S"]:
     """For a known finite MDP, the Bellman operator can be exactly evaluated."""
-    return np.sum(policy * (mdp.r + mdp.γ * mdp.P @ v), axis=1)
+    return jnp.sum(policy * (mdp.r + mdp.γ * mdp.P @ v), axis=1)
     return q_to_v(policy, v_to_q(mdp, v))  # equivalent
 ```
 
@@ -595,10 +594,10 @@ equation to compute the value function at each time step.
 ```{code-cell}
 def dp_eval_finite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "H S"]:
     """Evaluate a policy using dynamic programming."""
-    V_ary = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
+    V_ary = [None] * mdp.H + [jnp.zeros(mdp.S)]  # initialize to 0 at end of time horizon
     for h in range(mdp.H - 1, -1, -1):
         V_ary[h] = bellman_operator(mdp, policy[h], V_ary[h + 1])
-    return np.stack(V_ary[:-1])
+    return jnp.stack(V_ary[:-1])
 ```
 
 This runs in time $O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)$ by counting the
@@ -811,16 +810,16 @@ $$
 def find_optimal_policy(mdp: MDP):
     Q = [None] * mdp.H
     pi = [None] * mdp.H
-    V = [None] * mdp.H + [np.zeros(mdp.S)]  # initialize to 0 at end of time horizon
+    V = [None] * mdp.H + [jnp.zeros(mdp.S)]  # initialize to 0 at end of time horizon
 
     for h in range(mdp.H - 1, -1, -1):
         Q[h] = mdp.r + mdp.P @ V[h + 1]
-        pi[h] = np.eye(mdp.S)[np.argmax(Q[h], axis=1)]  # one-hot
-        V[h] = np.max(Q[h], axis=1)
+        pi[h] = jnp.eye(mdp.S)[jnp.argmax(Q[h], axis=1)]  # one-hot
+        V[h] = jnp.max(Q[h], axis=1)
 
-    Q = np.stack(Q)
-    pi = np.stack(pi)
-    V = np.stack(V[:-1])
+    Q = jnp.stack(Q)
+    pi = jnp.stack(pi)
+    V = jnp.stack(V[:-1])
 
     return pi, V, Q
 ```
@@ -839,9 +838,9 @@ setting.
 
 ```{code-cell}
 π_opt, V_opt, Q_opt = find_optimal_policy(tidy_mdp)
-assert np.allclose(π_opt, tidy_policy_messy_only)
-assert np.allclose(V_opt, V_messy)
-assert np.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
+assert jnp.allclose(π_opt, tidy_policy_messy_only)
+assert jnp.allclose(V_opt, V_messy)
+assert jnp.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
 "Assertions passed (the 'tidy when messy' policy is optimal)"
 ```
 
@@ -892,7 +891,7 @@ The other components of the MDP remain the same:
 
 $$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).$$
 
-Code-wise, we can reuse the `MDP` class from before {prf:ref}`finite_mdp` and set `mdp.H = float('inf')`.
+Code-wise, we can reuse the `MDP` class from before {prf:ref}`finite_horizon_mdp` and set `mdp.H = float('inf')`.
 
 ```{code-cell}
 tidy_mdp_inf = tidy_mdp._replace(H=float("inf"), γ=0.95)
@@ -1101,10 +1100,10 @@ least one nonzero element.)
 def eval_deterministic_infinite(
     mdp: MDP, policy: Float[Array, "S A"]
 ) -> Float[Array, " S"]:
-    pi = np.argmax(policy, axis=1)  # un-one-hot
-    P_π = mdp.P[np.arange(mdp.S), pi]
-    r_π = mdp.r[np.arange(mdp.S), pi]
-    return np.linalg.solve(np.eye(mdp.S) - mdp.γ * P_π, r_π)
+    pi = jnp.argmax(policy, axis=1)  # un-one-hot
+    P_π = mdp.P[jnp.arange(mdp.S), pi]
+    r_π = mdp.r[jnp.arange(mdp.S), pi]
+    return jnp.linalg.solve(jnp.eye(mdp.S) - mdp.γ * P_π, r_π)
 ```
 
 :::{prf:example} Tidying policy evaluation
@@ -1153,7 +1152,7 @@ takes $O(|\mathcal{S}|^2)$ time for the matrix-vector multiplication.
 
 ```{code-cell}
 def supremum_norm(v):
-    return np.max(np.abs(v))  # same as np.linalg.norm(v, np.inf)
+    return jnp.max(jnp.abs(v))  # same as jnp.linalg.norm(v, jnp.inf)
 
 
 def loop_until_convergence(op, v, ε=1e-6):
@@ -1167,7 +1166,7 @@ def loop_until_convergence(op, v, ε=1e-6):
 
 def iterative_evaluation(mdp: MDP, pi: Float[Array, "S A"], ε=1e-6) -> Float[Array, " S"]:
     op = partial(bellman_operator, mdp, pi)
-    return loop_until_convergence(op, np.zeros(mdp.S), ε)
+    return loop_until_convergence(op, jnp.zeros(mdp.S), ε)
 ```
 
 Then, as we showed in {eq}`bellman_convergence`, by the Banach fixed-point theorem:
@@ -1259,11 +1258,11 @@ gives the **Bellman optimality operator**
 
 ```{code-cell}
 def bellman_optimality_operator(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, " S"]:
-    return np.max(mdp.r + mdp.γ * mdp.P @ v, axis=1)
+    return jnp.max(mdp.r + mdp.γ * mdp.P @ v, axis=1)
 
 
 def check_optimal(v: Float[Array, " S"], mdp: MDP):
-    return np.allclose(v, bellman_optimality_operator(v, mdp))
+    return jnp.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
 (value_iteration)=
@@ -1278,7 +1277,7 @@ algorithm is known as **value iteration**.
 def value_iteration(mdp: MDP, ε: float = 1e-6) -> Float[Array, " S"]:
     """Iterate the Bellman optimality operator until convergence."""
     op = partial(bellman_optimality_operator, mdp)
-    return loop_until_convergence(op, np.zeros(mdp.S), ε)
+    return loop_until_convergence(op, jnp.zeros(mdp.S), ε)
 ```
 
 ```{code-cell}
@@ -1386,7 +1385,7 @@ def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
     """Iteratively improve the policy and value function."""
     def op(pi):
         return v_to_greedy(mdp, eval_deterministic_infinite(mdp, pi))
-    π_init = np.ones((mdp.S, mdp.A)) / mdp.A  # uniform random policy
+    π_init = jnp.ones((mdp.S, mdp.A)) / mdp.A  # uniform random policy
     return loop_until_convergence(op, π_init, ε)
 ```
 

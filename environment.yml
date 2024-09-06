@@ -16,7 +16,7 @@ dependencies:
   # book
   - jupyter-book
   - jupyterlab
-  - jupytext 1.16.*
+  - jupytext 1.16.2
   - swig
   # github pages
   - ghp-import

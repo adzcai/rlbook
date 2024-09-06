@@ -2,17 +2,16 @@ ENV_NAME = rlbook
 
 RUN = micromamba run -n $(ENV_NAME)
 
-_NOTEBOOKS = $(addprefix book/, intro bandits mdps fitted_dp control pg exploration)
+_NOTEBOOKS = $(addprefix book/, bandits contextual_bandits control exploration fitted_dp imitation_learning mdps pg planning supervised_learning)
+
+_META = \
+	background \
+	bibliography \
+	index
 
 NOTEBOOKS = $(addsuffix .md, $(_NOTEBOOKS))
 
 IPYNBS = $(addsuffix .ipynb, $(_NOTEBOOKS))
-
-_META = \
-	appendix \
-	bibliography \
-	challenges \
-	index
 
 META = $(addsuffix .md, $(addprefix book/, $(_META)))
 
@@ -50,3 +49,6 @@ lab:
 
 lint:
 	$(RUN) ruff check --fix $(IPYNBS)
+
+publish: book/_build/html
+	$(RUN) ghp-import --cname "rlbook.adzc.ai" --no-jekyll --push --force book/_build/html

@@ -6,14 +6,15 @@ root: index.md
 options:
   numbered: true
 chapters:
-  - file: intro.md
-  - file: bandits.md
   - file: mdps.md
-  - file: fitted_dp.md
   - file: control.md
+  - file: bandits.md
+  - file: supervised_learning.md
+  - file: fitted_dp.md
   - file: pg.md
-  - file: exploration.md
   - file: imitation_learning.md
-# - file: challenges
-# - file: appendix
+  - file: planning.md
+  - file: exploration.md
+  - file: contextual_bandits.md
   - file: bibliography.md
+  - file: background.md

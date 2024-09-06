@@ -11,27 +11,48 @@ kernelspec:
   name: python3
 ---
 
-# Policy Gradient Algorithms
+(pg)=
+# Policy Optimization
 
-A key task in RL is finding the **optimal policy** in a given environment,
-that is, the policy that achieves the most total reward in all states.
-Given this task, why not optimize directly over _policies?_
+The core task of RL is finding the **optimal policy** in a given environment.
+This is essentially an _optimization problem:_
+out of some space of policies,
+we want to find the one that achieves the maximum total reward (in expectation).
 
-Algorithms based on this idea are called _policy optimization algorithms._
-We've already seen some examples of this,
+It's typically intractable to compute the optimal policy exactly.
+Instead, **policy optimization algorithms** start from some randomly initialized policy,
+and then _improve_ it step by step.
+We've already seen some examples of these,
 namely {ref}`policy_iteration` for finite MDPs and {ref}`iterative_lqr` in continuous control.
-
-**Policy gradient algorithms** form a specific subclass for policies that can be described by a set of **parameters.**
-These are responsible for groundbreaking applications including AlphaGo, OpenAI Five, and large language models,
+In particular, we often use policies that can be described by some finite set of _parameters._
+For such parameterized policies,
+we can approximate the **policy gradient:**
+the gradient of the expected total reward with respect to the parameters.
+This tells us the direction the parameters should be updated to achieve a higher total reward (in expectation).
+Policy gradient methods are responsible for groundbreaking applications including AlphaGo, OpenAI Five, and large language models,
 many of which use policies parameterized as deep neural networks.
 
 1. We begin the chapter with a short review of gradient ascent,
-a simple and general **optimization method.**
-2. We'll then apply this technique directly to maximize the _\hiotal reward_.
+a general **optimization method.**
+2. We'll then see how to estimate the **policy gradient,**
+   enabling us to apply (stochastic) gradient ascent in the RL setting.
 3. Then we'll explore some _proximal optimization_ techniques that ensure the steps taken are "not too large".
    This is helpful to stabilize training and widely used in practice.
 
-+++
+```{code-cell} ipython3
+import numpy as np
+import jax
+from jaxtyping import Float, Array
+from bokeh.plotting import figure, show, output_notebook
+from bokeh.models import Arrow, VeeHead, ColumnDataSource, LinearColorMapper, BasicTicker, ColorBar
+from bokeh.transform import linear_cmap
+from bokeh.layouts import gridplot
+from typing import TypeVar, Callable
+
+Params = TypeVar("Params")
+
+output_notebook()
+```
 
 ## Gradient Ascent
 
@@ -41,7 +62,43 @@ where you keep taking steps in the steepest direction upwards.
 Here, your vertical position $y$ is the function being optimized,
 and your horizontal position $(x, z)$ is the input to the function.
 The _slope_ of the mountain at your current position is given by the _gradient_,
-written $\nabla y(x, z) \in \R^2$.
+written $\nabla y(x, z) \in \mathbb{R}^2$.
+
+```{code-cell} ipython3
+def f(x, y):
+    """Himmelblau's function"""
+    return (x**2 + y - 11)**2 + (x + y**2 - 7)**2
+
+x = np.linspace(-5, 5, 400)
+y = np.linspace(-5, 5, 400)
+X, Y = np.meshgrid(x, y)
+Z = f(X, Y)
+
+p = figure(width=600, height=600, title="Himmelblau's function")
+
+mapper = LinearColorMapper(palette="Viridis256", low=Z.min(), high=Z.max())
+p.image(image=[Z], x=-5, y=-5, dw=10, dh=10, color_mapper=mapper)
+
+color_bar = ColorBar(color_mapper=mapper)
+p.add_layout(color_bar, 'right')
+
+tx, ty = 1., 1.
+gx, gy = jax.grad(f, argnums=(0, 1))(tx, ty)
+
+p.scatter(x=[tx], y=[ty], size=10, color="red")
+
+p.add_layout(Arrow(
+    end=VeeHead(size=15),
+    x_start=tx,
+    y_start=ty,
+    x_end=tx + gx.item() * 0.01,
+    y_end=ty + gy.item() * 0.01,
+    line_color="blue",
+))
+
+show(p)
+```
+
 For differentiable functions, this can be thought of as the vector of partial derivatives,
 
 $$
@@ -77,13 +134,47 @@ The case of a two-dimensional input is easy to visualize.
 But this idea can be straightforwardly extended to higher-dimensional inputs.
 
 From now on, we'll use $J$ to denote the function we're trying to maximize,
-and $\theta$ to denote the parameters being optimized over.
+and $\theta$ to denote the parameters being optimized over. (In the above example, $\theta = \begin{pmatrix} x & z \end{pmatrix}^\top$).
 
 Notice that our parameters will stop changing once $\nabla J(\theta) = 0.$
 Once we reach this **stationary point,** our current parameters are 'locally optimal' in some sense;
 it's impossible to increase the function by moving in any direction.
 If $J$ is _convex_, then the only point where this happens is at the *global optimum.*
 Otherwise, if $J$ is nonconvex, the best we can hope for is a *local optimum.*
+
+:::{note}
+How does a computer compute the gradient of a function?
+
+One way is _symbolic differentiation,_
+which is similar to the way you might compute it by hand:
+the computer applies a list of rules to transform the _symbols_ involved.
+Python's `sympy` package supports symbolic differentiation.
+However, functions implemented in code may not always have a straightforward symbolic representation.
+
+Another way is _numerical differentiation,_
+which is based on the limit definition of a (directional) derivative:
+
+$$
+\nabla_{\boldsymbol{u}} J(\boldsymbol{x}) = \lim_{\varepsilon \to 0}
+\frac{J(\boldsymbol{x} + \varepsilon \boldsymbol{u}) - J(\boldsymbol{x})}{\varepsilon}
+$$
+
+Then, we can substitute a small value of $\varepsilon$ on the r.h.s. to approximate the directional derivative.
+How small, though? If we need an accurate estimate,
+we may need such a small value of $\varepsilon$ that typical computers will run into rounding errors.
+Also, to compute the full gradient,
+we would need to compute the r.h.s. once for each input dimension.
+This is an issue if computing $J$ is expensive.
+
+**Automatic differentiation** achieves the best of both worlds.
+Like symbolic differentiation,
+we manually implement the derivative rules for a few basic operations.
+However, instead of executing these on the _symbols_,
+we execute them on the _values_ when the function gets called,
+like in numerical differentiation.
+This allows us to differentiate through programming constructs such as branches or loops,
+and doesn't involve any arbitrarily small values.
+:::
 
 +++
 
@@ -97,13 +188,17 @@ In these cases, we often compute some _estimate_ of the gradient at each step, $
 This is called **stochastic** gradient ascent.
 In the SL example above, we might randomly choose a *minibatch* of samples and use them to estimate the true prediction error. (This approach is known as **_minibatch_ SGD**.)
 
-```python
-def sgd_pseudocode(
+```{code-cell} ipython3
+def sgd(
     θ_init: Params,
     estimate_gradient: Callable[[Params], Params],
     η: float,
     n_steps: int,
 ):
+    """Perform `n_steps` steps of SGD.
+
+    `estimate_gradient` eats the current parameters and returns an estimate of the objective function's gradient at those parameters.
+    """
     θ = θ_init
     for step in range(n_steps):
         θ += η * estimate_gradient(θ)
@@ -113,7 +208,9 @@ def sgd_pseudocode(
 What makes one gradient estimator better than another?
 Ideally, we want this estimator to be **unbiased;** that is, on average, it matches a single true gradient step:
 
-$$\E [\tilde \nabla J(\theta)] = \nabla J(\theta).$$
+$$
+\E [\tilde \nabla J(\theta)] = \nabla J(\theta).
+$$
 
 We also want the _variance_ of the estimator to be low so that its performance doesn't change drastically at each step.
 
@@ -160,13 +257,21 @@ What does $\theta$ correspond to, though?
 In general, $\pi$ is a function, and optimizing over the space of arbitrary input-output mappings would be intractable.
 Instead, we need to describe $\pi$ in terms of some finite set of _parameters_ $\theta$.
 
++++
+
 (parameterizations)=
 ### Example policy parameterizations
 
 What are some ways we could parameterize our policy?
 
++++
+
+#### Tabular representation
+
 If both the state and action spaces are finite, perhaps we could simply learn a preference value $\theta_{s,a}$ for each state-action pair.
-Then to turn this into a valid distribution, we perform a "softmax" operation: we exponentiate each of them, and divide by the total:
+Then to turn this into a valid distribution, we perform a **softmax** operation:
+we exponentiate each of them,
+and then normalize to form a valid distribution:
 
 $$\pi^\text{softmax}_\theta(a | s) = \frac{\exp(\theta_{s,a})}{\sum_{s,a'} \exp (\theta_{s,a'})}.$$
 
@@ -210,6 +315,8 @@ Why can we drop the $\E \phi(s_\hi, a')$ term? By linearity of expectation, cons
 More generally, we could map states and actions to unnormalized scores via some parameterized function $f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},$ such as a neural network, and choose actions according to a softmax: $$\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.$$
 
 The score can then be written as $$\nabla \log \pi_\theta(a|s) = \nabla f_\theta(s, a) - \E_{a \sim \pi_\theta(s)} \nabla f_\theta (s, a')$$
+
++++
 
 ### Continuous action spaces
 
@@ -893,5 +1000,3 @@ TODO
 - Trust region policy optimization
 - Natural policy gradient
 - Proximal policy optimization
-
-
