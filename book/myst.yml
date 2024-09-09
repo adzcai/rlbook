@@ -2,7 +2,8 @@ version: 1
 project:
   title: 'CS/STAT 184: Introduction to Reinforcement Learning'
   authors:
-    - name: Alexander D. Cai
+    - name: Fall 2024
+  numbering: true
   github: adzcai/cs-stat-184-notes
   bibliography:
     - shared/references.bib

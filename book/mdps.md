@@ -9,9 +9,11 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
+numbering:
+  enumerator: 1.%s
 ---
 
-# Markov Decision Processes
+# 1 Markov Decision Processes
 
 ## Introduction
 

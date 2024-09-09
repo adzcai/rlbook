@@ -12,9 +12,11 @@ kernelspec:
 math:
   '\st': 'x'
   '\act': 'u'
+numbering:
+  enumerator: 2.%s
 ---
 
-# Linear Quadratic Regulators
+# 2 Linear Quadratic Regulators
 
 ## Introduction
 
@@ -321,9 +323,7 @@ At each timestep $h \in [H]$,
 
 
 $$
-
 V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi
-
 $$
 
  for some symmetric
@@ -337,9 +337,7 @@ $p_\hi \in \mathbb{R}^{n_\st}$.
 At each timestep $h \in [H]$, 
 
 $$
-
 \pi^\star_\hi (\st) = - K_\hi \st
-
 $$
 
  for
@@ -358,25 +356,21 @@ quadratic, then $V^\star_\hi(\st)$ must also be a upward-curved
 quadratic, and $\pi^\star_\hi(\st)$ must be linear. We'll break this
 down into the following steps:
 
-::: steps
-Show that $Q^\star_\hi(\st, \act)$ is a upward-curved quadratic (in both
-$\st$ and $\act$).
 
-Derive the optimal policy
+1. Show that $Q^\star_\hi(\st, \act)$ is a upward-curved quadratic (in both
+$\st$ and $\act$).
+2. Derive the optimal policy
 $\pi^\star_\hi(\st) = \arg \min_\act Q^\star_\hi(\st, \act)$ and show
 that it's linear.
+3. Show that $V^\star_\hi(\st)$ is a upward-curved quadratic.
 
-Show that $V^\star_\hi(\st)$ is a upward-curved quadratic.
-:::
 
 We first assume the inductive hypothesis that our theorems are true at
 time $\hi+1$. That is,
 
 
 $$
-
 V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \mathcal{S}.
-
 $$
 
 
@@ -387,9 +381,7 @@ $Q^\star_\hi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$ is
 
 
 $$
-
 Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} [V^\star_{\hi+1}(\st')].
-
 $$
 
 
@@ -435,9 +427,7 @@ those off the diagonal. On the diagonal, the expectation becomes
 
 
 $$
-
 (P_{\hi+1})_{ii} \E (w_{\hi+1})_i^2 = \sigma^2 (P_{\hi+1})_{ii}.
-
 $$
 
  Off
@@ -447,9 +437,7 @@ disappears:
 
 
 $$
-
 (P_{\hi+1})_{ij} \E [(w_{\hi+1})_i] \E [(w_{\hi+1})_j] = 0.
-
 $$
 
  Thus,
@@ -458,9 +446,7 @@ can be expressed as the trace of $\sigma^2 P_{\hi+1}$:
 
 
 $$
-
 \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] = \mathrm{Tr}(\sigma^2 P_{\hi+1}).
-
 $$
 
 
@@ -487,9 +473,7 @@ second derivatives is positive definite:
 
 
 $$
-
 \nabla_{\act \act} Q_\hi^\star(\st, \act) = R + B^\top P_{\hi+1} B
-
 $$
 
  This
@@ -558,14 +542,9 @@ equation**:
 :::{prf:definition} Riccati equation
 :label: riccati
 
-
-
 $$
-
 P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
-
 $$
-
 
 :::
 
@@ -722,9 +701,7 @@ accordingly:
 
 
 $$
-
 P_\hi = Q_\hi + A_\hi^\top P_{\hi+1} A_\hi - A_\hi^\top P_{\hi+1} B_\hi (R_\hi + B_\hi^\top P_{\hi+1} B_\hi)^{-1} B_\hi^\top P_{\hi+1} A_\hi.
-
 $$
 
 
@@ -760,9 +737,7 @@ constant term $v_\hi \in \mathbb{R}^{n_\st}$ in the dynamics (note that this is
 
 
 $$
-
 \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + v_\hi + w_\hi.
-
 $$
 
 
@@ -783,9 +758,7 @@ function:
 
 
 $$
-
 c_\hi(\st_\hi, \act_\hi) = (\st_\hi - \st^\star_\hi)^\top Q (\st_\hi - \st^\star_\hi) + (\act_\hi - \act^\star_\hi)^\top R (\act_\hi - \act^\star_\hi).
-
 $$
 
 
@@ -797,9 +770,7 @@ function above
 
 
 $$
-
 M_\hi = 0, \qquad q_\hi = -2Q \st^\star_\hi, \qquad r_\hi = -2R \act^\star_\hi, \qquad c_\hi = (\st^\star_\hi)^\top Q (\st^\star_\hi) + (\act^\star_\hi)^\top R (\act^\star_\hi).
-
 $$
 
 
@@ -917,9 +888,7 @@ the input.
 
 
 $$
-
 \frac{d}{dx} f(x) = \lim_{\delta \to 0} \frac{f(x + \delta) - f(x)}{\delta}
-
 $$
 
 
@@ -944,9 +913,7 @@ approximation by
 
 
 $$
-
 \widetilde{D} = \left( \sum_{i=1, \dots, n \mid \lambda_i > 0} \lambda_i u_i u_i^\top \right) + \varepsilon I.
-
 $$
 
 
@@ -1051,9 +1018,7 @@ sample trajectory by taking actions according to this optimal policy:
 
 
 $$
-
 \bar \st^{i+1}_0 = \bar \st_0, \qquad \widetilde \act_\hi = \pi^i_\hi(\bar \st^{i+1}_\hi), \qquad \bar \st^{i+1}_{\hi+1} = f(\bar \st^{i+1}_\hi, \widetilde \act_\hi).
-
 $$
 
 

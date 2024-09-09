@@ -9,9 +9,11 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
+numbering:
+  enumerator: 4.%s
 ---
 
-# Supervised learning
+# 4 Supervised learning
 
 ## Introduction
 

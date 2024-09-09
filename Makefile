@@ -49,5 +49,8 @@ lab:
 lint:
 	$(RUN) ruff check --fix $(IPYNBS)
 
+web:
+	$(RUN) myst build --html --execute
+
 publish: book/_build/html
 	$(RUN) ghp-import --cname "rlbook.adzc.ai" --no-jekyll --push --force book/_build/html

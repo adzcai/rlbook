@@ -9,9 +9,11 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
+numbering:
+  enumerator: 7.%s
 ---
 
-# Imitation Learning
+# 7 Imitation Learning
 
 ## Introduction
 

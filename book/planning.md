@@ -9,10 +9,12 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
+numbering:
+  enumerator: 8.%s
 ---
 
 
-# Planning
+# 8 Planning
 
 ## Introduction
 

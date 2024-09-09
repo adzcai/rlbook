@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python 3.11.*    # python
+  - pip              # pip dependencies
   - jax 0.4.*        # automatic differentiation
   - jaxtyping        # array types
   - ruff             # code formatting

@@ -9,9 +9,11 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
+numbering:
+  enumerator: 5.%s
 ---
 
-# Fitted Dynamic Programming Algorithms
+# 5 Fitted Dynamic Programming Algorithms
 
 ## Introduction
 

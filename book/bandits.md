@@ -9,9 +9,11 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
+numbering:
+  enumerator: 3.%s
 ---
 
-# Multi-Armed Bandits
+# 3 Multi-Armed Bandits
 
 ## Introduction
 
@@ -798,6 +800,10 @@ the *constant factor* is optimal as well.
 +++
 
 ## Contextual bandits
+
+:::{note}
+This content is advanced material taught at the end of the course.
+:::
 
 In the above MAB environment, the reward distributions of the arms
 remain constant. However, in many real-world settings, we might receive
