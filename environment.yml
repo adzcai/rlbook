@@ -1,26 +1,21 @@
 name: rlbook
 channels:
   - conda-forge
-  - plotly
 dependencies:
-  # code
-  - python 3.11.*
-  - jax 0.4.*
-  - equinox 0.11.*
-  - ruff
-  # visualization
-  - bokeh
-  - jupyter_bokeh
-  - tqdm
-  - latexify-py
-  # book
-  - jupyter-book
-  - jupyterlab
-  - jupytext 1.16.2
-  - swig
-  # github pages
-  - ghp-import
-  # pip
+  - python 3.11.*    # python
+  - jax 0.4.*        # automatic differentiation
+  - jaxtyping        # array types
+  - ruff             # code formatting
+  - matplotlib       # visualization
+  - tqdm             # progress bars
+  - latexify-py      # python to latex
+  - texlive-core     # latex distribution
+  - latexmk          # latex projects
+  - mystmd           # markdown notebooks
+  - jupyterlab       # notebooks
+  - jupyterlab-myst  # enable mystmd in jupyter
+  - jupytext 1.16.2  # open md in jupyter
+  - ghp-import       # github pages
   - pip:
     - "gymnasium[box2d]"
     - sphinx-proof

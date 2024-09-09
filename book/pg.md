@@ -11,8 +11,9 @@ kernelspec:
   name: python3
 ---
 
-(pg)=
 # Policy Optimization
+
+## Introduction
 
 The core task of RL is finding the **optimal policy** in a given environment.
 This is essentially an _optimization problem:_
@@ -23,7 +24,7 @@ It's typically intractable to compute the optimal policy exactly.
 Instead, **policy optimization algorithms** start from some randomly initialized policy,
 and then _improve_ it step by step.
 We've already seen some examples of these,
-namely {ref}`policy_iteration` for finite MDPs and {ref}`iterative_lqr` in continuous control.
+namely [](#policy_iteration) for finite MDPs and [](#iterative_lqr) in continuous control.
 In particular, we often use policies that can be described by some finite set of _parameters._
 For such parameterized policies,
 we can approximate the **policy gradient:**
@@ -40,18 +41,7 @@ a general **optimization method.**
    This is helpful to stabilize training and widely used in practice.
 
 ```{code-cell} ipython3
-import numpy as np
-import jax
-from jaxtyping import Float, Array
-from bokeh.plotting import figure, show, output_notebook
-from bokeh.models import Arrow, VeeHead, ColumnDataSource, LinearColorMapper, BasicTicker, ColorBar
-from bokeh.transform import linear_cmap
-from bokeh.layouts import gridplot
-from typing import TypeVar, Callable
-
-Params = TypeVar("Params")
-
-output_notebook()
+from utils import plt, Array, Callable, jax, jnp
 ```
 
 ## Gradient Ascent
@@ -69,34 +59,35 @@ def f(x, y):
     """Himmelblau's function"""
     return (x**2 + y - 11)**2 + (x + y**2 - 7)**2
 
-x = np.linspace(-5, 5, 400)
-y = np.linspace(-5, 5, 400)
-X, Y = np.meshgrid(x, y)
+# Create a grid of points
+x = jnp.linspace(-5, 5, 400)
+y = jnp.linspace(-5, 5, 400)
+X, Y = jnp.meshgrid(x, y)
 Z = f(X, Y)
 
-p = figure(width=600, height=600, title="Himmelblau's function")
+# Create the plot
+fig, ax = plt.subplots(figsize=(6, 6))
 
-mapper = LinearColorMapper(palette="Viridis256", low=Z.min(), high=Z.max())
-p.image(image=[Z], x=-5, y=-5, dw=10, dh=10, color_mapper=mapper)
+# Plot the function using imshow
+img = ax.imshow(Z, extent=[-5, 5, -5, 5], origin='lower')
 
-color_bar = ColorBar(color_mapper=mapper)
-p.add_layout(color_bar, 'right')
+# Add color bar
+fig.colorbar(img, ax=ax)
 
-tx, ty = 1., 1.
+# Gradient computation using JAX
+tx, ty = 1.0, 1.0
 gx, gy = jax.grad(f, argnums=(0, 1))(tx, ty)
 
-p.scatter(x=[tx], y=[ty], size=10, color="red")
+# Scatter point
+ax.scatter(tx, ty, color='red', s=100)
 
-p.add_layout(Arrow(
-    end=VeeHead(size=15),
-    x_start=tx,
-    y_start=ty,
-    x_end=tx + gx.item() * 0.01,
-    y_end=ty + gy.item() * 0.01,
-    line_color="blue",
-))
+# Add arrow representing the gradient
+ax.arrow(tx, ty, gx * 0.01, gy * 0.01, head_width=0.3, head_length=0.3, fc='blue', ec='blue')
 
-show(p)
+# Add plot title
+ax.set_title("Himmelblau's Function")
+
+plt.show()
 ```
 
 For differentiable functions, this can be thought of as the vector of partial derivatives,
@@ -113,7 +104,7 @@ you take the dot product of the difference vector with the gradient.
 This means that the direction with the highest slope is exactly the gradient itself,
 so we can describe the gradient ascent algorithm as follows:
 
-:::{prf:algorithm} Gradient ascent
+:::{prf:definition} Gradient ascent
 $$
 \begin{pmatrix}
 x^{k+1} \\ z^{k+1}
@@ -190,8 +181,8 @@ In the SL example above, we might randomly choose a *minibatch* of samples and u
 
 ```{code-cell} ipython3
 def sgd(
-    θ_init: Params,
-    estimate_gradient: Callable[[Params], Params],
+    θ_init: Array,
+    estimate_gradient: Callable[[Array], Array],
     η: float,
     n_steps: int,
 ):
@@ -518,14 +509,14 @@ def pg_with_learned_baseline_pseudocode(env, π, η, θ_init, K, N):
         trajectories = sample_trajectories(env, π(θ), N)
         V_hat = fit(trajectories)  # estimates the value function of π(θ)
         τ = sample_trajectories(env, π(θ), 1)
-        g = np.zeros_like(θ)  # gradient estimator
+        g = jnp.zeros_like(θ)  # gradient estimator
 
         for h, (s, a) in enumerate(τ):
             def log_likelihood(θ_):
-                return np.log(π(θ_)(s, a))
-            g += jax.grad(log_likelihood)(θ) * (return_to_go(τ, h) - V_hat(s))
+                return jnp.log(π(θ_)(s, a))
+            g = g + jax.grad(log_likelihood)(θ) * (return_to_go(τ, h) - V_hat(s))
         
-        θ += η * g
+        θ = θ + η * g
     return θ
 ```
 
@@ -542,7 +533,7 @@ Note that the gradient estimator will be unbiased regardless of the baseline.
 
 <!-- TODO maybe restructure this part -->
 
-What advantages does the policy gradient algorithm have over {ref}`policy_iteration`?
+What advantages does the policy gradient algorithm have over [](#policy_iteration)?
 
 :::{note} Policy iteration recap
 Recall that policy iteration is an algorithm for MDPs with unknown state transitions where we alternate between these two steps:
@@ -652,7 +643,7 @@ while ensuring that its trajectory distribution does not change too much:
 
 $$
 \begin{aligned}
-\theta^{k+1} &\gets \argmax_{\theta^{\text{opt}}} \E_{s_0, \dots, s_{H-1} \sim \pi^{k}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi^{\theta^\text{opt}}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] \\
+\theta^{k+1} &\gets \arg\max_{\theta^{\text{opt}}} \E_{s_0, \dots, s_{H-1} \sim \pi^{k}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi^{\theta^\text{opt}}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] \\
 & \text{where } \text{distance}(\rho_{\theta^{\text{opt}}}, \rho_{\theta^k}) < \delta
 \end{aligned}
 $$
@@ -709,7 +700,7 @@ def trpo_pseudocode(env, δ, θ_init, M):
             kl_div = 0
             for τ in trajectories:
                 for s, a, _r in τ:
-                    kl_div += np.log(π(θ)(s, a)) - np.log(π(θ_)(s, a))
+                    kl_div += jnp.log(π(θ)(s, a)) - jnp.log(π(θ_)(s, a))
             return kl_div <= δ
         
         θ = optimize(approximate_gain, constraint)
@@ -724,7 +715,7 @@ Applying importance sampling allows us to estimate the TRPO objective as follows
 ::::{prf:definition} Trust region policy optimization (implementation)
 :label: trpo_implement
 
-:::{prf:algorithmic} TODO
+:::{prf:definitionic} TODO
 Initialize $\theta^0$
 
 Sample $N$ trajectories from $\rho^k$ to learn a value estimator $\tilde b_\hi(s) \approx V^{\pi^k}_\hi(s)$
@@ -732,7 +723,7 @@ Sample $N$ trajectories from $\rho^k$ to learn a value estimator $\tilde b_\hi(s
 Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho^k$
 
 $$\begin{gathered}
-            \theta^{k+1} \gets \argmax_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} [ R_\hi(\tau_m) - \tilde b_\hi(s_\hi) ] \\
+            \theta^{k+1} \gets \arg\max_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} [ R_\hi(\tau_m) - \tilde b_\hi(s_\hi) ] \\
             \text{where } \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \log \frac{\pi_k(a_\hi^m \mid s_\hi^m)}{\pi_\theta(a_\hi^m \mid s_\hi^m)} \le \delta
         
 \end{gathered}$$
@@ -900,7 +891,7 @@ we can instead impose a *soft* constraint by incorporating it into the objective
 
 $$
 \begin{aligned}
-\theta^{k+1} &\gets \argmax_{\theta} \E_{s_0, \dots, s_{H-1} \sim \rho_{\pi^{k}}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] - \lambda \kl{\rho_{\theta}}{\rho_{\theta^k}}
+\theta^{k+1} &\gets \arg\max_{\theta} \E_{s_0, \dots, s_{H-1} \sim \rho_{\pi^{k}}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] - \lambda \kl{\rho_{\theta}}{\rho_{\theta^k}}
 \end{aligned}
 $$
 
@@ -936,7 +927,7 @@ we would need the actions to also come from $\pi^k$.
 
 This should sound familiar:
 we want to estimate an expectation over one distribution by sampling from another.
-We can once again use {ref}`importance_sampling` to rewrite the inner expectation:
+We can once again use [](#importance_sampling) to rewrite the inner expectation:
 
 $$
 \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi)
@@ -981,7 +972,7 @@ def ppo_pseudocode(
             total_objective = 0
             for τ in sample_trajectories:
                 for s, a, _r in τ:
-                    total_objective += π(θ_opt)(s, a) / π(θ)(s, a) * A_hat(s, a) + λ * np.log(π(θ_opt)(s, a))
+                    total_objective += π(θ_opt)(s, a) / π(θ)(s, a) * A_hat(s, a) + λ * jnp.log(π(θ_opt)(s, a))
             return total_objective / n_sample_trajectories
         
         θ = optimize(objective, θ)

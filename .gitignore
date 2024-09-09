@@ -1,6 +1,7 @@
 _build/
 .DS_Store
 .ipynb_checkpoints/
+__pycache__/
 
 # exercise solutions
 solutions/
@@ -25,3 +26,6 @@ conf.py
 *.run.xml
 *.synctex.gz
 *.toc
+
+# MyST build outputs
+_build

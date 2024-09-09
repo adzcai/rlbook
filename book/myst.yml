@@ -1,0 +1,37 @@
+version: 1
+project:
+  title: 'CS/STAT 184: Introduction to Reinforcement Learning'
+  authors:
+    - name: Alexander D. Cai
+  github: adzcai/cs-stat-184-notes
+  bibliography:
+    - shared/references.bib
+  exports:
+    - format: pdf
+      template: plain_latex_book
+      output: exports/book.pdf
+  toc:
+    - file: index.md
+    - file: mdps.md
+    - file: control.md
+    - file: bandits.md
+    - file: supervised_learning.md
+    - file: fitted_dp.md
+    - file: pg.md
+    - file: imitation_learning.md
+    - file: planning.md
+    - file: exploration.md
+    - file: background.md
+  math:
+    '\E': '\mathop{\mathbb{E}}'
+    '\pr': '\mathop{\mathbb{P}}'
+    '\kl': '\mathrm{KL}\left(#1\parallel#2\right)'
+    '\ind': '\mathbf{1}\left\{#1\right\}'
+    '\hi': 'h'   # or 't' (time horizon index)
+    '\hor': 'H'  # or 'T' (time horizon)
+    '\st': 's'   # or 'x' for control chapter
+    '\act': 'a'  # or 'u' for control chapter
+site:
+  options:
+    logo: shared/184.png
+  template: book-theme

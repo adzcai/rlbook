@@ -11,8 +11,9 @@ kernelspec:
   name: python3
 ---
 
-(supervised_learning)=
 # Supervised learning
+
+## Introduction
 
 This section will cover the details of implementing the `fit` function above:
 That is, how to use a dataset of labelled samples $(x_1, y_1), \dots, (x_N, y_N)$ to find a function $f$ that minimizes the empirical risk.
@@ -38,7 +39,9 @@ $$
 
 The most common fitting method for parameterized models is **gradient descent**.
 
-:::{prf:algorithm} Gradient descent
+:::{prf:definition} Gradient descent
+:label: gd_def
+
 Letting $L(\theta) \in \mathbb{R}$ denote the empirical risk in terms of the parameters,
 the gradient descent algorithm updates the parameters according to the rule
 

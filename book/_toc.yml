@@ -15,6 +15,6 @@ chapters:
   - file: imitation_learning.md
   - file: planning.md
   - file: exploration.md
-  - file: contextual_bandits.md
-  - file: bibliography.md
+  # - file: contextual_bandits.md
+  # - file: bibliography.md
   - file: background.md

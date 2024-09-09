@@ -1,7 +1,20 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.16.2
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+
 # Introduction
 
 Welcome to the study of reinforcement learning!
-This textbook accompanies the undergraduate course [CS 1840/STAT 184](http://lucasjanson.fas.harvard.edu/CS_Stat_184_0.html) taught at Harvard.
+This textbook accompanies the undergraduate course [CS 1840/STAT 184](http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html) taught at Harvard.
 It is intended to be a friendly yet rigorous introduction to this active subfield of machine learning.
 
 +++
@@ -11,7 +24,7 @@ It is intended to be a friendly yet rigorous introduction to this active subfiel
 This book assumes the same prerequisites as the course: You should be familiar with multivariable calculus, linear algebra, and probability.
 For Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents.
 Stat 111 is strongly recommended but not required.
-Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text or in the {ref}`background`:
+Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text or in the [](./background.md):
 
 -   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
     inversion, eigenvalues and eigenvectors.
@@ -20,7 +33,7 @@ Specifically, we will assume that you know the following topics. The _italicized
     expectation and variance, the law of iterated expectations (Adam's rule), covariance, conditional probability, Bayes's rule, and the law of total probability.
 
 You should also be comfortable with programming in Python.
-See {ref}`programming` for more about this textbook's philosophy regarding programming.
+See [](#programming) for more about this textbook's philosophy regarding programming.
 
 +++
 
@@ -28,12 +41,14 @@ See {ref}`programming` for more about this textbook's philosophy regarding progr
 
 Broadly speaking,
 RL studies **sequential decision-making** in **dynamic environments.**
-An RL algorithm finds a **policy,** or strategy, that maximizes the **reward** it obtains from the environment.
+An RL algorithm finds a strategy, called a **policy,** that maximizes the **reward** it obtains from the environment.
 
 RL provides a powerful framework for attacking a wide variety of problems,
 including robotic control, video games and board games, resource management, language modelling, and more.
 It also provides an interdisciplinary paradigm for studying animal and human behavior.
 Many of the most stunning results in machine learning, ranging from AlphaGo to ChatGPT, are built using RL algorithms.
+
++++
 
 How does RL compare to the other two core machine learning paradigms,
 **supervised learning** and **unsupervised learning?**
@@ -53,7 +68,7 @@ How does RL compare to the other two core machine learning paradigms,
 
 +++
 
-## Core tasks in reinforcement learning
+## Core tasks of reinforcement learning
 
 What tasks, exactly, does RL comprise?
 An RL algorithm must typically solve two main subtasks:
@@ -76,48 +91,46 @@ An RL algorithm must typically solve two main subtasks:
 
 The course will progress through the following units:
 
-{ref}`mdps` introduces **Markov Decision Processes,**
+[](./mdps.md) introduces **Markov Decision Processes,**
 the core mathematical framework for describing a large class of interactive environments.
 
-{ref}`lqr` is a standalone chapter on the **linear quadratic regulator** (LQR),
+[](./control.md) is a standalone chapter on the **linear quadratic regulator** (LQR),
 an important tool for *continuous control*,
 in which the state and action spaces are no longer _finite_ but rather _continuous_.
 This has widespread applications in robotics.
 
-{ref}`bandits` introduces the **multi-armed bandit** (MAB) model for _stateless_ sequential decision-making tasks.
+[](./bandits.md) introduces the **multi-armed bandit** (MAB) model for _stateless_ sequential decision-making tasks.
 In exploring a number of algorithms,
 we will see how each of them strikes a different balance between _exploring_ new options and _exploiting_ known options.
 This **exploration-exploitation tradeoff** is a core consideration in RL algorithm design.
 
-{ref}`supervised_learning` is a standalone crash course on some tools from supervised learning that we will use in later chapters.
+[](./supervised_learning.md) is a standalone crash course on some tools from supervised learning that we will use in later chapters.
 
-{ref}`fitted_dp` introduces **fitted dynamic programming** (fitted DP) algorithms for solving MDPs.
+[](./fitted_dp.md) introduces **fitted dynamic programming** (fitted DP) algorithms for solving MDPs.
 These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.
 
-{ref}`pg` explores an important class of algorithms based on iteratively improving a policy.
+[](./pg.md) explores an important class of algorithms based on iteratively improving a policy.
 We will also encounter the use of _deep neural networks_ to express more complicated policies and approximate complicated functions.
 
-{ref}`imitation_learning` attempts to learn a good policy from expert demonstrations.
+[](./imitation_learning.md) attempts to learn a good policy from expert demonstrations.
 At its most basic, this is an application of supervised learning to RL tasks.
 
-{ref}`planning` looks at ways to _explicitly_ plan ahead when the environment's dynamics are known.
+[](./planning.md) looks at ways to _explicitly_ plan ahead when the environment's dynamics are known.
 We will study the _Monte Carlo Tree Search_ heuristic,
 which has been used to great success in the famous AlphaGo algorithm and its successors.
 
-{ref}`exploration` continues to investigate the exploration-exploitation tradeoff.
+[](./exploration.md) continues to investigate the exploration-exploitation tradeoff.
 We will extend ideas from multi-armed bandits to the MDP setting.
 
-{ref}`contextual_bandits` extends the multi-armed bandit setting with some observed state.
-
-{ref}`background` contains an overview of selected background mathematical content and programming content.
+[](./background.md) contains an overview of selected background mathematical content and programming content.
 
 <!-- 
 | Chapter | States | Actions | Rewards (or costs) |
 |:-------:|:------:|:-------:|:-------:|
-| {ref}`bandits` | N/A | Finite | Stochastic |
-| {ref}`mdps` | Finite | Finite | Deterministic |
-| {ref}`fitted_dp` | Large or continuous | Finite | Deterministic |
-| {ref}`lqr` | Continuous | Continuous | Deterministic |
+| [](#bandits) | N/A | Finite | Stochastic |
+| [](#mdps) | Finite | Finite | Deterministic |
+| [](#fitted_dp) | Large or continuous | Finite | Deterministic |
+| [](#lqr) | Continuous | Continuous | Deterministic |
 -->
 
 +++
@@ -175,3 +188,30 @@ It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for n
 JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem,
 sustained in large part by the Google DeepMind research group and a large body of open-source contributors.
 We use the standard [Gymnasium](https://gymnasium.farama.org/) library for interfacing with RL environments.
+
+The following names are exported from the `utils` module:
+
+```python
+import matplotlib.pyplot as plt
+
+# convenient class builder
+from typing import NamedTuple
+
+# function typings
+from collections.abc import Callable
+
+# array typings
+from jaxtyping import Float, Array
+
+# convenient function composition
+from functools import partial
+
+# numerical computing and linear algebra
+import jax
+import jax.numpy as jnp
+
+# print functions as latex
+import latexify
+
+plt.style.use("fivethirtyeight")
+```

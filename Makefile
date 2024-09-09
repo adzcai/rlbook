@@ -2,11 +2,10 @@ ENV_NAME = rlbook
 
 RUN = micromamba run -n $(ENV_NAME)
 
-_NOTEBOOKS = $(addprefix book/, bandits contextual_bandits control exploration fitted_dp imitation_learning mdps pg planning supervised_learning)
+_NOTEBOOKS = $(addprefix book/, bandits control exploration fitted_dp imitation_learning mdps pg planning supervised_learning)
 
 _META = \
 	background \
-	bibliography \
 	index
 
 NOTEBOOKS = $(addsuffix .md, $(_NOTEBOOKS))
@@ -22,7 +21,7 @@ SOURCE = $(NOTEBOOKS) $(META) $(SOLUTIONS)
 CONFIG = book/_config.yml book/_toc.yml
 
 book/_build/html: $(SOURCE) $(CONFIG)
-	$(RUN) jb build book
+	$(RUN) jb build -W -n --keep-going book
 
 open: book/_build/html
 	open book/_build/html/index.html

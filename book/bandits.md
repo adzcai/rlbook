@@ -11,49 +11,18 @@ kernelspec:
   name: python3
 ---
 
-(bandits)=
 # Multi-Armed Bandits
 
-```{code-cell} ipython3
-:tags: [hide-input]
+## Introduction
 
-from jaxtyping import Float, Array
-import numpy as np
+The **multi-armed bandits** (MAB) setting is a simple setting for studying the basic challenges of sequential decision-making.
+In this setting, an agent repeatedly chooses from a fixed set of actions, called **arms**, each of which has an associated reward distribution. The agent’s goal is to maximize the total reward it receives over some time period.
 
-# from bokeh.plotting import figure, show, output_notebook
-import latexify
-from typing import Callable, Union
-import matplotlib.pyplot as plt
-
-import solutions.bandits as solutions
-
-np.random.seed(184)
-
-# output_notebook()  # set up bokeh
-
-plt.style.use("fivethirtyeight")
-
-
-def random_argmax(ary: Array) -> int:
-    """Take an argmax and randomize between ties."""
-    max_idx = np.flatnonzero(ary == ary.max())
-    return np.random.choice(max_idx).item()
-
-
-# used as decorator
-latex = latexify.algorithmic(
-    prefixes={"mab"},
-    identifiers={"arm": "a_t", "reward": "r", "means": "mu"},
-    use_math_symbols=True,
-    escape_underscores=False,
-)
-```
-
-The **multi-armed bandits** (MAB) setting is a simple setting for studying the basic challenges of RL. In this setting, an agent repeatedly chooses from a fixed set of actions, called **arms**, each of which has an associated reward distribution. The agent’s goal is to maximize the total reward it receives over some time period.
-
+<!-- 
 | States | Actions | Rewards                             |
 | :----: | :-----: | :---------------------------------: |
 | None   | Finite  | $\mathcal{A} \to \triangle([0, 1])$ |
+-->
 
 In particular, we’ll spend a lot of time discussing the **Exploration-Exploitation Tradeoff**: should the agent choose new actions to learn more about the environment, or should it choose actions that it already knows to be good?
 
@@ -71,9 +40,34 @@ Suppose you’re a pharmaceutical company, and you’re testing a new drug. You 
 
 In this chapter, we will introduce the multi-armed bandits setting, and discuss some of the challenges that arise when trying to solve problems in this setting. We will also introduce some of the key concepts that we will use throughout the book, such as regret and exploration-exploitation tradeoffs.
 
-+++
 
-## Introduction
+```{code-cell} ipython3
+from jaxtyping import Float, Array
+import numpy as np
+import latexify
+from typing import Callable, Union
+import matplotlib.pyplot as plt
+
+import solutions.bandits as solutions
+
+np.random.seed(184)
+
+def random_argmax(ary: Array) -> int:
+    """Take an argmax and randomize between ties."""
+    max_idx = np.flatnonzero(ary == ary.max())
+    return np.random.choice(max_idx).item()
+
+
+# used as decorator
+latex = latexify.algorithmic(
+    prefixes={"mab"},
+    identifiers={"arm": "a_t", "reward": "r", "means": "mu"},
+    use_math_symbols=True,
+    escape_underscores=False,
+)
+```
+
++++
 
 ::::{prf:remark} Namesake
 :label: multi-armed
@@ -188,7 +182,7 @@ algorithms in two different senses:
     $\E[\text{Regret}_T] \le M_T$.
 
 2.  Find a *high-probability* upper bound on the regret, i.e. show
-    $\P(\text{Regret}_T \le M_{T, \delta}) \ge 1-\delta$.
+    $\pr(\text{Regret}_T \le M_{T, \delta}) \ge 1-\delta$.
 
 Note that these two different approaches say very different things about the regret. The first approach says that the *average* regret is at most $M_T$. However, the agent might still achieve higher regret on many runs. The second approach says that, *with high probability*, the agent will achieve regret at most $M_{T, \delta}$. However, it doesn’t say anything about the regret in the remaining $\delta$ fraction of runs, which might be arbitrarily high.
 
@@ -289,7 +283,7 @@ expected regret is simply:
 
 $$
 \begin{aligned}
-    \E[\text{Regret}_T] &= \P(r^0 < r^1) \cdot T(\mu^0 - \mu^1) + c \\
+    \E[\text{Regret}_T] &= \pr(r^0 < r^1) \cdot T(\mu^0 - \mu^1) + c \\
     &= (1 - \mu^0) \mu^1 \cdot T(\mu^0 - \mu^1) + c
 \end{aligned}
 $$
@@ -368,7 +362,7 @@ Let $X_0, \dots, X_{n-1}$ be i.i.d. random variables with
 $X_i \in [0, 1]$ almost surely for each $i \in [n]$. Then for any
 $\delta > 0$,
 
-$$\P\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| > \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.$$
+$$\pr\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| > \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.$$
 :::
 
 The proof of this inequality is beyond the scope of this book. See {cite}`vershynin_high-dimensional_2018` Chapter 2.2.
@@ -376,9 +370,9 @@ The proof of this inequality is beyond the scope of this book. See {cite}`vershy
 We can apply this directly to the rewards for a given arm $k$, since the rewards from that arm are i.i.d.:
 
 :::{math}
-:label: "hoeffding-etc"
+:label: hoeffding-etc
 
-\P\left(|\Delta^k | > \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta.
+\pr\left(|\Delta^k | > \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) \le \delta.
 :::
 
 But note that we can’t apply this to arm $\hat k$ directly since
@@ -394,12 +388,12 @@ The **union bound** provides a simple way to do this:
 
 Consider a set of events $A_0, \dots, A_{n-1}$. Then
 
-$$\P(\exists i \in [n]. A_i) \le \sum_{i=0}^{n-1} \P(A_i).$$
+$$\pr(\exists i \in [n]. A_i) \le \sum_{i=0}^{n-1} \pr(A_i).$$
 
 In
-particular, if $\P(A_i) \ge 1 - \delta$ for each $i \in [n]$, we have
+particular, if $\pr(A_i) \ge 1 - \delta$ for each $i \in [n]$, we have
 
-$$\P(\forall i \in [n]. A_i) \ge 1 - n \delta.$$
+$$\pr(\forall i \in [n]. A_i) \ge 1 - n \delta.$$
 :::
 
 **Exercise:** Prove the second statement above.
@@ -408,7 +402,7 @@ Applying the union bound across the arms for the l.h.s. event of {eq}`hoeffding-
 
 $$
 \begin{aligned}
-    \P\left( \forall k \in [K], |\Delta^k | \le \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) &\ge 1-K\delta
+    \pr\left( \forall k \in [K], |\Delta^k | \le \sqrt{\frac{\ln(2/\delta)}{2N_{\text{explore}}}} \right) &\ge 1-K\delta
 \end{aligned}
 $$
 
@@ -514,7 +508,7 @@ upper confidence bound $M^k_t$ such that $\hat \mu^k_t \le M^k_t$ with
 high probability, and then choose $a_t := \arg \max_{k \in [K]} M^k_t$.
 But how should we compute $M^k_t$?
 
-In [](etc-regret-analysis), we were able to compute this bound
+In [](#etc-regret-analysis), we were able to compute this bound
 using Hoeffding’s inequality, which assumes that the number of samples
 is *fixed*. This was the case in ETC (where we pull each arm
 $N_{\text{explore}}$ times), but in UCB, the number of times we pull
@@ -554,7 +548,7 @@ $N^k_t$:
 
 $$
 \begin{aligned}
-    \P\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) &\ge 1-t\delta.
+    \pr\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) &\ge 1-t\delta.
 \end{aligned}
 $$
 
@@ -562,7 +556,7 @@ In particular, since $N^k_t \le t$, and $\tilde \mu^k_{N^k_t} = \hat \mu^k_t$ by
 
 $$
 \begin{aligned}
-    \P\left( |\hat \mu^k_t - \mu^k | \le \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}} \right) &\ge 1-\delta' \text{ where } \delta' := t \delta.
+    \pr\left( |\hat \mu^k_t - \mu^k | \le \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}} \right) &\ge 1-\delta' \text{ where } \delta' := t \delta.
 \end{aligned}
 $$
 
@@ -616,7 +610,7 @@ yourself for practice).
 
 $$
 \begin{aligned}
-    \P\left(\forall k \le K, t < T. |\hat \mu^k_t - \mu^k | \le B^k_t \right) &\ge 1-\delta'' \\
+    \pr\left(\forall k \le K, t < T. |\hat \mu^k_t - \mu^k | \le B^k_t \right) &\ge 1-\delta'' \\
     \text{where} \quad B^k_t &:= \sqrt{\frac{\ln(2TK/\delta'')}{2N^k_t}}.
 \end{aligned}
 $$
@@ -748,7 +742,7 @@ In this case, upon viewing some reward, we can exactly calculate the **posterior
 
 $$
 \begin{aligned}
-    \P(\boldsymbol{\mu} \mid a_0, r_0) &\propto \P(r_0 \mid a_0, \boldsymbol{\mu}) \P(a_0 \mid \boldsymbol{\mu}) \P(\boldsymbol{\mu}) \\
+    \pr(\boldsymbol{\mu} \mid a_0, r_0) &\propto \pr(r_0 \mid a_0, \boldsymbol{\mu}) \pr(a_0 \mid \boldsymbol{\mu}) \pr(\boldsymbol{\mu}) \\
     &\propto (\mu^{a_0})^{r_0} (1 - \mu^{a_0})^{1-r_0}.
 \end{aligned}
 $$
@@ -802,6 +796,161 @@ bound with equality! That is, not only is the error *rate* optimal, but
 the *constant factor* is optimal as well.
 
 +++
+
+## Contextual bandits
+
+In the above MAB environment, the reward distributions of the arms
+remain constant. However, in many real-world settings, we might receive
+additional information that affects these distributions. For example, in
+the online advertising case where each arm corresponds to an ad we could
+show the user, we might receive information about the user's preferences
+that changes how likely they are to click on a given ad. We can model
+such environments using **contextual bandits**.
+
+:::{prf:definition} Contextual bandit
+:label: contextual_bandit
+
+At each timestep $t$, a new *context*
+$x_t$ is drawn from some distribution $\nu_{\text{x}}$. The learner gets
+to observe the context, and choose an action $a_t$ according to some
+context-dependent policy $\pi_t(x_t)$. Then, the learner observes the
+reward from the chosen arm $r_t \sim \nu^{a_t}(x_t)$. The reward
+distribution also depends on the context.
+:::
+
++++
+
+Assuming our context is *discrete*, we can just perform the same
+algorithms, treating each context-arm pair as its own arm. This gives us
+an enlarged MAB of $K |\mathcal{X}|$ arms.
+
+:::{attention}
+Write down the UCB algorithm for this enlarged MAB. That is, write an
+expression for $\pi_t(x_t) = \arg\max_a \dots$.
+:::
+
+Recall that running UCB for $T$ timesteps on an MAB with $K$ arms
+achieves a regret bound of $\tilde{O}(\sqrt{TK})$. So in this problem,
+we would achieve regret $\tilde{O}(\sqrt{TK|\mathcal{X}|})$ in the
+contextual MAB, which has a polynomial dependence on $|\mathcal{X}|$.
+But in a situation where we have large, or even infinitely many
+contexts, e.g. in the case where our context is a continuous value, this
+becomes intractable.
+
+Note that this "enlarged MAB" treats the different contexts as entirely
+unrelated to each other, while in practice, often contexts are *related*
+to each other in some way: for example, we might want to advertise
+similar products to users with similar preferences. How can we
+incorporate this structure into our solution?
+
++++
+
+(lin_ucb)=
+### Linear contextual bandits
+
+We want to model the *mean reward* of arm $k$ as a function of the
+context, i.e. $\mu^k(x)$. One simple model is the *linear* one:
+$\mu^k(x) = x^\top \theta^k$, where $x \in \mathcal{X} = \mathbb{R}^d$ and
+$\theta^k \in \mathbb{R}^d$ describes a *feature direction* for arm $k$. Recall
+that **supervised learning** gives us a way to estimate a conditional
+expectation from samples: We learn a *least squares* estimator from the
+timesteps where arm $k$ was selected:
+$$\hat \theta_t^k = \arg\min_{\theta \in \mathbb{R}^d} \sum_{\{ i \in [t] : a_i = k \}} (r_i - x_i^\top \theta)^2.$$
+This has the closed-form solution known as the *ordinary least squares*
+(OLS) estimator:
+
+:::{math}
+:label: ols_bandit
+
+\begin{aligned}
+    \hat \theta_t^k          & = (A_t^k)^{-1} \sum_{\{ i \in [t] : a_i = k \}} x_i r_i \\
+    \text{where} \quad A_t^k & = \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top.
+\end{aligned}
+:::
+
+We can now apply the UCB algorithm in this environment in order to
+balance *exploration* of new arms and *exploitation* of arms that we
+believe to have high reward. But how should we construct the upper
+confidence bound? Previously, we treated the pulls of an arm as i.i.d.
+samples and used Hoeffding's inequality to bound the distance of the
+sample mean, our estimator, from the true mean. However, now our
+estimator is not a sample mean, but rather the OLS estimator above {eq}`ols_bandit`. Instead, we'll use **Chebyshev's
+inequality** to construct an upper confidence bound.
+
+:::{prf:theorem} Chebyshev's inequality
+:label: chebyshev
+
+For a random variable $Y$ such that
+$\E Y = 0$ and $\E Y^2 = \sigma^2$,
+$$|Y| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}$$
+:::
+
+Since the OLS estimator is known to be unbiased (try proving this
+yourself), we can apply Chebyshev's inequality to
+$x_t^\top (\hat \theta_t^k - \theta^k)$:
+
+$$\begin{aligned}
+    x_t^\top \theta^k \le x_t^\top \hat \theta_t^k + \beta \sqrt{x_t^\top (A_t^k)^{-1} x_t} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
+\end{aligned}$$
+
+:::{attention}
+We haven't explained why $x_t^\top (A_t^k)^{-1} x_t$ is the correct
+expression for the variance of $x_t^\top \hat \theta_t^k$. This result
+follows from some algebra on the definition of the OLS estimator {eq}`ols_bandit`.
+:::
+
+The first term is exactly our predicted reward $\hat \mu^k_t(x_t)$. To
+interpret the second term, note that
+$$x_t^\top (A_t^k)^{-1} x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,$$
+where
+$$\Sigma_t^k = \frac{1}{N_t^k} \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top$$
+is the empirical covariance matrix of the contexts (assuming that the
+context has mean zero). That is, the learner is encouraged to choose
+arms when $x_t$ is *not aligned* with the data seen so far, or if arm
+$k$ has not been explored much and so $N_t^k$ is small.
+
+We can now substitute these quantities into UCB to get the **LinUCB**
+algorithm:
+
+```{code-cell}
+class LinUCBPseudocode(Agent):
+    def __init__(
+        self, K: int, T: int, D: int, lam: float, get_c: Callable[[int], float]
+    ):
+        super().__init__(K, T)
+        self.lam = lam
+        self.get_c = get_c
+        self.contexts = [None for _ in range(K)]
+        self.A = np.repeat(lam * np.eye(D)[...], K)
+        self.targets = np.zeros(K, D)
+        self.w = np.zeros(K, D)
+
+    def choose_arm(self, context: Float[Array, " D"]):
+        c = self.get_c(self.count)
+        scores = self.w @ context + c * np.sqrt(
+            context.T @ np.linalg.solve(self.A, context)
+        )
+        return random_argmax(scores)
+
+    def update_history(self, context: Float[Array, " D"], arm: int, reward: int):
+        self.A[arm] += np.outer(context, context)
+        self.targets[arm] += context * reward
+        self.w[arm] = np.linalg.solve(self.A[arm], self.targets[arm])
+```
+
+:::{attention}
+Note that the matrix $A_t^k$ above might not be invertible. When does this occur? One way to address this is to include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible. This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem. Implement this solution. TODO SOLUTION CURRENTLY SHOWN
+:::
+
++++
+
+$c_t$ is similar to the $\log (2t/\delta')$ term of UCB: It controls the
+width of the confidence interval. Here, we treat it as a tunable
+parameter, though in a theoretical analysis, it would depend on $A_t^k$
+and the probability $\delta$ with which the bound holds.
+
+Using similar tools for UCB, we can also prove an $\tilde{O}(\sqrt{T})$
+regret bound. The full details of the analysis can be found in Section 3 of {cite}`agarwal_reinforcement_2022`.
 
 ## Summary
 

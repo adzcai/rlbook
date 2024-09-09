@@ -9,10 +9,14 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
+math:
+  '\st': 'x'
+  '\act': 'u'
 ---
 
-(lqr_chapter)=
 # Linear Quadratic Regulators
+
+## Introduction
 
 Up to this point, we have considered decision problems with finitely
 many states and actions. However, in many applications, states and
@@ -53,7 +57,7 @@ laws of physics, are highly complex. This task is equivalent to the
 classic control problem known as *CartPole*:
 
 :::{image} shared/cart_pole.png
-:width: "40%"
+:width: 200px
 :::
 
 The state $\st \in \mathbb{R}^4$ can be described by:
@@ -136,9 +140,8 @@ $$
 ### A first attempt: Discretization
 
 Can we solve this problem using tools from the finite MDP setting? If
-$\mathcal{S}$ and $\mathcal{A}$ were finite, then we'd be able to work backwards using the
-DP algorithm for computing the optimal policy in an MDP
-{prf:ref}`pi_star_dp`. This inspires us to try *discretizing* the
+$\mathcal{S}$ and $\mathcal{A}$ were finite, then we'd be able to work backwards using the DP algorithm for computing the optimal policy in an MDP ([](#pi_star_dp)).
+This inspires us to try *discretizing* the
 problem.
 
 Suppose $\mathcal{S}$ and $\mathcal{A}$ are bounded, that is,
@@ -280,7 +283,7 @@ $$
 In this section, we'll compute the optimal value function $V^\star_h$,
 Q-function $Q^\star_h$, and policy $\pi^\star_h$ in the LQR setting
 {prf:ref}`lqr_definition` using
-**dynamic programming** in a very similar way to the DP algorithms [in the MDP setting](eval_dp):
+**dynamic programming** in a very similar way to the DP algorithms [in the MDP setting](#eval_dp):
 
 1.  We'll compute $V_H^\star$ (at the end of the horizon) as our base
     case.
@@ -953,10 +956,11 @@ definite.
 
 Note that Hessian matrices are generally symmetric, so we can apply this
 process to $Q$ and $R$ to obtain the positive definite approximations
-$\widetilde{Q}$ and $\widetilde{R}$. Now that we have a upward-curved
+$\widetilde{Q}$ and $\widetilde{R}$.
+Now that we have a upward-curved
 quadratic approximation to the cost function, and a linear approximation
 to the state transitions, we can simply apply the time-homogenous LQR
-methods from [](optimal_lqr).
+methods from [](#optimal_lqr).
 
 But what happens when we enter states far away from $\st^\star$ or want
 to use actions far from $\act^\star$? A Taylor approximation is only
