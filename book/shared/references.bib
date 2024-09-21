@@ -1,55 +1,9 @@
-@book{vershynin_high-dimensional_2018,
-  title = {High-{{Dimensional Probability}}: {{An Introduction}} with {{Applications}} in {{Data Science}}},
-  shorttitle = {High-{{Dimensional Probability}}},
-  author = {Vershynin, Roman},
+@article{achiam_spinning_2018,
+  title = {Spinning {{Up}} in {{Deep Reinforcement Learning}}},
+  author = {Achiam, Joshua},
   year = {2018},
-  month = sep,
-  publisher = {Cambridge University Press},
-  abstract = {High-dimensional probability offers insight into the behavior of random vectors, random matrices, random subspaces, and objects used to quantify uncertainty in high dimensions. Drawing on ideas from probability, analysis, and geometry, it lends itself to applications in mathematics, statistics, theoretical computer science, signal processing, optimization, and more. It is the first to integrate theory, key tools, and modern applications of high-dimensional probability. Concentration inequalities form the core, and it covers both classical results such as Hoeffding's and Chernoff's inequalities and modern developments such as the matrix Bernstein's inequality. It then introduces the powerful methods based on stochastic processes, including such tools as Slepian's, Sudakov's, and Dudley's inequalities, as well as generic chaining and bounds based on VC dimension. A broad range of illustrations is embedded throughout, including classical and modern results for covariance estimation, clustering, networks, semidefinite programming, coding, dimension reduction, matrix completion, machine learning, compressed sensing, and sparse regression.},
-  googlebooks = {NDdqDwAAQBAJ},
-  isbn = {978-1-108-41519-4},
-  langid = {english},
-  keywords = {Business & Economics / Econometrics,Computers / Optical Data Processing,Language Arts & Disciplines / Library & Information Science / General,Mathematics / Probability & Statistics / General,Technology & Engineering / Signals & Signal Processing},
-  file = {/Users/adzcai/Vault/papers/assets/2018/High-Dimensional Probability (2018) - Vershynin.pdf}
-}
-
-@book{kochenderfer_algorithms_2022,
-  title = {Algorithms for {{Decision Making}}},
-  author = {Kochenderfer, Mykel J and Wheeler, Tim A and Wray, Kyle H},
-  year = {2022},
-  month = aug,
-  urldate = {2022-10-23},
-  abstract = {A broad introduction to algorithms for decision making under uncertainty, introducing the underlying mathematical problem formulations and the algorithms for...},
-  isbn = {978-0-262-04701-2},
-  langid = {american},
-  file = {/Users/adzcai/Vault/papers/assets/2022/Algorithms for Decision Making (2022) - Kochenderfer, Wheeler, Wray.pdf}
-}
-
-@book{sutton_reinforcement_2018,
-  title = {Reinforcement Learning: An Introduction},
-  shorttitle = {Reinforcement Learning},
-  author = {Sutton, Richard S. and Barto, Andrew G.},
-  year = {2018},
-  series = {Adaptive Computation and Machine Learning Series},
-  edition = {Second edition},
-  publisher = {The MIT Press},
-  address = {Cambridge, Massachusetts},
-  abstract = {"Reinforcement learning, one of the most active research areas in artificial intelligence, is a computational approach to learning whereby an agent tries to maximize the total amount of reward it receives while interacting with a complex, uncertain environment. In Reinforcement Learning, Richard Sutton and Andrew Barto provide a clear and simple account of the field's key ideas and algorithms."--},
-  isbn = {978-0-262-03924-6},
-  langid = {english},
-  lccn = {Q325.6 .R45 2018},
-  keywords = {Reinforcement learning},
-  file = {/Users/adzcai/Vault/papers/assets/2018/Reinforcement learning (2018) - Sutton, Barto.pdf}
-}
-
-@book{agarwal_reinforcement_2022,
-  title = {Reinforcement {{Learning}}: {{Theory}} and {{Algorithms}}},
-  shorttitle = {{{AJKS}}},
-  author = {Agarwal, Alekh and Jiang, Nan and Kakade, Sham M and Sun, Wen},
-  year = {2022},
-  month = jan,
-  langid = {english},
-  file = {/Users/adzcai/Vault/papers/assets/2022/Reinforcement Learning (2022) - Agarwal, Jiang, Kakade, Sun.pdf}
+  urldate = {2024-07-01},
+  file = {/Users/adzcai/Zotero/storage/UPUMW6XV/index.html}
 }
 
 @misc{adaptive_agent_team_human-timescale_2023,
@@ -69,12 +23,29 @@
   file = {/Users/adzcai/Vault/papers/assets/2023/Human-Timescale Adaptation in an Open-Ended Task Space (2023) - Adaptive Agent Team et al.pdf}
 }
 
-@book{boyd_convex_2004,
-  title = {Convex {{Optimization}}},
-  author = {Boyd, Stephen and Vandenberghe, Lieven},
-  year = {2004},
-  publisher = {Cambridge University Press},
-  file = {/Users/adzcai/Vault/papers/assets/2004/Convex Optimization (2004) - Boyd, Vandenberghe.pdf;/Users/adzcai/Vault/papers/assets/2004/Slides - Convex Optimization (2004) - Boyd, Vandenberghe.pdf}
+@book{agarwal_reinforcement_2022,
+  title = {Reinforcement {{Learning}}: {{Theory}} and {{Algorithms}}},
+  shorttitle = {{{AJKS}}},
+  author = {Agarwal, Alekh and Jiang, Nan and Kakade, Sham M and Sun, Wen},
+  year = {2022},
+  month = jan,
+  langid = {english},
+  file = {/Users/adzcai/Vault/papers/assets/2022/Reinforcement Learning (2022) - Agarwal, Jiang, Kakade, Sun.pdf}
+}
+
+@inproceedings{azar_minimax_2017,
+  title = {Minimax {{Regret Bounds}} for {{Reinforcement Learning}}},
+  booktitle = {Proceedings of the 34th {{International Conference}} on {{Machine Learning}}},
+  author = {Azar, Mohammad Gheshlaghi and Osband, Ian and Munos, R{\'e}mi},
+  year = {2017},
+  month = jul,
+  pages = {263--272},
+  publisher = {PMLR},
+  issn = {2640-3498},
+  urldate = {2024-06-21},
+  abstract = {We consider the problem of provably optimal exploration in reinforcement learning for finite horizon MDPs. We show that an optimistic modification to value iteration achieves a regret bound of \${\textbackslash}tilde \{O\}( {\textbackslash}sqrt\{HSAT\} + H{\textasciicircum}2S{\textasciicircum}2A+H{\textbackslash}sqrt\{T\})\$ where \$H\$ is the time horizon, \$S\$ the number of states, \$A\$ the number of actions and \$T\$ the number of time-steps. This result improves over the best previous known bound \${\textbackslash}tilde \{O\}(HS {\textbackslash}sqrt\{AT\})\$ achieved by the UCRL2 algorithm. The key significance of our new results is that when \$T{\textbackslash}geq H{\textasciicircum}3S{\textasciicircum}3A\$ and \$SA{\textbackslash}geq H\$, it leads to a regret of \${\textbackslash}tilde\{O\}({\textbackslash}sqrt\{HSAT\})\$ that matches the established lower bound of \${\textbackslash}Omega({\textbackslash}sqrt\{HSAT\})\$ up to a logarithmic factor. Our analysis contain two key insights. We use careful application of concentration inequalities to the optimal value function as a whole, rather than to the transitions probabilities (to improve scaling in \$S\$), and we define Bernstein-based ``exploration bonuses'' that use the empirical variance of the estimated values at the next states (to improve scaling in \$H\$).},
+  langid = {english},
+  file = {/Users/adzcai/Vault/papers/assets/2017/Minimax Regret Bounds for Reinforcement Learning (2017) - Azar, Osband, Munos.pdf}
 }
 
 @misc{babuschkin_deepmind_2020,
@@ -83,16 +54,29 @@
   year = {2020}
 }
 
-@book{sussman_functional_2013,
-  title = {Functional Differential Geometry},
-  author = {Sussman, Gerald Jay and Wisdom, Jack and Farr, Will},
-  year = {2013},
-  publisher = {The MIT Press},
-  address = {Cambridge, MA},
-  isbn = {978-0-262-01934-7},
-  lccn = {QC20.7.D52 S87 2013},
-  keywords = {Functional differential equations,Geometry Differential,Mathematical physics},
-  file = {/Users/adzcai/Vault/papers/assets/2013/Functional differential geometry (2013) - Sussman, Wisdom, Farr.pdf}
+@article{barto_neuronlike_1983,
+  title = {Neuronlike Adaptive Elements That Can Solve Difficult Learning Control Problems},
+  author = {Barto, Andrew G. and Sutton, Richard S. and Anderson, Charles W.},
+  year = {1983},
+  month = sep,
+  journal = {IEEE Transactions on Systems, Man, and Cybernetics},
+  volume = {SMC-13},
+  number = {5},
+  pages = {834--846},
+  issn = {2168-2909},
+  doi = {10.1109/TSMC.1983.6313077},
+  urldate = {2024-07-01},
+  abstract = {It is shown how a system consisting of two neuronlike adaptive elements can solve a difficult learning control problem. The task is to balance a pole that is hinged to a movable cart by applying forces to the cart's base. It is argued that the learning problems faced by adaptive elements that are components of adaptive networks are at least as difficult as this version of the pole-balancing problem. The learning system consists of a single associative search element (ASE) and a single adaptive critic element (ACE). In the course of learning to balance the pole, the ASE constructs associations between input and output by searching under the influence of reinforcement feedback, and the ACE constructs a more informative evaluation function than reinforcement feedback alone can provide. The differences between this approach and other attempts to solve problems using neurolike elements are discussed, as is the relation of this work to classical and instrumental conditioning in animal learning studies and its possible implications for research in the neurosciences.},
+  keywords = {Adaptive systems,Biological neural networks,Neurons,Pattern recognition,Problem-solving,Supervised learning,Training},
+  file = {/Users/adzcai/Zotero/storage/GHD9WZXL/6313077.html}
+}
+
+@book{boyd_convex_2004,
+  title = {Convex {{Optimization}}},
+  author = {Boyd, Stephen and Vandenberghe, Lieven},
+  year = {2004},
+  publisher = {Cambridge University Press},
+  file = {/Users/adzcai/Vault/papers/assets/2004/Convex Optimization (2004) - Boyd, Vandenberghe.pdf;/Users/adzcai/Vault/papers/assets/2004/Slides - Convex Optimization (2004) - Boyd, Vandenberghe.pdf}
 }
 
 @article{degrave_magnetic_2022,
@@ -116,24 +100,6 @@
   file = {/Users/adzcai/Vault/papers/assets/2022/Magnetic control of tokamak plasmas through deep reinforcement learning (2022) - Degrave et al.pdf}
 }
 
-@misc{hausknecht_deep_2017,
-  title = {Deep {{Recurrent Q-Learning}} for {{Partially Observable MDPs}}},
-  author = {Hausknecht, Matthew and Stone, Peter},
-  year = {2017},
-  month = jan,
-  number = {arXiv:1507.06527},
-  eprint = {1507.06527},
-  primaryclass = {cs},
-  publisher = {arXiv},
-  doi = {10.48550/arXiv.1507.06527},
-  urldate = {2023-06-04},
-  abstract = {Deep Reinforcement Learning has yielded proficient controllers for complex tasks. However, these controllers have limited memory and rely on being able to perceive the complete game screen at each decision point. To address these shortcomings, this article investigates the effects of adding recurrency to a Deep Q-Network (DQN) by replacing the first post-convolutional fully-connected layer with a recurrent LSTM. The resulting {\textbackslash}textit\{Deep Recurrent Q-Network\} (DRQN), although capable of seeing only a single frame at each timestep, successfully integrates information through time and replicates DQN's performance on standard Atari games and partially observed equivalents featuring flickering game screens. Additionally, when trained with partial observations and evaluated with incrementally more complete observations, DRQN's performance scales as a function of observability. Conversely, when trained with full observations and evaluated with partial observations, DRQN's performance degrades less than DQN's. Thus, given the same length of history, recurrency is a viable alternative to stacking a history of frames in the DQN's input layer and while recurrency confers no systematic advantage when learning to play the game, the recurrent net can better adapt at evaluation time if the quality of observations changes.},
-  archiveprefix = {arXiv},
-  keywords = {Computer Science - Machine Learning},
-  annotation = {1274 citations (Semantic Scholar/arXiv) [2023-06-04]},
-  file = {/Users/adzcai/Vault/papers/assets/2017/Deep Recurrent Q-Learning for Partially Observable MDPs (2017) - Hausknecht, Stone.pdf}
-}
-
 @inproceedings{freeman_brax_2021,
   title = {Brax -- {{A Differentiable Physics Engine}} for {{Large Scale Rigid Body Simulation}}},
   booktitle = {{{NeurIPS Datasets}} and {{Benchmarks}} 2021},
@@ -152,21 +118,50 @@
   file = {/Users/adzcai/Vault/papers/assets/2021/Brax – A Differentiable Physics Engine for Large Scale Rigid Body Simulation (2021) - Freeman et al.pdf}
 }
 
-@inproceedings{schulman_high-dimensional_2018,
-  title = {High-{{Dimensional Continuous Control Using Generalized Advantage Estimation}}},
-  booktitle = {{{ICLR}} 2016},
-  author = {Schulman, John and Moritz, Philipp and Levine, Sergey and Jordan, Michael and Abbeel, Pieter},
-  year = {2018},
-  month = oct,
-  eprint = {1506.02438},
+@misc{hausknecht_deep_2017,
+  title = {Deep {{Recurrent Q-Learning}} for {{Partially Observable MDPs}}},
+  author = {Hausknecht, Matthew and Stone, Peter},
+  year = {2017},
+  month = jan,
+  number = {arXiv:1507.06527},
+  eprint = {1507.06527},
   primaryclass = {cs},
-  urldate = {2023-06-21},
-  abstract = {Policy gradient methods are an appealing approach in reinforcement learning because they directly optimize the cumulative reward and can straightforwardly be used with nonlinear function approximators such as neural networks. The two main challenges are the large number of samples typically required, and the difficulty of obtaining stable and steady improvement despite the nonstationarity of the incoming data. We address the first challenge by using value functions to substantially reduce the variance of policy gradient estimates at the cost of some bias, with an exponentially-weighted estimator of the advantage function that is analogous to TD(lambda). We address the second challenge by using trust region optimization procedure for both the policy and the value function, which are represented by neural networks. Our approach yields strong empirical results on highly challenging 3D locomotion tasks, learning running gaits for bipedal and quadrupedal simulated robots, and learning a policy for getting the biped to stand up from starting out lying on the ground. In contrast to a body of prior work that uses hand-crafted policy representations, our neural network policies map directly from raw kinematics to joint torques. Our algorithm is fully model-free, and the amount of simulated experience required for the learning tasks on 3D bipeds corresponds to 1-2 weeks of real time.},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.1507.06527},
+  urldate = {2023-06-04},
+  abstract = {Deep Reinforcement Learning has yielded proficient controllers for complex tasks. However, these controllers have limited memory and rely on being able to perceive the complete game screen at each decision point. To address these shortcomings, this article investigates the effects of adding recurrency to a Deep Q-Network (DQN) by replacing the first post-convolutional fully-connected layer with a recurrent LSTM. The resulting {\textbackslash}textit\{Deep Recurrent Q-Network\} (DRQN), although capable of seeing only a single frame at each timestep, successfully integrates information through time and replicates DQN's performance on standard Atari games and partially observed equivalents featuring flickering game screens. Additionally, when trained with partial observations and evaluated with incrementally more complete observations, DRQN's performance scales as a function of observability. Conversely, when trained with full observations and evaluated with partial observations, DRQN's performance degrades less than DQN's. Thus, given the same length of history, recurrency is a viable alternative to stacking a history of frames in the DQN's input layer and while recurrency confers no systematic advantage when learning to play the game, the recurrent net can better adapt at evaluation time if the quality of observations changes.},
   archiveprefix = {arXiv},
-  pubstate = {preprint},
-  keywords = {Computer Science - Machine Learning,Computer Science - Robotics,Electrical Engineering and Systems Science - Systems and Control},
-  annotation = {2253 citations (Semantic Scholar/arXiv) [2023-07-22]},
-  file = {/Users/adzcai/Vault/papers/assets/2018/High-Dimensional Continuous Control Using Generalized Advantage Estimation (2018) - Schulman et al2.pdf}
+  keywords = {Computer Science - Machine Learning},
+  annotation = {1274 citations (Semantic Scholar/arXiv) [2023-06-04]},
+  file = {/Users/adzcai/Vault/papers/assets/2017/Deep Recurrent Q-Learning for Partially Observable MDPs (2017) - Hausknecht, Stone.pdf}
+}
+
+@book{heath_scientific_2018,
+  title = {Scientific Computing: An Introductory Survey},
+  shorttitle = {Scientific Computing},
+  author = {Heath, Michael T.},
+  year = {2018},
+  series = {Classics in Applied Mathematics},
+  edition = {Revised second edition, SIAM edition},
+  number = {80},
+  publisher = {{Society for Industrial and Applied Mathematics}},
+  address = {Philadelphia},
+  isbn = {978-1-61197-557-4},
+  lccn = {Q183.9 .H4 2018},
+  keywords = {Data processing,Numerical analysis,Science},
+  file = {/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Chapter 1.pdf;/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Chapter 2.pdf;/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Chapter 3.pdf;/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Frontmatter.pdf;/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath.pdf}
+}
+
+@book{kochenderfer_algorithms_2022,
+  title = {Algorithms for {{Decision Making}}},
+  author = {Kochenderfer, Mykel J and Wheeler, Tim A and Wray, Kyle H},
+  year = {2022},
+  month = aug,
+  urldate = {2022-10-23},
+  abstract = {A broad introduction to algorithms for decision making under uncertainty, introducing the underlying mathematical problem formulations and the algorithms for...},
+  isbn = {978-0-262-04701-2},
+  langid = {american},
+  file = {/Users/adzcai/Vault/papers/assets/2022/Algorithms for Decision Making (2022) - Kochenderfer, Wheeler, Wray.pdf}
 }
 
 @article{lai_asymptotically_1985,
@@ -196,29 +191,6 @@
   file = {/Users/adzcai/Vault/papers/assets/2023/Gigastep - One Billion Steps per Second Multi-agent Reinforcement Learning (2023) - Lechner et al.pdf}
 }
 
-@book{nielsen_neural_2015,
-  title = {Neural {{Networks}} and {{Deep Learning}}},
-  author = {Nielsen, Michael A.},
-  year = {2015},
-  publisher = {Determination Press},
-  urldate = {2024-03-10}
-}
-
-@inproceedings{azar_minimax_2017,
-  title = {Minimax {{Regret Bounds}} for {{Reinforcement Learning}}},
-  booktitle = {Proceedings of the 34th {{International Conference}} on {{Machine Learning}}},
-  author = {Azar, Mohammad Gheshlaghi and Osband, Ian and Munos, R{\'e}mi},
-  year = {2017},
-  month = jul,
-  pages = {263--272},
-  publisher = {PMLR},
-  issn = {2640-3498},
-  urldate = {2024-06-21},
-  abstract = {We consider the problem of provably optimal exploration in reinforcement learning for finite horizon MDPs. We show that an optimistic modification to value iteration achieves a regret bound of \${\textbackslash}tilde \{O\}( {\textbackslash}sqrt\{HSAT\} + H{\textasciicircum}2S{\textasciicircum}2A+H{\textbackslash}sqrt\{T\})\$ where \$H\$ is the time horizon, \$S\$ the number of states, \$A\$ the number of actions and \$T\$ the number of time-steps. This result improves over the best previous known bound \${\textbackslash}tilde \{O\}(HS {\textbackslash}sqrt\{AT\})\$ achieved by the UCRL2 algorithm. The key significance of our new results is that when \$T{\textbackslash}geq H{\textasciicircum}3S{\textasciicircum}3A\$ and \$SA{\textbackslash}geq H\$, it leads to a regret of \${\textbackslash}tilde\{O\}({\textbackslash}sqrt\{HSAT\})\$ that matches the established lower bound of \${\textbackslash}Omega({\textbackslash}sqrt\{HSAT\})\$ up to a logarithmic factor. Our analysis contain two key insights. We use careful application of concentration inequalities to the optimal value function as a whole, rather than to the transitions probabilities (to improve scaling in \$S\$), and we define Bernstein-based ``exploration bonuses'' that use the empirical variance of the estimated values at the next states (to improve scaling in \$H\$).},
-  langid = {english},
-  file = {/Users/adzcai/Vault/papers/assets/2017/Minimax Regret Bounds for Reinforcement Learning (2017) - Azar, Osband, Munos.pdf}
-}
-
 @article{mnih_playing_2013-1,
   title = {Playing {{Atari}} with {{Deep Reinforcement Learning}}},
   author = {Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Graves, Alex and Antonoglou, Ioannis and Wierstra, Daan and Riedmiller, Martin A.},
@@ -229,6 +201,58 @@
   urldate = {2024-06-21},
   archiveprefix = {arXiv},
   file = {/Users/adzcai/Vault/papers/assets/2013/Playing Atari with Deep Reinforcement Learning (2013) - Mnih et al.pdf}
+}
+
+@book{nielsen_neural_2015,
+  title = {Neural {{Networks}} and {{Deep Learning}}},
+  author = {Nielsen, Michael A.},
+  year = {2015},
+  publisher = {Determination Press},
+  urldate = {2024-03-10}
+}
+
+@inproceedings{ross_reduction_2010,
+  title = {A {{Reduction}} of {{Imitation Learning}} and {{Structured Prediction}} to {{No-Regret Online Learning}}},
+  booktitle = {International {{Conference}} on {{Artificial Intelligence}} and {{Statistics}}},
+  author = {Ross, St{\'e}phane and Gordon, Geoffrey J. and Bagnell, J.},
+  year = {2010},
+  month = nov,
+  urldate = {2024-08-08},
+  abstract = {Sequential prediction problems such as imitation learning, where future observations depend on previous predictions (actions), violate the common i.i.d. assumptions made in statistical learning. This leads to poor performance in theory and often in practice. Some recent approaches provide stronger guarantees in this setting, but remain somewhat unsatisfactory as they train either non-stationary or stochastic policies and require a large number of iterations. In this paper, we propose a new iterative algorithm, which trains a stationary deterministic policy, that can be seen as a no regret algorithm in an online learning setting. We show that any such no regret algorithm, combined with additional reduction assumptions, must find a policy with good performance under the distribution of observations it induces in such sequential settings. We demonstrate that this new approach outperforms previous approaches on two challenging imitation learning problems and a benchmark sequence labeling problem.},
+  file = {/Users/adzcai/Vault/papers/assets/2010/A Reduction of Imitation Learning and Structured Prediction to No-Regret Online (2010) - Ross, Gordon, Bagnell.pdf}
+}
+
+@book{russell_artificial_2021,
+  title = {Artificial Intelligence: A Modern Approach},
+  shorttitle = {Artificial Intelligence},
+  author = {Russell, Stuart J. and Norvig, Peter},
+  year = {2021},
+  series = {Pearson Series in Artificial Intelligence},
+  edition = {Fourth edition},
+  publisher = {Pearson},
+  address = {Hoboken},
+  abstract = {"Updated edition of popular textbook on Artificial Intelligence. This edition specific looks at ways of keeping artificial intelligence under control"--},
+  isbn = {978-0-13-461099-3},
+  lccn = {Q335 .R86 2021},
+  keywords = {Artificial intelligence},
+  file = {/Users/adzcai/Vault/papers/assets/2021/Artificial intelligence (2021) - Russell, Norvig.pdf}
+}
+
+@inproceedings{schulman_high-dimensional_2018,
+  title = {High-{{Dimensional Continuous Control Using Generalized Advantage Estimation}}},
+  booktitle = {{{ICLR}} 2016},
+  author = {Schulman, John and Moritz, Philipp and Levine, Sergey and Jordan, Michael and Abbeel, Pieter},
+  year = {2018},
+  month = oct,
+  eprint = {1506.02438},
+  primaryclass = {cs},
+  urldate = {2023-06-21},
+  abstract = {Policy gradient methods are an appealing approach in reinforcement learning because they directly optimize the cumulative reward and can straightforwardly be used with nonlinear function approximators such as neural networks. The two main challenges are the large number of samples typically required, and the difficulty of obtaining stable and steady improvement despite the nonstationarity of the incoming data. We address the first challenge by using value functions to substantially reduce the variance of policy gradient estimates at the cost of some bias, with an exponentially-weighted estimator of the advantage function that is analogous to TD(lambda). We address the second challenge by using trust region optimization procedure for both the policy and the value function, which are represented by neural networks. Our approach yields strong empirical results on highly challenging 3D locomotion tasks, learning running gaits for bipedal and quadrupedal simulated robots, and learning a policy for getting the biped to stand up from starting out lying on the ground. In contrast to a body of prior work that uses hand-crafted policy representations, our neural network policies map directly from raw kinematics to joint torques. Our algorithm is fully model-free, and the amount of simulated experience required for the learning tasks on 3D bipeds corresponds to 1-2 weeks of real time.},
+  archiveprefix = {arXiv},
+  pubstate = {preprint},
+  keywords = {Computer Science - Machine Learning,Computer Science - Robotics,Electrical Engineering and Systems Science - Systems and Control},
+  annotation = {2253 citations (Semantic Scholar/arXiv) [2023-07-22]},
+  file = {/Users/adzcai/Vault/papers/assets/2018/High-Dimensional Continuous Control Using Generalized Advantage Estimation (2018) - Schulman et al2.pdf}
 }
 
 @misc{sun_easy--hard_2024,
@@ -247,6 +271,50 @@
   archiveprefix = {arXiv},
   keywords = {Computer Science - Artificial Intelligence,Computer Science - Computation and Language,Computer Science - Machine Learning},
   file = {/Users/adzcai/Vault/papers/assets/2024/Easy-to-Hard Generalization (2024) - Sun et al.pdf;/Users/adzcai/Zotero/storage/J52D59AK/2403.html}
+}
+
+@book{sussman_functional_2013,
+  title = {Functional Differential Geometry},
+  author = {Sussman, Gerald Jay and Wisdom, Jack and Farr, Will},
+  year = {2013},
+  publisher = {The MIT Press},
+  address = {Cambridge, MA},
+  isbn = {978-0-262-01934-7},
+  lccn = {QC20.7.D52 S87 2013},
+  keywords = {Functional differential equations,Geometry Differential,Mathematical physics},
+  file = {/Users/adzcai/Vault/papers/assets/2013/Functional differential geometry (2013) - Sussman, Wisdom, Farr.pdf}
+}
+
+@book{sutton_reinforcement_2018,
+  title = {Reinforcement Learning: An Introduction},
+  shorttitle = {Reinforcement Learning},
+  author = {Sutton, Richard S. and Barto, Andrew G.},
+  year = {2018},
+  series = {Adaptive Computation and Machine Learning Series},
+  edition = {Second edition},
+  publisher = {The MIT Press},
+  address = {Cambridge, Massachusetts},
+  abstract = {"Reinforcement learning, one of the most active research areas in artificial intelligence, is a computational approach to learning whereby an agent tries to maximize the total amount of reward it receives while interacting with a complex, uncertain environment. In Reinforcement Learning, Richard Sutton and Andrew Barto provide a clear and simple account of the field's key ideas and algorithms."--},
+  isbn = {978-0-262-03924-6},
+  langid = {english},
+  lccn = {Q325.6 .R45 2018},
+  keywords = {Reinforcement learning},
+  file = {/Users/adzcai/Vault/papers/assets/2018/Reinforcement learning (2018) - Sutton, Barto.pdf}
+}
+
+@book{vershynin_high-dimensional_2018,
+  title = {High-{{Dimensional Probability}}: {{An Introduction}} with {{Applications}} in {{Data Science}}},
+  shorttitle = {High-{{Dimensional Probability}}},
+  author = {Vershynin, Roman},
+  year = {2018},
+  month = sep,
+  publisher = {Cambridge University Press},
+  abstract = {High-dimensional probability offers insight into the behavior of random vectors, random matrices, random subspaces, and objects used to quantify uncertainty in high dimensions. Drawing on ideas from probability, analysis, and geometry, it lends itself to applications in mathematics, statistics, theoretical computer science, signal processing, optimization, and more. It is the first to integrate theory, key tools, and modern applications of high-dimensional probability. Concentration inequalities form the core, and it covers both classical results such as Hoeffding's and Chernoff's inequalities and modern developments such as the matrix Bernstein's inequality. It then introduces the powerful methods based on stochastic processes, including such tools as Slepian's, Sudakov's, and Dudley's inequalities, as well as generic chaining and bounds based on VC dimension. A broad range of illustrations is embedded throughout, including classical and modern results for covariance estimation, clustering, networks, semidefinite programming, coding, dimension reduction, matrix completion, machine learning, compressed sensing, and sparse regression.},
+  googlebooks = {NDdqDwAAQBAJ},
+  isbn = {978-1-108-41519-4},
+  langid = {english},
+  keywords = {Business & Economics / Econometrics,Computers / Optical Data Processing,Language Arts & Disciplines / Library & Information Science / General,Mathematics / Probability & Statistics / General,Technology & Engineering / Signals & Signal Processing},
+  file = {/Users/adzcai/Vault/papers/assets/2018/High-Dimensional Probability (2018) - Vershynin.pdf}
 }
 
 @misc{welleck_decoding_2024,
@@ -301,14 +369,6 @@
   file = {/Users/adzcai/Vault/papers/assets/2024/Adaptable Logical Control for Large Language Models (2024) - Zhang, Kung, Yoshida, Broeck, Peng.pdf;/Users/adzcai/Zotero/storage/38W8T74Y/2406.html}
 }
 
-@article{achiam_spinning_2018,
-  title = {Spinning {{Up}} in {{Deep Reinforcement Learning}}},
-  author = {Achiam, Joshua},
-  year = {2018},
-  urldate = {2024-07-01},
-  file = {/Users/adzcai/Zotero/storage/UPUMW6XV/index.html}
-}
-
 @misc{zhang_deep_2015,
   title = {Deep Learning with {{Elastic Averaging SGD}}},
   author = {Zhang, Sixin and Choromanska, Anna and LeCun, Yann},
@@ -324,48 +384,4 @@
   archiveprefix = {arXiv},
   keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
   file = {/Users/adzcai/Vault/papers/assets/2015/Deep learning with Elastic Averaging SGD (2015) - Zhang, Choromanska, LeCun.pdf;/Users/adzcai/Zotero/storage/M4LFKVWK/1412.html}
-}
-
-@article{barto_neuronlike_1983,
-  title = {Neuronlike Adaptive Elements That Can Solve Difficult Learning Control Problems},
-  author = {Barto, Andrew G. and Sutton, Richard S. and Anderson, Charles W.},
-  year = {1983},
-  month = sep,
-  journal = {IEEE Transactions on Systems, Man, and Cybernetics},
-  volume = {SMC-13},
-  number = {5},
-  pages = {834--846},
-  issn = {2168-2909},
-  doi = {10.1109/TSMC.1983.6313077},
-  urldate = {2024-07-01},
-  abstract = {It is shown how a system consisting of two neuronlike adaptive elements can solve a difficult learning control problem. The task is to balance a pole that is hinged to a movable cart by applying forces to the cart's base. It is argued that the learning problems faced by adaptive elements that are components of adaptive networks are at least as difficult as this version of the pole-balancing problem. The learning system consists of a single associative search element (ASE) and a single adaptive critic element (ACE). In the course of learning to balance the pole, the ASE constructs associations between input and output by searching under the influence of reinforcement feedback, and the ACE constructs a more informative evaluation function than reinforcement feedback alone can provide. The differences between this approach and other attempts to solve problems using neurolike elements are discussed, as is the relation of this work to classical and instrumental conditioning in animal learning studies and its possible implications for research in the neurosciences.},
-  keywords = {Adaptive systems,Biological neural networks,Neurons,Pattern recognition,Problem-solving,Supervised learning,Training},
-  file = {/Users/adzcai/Zotero/storage/GHD9WZXL/6313077.html}
-}
-
-@inproceedings{ross_reduction_2010,
-  title = {A {{Reduction}} of {{Imitation Learning}} and {{Structured Prediction}} to {{No-Regret Online Learning}}},
-  booktitle = {International {{Conference}} on {{Artificial Intelligence}} and {{Statistics}}},
-  author = {Ross, St{\'e}phane and Gordon, Geoffrey J. and Bagnell, J.},
-  year = {2010},
-  month = nov,
-  urldate = {2024-08-08},
-  abstract = {Sequential prediction problems such as imitation learning, where future observations depend on previous predictions (actions), violate the common i.i.d. assumptions made in statistical learning. This leads to poor performance in theory and often in practice. Some recent approaches provide stronger guarantees in this setting, but remain somewhat unsatisfactory as they train either non-stationary or stochastic policies and require a large number of iterations. In this paper, we propose a new iterative algorithm, which trains a stationary deterministic policy, that can be seen as a no regret algorithm in an online learning setting. We show that any such no regret algorithm, combined with additional reduction assumptions, must find a policy with good performance under the distribution of observations it induces in such sequential settings. We demonstrate that this new approach outperforms previous approaches on two challenging imitation learning problems and a benchmark sequence labeling problem.},
-  file = {/Users/adzcai/Vault/papers/assets/2010/A Reduction of Imitation Learning and Structured Prediction to No-Regret Online (2010) - Ross, Gordon, Bagnell.pdf}
-}
-
-@book{heath_scientific_2018,
-  title = {Scientific Computing: An Introductory Survey},
-  shorttitle = {Scientific Computing},
-  author = {Heath, Michael T.},
-  year = {2018},
-  series = {Classics in Applied Mathematics},
-  edition = {Revised second edition, SIAM edition},
-  number = {80},
-  publisher = {{Society for Industrial and Applied Mathematics}},
-  address = {Philadelphia},
-  isbn = {978-1-61197-557-4},
-  lccn = {Q183.9 .H4 2018},
-  keywords = {Data processing,Numerical analysis,Science},
-  file = {/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Chapter 1.pdf;/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Chapter 2.pdf;/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Chapter 3.pdf;/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath - Frontmatter.pdf}
 }
