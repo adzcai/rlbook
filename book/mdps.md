@@ -463,7 +463,7 @@ $$
 ```{code-cell} ipython3
 def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
     """
-    Get the (deterministic) greedy policy w.r.t. an action-value function.
+    Get the (deterministic) greedy policy with respect to an action-value function.
     Return the policy as a matrix of shape (S, A) where each row is a one-hot vector.
     """
     A = q.shape[1]
@@ -472,7 +472,7 @@ def q_to_greedy(q: Float[Array, "S A"]) -> Float[Array, "S A"]:
 
 
 def v_to_greedy(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, "S A"]:
-    """Get the (deterministic) greedy policy w.r.t. a value function."""
+    """Get the (deterministic) greedy policy with respect to a value function."""
     return q_to_greedy(v_to_q(mdp, v))
 ```
 
@@ -734,7 +734,7 @@ construct such a policy by acting *greedily* with respect to the optimal
 action-value function:
 
 
-:::{prf:theorem} It is optimal to be greedy w.r.t. the optimal value function
+:::{prf:theorem} It is optimal to be greedy with respect to the optimal value function
 :label: optimal_greedy
 
 $$\pi_\hi^\star(s) = \arg\max_a Q_\hi^\star(s, a).$$
@@ -1007,6 +1007,9 @@ $f: X \to X$ a **contraction mapping** if for any $x, y \in X$,
 $$\|f(x) - f(y)\| \le \gamma \|x - y\|$$
 
 for some fixed $\gamma \in (0, 1)$.
+Intuitively, this means that if two points are $\delta$ far apart,
+after applying the mapping,
+
 :::
 
 :::{attention}
@@ -1272,7 +1275,7 @@ $\tau_\hi = (s_0, a_0, r_0, \dots, s_\hi)$ where $s_\hi = s$,
 :::
 
 
-Once again, all optimal policies share the same **optimal value function** $V^\star$, and the greedy policy w.r.t. this value function
+Once again, all optimal policies share the same **optimal value function** $V^\star$, and the greedy policy with respect to this value function
 is optimal.
 
 :::{attention}
@@ -1339,7 +1342,7 @@ the special case of applying iterative policy evaluation to the
 *optimal* value function.
 
 As the final step of the algorithm, to return an actual policy
-$\hat \pi$, we can simply act greedily w.r.t. the final iteration
+$\hat \pi$, we can simply act greedily with respect to the final iteration
 $v^{(T)}$ of our above algorithm:
 
 $$\hat \pi(s) = \arg\max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v^{(T)}(s') \right].$$
@@ -1359,7 +1362,7 @@ which might potentially be very large.
 
 $$\|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}$$
 
-where $\hat \pi(s) = \arg\max_a q(s, a)$ is the greedy policy w.r.t.
+where $\hat \pi(s) = \arg\max_a q(s, a)$ is the greedy policy with respect to
 
 $$q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s').$$
 :::
