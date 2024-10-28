@@ -13,7 +13,7 @@ numbering:
   enumerator: 6.%s
 ---
 
-# 6  Policy Optimization
+# 6  Policy Gradient Methods
 
 ## Introduction
 
@@ -36,7 +36,7 @@ Policy gradient methods are responsible for groundbreaking applications includin
 many of which use policies parameterized as deep neural networks.
 
 1. We begin the chapter with a short review of gradient ascent,
-a general **optimization method.**
+   a general **optimization method.**
 2. We'll then see how to estimate the **policy gradient,**
    enabling us to apply (stochastic) gradient ascent in the RL setting.
 3. Then we'll explore some _proximal optimization_ techniques that ensure the steps taken are "not too large".
