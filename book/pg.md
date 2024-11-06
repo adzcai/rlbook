@@ -9,8 +9,6 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
-numbering:
-  enumerator: 6.%s
 ---
 
 # 6  Policy Gradient Methods
@@ -43,8 +41,28 @@ many of which use policies parameterized as deep neural networks.
    This is helpful to stabilize training and widely used in practice.
 
 ```{code-cell} ipython3
-from utils import plt, Array, Callable, jax, jnp
+from utils import plt, Array, Callable, jax, jnp, latexify
 ```
+
+```{code-cell} ipython3
+@latexify.algorithmic
+def foo():
+    x = 3
+    y = x + 2
+    return y
+
+print(foo)
+```
+
+\begin{algorithmic}
+    \Function{foo}{$$}
+        \State $x \gets 3$
+        \State $y \gets x + 2$
+        \State \Return $y$
+    \EndFunction
+\end{algorithmic}
+
++++
 
 ## Gradient Ascent
 
@@ -182,8 +200,9 @@ This is called **stochastic** gradient ascent.
 In the SL example above, we might randomly choose a *minibatch* of samples and use them to estimate the true prediction error. (This approach is known as **_minibatch_ SGD**.)
 
 ```{code-cell} ipython3
+@latexify.algorithmic
 def sgd(
-    θ_init: Array,
+    theta_init: Array,
     estimate_gradient: Callable[[Array], Array],
     η: float,
     n_steps: int,
@@ -192,10 +211,12 @@ def sgd(
 
     `estimate_gradient` eats the current parameters and returns an estimate of the objective function's gradient at those parameters.
     """
-    θ = θ_init
+    θ = theta_init
     for step in range(n_steps):
         θ += η * estimate_gradient(θ)
     return θ
+
+sgd
 ```
 
 What makes one gradient estimator better than another?
@@ -501,10 +522,12 @@ Note that to avoid correlations between the gradient estimator and the value est
 
 <!-- TODO could use more explanation _why_ we want to avoid correlations -->
 
-::::{prf:definition} Policy gradient with a learned baseline
-:label: pg_baseline
+<!-- Policy gradient with a learned baseline -->
 
 ```python
+
+```{code-cell} ipython3
+@latexify.algorithmic
 def pg_with_learned_baseline_pseudocode(env, π, η, θ_init, K, N):
     θ = θ_init
     for k in range(K):
@@ -527,7 +550,6 @@ or take multiple trajectories $\tau$ and compute the sample average of the gradi
 
 The baseline estimation step `fit` can be done using any appropriate supervised learning algorithm.
 Note that the gradient estimator will be unbiased regardless of the baseline.
-::::
 
 +++
 

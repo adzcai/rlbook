@@ -2,21 +2,23 @@ name: rlbook
 channels:
   - conda-forge
 dependencies:
-  - python 3.11.*    # python
-  - pip              # pip dependencies
-  - jax 0.4.*        # automatic differentiation
-  - jaxtyping        # array types
-  - ruff             # code formatting
-  - matplotlib       # visualization
-  - tqdm             # progress bars
-  - latexify-py      # python to latex
-  - texlive-core     # latex distribution
-  - latexmk          # latex projects
-  - mystmd           # markdown notebooks
-  - jupyterlab       # notebooks
-  - jupyterlab-myst  # enable mystmd in jupyter
-  - jupytext 1.16.2  # open md in jupyter
-  - ghp-import       # github pages
+  - python 3.11.*                 # python
+  - pip                           # pip dependencies
+  - jax 0.4.*                     # automatic differentiation
+  - jaxtyping                     # array types
+  - ruff                          # code formatting
+  - matplotlib                    # visualization
+  - tqdm                          # progress bars
+  - latexify-py                   # python to latex
+  - texlive-core                  # latex distribution
+  - latexmk                       # latex projects
+  - mystmd                        # markdown notebooks
+  - jupyterlab                    # notebooks
+  - jupyterlab-myst               # enable mystmd in jupyter
+  - jupyter_contrib_nbextensions  # allow `algorithmic` latex environment
+  - jupyter_latex_envs            # same as above
+  - jupytext 1.16.2               # open md in jupyter
+  - ghp-import                    # github pages
   - pip:
     - "gymnasium[box2d]"
     - sphinx-proof
