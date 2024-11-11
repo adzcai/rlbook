@@ -90,7 +90,7 @@ while Min seeks to minimize the final game score.
   (For example, in tic-tac-toe, Max can only play `X`s while Min can only play `O`s.)
 - The game ends after $H$ total moves (which might be even or odd). We call the final state a **terminal state**.
 - $P$ denotes the **state transitions**, that is,
-  $P(s, a)$ denotes the resulting state when taking action $a \in \mathcal{A}(s)$ in state $s$.
+  $P(s, a)$ denotes the resulting state when taking action $a \in \mathcal{A}(s)$ in state $s$. We'll assume that this function is time-homogeneous (a.k.a. stationary) and doesn't change across timesteps.
 - $r(s)$ denotes the **game score** of the terminal state $s$.
   Note that this is some positive or negative value seen by both players:
   A positive value indicates Max winning, a negative value indicates Min winning, and a value of $0$ indicates a tie.
@@ -103,6 +103,9 @@ But most real games have a _variable_ length.
 How would you describe this?
 :::
 
+:::{prf:example} Tic-tac-toe
+:label: tic-tac-toe
+
 Let us frame tic-tac-toe in this setting.
 
 - Each of the $9$ squares is either empty, marked X, or marked O.
@@ -114,6 +117,7 @@ Let us frame tic-tac-toe in this setting.
 - We can take $H = 9$ as the longest possible game length.
 - $P(s, a)$ for a *nonterminal* state $s$ is simply the board with the symbol and square specified by $a$ marked into $s$. Otherwise, if $s$ is a *terminal* state, i.e. it already has three symbols in a row, the state no longer changes.
 - $r(s)$ at a *terminal* state is $+1$ if there are three Xs in a row, $-1$ if there are three Os in a row, and $0$ otherwise.
+:::
 
 Our notation may remind you of [Markov decision processes](./mdps.md).
 Given that these games also involve a sequence of states and actions,
@@ -137,24 +141,26 @@ we claimed that we could win any potentially winnable game by looking ahead and 
 This would mean that each _nonterminal_ state already has some predetermined game score,
 that is, in each state,
 it is already "obvious" which player is going to win.
-Let $V_\hi^\star(s)$ denote the game score under optimal play starting in state $s$ at time $\hi$.
-We can compute this by starting at the terminal states,
-when the game's outcome is known,
-and working backwards,
-assuming that Max chooses the action that leads to the highest score
-and Min chooses the action that leads to the lowest score.
 
-:::{prf:algorithm} Min-max search algorithm
+Let $V_\hi^\star(s)$ denote the game score under optimal play from both players starting in state $s$ at time $\hi$.
+
+:::{prf:definition} Min-max search algorithm
 :label: min-max-value
 
 $$
 V_\hi^{\star}(s) = \begin{cases}
 r(s) & \hi = \hor \\
-\max_{a \in \mathcal{A}(s)} V_{\hi+1}^{\star}(P(s, a)) & h \text{ is even and } h < H \\
-\min_{a \in \mathcal{A}(s)} V_{\hi+1}^{\star}(P(s, a)) & h \text{ is odd and } h < H \\
+\max_{a \in \mathcal{A}_\hi(s)} V_{\hi+1}^{\star}(P(s, a)) & \hi \text{ is even and } \hi < H \\
+\min_{a \in \mathcal{A}_\hi(s)} V_{\hi+1}^{\star}(P(s, a)) & \hi \text{ is odd and } \hi < H \\
 \end{cases}
 $$
 :::
+
+We can compute this by starting at the terminal states,
+when the game's outcome is known,
+and working backwards,
+assuming that Max chooses the action that leads to the highest score
+and Min chooses the action that leads to the lowest score.
 
 This translates directly into a recursive depth-first search algorithm for searching the complete game tree.
 
@@ -183,9 +189,9 @@ def minimax_search(s, player) -> Tuple["Action", "Value"]:
 :::{prf:example} Min-max search for a simple game
 :label: min-max-example
 
-Consider a simple game: Max chooses one of three possible actions (A, B, C),
-Min chooses one of three possible actions (D, E, F),
-and the combination leads to a certain integer outcome,
+Consider a simple game with just two steps: Max chooses one of three possible actions (A, B, C),
+and then Min chooses one of three possible actions (D, E, F).
+The combination leads to a certain integer outcome,
 shown in the table below:
 
 |   | D  | E  | F  |
@@ -208,7 +214,7 @@ making the value of this game node $\min(4, -2, 5) = -2$.
 
 ![](./shared/minmax-2.png)
 
-Similarly, if Max chooses action A,
+Similarly, if Max chooses action B,
 then Min will choose action D,
 and if Max chooses action C,
 then Min will choose action F.
@@ -245,10 +251,14 @@ If at any point they find out that action $a'$ is definitely worse than (or equa
 they don't need to evaluate action $a'$ any further.
 
 Concretely, we run min-max search as above,
-except now we keep track of two additional parameters $\alpha(s)$ and $\beta(s)$ while evaluating each state.
+except now we keep track of two additional parameters $\alpha(s)$ and $\beta(s)$ while evaluating each state:
+
+- Starting in state $s$, Max can achieve a game score of _at least_ $\alpha(s)$ assuming Min plays optimally. That is, $V^\star_\hi(s) \ge \alpha(s)$ at all points.
+- Analogously, starting in state $s$, Min can ensure a game score of _at most_ $\beta(s)$ assuming Max plays optimally. That is, $V^\star_\hi(s) \le \beta(s)$ at all points.
+
 Suppose we are evaluating $V^\star_\hi(s)$,
 where it is Max's turn ($\hi$ is even).
-We update $\alpha(s)$ to be the _highest_ value achievable from $s$ so far.
+We update $\alpha(s)$ to be the _highest_ minimax value achievable from $s$ so far.
 That is, the value of $s$ is _at least_ $\alpha(s)$.
 Suppose Max chooses action $a$, which leads to state $s'$, in which it is Min's turn.
 If any of Min's actions in $s'$ achieve a value $V^\star_{\hi+1}(s') \le \alpha(s)$,
