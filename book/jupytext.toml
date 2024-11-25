@@ -1,2 +1,0 @@
-# sync Jupyter notebooks with MyST files
-formats = "ipynb,md:myst"

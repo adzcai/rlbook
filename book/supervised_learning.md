@@ -123,3 +123,5 @@ i.e. computing the output of the network as a composition of functions,
 allows us to use the chain rule to compute the gradient of the output with respect to the parameters of each layer.
 
 {cite}`nielsen_neural_2015` provides a comprehensive introduction to neural networks and backpropagation.
+
+

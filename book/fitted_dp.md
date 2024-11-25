@@ -305,6 +305,9 @@ def fitted_q_iteration(
     return Q_hat
 ```
 
+(fitted-pi-eval)=
+## Fitted policy evaluation
+
 We can also use this fixed-point interation to *evaluate* a policy using the dataset (not necessarily the one used to generate the trajectories):
 
 :::{prf:definition} Fitted policy evaluation
@@ -346,6 +349,8 @@ def fitted_evaluation(
 Spot the difference between `fitted_evaluation` and `fitted_q_iteration`. (See the definition of `get_y`.)
 How would you modify this algorithm to evaluate the data collection policy?
 :::
+
+## Fitted policy iteration
 
 We can use this policy evaluation algorithm to adapt the [](#policy iteration algorithm <policy_iteration>) to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted_evaluation` algorithm.
 

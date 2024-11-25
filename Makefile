@@ -52,5 +52,5 @@ lint:
 web:
 	(cd book && $(RUN) myst build --html --execute)
 
-publish: book/_build/html
+publish:
 	$(RUN) ghp-import --cname "rlbook.adzc.ai" --no-jekyll --push --force book/_build/html

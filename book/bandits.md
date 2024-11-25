@@ -488,7 +488,7 @@ Note that we let $\epsilon$ vary over time. In particular, we might want to grad
 What is the expected regret of the algorithm if we set $\epsilon$ to be a constant?
 :::
 
-It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors). (We will not prove this here.) TODO ADD PROOF CITATION
+It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors). (We will not prove this here; a proof can be found in {cite}`agarwal_reinforcement_2022`.)
 
 In ETC, we had to set $N_{\text{explore}}$ based on the total number of timesteps $T$. But the epsilon-greedy algorithm actually handles the exploration *automatically*: the regret rate holds for *any* $t$, and doesn’t depend on the final horizon $T$.
 
@@ -927,7 +927,7 @@ class LinUCBPseudocode(Agent):
         self.lam = lam
         self.get_c = get_c
         self.contexts = [None for _ in range(K)]
-        self.A = np.repeat(lam * np.eye(D)[...], K)
+        self.A = np.repeat(lam * np.eye(D)[...], K)  # regularization
         self.targets = np.zeros(K, D)
         self.w = np.zeros(K, D)
 
@@ -945,7 +945,7 @@ class LinUCBPseudocode(Agent):
 ```
 
 :::{attention}
-Note that the matrix $A_t^k$ above might not be invertible. When does this occur? One way to address this is to include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible. This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem. Implement this solution. TODO SOLUTION CURRENTLY SHOWN
+Note that the matrix $A_t^k$ above might not be invertible. When does this occur? One way to address this is to include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible. This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem. Implement this solution.
 :::
 
 +++
@@ -962,3 +962,19 @@ regret bound. The full details of the analysis can be found in Section 3 of {cit
 
 In this chapter,
 we explored the **multi-armed bandit** setting for analyzing sequential decision-making in an unknown environment.
+An MAB consists of multiple arms,
+each with an unknown reward distribution.
+The agent's task is to learn about these through interaction,
+eventually minimizing the _regret_,
+which measures how suboptimal the chosen arms were.
+
+We saw algorithms such as **upper confidence bound** and **Thompson sampling**
+that handle the tradeoff between _exploration_ and _exploitation_,
+that is,
+the tradeoff between choosing arms that the agent is _uncertain_ about
+and arms the agent already supposes are be good.
+
+We finally discussed **contextual bandits**,
+in which the agent gets to observe some _context_ that affects the reward distributions.
+We can approach these problems through **supervised learning** approaches.
+

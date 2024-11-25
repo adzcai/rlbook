@@ -9,22 +9,30 @@ kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
   name: python3
-numbering:
-  enumerator: 8.%s
 ---
-
 
 # 8 Tree Search Methods
 
++++
 
 ## Introduction
 
 Have you ever lost a strategy game against a skilled opponent?
-It probably seemed like they were ahead of you at every turn.
+It probably seemed like they were _ahead of you at every turn_.
 They might have been _planning ahead_ and anticipating your actions,
-then planning around them in order to win.
+then formulating their strategy to counter yours.
 If this opponent was a computer,
 they might have been using one of the strategies that we are about to explore.
+
+```{code-cell} ipython3
+%load_ext autoreload
+%autoreload 2
+```
+
+```{code-cell} ipython3
+from utils import Int, Array, latex, jnp
+from enum import IntEnum
+```
 
 ## Deterministic, zero sum, fully observable two-player games
 
@@ -41,12 +49,16 @@ and since we only consider deterministic games,
 we can represent actions as edges leading from the current state to the next.
 Each path through the tree, from root to leaf, represents a single game.
 
++++
+
 :::{figure} shared/tic_tac_toe.png
 :align: center
 
 The first two layers of the complete game tree of tic-tac-toe.
 From Wikimedia.
 :::
+
++++
 
 If you could store the complete game tree on a computer,
 you would be able to win every potentially winnable game
@@ -72,6 +84,8 @@ we will explore ways to _prune away_ parts of the tree that we know we can safel
 We can also _approximate_ the value of a state without fully evaluating it.
 Using these approximations, we can no longer _guarantee_ winning the game,
 but we can come up with strategies that will do well against most opponents.
+
++++
 
 ### Notation
 
@@ -128,13 +142,72 @@ while these games involve two distinct players with opposite objectives.
 Since we want to analyze the behavior of _both_ players at the same time,
 describing such a game as an MDP is more trouble than it's worth.
 
-(min-max-search)=
-## Min-max search *
+```{code-cell} ipython3
+class Player(IntEnum):
+    EMPTY = 0
+    X = 1
+    O = 2
 
-:::{important}
-The course (Fall 2024) does not cover min-max search.
-This content is here to provide background on _optimally_ solving these deterministic, zero-sum, two-player games.
-:::
+
+class TicTacToeEnv(gym.Env):
+    metadata = {"render.modes": ["human"]}
+
+    def __init__(self):
+        super().__init__()
+        self.action_space = spaces.Discrete(9)
+        self.observation_space = spaces.Box(
+            low=0, high=2, shape=(3, 3), dtype=jnp.int32
+        )
+        self.board = None
+        self.current_player = None
+        self.done = None
+
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
+        self.board = jnp.zeros((3, 3), dtype=jnp.int32)
+        self.current_player = Player.X
+        self.done = False
+        return self.board, {}
+
+    def step(self, action: jnp.int32) -> Int[Array, "3 3"]:
+        """Take the action a in state s."""
+        if self.done:
+            raise ValueError("The game is already over. Call `env.reset()` to reset the environment.")
+        
+        row, col = divmod(action, 3)
+        if self.board[row, col] != Player.EMPTY:
+            return self.board, -10
+        return s.at[row, col].set(player)
+
+    @staticmethod
+    def is_terminal(s: Int[Array, "3 3"]):
+        """Check if the game is over."""
+        return is_winner(s, Player.X) or is_winner(s, Player.O) or jnp.all(s == Player.EMPTY)
+    
+    @staticmethod
+    def is_winner(board: Int[Array, "3 3"], player: Player):
+        """Check if the given player has won."""
+        return any(
+            jnp.all(board[i, :] == player) or
+            jnp.all(board[:, i] == player)
+            for i in range(3)
+        ) or jnp.all(jnp.diag(board) == player) or jnp.all(jnp.diag(jnp.fliplr(board)) == player)
+    
+    @staticmethod
+    def show(s: Int[Array, "3 3"]):
+        """Print the board."""
+        for row in range(3):
+            print(" | ".join(" XO"[s[row, col]] for col in range(3)))
+            if row < 2:
+                print("-" * 5)
+```
+
+```{code-cell} ipython3
+
+```
+
+(min-max-search)=
+## Min-max search
 
 In the introduction,
 we claimed that we could win any potentially winnable game by looking ahead and predicting the opponent's actions.
@@ -164,26 +237,28 @@ and Min chooses the action that leads to the lowest score.
 
 This translates directly into a recursive depth-first search algorithm for searching the complete game tree.
 
-```python
-def minimax_search(s, player) -> Tuple["Action", "Value"]:
+```{code-cell} ipython3
+def minimax_search(s, player) -> tuple["Action", "Value"]:
     """Return the value of the state (for Max) and the best action for Max to take."""
     if env.is_terminal(s):
         return None, env.winner(s)
 
     if player is max:
         a_max, v_max = None, None
-        for a in actions:
+        for a in env.action_space(s):
             _, v = minimax_search(env.step(s, a), min)
             if v > v_max:
                 a_max, v_max = a, v
         return a_max, v_max
     else:
         a_min, v_min = None, None
-        for a in actions:
+        for a in env.action_space(s):
             _, v = minimax_search(env.step(s, a), max)
             if v < v_min:
                 a_min, v_min = a, v
         return a_min, v_min
+
+latex(minimax_search, custom_identifiers={"env.step": "P", "env.action_space": r"\mathcal{A}"})
 ```
 
 :::{prf:example} Min-max search for a simple game
@@ -228,6 +303,8 @@ resulting in a game score of $\max(-2, -3, -1) = -1$.
 ![](./shared/minmax-4.png)
 :::
 
++++
+
 ### Complexity of min-max search
 
 At each of the $\hor$ timesteps,
@@ -240,6 +317,8 @@ But do we need to compute the exact value of _every_ possible state?
 Instead, is there some way we could "ignore" certain actions and their subtrees
 if we already know of better options?
 The **alpha-beta search** makes use of this intuition.
+
++++
 
 (alpha-beta-search)=
 ## Alpha-beta search
@@ -335,9 +414,10 @@ and Min to take action F.
 ![](./shared/alpha-beta-9.png)
 :::
 
+```{code-cell} ipython3
+:jp-MarkdownHeadingCollapsed: true
 
-```python
-def alpha_beta_search(s, player, alpha, beta) -> Tuple["Action", "Value"]:
+def alpha_beta_search(s, player, alpha, beta) -> tuple["Action", "Value"]:
     """Return the value of the state (for Max) and the best action for Max to take."""
     if env.is_terminal(s):
         return None, env.winner(s)
@@ -365,6 +445,9 @@ def alpha_beta_search(s, player, alpha, beta) -> Tuple["Action", "Value"]:
                 # we know Max will not choose the action that leads to this state
                 return a_min, v_min
         return a_min, v_min
+
+
+latex(alpha_beta_search)
 ```
 
 How do we choose what _order_ to explore the branches?
@@ -384,6 +467,8 @@ we call it a heuristic.
 
 Can we develop _heuristic methods_ for tree exploration that works for all sorts of games?
 <!-- Here's where we can incorporate the _reinforcement learning_ -->
+
++++
 
 (monte-carlo-tree-search)=
 ## Monte Carlo Tree Search
@@ -471,7 +556,7 @@ it repeats the following four steps $T$ times:
    - Until $s$ has at least one action that hasn't been taken:
      - Choose $a \gets \argmax_k \text{UCB}^{s, k}$, where
        $$
-       \text{UCB}^{s, a} = \frac{W^{s, a}}{N^s} + c \sqrt{\frac{\ln N^s}{N^{s, a}}}
+       \text{UCB}^{s, a} = \frac{W^{s, a}}{N^{s, a}} + c \sqrt{\frac{\ln N^s}{N^{s, a}}}
        \label{ucb-tree}
        $$
      - Append $(s, a)$ to $\tau$
@@ -500,6 +585,8 @@ How accurate is this Monte Carlo estimation?
 It depends heavily on the rollout policy $\pi_\text{rollout}$.
 If the distribution $\pi_\text{rollout}$ induces over games is very different from the distribution seen during real gameplay,
 we might end up with a poor value approximation.
+
++++
 
 ### Incorporating value functions and policies
 
@@ -544,6 +631,25 @@ We finally return the action with the highest UCB value [](#ucb-tree-policy).
 Then play continues. As before, we can reuse the tree across timesteps.
 :::
 
+```{code-cell} ipython3
+class EdgeStatistics(NamedTuple):
+    wins: int = 0
+    visits: int = 0
+
+class MCTSTree:
+    """A representation of the search tree.
+
+    Maps each state-action pair to its number of wins and the number of visits.
+    """
+
+    edges: dict[tuple["State", "Action"], EdgeStatistics]
+
+def mcts_iter(tree, s_init):
+    s = s_init
+    while all((s, a) in tree for a in env.action_state(s)):
+        
+```
+
 How do we actually compute a useful $\pi_\text{guide}$ and $v$?
 If we have some existing dataset of trajectories,
 we could use [supervised learning](./imitation_learning.md) (that is, imitation learning)
@@ -554,6 +660,8 @@ results in a stronger policy by using tree search to "think ahead".
 
 But we don't have to stop at just one improvement step;
 we could iterate this process via **self-play**.
+
++++
 
 ### Self-play
 
@@ -596,6 +704,8 @@ and the two loss functions are added together.
 
 This algorithm was brought to fame by AlphaGo Zero {cite}`silver_mastering_2017`.
 
++++
+
 ## Summary
 
 In this chapter,
@@ -607,6 +717,7 @@ and so we must resort to various ways to reduce the number of states and actions
 [Alpha-beta search](#alpha-beta-search) does this by _pruning_ away states that we already know to be suboptimal,
 and [Monte Carlo Tree Search](#monte-carlo-tree-search) _approximates_ the value of states instead of evaluating them exactly.
 
++++
 
 ## References
 
@@ -619,4 +730,3 @@ namely shogi and chess,
 also learning from scratch.
 In MuZero {cite}`schrittwieser_mastering_2020`,
 this was further extended by learning a model of the game dynamics.
-
