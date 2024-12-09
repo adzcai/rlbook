@@ -1,21 +1,10 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
-numbering:
-  enumerator: 8.%s
+
+
+
 ---
+# Tree Search Methods
 
-# 8 Tree Search Methods
-
-+++
 
 ## Introduction
 
@@ -51,7 +40,6 @@ and since we only consider deterministic games,
 we can represent actions as edges leading from the current state to the next.
 Each path through the tree, from root to leaf, represents a single game.
 
-+++
 
 :::{figure} shared/tic_tac_toe.png
 :align: center
@@ -60,12 +48,11 @@ The first two layers of the complete game tree of tic-tac-toe.
 From Wikimedia.
 :::
 
-+++
 
 If you could store the complete game tree on a computer,
 you would be able to win every potentially winnable game
 by searching all paths from your current state and taking a winning move.
-We will see an explicit algorithm for this in [the next section](#min-max-search).
+We will see an explicit algorithm for this in @min-max-search.
 However, as games become more complex,
 it becomes computationally impossible to search every possible path.
 
@@ -87,7 +74,6 @@ We can also _approximate_ the value of a state without fully evaluating it.
 Using these approximations, we can no longer _guarantee_ winning the game,
 but we can come up with strategies that will do well against most opponents.
 
-+++
 
 ### Notation
 
@@ -208,9 +194,7 @@ class TicTacToeEnv(gym.Env):
 
 ```
 
-(min-max-search)=
-## Min-max search
-
+## Min-max search {#sec-min-max-search}
 In the introduction,
 we claimed that we could win any potentially winnable game by looking ahead and predicting the opponent's actions.
 This would mean that each _nonterminal_ state already has some predetermined game score,
@@ -305,7 +289,6 @@ resulting in a game score of $\max(-2, -3, -1) = -1$.
 ![](./shared/minmax-4.png)
 :::
 
-+++
 
 ### Complexity of min-max search
 
@@ -320,11 +303,8 @@ Instead, is there some way we could "ignore" certain actions and their subtrees
 if we already know of better options?
 The **alpha-beta search** makes use of this intuition.
 
-+++
 
-(alpha-beta-search)=
-## Alpha-beta search
-
+## Alpha-beta search {#sec-alpha-beta-search}
 The intuition behind alpha-beta search is as follows:
 Suppose Max is in state $s$,
 and considering whether to take action $a$ or $a'$.
@@ -357,7 +337,7 @@ making action $a$ a suboptimal choice for Min.
 :::{prf:example} Alpha-beta search for a simple game
 :label: alpha-beta-example
 
-Let us use the same simple game from [](#min-max-example).
+Let us use the same simple game from @min-max-example.
 We list the values of $\alpha(s), \beta(s)$ in each node throughout the algorithm.
 These values are initialized to $-\infty, +\infty$ respectively.
 We shade any squares that have not been visited by the algorithm,
@@ -470,11 +450,8 @@ we call it a heuristic.
 Can we develop _heuristic methods_ for tree exploration that works for all sorts of games?
 <!-- Here's where we can incorporate the _reinforcement learning_ -->
 
-+++
 
-(monte-carlo-tree-search)=
-## Monte Carlo Tree Search
-
+## Monte Carlo Tree Search {#sec-monte-carlo-tree-search}
 The task of evaluating actions in a complex environment might seem familiar.
 We've encountered this problem before in both the [multi-armed bandits](./bandits.md) setting and the [Markov decision process](./mdps.md) setting.
 Now we'll see how to combine concepts from these to form a more general and efficient tree search heuristic called **Monte Carlo Tree Search** (MCTS).
@@ -504,7 +481,7 @@ Note that, for a given state $s$,
 choosing the best action $a$ can be framed as a [multi-armed bandits](./bandits.md) problem,
 where each action corresponds to an arm,
 and the reward distribution of arm $k$ is the distribution of the game score over random games after choosing that arm.
-The most commonly used bandit algorithm in practice for MCTS is the [{name}](#ucb) algorithm.
+The most commonly used bandit algorithm in practice for MCTS is the @ucb algorithm.
 
 :::{note} Summary of UCB
 Let us quickly review the UCB bandit algorithm.
@@ -573,7 +550,7 @@ it repeats the following four steps $T$ times:
    - Set $N^s \gets N^s + 1$
 
 After $T$ repeats of the above,
-we return the action with the highest UCB value [](#ucb-tree).
+we return the action with the highest UCB value @ucb-tree.
 Then play continues.
 
 Between turns, we can keep the subtree whose statistics we have visited so far.
@@ -588,16 +565,15 @@ It depends heavily on the rollout policy $\pi_\text{rollout}$.
 If the distribution $\pi_\text{rollout}$ induces over games is very different from the distribution seen during real gameplay,
 we might end up with a poor value approximation.
 
-+++
 
 ### Incorporating value functions and policies
 
 To remedy this,
 we might make use of a value function $v : \mathcal{S} \to \mathbb{R}$ that more efficiently approximates the value of a state.
-Then, we can replace the simulation step of [MCTS](#mcts-algorithm) with evaluating $r = v(s_\text{next})$, where $s_\text{next} = P(s_\text{new}, a_\text{new})$.
+Then, we can replace the simulation step of @mcts-algorithm with evaluating $r = v(s_\text{next})$, where $s_\text{next} = P(s_\text{new}, a_\text{new})$.
 
 We might also make use of a **"guiding" policy** $\pi_\text{guide} : \mathcal{S} \to \triangle(\mathcal{A})$ that provides "intuition" as to which actions are more valuable in a given state.
-We can scale the exploration term of [](#ucb-tree) according to the policy's outputs.
+We can scale the exploration term of @ucb-tree according to the policy's outputs.
 
 Putting these together,
 we can describe an updated version of MCTS that makes use of these value functions and policy:
@@ -629,7 +605,7 @@ To select a move in state $s_\text{start}$, we repeat the following four steps $
    - $W^{s, a} \gets W^{s, a} + r$
    - $N^s \gets N^s + 1$
 
-We finally return the action with the highest UCB value [](#ucb-tree-policy).
+We finally return the action with the highest UCB value @ucb-tree-policy.
 Then play continues. As before, we can reuse the tree across timesteps.
 :::
 
@@ -657,17 +633,16 @@ If we have some existing dataset of trajectories,
 we could use [supervised learning](./imitation_learning.md) (that is, imitation learning)
 to generate a policy $\pi_\text{guide}$ via behavioral cloning
 and learn $v$ by regressing the game outcomes onto states.
-Then, plugging these into [the above algorithm](#mcts-policy-value)
+Then, plugging these into @mcts-policy-value
 results in a stronger policy by using tree search to "think ahead".
 
 But we don't have to stop at just one improvement step;
 we could iterate this process via **self-play**.
 
-+++
 
 ### Self-play
 
-Recall the [policy iteration](#policy_iteration) algorithm from the [MDPs](./mdps.md) chapter.
+Recall the @policy_iteration algorithm from the @sec-mdps.
 Policy iteration alternates between **policy evaluation** (taking $\pi$ and computing $V^\pi$)
 and **policy improvement** (setting $\pi$ to be greedy with respect to $V^\pi$).
 Above, we saw how MCTS can be thought of as a "policy improvement" operation:
@@ -691,7 +666,7 @@ Input:
 
 For $t = 0, \dots, T-1$:
 
-- **Policy improvement**: Let $\pi^t_\text{MCTS}$ denote the policy obtained by [](#mcts-policy-value) with $\pi_{\theta^t}$ and $v_{\lambda^t}$. We use $\pi^t_\text{MCTS}$ to play against itself $M$ times. This generates $M$ trajectories $\tau_0, \dots, \tau_{M-1}$.
+- **Policy improvement**: Let $\pi^t_\text{MCTS}$ denote the policy obtained by @mcts-policy-value with $\pi_{\theta^t}$ and $v_{\lambda^t}$. We use $\pi^t_\text{MCTS}$ to play against itself $M$ times. This generates $M$ trajectories $\tau_0, \dots, \tau_{M-1}$.
 - **Policy evaluation**: Use behavioral cloning to find a set of policy parameters $\theta^{t+1}$ that mimic the behavior of $\pi^t_\text{MCTS}$ and a set of value function parameters $\lambda^{t+1}$ that approximate its value function. That is,
   \begin{align*}
   \theta^{t+1} &\gets \argmin_\theta \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} - \log \pi_\theta(a^m_\hi \mid s^m_\hi) \\
@@ -706,20 +681,18 @@ and the two loss functions are added together.
 
 This algorithm was brought to fame by AlphaGo Zero {cite}`silver_mastering_2017`.
 
-+++
 
 ## Summary
 
 In this chapter,
 we explored tree search-based algorithms for deterministic, zero sum, fully observable two-player games.
-We began with [min-max search](#min-max-search),
+We began with @min-max-search,
 an algorithm for exactly solving the game value of every possible state.
 However, this is impossible to execute in practice,
 and so we must resort to various ways to reduce the number of states and actions that we must explore.
-[Alpha-beta search](#alpha-beta-search) does this by _pruning_ away states that we already know to be suboptimal,
-and [Monte Carlo Tree Search](#monte-carlo-tree-search) _approximates_ the value of states instead of evaluating them exactly.
+@alpha-beta-search does this by _pruning_ away states that we already know to be suboptimal,
+and @monte-carlo-tree-search _approximates_ the value of states instead of evaluating them exactly.
 
-+++
 
 ## References
 

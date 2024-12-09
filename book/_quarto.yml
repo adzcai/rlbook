@@ -1,0 +1,31 @@
+project:
+  type: book
+
+book:
+  title: "rlbook"
+  author: "Alexander Cai"
+  date: "2024-12-09"
+  chapters:
+    - index.qmd
+    - mdps.qmd
+    - control.qmd
+    - bandits.qmd
+    - supervised_learning.qmd
+    - fitted_dp.qmd
+    - pg.qmd
+    - imitation_learning.qmd
+    - planning.qmd
+    - exploration.qmd
+    - background.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+
+

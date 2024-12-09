@@ -1,19 +1,9 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
-numbering:
-  enumerator: 7.%s
----
 
-# 7 Imitation Learning
+
+
+---
+# Imitation Learning
 
 ## Introduction
 
@@ -59,7 +49,7 @@ This is called **behavioral cloning**.
 2. Use a supervised learning algorithm $\texttt{fit} : \mathcal{D} \mapsto \widetilde{\pi}$ to extract a policy $\widetilde{\pi}$ that approximates the expert policy.
 :::
 
-Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in [](#parameterized_empirical_risk_minimization)):
+Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in @parameterized_empirical_risk_minimization):
 
 :::{math}
 \widetilde{\pi} = \arg\min_{\pi \in \Pi} \sum_{n=0}^{N-1} \text{loss}(\pi(s^n), a^n)
@@ -120,7 +110,7 @@ where $H$ is the horizon.
 
 :::{prf:theorem} Performance of behavioral cloning
 
-Recall the Performance Difference Lemma ([](#pdl)) allows us to express the difference between $\pi_{\text{expert}}$ and $\widetilde{\pi}$ as
+Recall the Performance Difference Lemma (@pdl) allows us to express the difference between $\pi_{\text{expert}}$ and $\widetilde{\pi}$ as
 
 $$
 V_0^{\pi_{\text{expert}}}(s) - V_0^{\widetilde{\pi}} (s) = \E_{\tau \sim \rho^{\pi_{\text{expert}}} \mid s_0 = s} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\widetilde{\pi}} (s_\hi, a_\hi) \right].
@@ -136,7 +126,7 @@ $$
 A^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) = Q^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) - V^{\pi_{\text{expert}}}(s) = 0.
 $$
 
-But the right-hand-side of [](#eq:pdl-rhs) uses $A^{\widetilde{\pi}}$, not $A^{\pi_{\text{expert}}}$.
+But the right-hand-side of @eq:pdl-rhs uses $A^{\widetilde{\pi}}$, not $A^{\pi_{\text{expert}}}$.
 To bridge this gap,
 we now use the assumption that $\widetilde{\pi}$ obtains $\varepsilon$ classification error.
 Note that $A_\hi^{\widetilde{\pi}}(s_\hi, \pi_{\text{expert}}(s_\hi)) = 0$ when $\pi_{\text{expert}}(s_\hi) = \widetilde{\pi}(s_\hi)$.

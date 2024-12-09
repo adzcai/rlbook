@@ -1,19 +1,9 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
-numbering:
-  enumerator: 3.%s
----
 
-# 3 Multi-Armed Bandits
+
+
+---
+# Multi-Armed Bandits {#sec-bandits}
 
 ## Introduction
 
@@ -69,7 +59,7 @@ latex = latexify.algorithmic(
 )
 ```
 
-+++
+
 
 ::::{prf:remark} Namesake
 :label: multi-armed
@@ -300,11 +290,9 @@ plot_strategy(mab, agent)
 
 The cumulative regret is a straight line because the regret only depends on the arms chosen and not the actual reward observed. In fact, if the greedy algorithm happens to get lucky on the first set of pulls, it may act entirely optimally for that episode! But its _average_ regret is what measures its effectiveness.
 
-+++
 
-(etc)=
-## Explore-then-commit
 
+## Explore-then-commit {#sec-etc}
 We can improve the pure greedy algorithm as follows: let’s reduce the variance of the reward estimates by pulling each arm $N_{\text{explore}}> 1$ times before committing. This is called the **explore-then-commit** strategy. Note that the “pure greedy” strategy above is just the special case where
 $N_{\text{explore}}= 1$.
 
@@ -326,11 +314,9 @@ plot_strategy(mab, agent)
 
 Notice that now, the graphs are much more consistent, and the algorithm finds the true optimal arm and sticks with it much more frequently. We would expect ETC to then have a better (i.e. lower) average regret. Can we prove this?
 
-+++
 
-(etc-regret-analysis)=
-### ETC regret analysis
 
+### ETC regret analysis {#sec-etc-regret-analysis}
 Let’s analyze the expected regret of the explore-then-commit strategy by splitting it up
 into the exploration and exploitation phases.
 
@@ -451,7 +437,7 @@ exploration to exploitation after a fixed number of timesteps. In
 practice, it’s often better to use a more gradual transition, which
 brings us to the *epsilon-greedy* algorithm.
 
-+++
+
 
 ## Epsilon-greedy
 
@@ -494,11 +480,9 @@ In ETC, we had to set $N_{\text{explore}}$ based on the total number of timestep
 
 But the way these algorithms explore is rather naive: we’ve been exploring *uniformly* across all the arms. But what if we could be smarter about it, and explore *more* for arms that we’re less certain about?
 
-+++
 
-(ucb)=
-## Upper Confidence Bound (UCB)
 
+## Upper Confidence Bound (UCB) {#sec-ucb}
 To quantify how *certain* we are about the mean of each arm, we’ll
 compute *confidence intervals* for our estimators, and then choose the
 arm with the highest *upper confidence bound*. This operates on the
@@ -510,7 +494,7 @@ upper confidence bound $M^k_t$ such that $\hat \mu^k_t \le M^k_t$ with
 high probability, and then choose $a_t := \arg \max_{k \in [K]} M^k_t$.
 But how should we compute $M^k_t$?
 
-In [](#etc-regret-analysis), we were able to compute this bound
+In @etc-regret-analysis, we were able to compute this bound
 using Hoeffding’s inequality, which assumes that the number of samples
 is *fixed*. This was the case in ETC (where we pull each arm
 $N_{\text{explore}}$ times), but in UCB, the number of times we pull
@@ -658,7 +642,7 @@ $$
 In fact, we can do a more sophisticated analysis to trim off a factor of $\sqrt{K}$
 and show $\text{Regret}_T = \tilde O(\sqrt{TK})$.
 
-+++
+
 
 ### Lower bound on regret (intuition)
 
@@ -678,11 +662,9 @@ won’t be able to confidently tell them apart, and will sample them about
 equally. But then we’ll incur regret
 $$\Omega((T/2) \cdot (1/\sqrt{T})) = \Omega(\sqrt{T}).$$
 
-+++
 
-(thompson_sampling)=
-## Thompson sampling and Bayesian bandits
 
+## Thompson sampling and Bayesian bandits {#sec-thompson_sampling}
 So far, we’ve treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the
 reward distributions as *fixed*. Instead, we can take a **Bayesian**
 approach where we treat them as random variables from some **prior
@@ -797,7 +779,7 @@ $\mu^\star$. It turns out that Thompson sampling achieves this lower
 bound with equality! That is, not only is the error *rate* optimal, but
 the *constant factor* is optimal as well.
 
-+++
+
 
 ## Contextual bandits
 
@@ -824,7 +806,7 @@ reward from the chosen arm $r_t \sim \nu^{a_t}(x_t)$. The reward
 distribution also depends on the context.
 :::
 
-+++
+
 
 Assuming our context is *discrete*, we can just perform the same
 algorithms, treating each context-arm pair as its own arm. This gives us
@@ -849,11 +831,9 @@ to each other in some way: for example, we might want to advertise
 similar products to users with similar preferences. How can we
 incorporate this structure into our solution?
 
-+++
 
-(lin_ucb)=
-### Linear contextual bandits
 
+### Linear contextual bandits {#sec-lin_ucb}
 We want to model the *mean reward* of arm $k$ as a function of the
 context, i.e. $\mu^k(x)$. One simple model is the *linear* one:
 $\mu^k(x) = x^\top \theta^k$, where $x \in \mathcal{X} = \mathbb{R}^d$ and
@@ -948,7 +928,7 @@ class LinUCBPseudocode(Agent):
 Note that the matrix $A_t^k$ above might not be invertible. When does this occur? One way to address this is to include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible. This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem. Implement this solution.
 :::
 
-+++
+
 
 $c_t$ is similar to the $\log (2t/\delta')$ term of UCB: It controls the
 width of the confidence interval. Here, we treat it as a tunable

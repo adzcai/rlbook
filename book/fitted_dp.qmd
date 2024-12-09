@@ -1,19 +1,9 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
-numbering:
-  enumerator: 5.%s
----
 
-# 5 Fitted Dynamic Programming Algorithms
+
+
+---
+# Fitted Dynamic Programming Algorithms
 
 ## Introduction
 
@@ -77,9 +67,7 @@ We will first take a quick detour to introduce the _empirical risk minimization_
 We will then see its application to _fitted_ RL algorithms,
 which attempt to learn the optimal value function (and the optimal policy) from a dataset of trajectories.
 
-(erm)=
-## Empirical risk minimization
-
+## Empirical risk minimization {#sec-erm}
 The **supervised learning** task is as follows:
 We seek to learn the relationship between some input variables $x$ and some output variable $y$
 (drawn from their joint distribution).
@@ -135,7 +123,7 @@ $$
 \hat f = \arg\min_{f \in \mathcal{F}} \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2
 $$
 
-We will cover the details of the minimization process in [](#the next section <supervised_learning>).
+We will cover the details of the minimization process in @the next section <supervised_learning>.
 :::
 
 :::{attention}
@@ -150,9 +138,9 @@ Let us apply ERM to the RL problem of computing the optimal policy / value funct
 
 How did we compute the optimal value function in MDPs with _finite_ state and action spaces?
 
-- In a [](#finite-horizon MDP <finite_horizon_mdps>), we can use {prf:ref}`dynamic programming <pi_star_dp>`, working backwards from the end of the time horizon, to compute the optimal value function exactly.
+- In a @finite-horizon MDP <finite_horizon_mdps>, we can use {prf:ref}`dynamic programming <pi_star_dp>`, working backwards from the end of the time horizon, to compute the optimal value function exactly.
 
-- In an [](#infinite-horizon MDP <infinite_horizon_mdps>), we can use [](#value iteration <value_iteration>), which iterates the Bellman optimality operator {eq}`bellman_optimality_operator` to approximately compute the optimal value function.
+- In an @infinite-horizon MDP <infinite_horizon_mdps>, we can use @value iteration <value_iteration>, which iterates the Bellman optimality operator {eq}`bellman_optimality_operator` to approximately compute the optimal value function.
 
 Our existing approaches represent the value function, and the MDP itself,
 in matrix notation.
@@ -212,7 +200,7 @@ $$
 f(x) = \E [y \mid x] \quad \text{where} \quad y = r(s_\hi, a_\hi) + \max_{a'} Q^\star_{\hi + 1}(s', a').
 $$
 
-Approximating the conditional expectation is precisely the task that [](#erm) is suited for!
+Approximating the conditional expectation is precisely the task that @erm is suited for!
 
 Our above dataset would give us $N \cdot \hor$ samples in the dataset:
 
@@ -271,7 +259,7 @@ FittingMethod = Callable[[Float[Array, "N D"], Float[Array, " N"]], QFunction]
 
 But notice that the definition of $y_{i \hi}$ depends on the Q-function itself!
 How can we resolve this circular dependency?
-Recall that we faced the same issue [when evaluating a policy in an infinite-horizon MDP](#iterative_pe). There, we iterated the [](#bellman_operator) since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
+Recall that we faced the same issue when evaluating a policy in an infinite-horizon MDP (@iterative_pe). There, we iterated the @bellman_operator since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
 We can apply the same strategy here, using the $\hat f$ from the previous iteration to compute the labels $y_{i \hi}$,
 and then using this new dataset to fit the next iterate.
 
@@ -305,9 +293,7 @@ def fitted_q_iteration(
     return Q_hat
 ```
 
-(fitted-pi-eval)=
-## Fitted policy evaluation
-
+## Fitted policy evaluation {#sec-fitted-pi-eval}
 We can also use this fixed-point interation to *evaluate* a policy using the dataset (not necessarily the one used to generate the trajectories):
 
 :::{prf:definition} Fitted policy evaluation
@@ -352,7 +338,7 @@ How would you modify this algorithm to evaluate the data collection policy?
 
 ## Fitted policy iteration
 
-We can use this policy evaluation algorithm to adapt the [](#policy iteration algorithm <policy_iteration>) to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted_evaluation` algorithm.
+We can use this policy evaluation algorithm to adapt the @policy iteration algorithm <policy_iteration> to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted_evaluation` algorithm.
 
 ```{code-cell}
 def fitted_policy_iteration(

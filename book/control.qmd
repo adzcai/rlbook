@@ -1,22 +1,12 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
+
+
 math:
   '\st': 'x'
   '\act': 'u'
-numbering:
-  enumerator: 2.%s
----
 
-# 2 Linear Quadratic Regulators
+---
+# Linear Quadratic Regulators
 
 ## Introduction
 
@@ -138,7 +128,7 @@ $$
 ### A first attempt: Discretization
 
 Can we solve this problem using tools from the finite MDP setting? If
-$\mathcal{S}$ and $\mathcal{A}$ were finite, then we'd be able to work backwards using the DP algorithm for computing the optimal policy in an MDP ([](#pi_star_dp)).
+$\mathcal{S}$ and $\mathcal{A}$ were finite, then we'd be able to work backwards using the DP algorithm for computing the optimal policy in an MDP (@pi_star_dp).
 This inspires us to try *discretizing* the
 problem.
 
@@ -168,16 +158,14 @@ cost and dynamics were relatively *continuous*. Can we use this
 continuous structure in other ways? This leads us to the **linear
 quadratic regulator**.
 
-(lqr)=
-## The Linear Quadratic Regulator
-
-The optimal control problem [](#optimal_control) seems highly complex in general. Is there a relevant simplification that we can analyze?
+## The Linear Quadratic Regulator {#sec-lqr}
+The optimal control problem @optimal_control seems highly complex in general. Is there a relevant simplification that we can analyze?
 The **linear quadratic regulator** (LQR) is a solvable case and a fundamental tool in control theory.
 
 :::{prf:definition} The linear quadratic regulator
 :label: lqr_definition
 
-The LQR problem is a special case of the [{name}](#optimal_control) with *linear dynamics* and an *upward-curved quadratic cost function*.
+The LQR problem is a special case of the @optimal_control with *linear dynamics* and an *upward-curved quadratic cost function*.
 Solving the LQR problem will additionally enable us to *locally approximate* more complex setups using *Taylor approximations*.
 
 **Linear, time-homogeneous dynamics**: for each timestep $\hi \in [\hor]$,
@@ -229,7 +217,7 @@ and "positive definite" as p.d.
 
 It will be helpful to reintroduce the *value function* notation for a policy to denote the average cost it incurs.
 These will be instrumental in constructing the optimal policy via **dynamic programming,**
-as we did in [](#opt_dynamic_programming) for MDPs.
+as we did in @opt_dynamic_programming for MDPs.
 
 :::{prf:definition} Value functions for LQR
 :label: value_lqr
@@ -259,14 +247,12 @@ Note that since we use _cost_ instead of _reward,_
 the best policies are the ones with _smaller_ values of the value function.
 :::
 
-(optimal_lqr)=
-## Optimality and the Riccati Equation
-
+## Optimality and the Riccati Equation {#sec-optimal_lqr}
 In this section,
 we'll compute the optimal value function $V^\star_h$,
 Q-function $Q^\star_h$,
-and policy $\pi^\star_h$ in [the linear quadratic regulator](#lqr_definition) using **dynamic programming**
-in a very similar way to the DP algorithms [in the MDP setting](#eval_dp).
+and policy $\pi^\star_h$ in @lqr_definition using **dynamic programming**
+in a very similar way to the DP algorithms in @eval_dp.
 Recall the definition of the optimal value function:
 
 :::{prf:definition} Optimal value function in LQR
@@ -328,7 +314,7 @@ for some $K_\hi \in \mathbb{R}^{n_\act \times n_\st}$.
 (The negative is due to convention.)
 :::
 
-The construction (and inductive proof) proceeds similarly to the one [in the MDP setting](#eval_dp).
+The construction (and inductive proof) proceeds similarly to the one in the MDP setting (@eval_dp).
 
 1. We'll compute $V_\hor^\star$ (at the end of the horizon) as our base case.
 2. Then we'll work step-by-step backwards in time, using $V_{\hi+1}^\star$ to compute $Q_\hi^\star$, $\pi_{\hi}^\star$, and $V_\hi^\star$.
@@ -456,7 +442,7 @@ $$
 \nabla_{\act \act} Q_\hi^\star(\st, \act) = R + B^\top P_{\hi+1} B
 $$
 
-Since $R$ is s.p.d. (by [the LQR definition](#lqr_definition)),
+Since $R$ is s.p.d. (@lqr_definition),
 and $P_{\hi+1}$ is s.p.d. (by the inductive hypothesis),
 this sum must also be s.p.d.,
 and so $Q^\star_\hi$ is indeed an upward-curved quadratic with respect to $\act$.
@@ -518,7 +504,7 @@ The scalar term is clearly
 
 $$p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.$$
 
-We can simplify the quadratic term by substituting in $K_\hi$ from [](#k_pi).
+We can simplify the quadratic term by substituting in $K_\hi$ from @k_pi.
 Notice that when we do this,
 the $(R+B^\top P_{\hi+1} B)$ term in the expression is cancelled out by its inverse,
 and the remaining terms combine to give the **Riccati equation**:
@@ -540,7 +526,7 @@ There are several nice properties to note about the Riccati equation:
    such as $V^\star_\hi, Q^\star_\hi$, and $\pi^\star_\hi$.
 3. Together with the dynamics given by $A$ and $B$,
    and the action coefficients $R$ in the lost function,
-   it fully defines the optimal policy [](#lemma_pi_linear).
+   it fully defines the optimal policy @lemma_pi_linear.
 
 It remains to prove that $V^\star_\hi$ _curves upwards,_ that is, that $P_\hi$ is s.p.d. We will use the following fact about **Schur complements:**
 
@@ -617,7 +603,7 @@ and $P_\hi = Q + A S A^\top$ must be p.d.
 
 Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$,
 where $P_\hi$ is s.p.d.,
-proving the inductive hypothesis and completing the proof of [](#optimal_policy_lqr_linear) and [](#optimal_value_lqr_quadratic).
+proving the inductive hypothesis and completing the proof of @optimal_policy_lqr_linear and @optimal_value_lqr_quadratic.
 
 In summary, we just demonstrated that at each timestep $\hi \in [\hor]$,
 the optimal value function $V^\star_\hi$
@@ -662,7 +648,7 @@ $$
 
 
 :::{attention} Exercise
-Show that if we choose actions according to the optimal policy [](#lemma_pi_linear), [](#expected_state) becomes
+Show that if we choose actions according to the optimal policy @lemma_pi_linear, @expected_state becomes
 
 $$
 \E [\st_\hi \mid \st_0, \act_i = \pi^\star_i(\st_i)\quad \forall i \le \hi] = \left( \prod_{i=0}^{\hi-1} (A - B K_i) \right) \st_0.
@@ -709,9 +695,7 @@ Combining these will allow us to use the LQR solution to solve more
 complex setups by taking *Taylor approximations* of the dynamics and
 cost functions.
 
-(time_dep_lqr)=
-### Time-dependent dynamics and cost function
-
+### Time-dependent dynamics and cost function {#sec-time_dep_lqr}
 So far, we've considered the *time-homogeneous* case, where the dynamics
 and cost function stay the same at every timestep. However, this might
 not always be the case. As an example, in many sports, the rules and
@@ -757,7 +741,7 @@ relevant matrices.
 :::
 
 :::{attention} Exercise
-Walk through the proof in [](#optimal_lqr) to verify that we can simply add $\hi$ for the time-dependent case.
+Walk through the proof in @optimal_lqr to verify that we can simply add $\hi$ for the time-dependent case.
 :::
 
 Additionally, by allowing the dynamics to vary across time, we gain the
@@ -794,7 +778,7 @@ $$
 
 :::{attention} exercise
 Derive the optimal solution. You will need to slightly modify the
-proof in [](#optimal_lqr).
+proof in @optimal_lqr.
 :::
 
 ### Tracking a predefined trajectory
@@ -815,7 +799,7 @@ $$
 Note that this punishes states and actions that are far from the
 intended trajectory. By expanding out these multiplications, we can see
 that this is actually a special case of the more general quadratic cost
-function above [](#general_quadratic_cost):
+function above @general_quadratic_cost:
 
 
 $$
@@ -824,9 +808,7 @@ $$
 
 
 
-(approx_nonlinear)=
-## Approximating nonlinear dynamics
-
+## Approximating nonlinear dynamics {#sec-approx_nonlinear}
 The LQR algorithm solves for the optimal policy when the dynamics are
 *linear* and the cost function is an *upward-curved quadratic*. However,
 real settings are rarely this simple! Let's return to the CartPole
@@ -974,7 +956,7 @@ $\widetilde{Q}$ and $\widetilde{R}$.
 Now that we have an upward-curved
 quadratic approximation to the cost function, and a linear approximation
 to the state transitions, we can simply apply the time-homogenous LQR
-methods from [](#optimal_lqr).
+methods from @optimal_lqr.
 
 But what happens when we enter states far away from $\st^\star$ or want
 to use actions far from $\act^\star$? A Taylor approximation is only
@@ -989,9 +971,7 @@ Local linearization might only be accurate in a small region around the
 point of linearization.
 :::
 
-(iterative_lqr)=
-### Iterative LQR
-
+### Iterative LQR {#sec-iterative_lqr}
 To address these issues with local linearization, we'll use an iterative
 approach, where we repeatedly linearize around different points to
 create a *time-dependent* approximation of the dynamics, and then solve
@@ -1005,7 +985,7 @@ For each iteration of the algorithm:
 
 1. Form a time-dependent LQR problem around the current candidate
 trajectory using local linearization.
-2. Compute the optimal policy using [](#time_dep_lqr).
+2. Compute the optimal policy using @time_dep_lqr.
 3. Generate a new series of actions using this policy.
 4. Compute a better candidate trajectory by interpolating between the
 current and proposed actions.

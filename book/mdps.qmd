@@ -1,19 +1,9 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
-numbering:
-  enumerator: 1.%s
----
 
-# 1 Markov Decision Processes
+
+
+---
+# Markov Decision Processes {#sec-mdps}
 
 ## Introduction
 
@@ -236,7 +226,7 @@ A stochastic policy.
     i.e. $\pi = \{ \pi_0, \dots, \pi_{\hor-1} \}.$
 ::::
 
-+++
+
 
 Note that for finite state and action spaces,
 we can represent a randomized mapping $\mathcal{S} \to \Delta(\mathcal{A})$
@@ -285,11 +275,9 @@ This might seem inconvenient, but in larger projects,
 immutability makes code much easier to reason about.
 :::
 
-+++
 
-(trajectories)=
-### Trajectories
 
+### Trajectories {#sec-trajectories}
 :::{prf:definition} Trajectories
 :label: trajectory
 
@@ -377,7 +365,7 @@ For a deterministic policy $\pi$, we have that $\pi_\hi(a \mid s) = \mathbb{I}[a
 that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise.
 In this case, the only randomness in sampling trajectories comes from the initial state distribution $\mu$ and the state transitions $P$.
 
-+++
+
 
 ### Value functions
 
@@ -409,7 +397,7 @@ Similarly, we can define the **action-value function** (aka the
 $$Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a]$$
 :::
 
-+++
+
 
 #### Relating the value function and action-value function
 
@@ -545,7 +533,7 @@ $$
 $$
 :::
 
-+++
+
 
 ### The one-step Bellman operator
 
@@ -619,12 +607,8 @@ out to be more than just a notational convenience: We'll use it to
 construct algorithms for computing the optimal policy.
 
 
-(finite_horizon_mdps)=
-## Solving finite-horizon MDPs
-
-(eval_dp)=
-### Policy evaluation in finite-horizon MDPs
-
+## Solving finite-horizon MDPs {#sec-finite_horizon_mdps}
+### Policy evaluation in finite-horizon MDPs {#sec-eval_dp}
 How can we actually compute the value function of a given policy? This
 is the task of **policy evaluation**.
 
@@ -698,9 +682,7 @@ V_messy = dp_eval_finite(tidy_mdp, tidy_policy_messy_only)
 V_messy
 ```
 
-(opt_dynamic_programming)=
-### Optimal policies in finite-horizon MDPs
-
+### Optimal policies in finite-horizon MDPs {#sec-opt_dynamic_programming}
 We've just seen how to *evaluate* a given policy. But how can we find
 the **optimal policy** for a given environment?
 
@@ -804,7 +786,7 @@ $$
 And so we have $V^{\star} = V^{\hat \pi}$, making $\hat \pi$ optimal.
 ::::
 
-Note that this also gives simplified forms of the [Bellman consistency](#bellman_consistency) equations for the optimal policy:
+Note that this also gives simplified forms of the @bellman_consistency for the optimal policy:
 
 ::::{prf:corollary} Bellman consistency equations for the optimal policy
 :label: bellman_consistency_optimal
@@ -893,9 +875,7 @@ assert jnp.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
 "Assertions passed (the 'tidy when messy' policy is optimal)"
 ```
 
-(infinite_horizon_mdps)=
-## Infinite-horizon MDPs
-
+## Infinite-horizon MDPs {#sec-infinite_horizon_mdps}
 What happens if a trajectory is allowed to continue forever (i.e.
 $H = \infty$)? This is the setting of **infinite horizon** MDPs.
 
@@ -985,7 +965,7 @@ time step we condition on when defining the value function?
 
 ### The Bellman operator is a contraction mapping
 
-Recall from [](#bellman_operator) that the Bellman operator $\mathcal{J}^{\pi}$
+Recall from @bellman_operator that the Bellman operator $\mathcal{J}^{\pi}$
 for a policy $\pi$ takes in a "value function" $v : \mathcal{S} \to \mathbb{R}$ and
 returns the r.h.s. of the Bellman equation for that "value function". In
 the infinite-horizon setting, this is
@@ -1082,7 +1062,7 @@ $$
 
 ### Policy evaluation in infinite-horizon MDPs
 
-The backwards DP technique we used in [the finite-horizon case](#eval_dp) no
+The backwards DP technique we used in the finite-horizon case (@eval_dp) no
 longer works since there is no "final timestep" to start from. We'll
 need another approach to policy evaluation.
 
@@ -1185,9 +1165,7 @@ lower than this.
 eval_deterministic_infinite(tidy_mdp_inf, tidy_policy_messy_only[0])
 ```
 
-(iterative_pe)=
-#### Iterative policy evaluation
-
+#### Iterative policy evaluation {#sec-iterative_pe}
 The matrix inversion above takes roughly $O(|\mathcal{S}|^3)$ time.
 It also only works for deterministic policies.
 Can we trade off the requirement of finding the *exact* value function for a faster
@@ -1317,9 +1295,7 @@ def check_optimal(v: Float[Array, " S"], mdp: MDP):
     return jnp.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
-(value_iteration)=
-#### Value iteration
-
+#### Value iteration {#sec-value_iteration}
 Since the optimal policy is still a policy, our result that the Bellman
 operator is a contracting map still holds, and so we can repeatedly
 apply this operator to converge to the optimal value function! This
@@ -1337,7 +1313,7 @@ value_iteration(tidy_mdp_inf)
 ```
 
 Note that the runtime analysis for an $\epsilon$-optimal value function
-is exactly the same as [iterative policy evaluation](#iterative_pe)! This is because value iteration is simply
+is exactly the same as @iterative_pe! This is because value iteration is simply
 the special case of applying iterative policy evaluation to the
 *optimal* value function.
 
@@ -1427,9 +1403,7 @@ $$T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\
 iterations to achieve an $\epsilon$-accurate estimate of the optimal value function.
 
 
-(policy_iteration)=
-#### Policy iteration
-
+#### Policy iteration {#sec-policy_iteration}
 Can we mitigate this "greedy worsening"? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function *together*? This is the idea behind **policy iteration**. In each step, we simply set the policy to act greedily with respect to its own value function.
 
 ```{code-cell} ipython3

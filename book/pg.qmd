@@ -1,19 +1,9 @@
 ---
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.2
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
-numbering:
-  enumerator: 6.%s
----
 
-# 6  Policy Gradient Methods
+
+
+---
+#  Policy Gradient Methods
 
 ## Introduction
 
@@ -26,10 +16,10 @@ It's typically intractable to compute the optimal policy exactly in some finite 
 Instead, **policy optimization algorithms** start from some randomly initialized policy,
 and then _improve_ it step by step.
 We've already seen some examples of these,
-namely [](#policy_iteration) for finite MDPs and [](#iterative_lqr) in continuous control.
+namely @policy_iteration for finite MDPs and @iterative_lqr in continuous control.
 
 In particular, we often use policies that can be described by some finite set of **parameters.**
-We will see some examples in [](#parameterizations).
+We will see some examples in @parameterizations.
 For such parameterized policies,
 we can approximate the **policy gradient:**
 the gradient of the expected total reward with respect to the parameters.
@@ -141,7 +131,7 @@ it's impossible to increase the function by moving in any direction.
 If $J$ is _convex_, then the only point where this happens is at the *global optimum.*
 Otherwise, if $J$ is nonconvex, the best we can hope for is a *local optimum.*
 
-+++
+
 
 ### Computing derivatives
 
@@ -178,7 +168,7 @@ This allows us to differentiate through programming constructs such as branches 
 and doesn't involve any arbitrarily small values.
 {cite}`baydin_automatic_2018` provides an accessible survey of automatic differentiation.
 
-+++
+
 
 ### Stochastic gradient ascent
 
@@ -238,7 +228,7 @@ $$\|\nabla J(\theta) - \nabla J(\theta')\| \le \beta \|\theta - \theta'\|.$$
 
 We'll now see a concrete application of gradient ascent in the context of policy optimization.
 
-+++
+
 
 ## Policy (stochastic) gradient ascent
 
@@ -252,7 +242,7 @@ Remember that in RL, the primary goal is to find the _optimal policy_ that achie
 \end{aligned}
 :::
 
-where $\rho^\pi$ is the distribution over trajectories induced by $\pi$ (see [](#autoregressive_trajectories)).
+where $\rho^\pi$ is the distribution over trajectories induced by $\pi$ (see @autoregressive_trajectories).
 
 (Note that we'll continue to work in the *undiscounted, finite-horizon case.* Analogous results hold for the *discounted, infinite-horizon setup.*)
 
@@ -263,14 +253,12 @@ but in general, $\pi$ is a function,
 and optimizing over the entire space of arbitrary input-output mappings would be intractable.
 Instead, we need to describe $\pi$ in terms of some finite set of _parameters_ $\theta$.
 
-+++
 
-(parameterizations)=
-### Example policy parameterizations
 
+### Example policy parameterizations {#sec-parameterizations}
 What are some ways we could parameterize our policy?
 
-+++
+
 
 :::{prf:example} Tabular representation
 
@@ -285,7 +273,7 @@ However, this doesn't make use of any structure in the states or actions,
 so while this is flexible, it is also prone to overfitting.
 :::
 
-+++
+
 
 :::{prf:example} Linear in features
 :label: linear-in-features
@@ -297,14 +285,14 @@ $$\pi^\text{linear in features}_{\theta}(a|s) = \frac{\exp(\theta^\top \phi(s, a
 Another interpretation is that $\theta$ represents the feature vector of the "desired" state-action pair, as state-action pairs whose features align closely with $\theta$ are given higher probability.
 :::
 
-+++
+
 
 :::{prf:example} Neural policies
 
 More generally, we could map states and actions to unnormalized scores via some parameterized function $f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},$ such as a neural network, and choose actions according to a softmax: $$\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.$$
 :::
 
-+++
+
 
 :::{prf:example} Diagonal Gaussian policies for continuous action spaces
 
@@ -316,7 +304,7 @@ $$\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).$$
 
 <!-- **Exercise:** Can you extend the "linear in features" policy to continuous action spaces in a similar way? -->
 
-+++
+
 
 Now that we have seen some examples of parameterized policies,
 we will write the total reward in terms of the parameters,
@@ -337,11 +325,9 @@ In order to apply this technique, we need to be able to evaluate the gradient $\
 But $J(\theta)$ is very difficult, or even intractable, to compute exactly, since it involves taking an expectation over all possible trajectories $\tau.$
 Can we rewrite it in a form that's more convenient to implement?
 
-+++
 
-(importance_sampling)=
-### Importance Sampling
 
+### Importance Sampling {#sec-importance_sampling}
 There is a general trick called **importance sampling** for evaluating difficult expectations.
 Suppose we want to estimate $\E_{x \sim p}[f(x)]$ where $p$ is hard or expensive to sample from,
 but easy to evaluate the likelihood $p(x)$ of.
@@ -385,7 +371,7 @@ $$
 (The order of operations is $\nabla (\log \rho_\theta)(\tau)$.)
 
 
-Recall that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is time-homogeneous (i.e. $a_\hi \sim \pi_\theta (s_\hi)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$ autoregressively, as in [](#autoregressive_trajectories). Taking the log of the trajectory likelihood turns it into a sum of terms:
+Recall that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is time-homogeneous (i.e. $a_\hi \sim \pi_\theta (s_\hi)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$ autoregressively, as in @autoregressive_trajectories. Taking the log of the trajectory likelihood turns it into a sum of terms:
 
 $$
 \log \rho_\theta(\tau) = \log \mu(s_0) + \sum_{\hi=0}^{\hor-1} \log \pi_\theta(a_\hi \mid s_\hi) + \log P(s_{\hi+1} \mid s_\hi, a_\hi)
@@ -405,14 +391,14 @@ This gives the following expression for the policy gradient, known as the "REINF
 
 This expression allows us to estimate the gradient by sampling a few sample trajectories from $\pi_\theta,$
 calculating the likelihoods of the chosen actions,
-and substituting these into the expression inside the brackets of [](#reinforce_pg).
+and substituting these into the expression inside the brackets of @reinforce_pg.
 Then we can update the parameters $\theta$ in this direction to perform stochastic gradient ascent.
 
 The rest of this chapter investigates ways to _reduce the variance_ of this estimator by subtracting off certain correlated quantities.
 
 :::{note}
 :label: intuitive-remark
-Here is an alternative, intuitive presentation of [](#reinforce_pg).
+Here is an alternative, intuitive presentation of @reinforce_pg.
 
 Intuitively speaking,
 we want to update the policy parameters to maximize the probability of taking _optimal actions_.
@@ -480,7 +466,7 @@ $$
 
 Consider the "good" trajectories where $R(\tau)$ is large. Then $\theta$ gets updated so that these trajectories become more likely. To see why, recall that $\rho_{\theta}(\tau)$ is the likelihood of the trajectory $\tau$ under the policy $\pi_\theta,$ so the gradient points in the direction that makes $\tau$ more likely.
 
-+++
+
 
 ## Baselines and advantages
 
@@ -531,7 +517,7 @@ As a better baseline, we could instead choose the *value function.*
 Note that the random variable $Q^\pi_\hi(s, a) - V^\pi_\hi(s),$
 where the randomness is taken over the actions, is centered around zero.
 (Recall $V^\pi_\hi(s) = \E_{a \sim \pi} Q^\pi_\hi(s, a).$)
-This quantity matches the intuition given in [](#intuitive-remark):
+This quantity matches the intuition given in @intuitive-remark:
 it is _positive_ for actions that are better than average (in state $s$),
 and _negative_ for actions that are worse than average.
 In fact, this quantity has a particular name: the **advantage function.**
@@ -559,7 +545,7 @@ We can now express the policy gradient as follows. Note that the advantage funct
 
 ::::{prf:example} Policy gradient for the linear-in-features parameterization
 
-The gradient-log-likelihood for the linear-in-features parameterization [](#linear-in-features) is also quite elegant:
+The gradient-log-likelihood for the linear-in-features parameterization @linear-in-features is also quite elegant:
 
 $$
 \begin{aligned}
@@ -614,13 +600,13 @@ or take multiple trajectories $\tau$ and compute the sample average of the gradi
 The baseline estimation step `fit_value` can be done using any appropriate supervised learning algorithm.
 Note that the gradient estimator will be unbiased regardless of the baseline.
 
-+++
+
 
 ## Comparing policy gradient algorithms to policy iteration
 
 <!-- TODO maybe restructure this part -->
 
-What advantages does the policy gradient algorithm have over the policy iteration algorithms covered in [](#policy_iteration)?
+What advantages does the policy gradient algorithm have over the policy iteration algorithms covered in @policy_iteration?
 
 :::{note} Policy iteration recap
 Recall that policy iteration is an algorithm for MDPs with unknown state transitions where we alternate between these two steps:
@@ -717,7 +703,7 @@ This brings us to the next three methods:
 - the **natural policy gradient** (NPG), a first-order approximation of TRPO;
 - **proximal policy optimization** (PPO), a "soft relaxation" of TRPO.
 
-+++
+
 
 ## Trust region policy optimization
 
@@ -832,7 +818,7 @@ Instead, if we assume that both the objective function and the constraint are so
 we can use their _Taylor expansions_ to give us a simpler optimization problem with a closed-form solution.
 This brings us to the **natural policy gradient** algorithm.
 
-+++
+
 
 ## Natural policy gradient
 
@@ -974,7 +960,7 @@ which typically scales as $O((\dim \Theta)^3)$.
 This can be expensive if the parameter space is large.
 Can we find an algorithm that works in _linear time_ with respect to the dimension of the parameter space?
 
-+++
+
 
 ## Proximal policy optimization
 
@@ -1019,7 +1005,7 @@ we would need the actions to also come from $\pi^k$.
 
 This should sound familiar:
 we want to estimate an expectation over one distribution by sampling from another.
-We can once again use [](#importance_sampling) to rewrite the inner expectation:
+We can once again use @importance_sampling to rewrite the inner expectation:
 
 $$
 \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi)
@@ -1089,14 +1075,14 @@ we estimate the gradient of the expected total reward (with respect to the param
 and update the parameters in that direction.
 But estimating the gradient is a tricky task!
 We saw many ways to reduce the variance of the gradient estimator,
-culminating in the advantage-based expression [](#pg_advantage).
+culminating in the advantage-based expression @pg_advantage.
 
 But updating the parameters doesn't entirely solve the problem:
 Sometimes, a small step in the parameters might lead to a big step in the policy.
 To avoid changing the policy too much at each step,
 we must account for the curvature in the parameter space.
-We first did this explicitly with [](#trpo),
-and then saw ways to relax the constraint in [](#npg) and [](#proximal-policy-optimization).
+We first did this explicitly with @trpo,
+and then saw ways to relax the constraint in @npg and @proximal-policy-optimization.
 
 These are still popular methods to this day,
 especially because they efficiently integrate with _deep neural networks_ for representing complex functions.
