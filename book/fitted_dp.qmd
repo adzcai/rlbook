@@ -7,7 +7,7 @@
 
 ## Introduction
 
-We borrow these definitions from the [](./mdps.md) chapter:
+We borrow these definitions from the @sec-mdps chapter:
 
 ```{code-cell}
 :tags: [hide-input]
@@ -58,7 +58,7 @@ def q_to_greedy(Q: QFunction) -> Policy:
     return lambda s, h: np.argmax(Q(s, h))
 ```
 
-The [](./mdps.md) chapter discussed the case of **finite** MDPs, where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite.
+The @sec-mdps chapter discussed the case of **finite** MDPs, where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite.
 This gave us a closed-form expression for computing the r.h.s. of {prf:ref}`the Bellman one-step consistency equation <bellman_consistency>`.
 In this chapter, we consider the case of **large** or **continuous** state spaces, where the state space is too large to be enumerated.
 In this case, we need to *approximate* the value function and Q-function using methods from **supervised learning**.

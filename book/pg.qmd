@@ -166,7 +166,7 @@ we execute them on the _values_ when the function gets called,
 like in numerical differentiation.
 This allows us to differentiate through programming constructs such as branches or loops,
 and doesn't involve any arbitrarily small values.
-{cite}`baydin_automatic_2018` provides an accessible survey of automatic differentiation.
+@baydin_automatic_2018 provides an accessible survey of automatic differentiation.
 
 
 
@@ -379,7 +379,7 @@ $$
 
 When we take the gradient with respect to the parameters $\theta$,
 only the $\pi_\theta(a_\hi | s_\hi)$ terms depend on $\theta$.
-This gives the following expression for the policy gradient, known as the "REINFORCE" policy gradient {cite}`williams_simple_1992`:
+This gives the following expression for the policy gradient, known as the "REINFORCE" policy gradient @williams_simple_1992:
 
 :::{math}
 :label: reinforce_pg
@@ -870,7 +870,7 @@ To see why, it helps to visualize the case where $\theta$ is two-dimensional:
 the constraint describes the inside of an ellipse,
 and the objective function is linear,
 so we can find the extreme point on the boundary of the ellipse.
-We recommend {cite}`boyd_convex_2004` for a comprehensive treatment of convex optimization.
+We recommend @boyd_convex_2004 for a comprehensive treatment of convex optimization.
 
 More generally, for a higher-dimensional $\theta$,
 we can compute the global optima by setting the gradient of the Lagrangian to zero:
@@ -975,7 +975,7 @@ $$
 $$
 
 Here $\lambda$ is a **regularization hyperparameter** that controls the tradeoff between the two terms.
-This is the objective of the **proximal policy optimization** algorithm ({cite}`schulman_proximal_2017`).
+This is the objective of the **proximal policy optimization** algorithm (@schulman_proximal_2017).
 
 How do we solve this optimization?
 Let us begin by simplifying the $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ term. Expanding gives

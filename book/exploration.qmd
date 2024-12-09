@@ -7,7 +7,7 @@
 
 ## Introduction
 
-One of the key challenges of reinforcement learning is the *exploration-exploitation tradeoff*. Should we *exploit* actions we know will give high reward, or should we *explore* different actions to discover potentially better strategies? An algorithm that doesn't explore effectively might easily *overfit* to certain areas of the state space, and fail to generalize once they enter a region they haven't yet seen. The algorithms we saw in the chapter on fitted DP [](./fitted_dp.md) suffer from this issue.
+One of the key challenges of reinforcement learning is the *exploration-exploitation tradeoff*. Should we *exploit* actions we know will give high reward, or should we *explore* different actions to discover potentially better strategies? An algorithm that doesn't explore effectively might easily *overfit* to certain areas of the state space, and fail to generalize once they enter a region they haven't yet seen. The algorithms we saw in the chapter on fitted DP @sec-fitted_dp suffer from this issue.
 
 In @sec-bandits, where the state never changes so all we care about are the actions, we saw algorithms like @ucb and @thompson_sampling that incentivize the learner to explore arms that it is uncertain about. In this chapter, we will see how to generalize these ideas to the MDP setting.
 
@@ -73,7 +73,7 @@ $$\sum_{t=0}^{T-1} V^\star_0 - V_0^{\pi^t} \le |\mathcal{S}||\mathcal{A}| \hor.$
 
 
 ## Treating an unknown MDP as a MAB {#sec-mdp_mab}
-We also explored the exploration-exploitation tradeoff in [](./bandits.md). Recall tthat in the MAB setting, we have $K$ arms, each of which has an unknown reward distribution, and we want to learn which of the arms is *optimal*, i.e. has the highest mean reward.
+We also explored the exploration-exploitation tradeoff in @sec-bandits. Recall tthat in the MAB setting, we have $K$ arms, each of which has an unknown reward distribution, and we want to learn which of the arms is *optimal*, i.e. has the highest mean reward.
 
 One algorithm that struck a good balance between exploration and exploitation was the **upper confidence bound** algorithm @ucb: For each arm, we construct a *confidence interval* for its true mean award, and then choose the arm with the highest upper confidence bound. In summary,
 
@@ -169,7 +169,7 @@ We'd like to do the same for UCB-VI, and construct the bonus term such that $V^\
 $$b_\hi^t(s, a) = 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_\hi^t(s, a)}}.
 \label{eq:ucb_vi_bonus}$$
 
-We will only provide a heuristic sketch of the proof; see {cite}`agarwal_reinforcement_2022` (Section 7.3) for a full proof.
+We will only provide a heuristic sketch of the proof; see @agarwal_reinforcement_2022 (Section 7.3) for a full proof.
 
 ::::{prf:remark} UCB-VI reward bonus construction
 :label: ucb_vi_bonus

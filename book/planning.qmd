@@ -121,7 +121,7 @@ Let us frame tic-tac-toe in this setting.
 - $r(s)$ at a *terminal* state is $+1$ if there are three Xs in a row, $-1$ if there are three Os in a row, and $0$ otherwise.
 :::
 
-Our notation may remind you of [Markov decision processes](./mdps.md).
+Our notation may remind you of @sec-mdps.
 Given that these games also involve a sequence of states and actions,
 can we formulate them as finite-horizon MDPs?
 The two settings are not exactly analogous,
@@ -453,7 +453,7 @@ Can we develop _heuristic methods_ for tree exploration that works for all sorts
 
 ## Monte Carlo Tree Search {#sec-monte-carlo-tree-search}
 The task of evaluating actions in a complex environment might seem familiar.
-We've encountered this problem before in both the [multi-armed bandits](./bandits.md) setting and the [Markov decision process](./mdps.md) setting.
+We've encountered this problem before in both the @sec-bandits setting and the @sec-mdps setting.
 Now we'll see how to combine concepts from these to form a more general and efficient tree search heuristic called **Monte Carlo Tree Search** (MCTS).
 
 When a problem is intractable to solve _exactly_,
@@ -478,7 +478,7 @@ To approximate the win probability from state $s$,
 MCTS samples random games starting in $s$ and computes the sample proportion of those that the player wins.
 
 Note that, for a given state $s$,
-choosing the best action $a$ can be framed as a [multi-armed bandits](./bandits.md) problem,
+choosing the best action $a$ can be framed as a @sec-bandits problem,
 where each action corresponds to an arm,
 and the reward distribution of arm $k$ is the distribution of the game score over random games after choosing that arm.
 The most commonly used bandit algorithm in practice for MCTS is the @ucb algorithm.
@@ -557,7 +557,7 @@ Between turns, we can keep the subtree whose statistics we have visited so far.
 However, the rest of the tree for the actions we did _not_ end up taking gets discarded.
 :::
 
-The application which brought the MCTS algorithm to fame was DeepMind's **AlphaGo** {cite}`silver_mastering_2016`.
+The application which brought the MCTS algorithm to fame was DeepMind's **AlphaGo** @silver_mastering_2016.
 Since then, it has been used in numerous applications ranging from games to automated theorem proving.
 
 How accurate is this Monte Carlo estimation?
@@ -630,7 +630,7 @@ def mcts_iter(tree, s_init):
 
 How do we actually compute a useful $\pi_\text{guide}$ and $v$?
 If we have some existing dataset of trajectories,
-we could use [supervised learning](./imitation_learning.md) (that is, imitation learning)
+we could use @sec-imitation_learning (that is, imitation learning)
 to generate a policy $\pi_\text{guide}$ via behavioral cloning
 and learn $v$ by regressing the game outcomes onto states.
 Then, plugging these into @mcts-policy-value
@@ -649,7 +649,7 @@ Above, we saw how MCTS can be thought of as a "policy improvement" operation:
 for a given policy $\pi^0$,
 we can use it to guide MCTS,
 resulting in an algorithm that is itself a policy $\pi^0_\text{MCTS}$ that maps from states to actions.
-Now, we can use [behavioral cloning](./imitation_learning.md)
+Now, we can use @sec-imitation_learning
 to obtain a new policy $\pi^1$ that imitates $\pi^0_\text{MCTS}$.
 We can now use $\pi^1$ to guide MCTS,
 and repeat.
@@ -679,7 +679,7 @@ that is, with a single set of parameters,
 and the two loss functions are added together.
 :::
 
-This algorithm was brought to fame by AlphaGo Zero {cite}`silver_mastering_2017`.
+This algorithm was brought to fame by AlphaGo Zero @silver_mastering_2017.
 
 
 ## Summary
@@ -696,12 +696,12 @@ and @monte-carlo-tree-search _approximates_ the value of states instead of evalu
 
 ## References
 
-Chapter 5 of {cite}`russell_artificial_2021` provides an excellent overview of search methods in games.
-The original AlphaGo paper {cite}`silver_mastering_2016` was a groundbreaking application of these technologies.
-{cite}`silver_mastering_2017` removed the imitation learning phase,
+Chapter 5 of @russell_artificial_2021 provides an excellent overview of search methods in games.
+The original AlphaGo paper @silver_mastering_2016 was a groundbreaking application of these technologies.
+@silver_mastering_2017 removed the imitation learning phase,
 learning from scratch.
-AlphaZero {cite}`silver_general_2018` then extended to other games beyond Go,
+AlphaZero @silver_general_2018 then extended to other games beyond Go,
 namely shogi and chess,
 also learning from scratch.
-In MuZero {cite}`schrittwieser_mastering_2020`,
+In MuZero @schrittwieser_mastering_2020,
 this was further extended by learning a model of the game dynamics.

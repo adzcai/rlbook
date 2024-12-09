@@ -26,7 +26,7 @@ We'll then explore **dataset aggregation** (DAgger) as a way to query an expert 
 
 ## Behavioral cloning
 
-This notion of "learning from human-provided data" may remind you of the basic premise of [](./supervised_learning.md).
+This notion of "learning from human-provided data" may remind you of the basic premise of @sec-supervised_learning.
 In supervised learning,
 there is some mapping from _inputs_ to _outputs_,
 such as the task of assigning the correct label to an image,
@@ -152,7 +152,7 @@ This is the key idea behind _dataset aggregation_.
 
 ## Dataset aggregation (DAgger)
 
-The DAgger algorithm ({cite}`ross_reduction_2010`) assumes that we have _query access_ to the expert policy.
+The DAgger algorithm (@ross_reduction_2010) assumes that we have _query access_ to the expert policy.
 That is, for a given state $s$,
 we can ask for the expert's action $\pi_{\text{expert}}(s)$ in that state.
 We also need access to the environment for rolling out policies.
@@ -179,7 +179,7 @@ Inputs: $\pi_{\text{expert}}$, an initial policy $\pi_{\text{init}}$, the number
 
 We leave the implementation as an exercise.
 How well does DAgger perform?
-A full proof can be found in {cite}`ross_reduction_2010` that under certain assumptions,
+A full proof can be found in @ross_reduction_2010 that under certain assumptions,
 the DAgger algorithm can better approximate the expert policy:
 
 $$
