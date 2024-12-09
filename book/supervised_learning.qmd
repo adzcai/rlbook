@@ -3,7 +3,7 @@
 
 
 ---
-# Supervised learning
+# Supervised learning {#sec-sl}
 
 ## Introduction
 
@@ -18,8 +18,9 @@ The two main function classes we will cover are **linear models** and **neural n
 Both of these function classes are *parameterized* by some parameters $\theta$,
 and the fitting method will search over these parameters to minimize the empirical risk:
 
-:::{prf:definition} Parameterized empirical risk minimization
-:label: parameterized_empirical_risk_minimization
+::: {#def-parameterized_empirical_risk_minimization}
+
+#### Parameterized empirical risk minimization
 
 Given a dataset of samples $(x_1, y_1), \dots, (x_N, y_N)$ and a class of functions $\mathcal{F}$ parameterized by $\theta$,
 we to find a parameter (vector) $\hat \theta$ that minimizes the empirical risk:
@@ -31,8 +32,9 @@ $$
 
 The most common fitting method for parameterized models is **gradient descent**.
 
-:::{prf:definition} Gradient descent
-:label: gd_def
+::: {#def-gd_def}
+
+#### Gradient descent
 
 Letting $L(\theta) \in \mathbb{R}$ denote the empirical risk in terms of the parameters,
 the gradient descent algorithm updates the parameters according to the rule
@@ -45,7 +47,6 @@ where $\eta > 0$ is the **learning rate**.
 :::
 
 ```{code-cell}
-:tags: [hide-input]
 
 from jaxtyping import Float, Array
 from collections.abc import Callable

@@ -16,6 +16,7 @@ dependencies:
   - jupyterlab                    # notebooks
   - jupyterlab-myst               # enable mystmd in jupyter
   - jupyter_contrib_nbextensions  # allow `algorithmic` latex environment
+  - jupyter-cache
   - jupyter_latex_envs            # same as above
   - jupytext 1.16.2               # open md in jupyter
   - ghp-import                    # github pages

@@ -3,6 +3,8 @@
 
 ---
 
+{{< include macros.qmd >}}
+
 # Introduction {.unnumbered}
 
 Welcome to the study of reinforcement learning!
@@ -25,7 +27,7 @@ Specifically, we will assume that you know the following topics. The _italicized
     expectation and variance, the law of iterated expectations (Adam's rule), covariance, conditional probability, Bayes's rule, and the law of total probability.
 
 You should also be comfortable with programming in Python.
-See @programming for more about this textbook's philosophy regarding programming.
+See @sec-programming for more about this textbook's philosophy regarding programming.
 
 
 
@@ -96,7 +98,7 @@ In exploring a number of algorithms,
 we will see how each of them strikes a different balance between _exploring_ new options and _exploiting_ known options.
 This **exploration-exploitation tradeoff** is a core consideration in RL algorithm design.
 
-@sec-supervised_learning is a standalone crash course on some tools from supervised learning that we will use in later chapters.
+@sec-sl is a standalone crash course on some tools from supervised learning that we will use in later chapters.
 
 @sec-fitted_dp introduces **fitted dynamic programming** (fitted DP) algorithms for solving MDPs.
 These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.
@@ -152,11 +154,14 @@ We use $[N]$ as shorthand for the set $\{ 0, 1, \dots, N-1 \}$.
 
 Note that throughout the text, certain symbols will stand for either random variables or fixed values.
 We aim to clarify in ambiguous settings.
-Be warned that 
+Be warned that notation in RL can appear quite complicated,
+since we often need to index across algorithm iterations, trajectories, and timesteps,
+so that certain values can have two or three indices attached to them.
 
 
 
 ## Programming {#sec-programming}
+
 Why include code in a textbook?
 We believe that implementing an algorithm is a strong test of your understanding of it;
 mathematical notation can often abstract away details,

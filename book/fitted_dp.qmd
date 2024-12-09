@@ -3,14 +3,15 @@
 
 
 ---
-# Fitted Dynamic Programming Algorithms
+{{< include macros.qmd >}}
+
+# Fitted Dynamic Programming Algorithms {#sec-fitted_dp}
 
 ## Introduction
 
 We borrow these definitions from the @sec-mdps chapter:
 
 ```{code-cell}
-:tags: [hide-input]
 
 from typing import NamedTuple, Callable, Optional
 from jaxtyping import Float, Array
@@ -59,7 +60,7 @@ def q_to_greedy(Q: QFunction) -> Policy:
 ```
 
 The @sec-mdps chapter discussed the case of **finite** MDPs, where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite.
-This gave us a closed-form expression for computing the r.h.s. of {prf:ref}`the Bellman one-step consistency equation <bellman_consistency>`.
+This gave us a closed-form expression for computing the r.h.s. of @thm-bellman_consistency.
 In this chapter, we consider the case of **large** or **continuous** state spaces, where the state space is too large to be enumerated.
 In this case, we need to *approximate* the value function and Q-function using methods from **supervised learning**.
 
@@ -80,8 +81,9 @@ $$
 
 An equivalent framing is that we seek to approximate the *conditional expectation* of $y$ given $x$:
 
-:::{prf:theorem} Conditional expectation minimizes mean squared error
-:label: conditional_expectation_minimizes_mse
+::: {#thm-conditional_expectation_minimizes_mse}
+
+#### Conditional expectation minimizes mean squared error
 
 $$
 \arg\min_{f} \E[(y - f(x))^2] = (x \mapsto \E[y \mid x])
@@ -114,8 +116,9 @@ Then we use a _fitting method_ to find a function $\hat f$ that minimizes this o
 and thus approximates the conditional expectation.
 This approach is called **empirical risk minimization**.
 
-:::{prf:definition} Empirical risk minimization
-:label: empirical_risk_minimization
+::: {#def-empirical_risk_minimization}
+
+#### Empirical risk minimization
 
 Given a dataset of samples $(x_1, y_1), \dots, (x_N, y_N)$, empirical risk minimization seeks to find a function $f$ (from some class of functions $\mathcal{F}$) that minimizes the empirical risk:
 
@@ -123,7 +126,7 @@ $$
 \hat f = \arg\min_{f \in \mathcal{F}} \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2
 $$
 
-We will cover the details of the minimization process in @the next section <supervised_learning>.
+We will cover the details of the minimization process in @sec-sl.
 :::
 
 :::{attention}
@@ -138,9 +141,9 @@ Let us apply ERM to the RL problem of computing the optimal policy / value funct
 
 How did we compute the optimal value function in MDPs with _finite_ state and action spaces?
 
-- In a @finite-horizon MDP <finite_horizon_mdps>, we can use {prf:ref}`dynamic programming <pi_star_dp>`, working backwards from the end of the time horizon, to compute the optimal value function exactly.
+- In a @sec-finite_horizon_mdps, we can use @def-pi_star_dp, working backwards from the end of the time horizon, to compute the optimal value function exactly.
 
-- In an @infinite-horizon MDP <infinite_horizon_mdps>, we can use @value iteration <value_iteration>, which iterates the Bellman optimality operator {eq}`bellman_optimality_operator` to approximately compute the optimal value function.
+- In an @sec-infinite_horizon_mdps, we can use @sec-value_iteration, which iterates the Bellman optimality operator @eq-bellman_optimality_operator to approximately compute the optimal value function.
 
 Our existing approaches represent the value function, and the MDP itself,
 in matrix notation.
@@ -186,7 +189,7 @@ trajectories[0][:5]  # show first five transitions from first trajectory
 ```
 
 Can we view the dataset of trajectories as a "labelled dataset" in order to apply supervised learning to approximate the optimal Q-function? Yes!
-Recall that we can characterize the optimal Q-function using the {prf:ref}`Bellman optimality equations <bellman_consistency_optimal>`,
+Recall that we can characterize the optimal Q-function using the @thm-bellman_consistency_optimal,
 which don't depend on an actual policy:
 
 $$
@@ -200,7 +203,7 @@ $$
 f(x) = \E [y \mid x] \quad \text{where} \quad y = r(s_\hi, a_\hi) + \max_{a'} Q^\star_{\hi + 1}(s', a').
 $$
 
-Approximating the conditional expectation is precisely the task that @erm is suited for!
+Approximating the conditional expectation is precisely the task that @sec-erm is suited for!
 
 Our above dataset would give us $N \cdot \hor$ samples in the dataset:
 
@@ -259,16 +262,17 @@ FittingMethod = Callable[[Float[Array, "N D"], Float[Array, " N"]], QFunction]
 
 But notice that the definition of $y_{i \hi}$ depends on the Q-function itself!
 How can we resolve this circular dependency?
-Recall that we faced the same issue when evaluating a policy in an infinite-horizon MDP (@iterative_pe). There, we iterated the @bellman_operator since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
+Recall that we faced the same issue when evaluating a policy in an infinite-horizon MDP (@sec-iterative_pe). There, we iterated the @def-bellman_operator since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
 We can apply the same strategy here, using the $\hat f$ from the previous iteration to compute the labels $y_{i \hi}$,
 and then using this new dataset to fit the next iterate.
 
-:::{prf:definition} Fitted Q-function iteration
-:label: fitted_q_iteration
+::: {#def-fitted_q_iteration}
+
+#### Fitted Q-function iteration
 
 1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
 2. Iterate the following:
-   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the Bellman optimality operator {eq}`bellman_optimality_operator`
+   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the Bellman optimality operator @eq-bellman_optimality_operator
    2. Set $\hat f$ to the function that minimizes the empirical risk:
    
       $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
@@ -296,8 +300,9 @@ def fitted_q_iteration(
 ## Fitted policy evaluation {#sec-fitted-pi-eval}
 We can also use this fixed-point interation to *evaluate* a policy using the dataset (not necessarily the one used to generate the trajectories):
 
-:::{prf:definition} Fitted policy evaluation
-:label: fitted_evaluation
+::: {#def-fitted_evaluation}
+
+#### Fitted policy evaluation
 
 **Input:** Policy $\pi : \mathcal{S} \times [H] \to \Delta(\mathcal{A})$ to be evaluated.
 
@@ -305,7 +310,7 @@ We can also use this fixed-point interation to *evaluate* a policy using the dat
 
 1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
 2. Iterate the following:
-   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the {prf:ref}`Bellman consistency equation <bellman_consistency>` for the given policy.
+   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the @thm-bellman_consistency for the given policy.
    2. Set $\hat f$ to the function that minimizes the empirical risk:
    
       $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
@@ -338,7 +343,7 @@ How would you modify this algorithm to evaluate the data collection policy?
 
 ## Fitted policy iteration
 
-We can use this policy evaluation algorithm to adapt the @policy iteration algorithm <policy_iteration> to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted_evaluation` algorithm.
+We can use this policy evaluation algorithm to adapt @sec-policy_iteration to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted_evaluation` algorithm.
 
 ```{code-cell}
 def fitted_policy_iteration(

@@ -3,7 +3,7 @@
 
 
 ---
-# Tree Search Methods
+# Tree Search Methods {#sec-planning}
 
 
 ## Introduction
@@ -15,13 +15,13 @@ then formulating their strategy to counter yours.
 If this opponent was a computer,
 they might have been using one of the strategies that we are about to explore.
 
-```{code-cell} ipython3
+```{python}
 %load_ext autoreload
 %autoreload 2
 ```
 
-```{code-cell} ipython3
-from utils import Int, Array, latex, jnp
+```{python}
+from utils import Int, Array, latex, jnp, NamedTuple
 from enum import IntEnum
 ```
 
@@ -52,7 +52,7 @@ From Wikimedia.
 If you could store the complete game tree on a computer,
 you would be able to win every potentially winnable game
 by searching all paths from your current state and taking a winning move.
-We will see an explicit algorithm for this in @min-max-search.
+We will see an explicit algorithm for this in @sec-min-max-search.
 However, as games become more complex,
 it becomes computationally impossible to search every possible path.
 
@@ -105,8 +105,9 @@ But most real games have a _variable_ length.
 How would you describe this?
 :::
 
-:::{prf:example} Tic-tac-toe
-:label: tic-tac-toe
+::: {#exm-tic-tac-toe}
+
+#### Tic-tac-toe
 
 Let us frame tic-tac-toe in this setting.
 
@@ -130,69 +131,67 @@ while these games involve two distinct players with opposite objectives.
 Since we want to analyze the behavior of _both_ players at the same time,
 describing such a game as an MDP is more trouble than it's worth.
 
-```{code-cell} ipython3
+```{python}
 class Player(IntEnum):
     EMPTY = 0
     X = 1
     O = 2
 
 
-class TicTacToeEnv(gym.Env):
-    metadata = {"render.modes": ["human"]}
+if False:
+    class TicTacToeEnv(gym.Env):
+        metadata = {"render.modes": ["human"]}
 
-    def __init__(self):
-        super().__init__()
-        self.action_space = spaces.Discrete(9)
-        self.observation_space = spaces.Box(
-            low=0, high=2, shape=(3, 3), dtype=jnp.int32
-        )
-        self.board = None
-        self.current_player = None
-        self.done = None
+        def __init__(self):
+            super().__init__()
+            self.action_space = spaces.Discrete(9)
+            self.observation_space = spaces.Box(
+                low=0, high=2, shape=(3, 3), dtype=jnp.int32
+            )
+            self.board = None
+            self.current_player = None
+            self.done = None
 
-    def reset(self, seed=None, options=None):
-        super().reset(seed=seed)
-        self.board = jnp.zeros((3, 3), dtype=jnp.int32)
-        self.current_player = Player.X
-        self.done = False
-        return self.board, {}
+        def reset(self, seed=None, options=None):
+            super().reset(seed=seed)
+            self.board = jnp.zeros((3, 3), dtype=jnp.int32)
+            self.current_player = Player.X
+            self.done = False
+            return self.board, {}
 
-    def step(self, action: jnp.int32) -> Int[Array, "3 3"]:
-        """Take the action a in state s."""
-        if self.done:
-            raise ValueError("The game is already over. Call `env.reset()` to reset the environment.")
-        
-        row, col = divmod(action, 3)
-        if self.board[row, col] != Player.EMPTY:
-            return self.board, -10
-        return s.at[row, col].set(player)
+        def step(self, action: jnp.int32) -> Int[Array, "3 3"]:
+            """Take the action a in state s."""
+            if self.done:
+                raise ValueError("The game is already over. Call `env.reset()` to reset the environment.")
+            
+            row, col = divmod(action, 3)
+            if self.board[row, col] != Player.EMPTY:
+                return self.board, -10
+            return s.at[row, col].set(player)
 
-    @staticmethod
-    def is_terminal(s: Int[Array, "3 3"]):
-        """Check if the game is over."""
-        return is_winner(s, Player.X) or is_winner(s, Player.O) or jnp.all(s == Player.EMPTY)
-    
-    @staticmethod
-    def is_winner(board: Int[Array, "3 3"], player: Player):
-        """Check if the given player has won."""
-        return any(
-            jnp.all(board[i, :] == player) or
-            jnp.all(board[:, i] == player)
-            for i in range(3)
-        ) or jnp.all(jnp.diag(board) == player) or jnp.all(jnp.diag(jnp.fliplr(board)) == player)
-    
-    @staticmethod
-    def show(s: Int[Array, "3 3"]):
-        """Print the board."""
-        for row in range(3):
-            print(" | ".join(" XO"[s[row, col]] for col in range(3)))
-            if row < 2:
-                print("-" * 5)
+        @staticmethod
+        def is_terminal(s: Int[Array, "3 3"]):
+            """Check if the game is over."""
+            return is_winner(s, Player.X) or is_winner(s, Player.O) or jnp.all(s == Player.EMPTY)
+
+        @staticmethod
+        def is_winner(board: Int[Array, "3 3"], player: Player):
+            """Check if the given player has won."""
+            return any(
+                jnp.all(board[i, :] == player) or
+                jnp.all(board[:, i] == player)
+                for i in range(3)
+            ) or jnp.all(jnp.diag(board) == player) or jnp.all(jnp.diag(jnp.fliplr(board)) == player)
+
+        @staticmethod
+        def show(s: Int[Array, "3 3"]):
+            """Print the board."""
+            for row in range(3):
+                print(" | ".join(" XO"[s[row, col]] for col in range(3)))
+                if row < 2:
+                    print("-" * 5)
 ```
 
-```{code-cell} ipython3
-
-```
 
 ## Min-max search {#sec-min-max-search}
 In the introduction,
@@ -203,8 +202,9 @@ it is already "obvious" which player is going to win.
 
 Let $V_\hi^\star(s)$ denote the game score under optimal play from both players starting in state $s$ at time $\hi$.
 
-:::{prf:definition} Min-max search algorithm
-:label: min-max-value
+::: {#def-min-max-value}
+
+#### Min-max search algorithm
 
 $$
 V_\hi^{\star}(s) = \begin{cases}
@@ -223,9 +223,9 @@ and Min chooses the action that leads to the lowest score.
 
 This translates directly into a recursive depth-first search algorithm for searching the complete game tree.
 
-```{code-cell} ipython3
+```{python}
 def minimax_search(s, player) -> tuple["Action", "Value"]:
-    """Return the value of the state (for Max) and the best action for Max to take."""
+    # Return the value of the state (for Max) and the best action for Max to take.
     if env.is_terminal(s):
         return None, env.winner(s)
 
@@ -247,8 +247,9 @@ def minimax_search(s, player) -> tuple["Action", "Value"]:
 latex(minimax_search, custom_identifiers={"env.step": "P", "env.action_space": r"\mathcal{A}"})
 ```
 
-:::{prf:example} Min-max search for a simple game
-:label: min-max-example
+::: {#exm-min-max-example}
+
+#### Min-max search for a simple game
 
 Consider a simple game with just two steps: Max chooses one of three possible actions (A, B, C),
 and then Min chooses one of three possible actions (D, E, F).
@@ -334,10 +335,11 @@ If Max has any actions that do _better_ than $\beta(s)$,
 they would take it,
 making action $a$ a suboptimal choice for Min.
 
-:::{prf:example} Alpha-beta search for a simple game
-:label: alpha-beta-example
+::: {#exm-alpha-beta-example}
 
-Let us use the same simple game from @min-max-example.
+#### Alpha-beta search for a simple game
+
+Let us use the same simple game from @exm-min-max-example.
 We list the values of $\alpha(s), \beta(s)$ in each node throughout the algorithm.
 These values are initialized to $-\infty, +\infty$ respectively.
 We shade any squares that have not been visited by the algorithm,
@@ -396,11 +398,9 @@ and Min to take action F.
 ![](./shared/alpha-beta-9.png)
 :::
 
-```{code-cell} ipython3
-:jp-MarkdownHeadingCollapsed: true
-
+```{python}
 def alpha_beta_search(s, player, alpha, beta) -> tuple["Action", "Value"]:
-    """Return the value of the state (for Max) and the best action for Max to take."""
+    # Return the value of the state (for Max) and the best action for Max to take.
     if env.is_terminal(s):
         return None, env.winner(s)
 
@@ -451,7 +451,7 @@ Can we develop _heuristic methods_ for tree exploration that works for all sorts
 <!-- Here's where we can incorporate the _reinforcement learning_ -->
 
 
-## Monte Carlo Tree Search {#sec-monte-carlo-tree-search}
+## Monte Carlo Tree Search {#sec-mcts}
 The task of evaluating actions in a complex environment might seem familiar.
 We've encountered this problem before in both the @sec-bandits setting and the @sec-mdps setting.
 Now we'll see how to combine concepts from these to form a more general and efficient tree search heuristic called **Monte Carlo Tree Search** (MCTS).
@@ -481,7 +481,7 @@ Note that, for a given state $s$,
 choosing the best action $a$ can be framed as a @sec-bandits problem,
 where each action corresponds to an arm,
 and the reward distribution of arm $k$ is the distribution of the game score over random games after choosing that arm.
-The most commonly used bandit algorithm in practice for MCTS is the @ucb algorithm.
+The most commonly used bandit algorithm in practice for MCTS is the @sec-ucb algorithm.
 
 :::{note} Summary of UCB
 Let us quickly review the UCB bandit algorithm.
@@ -517,8 +517,9 @@ how many actions have been taken from state $s$.
 This term, $N^s$, gets incremented as the algorithm runs;
 for simplicity, we won't introduce another index to track how it changes.
 
-:::{prf:algorithm} Monte Carlo tree search algorithm
-:label: mcts-algorithm
+::: {#def-mcts-algorithm}
+
+#### Monte Carlo tree search algorithm
 
 Inputs:
 - $T$, the number of iterations per move
@@ -536,8 +537,7 @@ it repeats the following four steps $T$ times:
      - Choose $a \gets \argmax_k \text{UCB}^{s, k}$, where
        $$
        \text{UCB}^{s, a} = \frac{W^{s, a}}{N^{s, a}} + c \sqrt{\frac{\ln N^s}{N^{s, a}}}
-       \label{ucb-tree}
-       $$
+       $$ {#eq-ucb-tree}
      - Append $(s, a)$ to $\tau$
      - Set $s \gets P(s, a)$
 2. **Expansion**: Let $s_\text{new}$ denote the final state in $\tau$ (that has at least one action that hasn't been taken). Choose one of these unexplored actions from $s_\text{new}$. Call it $a_{\text{new}}$. Add it to $\tau$.
@@ -550,7 +550,7 @@ it repeats the following four steps $T$ times:
    - Set $N^s \gets N^s + 1$
 
 After $T$ repeats of the above,
-we return the action with the highest UCB value @ucb-tree.
+we return the action with the highest UCB value @eq-ucb-tree.
 Then play continues.
 
 Between turns, we can keep the subtree whose statistics we have visited so far.
@@ -570,16 +570,17 @@ we might end up with a poor value approximation.
 
 To remedy this,
 we might make use of a value function $v : \mathcal{S} \to \mathbb{R}$ that more efficiently approximates the value of a state.
-Then, we can replace the simulation step of @mcts-algorithm with evaluating $r = v(s_\text{next})$, where $s_\text{next} = P(s_\text{new}, a_\text{new})$.
+Then, we can replace the simulation step of @def-mcts-algorithm with evaluating $r = v(s_\text{next})$, where $s_\text{next} = P(s_\text{new}, a_\text{new})$.
 
 We might also make use of a **"guiding" policy** $\pi_\text{guide} : \mathcal{S} \to \triangle(\mathcal{A})$ that provides "intuition" as to which actions are more valuable in a given state.
-We can scale the exploration term of @ucb-tree according to the policy's outputs.
+We can scale the exploration term of @eq-ucb-tree according to the policy's outputs.
 
 Putting these together,
 we can describe an updated version of MCTS that makes use of these value functions and policy:
 
-:::{prf:algorithm} Monte Carlo tree search with policy and value functions
-:label: mcts-policy-value
+::: {#def-mcts-policy-value}
+
+#### Monte Carlo tree search with policy and value functions
 
 Inputs:
 - $T$, the number of iterations per move
@@ -594,8 +595,7 @@ To select a move in state $s_\text{start}$, we repeat the following four steps $
      - Choose $a \gets \argmax_k \text{UCB}^{s, k}$, where
        $$
        \text{UCB}^{s, a} = \frac{W^{s, a}}{N^s} + c \cdot \pi_\text{guide}(a \mid s) \sqrt{\frac{\ln N^s}{N^{s, a}}}
-       \label{ucb-tree-policy}
-       $$
+       $$ {#eq-ucb-tree-policy}
      - Append $(s, a)$ to $\tau$
      - Set $s \gets P(s, a)$
 2. **Expansion**: Let $s_\text{new}$ denote the final state in $\tau$ (that has at least one action that hasn't been taken). Choose one of these unexplored actions from $s_\text{new}$. Call it $a_{\text{new}}$. Add it to $\tau$.
@@ -605,11 +605,11 @@ To select a move in state $s_\text{start}$, we repeat the following four steps $
    - $W^{s, a} \gets W^{s, a} + r$
    - $N^s \gets N^s + 1$
 
-We finally return the action with the highest UCB value @ucb-tree-policy.
+We finally return the action with the highest UCB value @eq-ucb-tree-policy.
 Then play continues. As before, we can reuse the tree across timesteps.
 :::
 
-```{code-cell} ipython3
+```{python}
 class EdgeStatistics(NamedTuple):
     wins: int = 0
     visits: int = 0
@@ -624,7 +624,7 @@ class MCTSTree:
 
 def mcts_iter(tree, s_init):
     s = s_init
-    while all((s, a) in tree for a in env.action_state(s)):
+    # while all((s, a) in tree for a in env.action_state(s)):
         
 ```
 
@@ -633,7 +633,7 @@ If we have some existing dataset of trajectories,
 we could use @sec-imitation_learning (that is, imitation learning)
 to generate a policy $\pi_\text{guide}$ via behavioral cloning
 and learn $v$ by regressing the game outcomes onto states.
-Then, plugging these into @mcts-policy-value
+Then, plugging these into @def-mcts-policy-value
 results in a stronger policy by using tree search to "think ahead".
 
 But we don't have to stop at just one improvement step;
@@ -642,7 +642,7 @@ we could iterate this process via **self-play**.
 
 ### Self-play
 
-Recall the @policy_iteration algorithm from the @sec-mdps.
+Recall the @sec-policy_iteration algorithm from the @sec-mdps.
 Policy iteration alternates between **policy evaluation** (taking $\pi$ and computing $V^\pi$)
 and **policy improvement** (setting $\pi$ to be greedy with respect to $V^\pi$).
 Above, we saw how MCTS can be thought of as a "policy improvement" operation:
@@ -654,8 +654,9 @@ to obtain a new policy $\pi^1$ that imitates $\pi^0_\text{MCTS}$.
 We can now use $\pi^1$ to guide MCTS,
 and repeat.
 
-:::{prf:algorithm} MCTS with self-play
-:label: mcts-self-play
+::: {#def-mcts-self-play}
+
+#### MCTS with self-play
 
 Input:
 
@@ -666,12 +667,14 @@ Input:
 
 For $t = 0, \dots, T-1$:
 
-- **Policy improvement**: Let $\pi^t_\text{MCTS}$ denote the policy obtained by @mcts-policy-value with $\pi_{\theta^t}$ and $v_{\lambda^t}$. We use $\pi^t_\text{MCTS}$ to play against itself $M$ times. This generates $M$ trajectories $\tau_0, \dots, \tau_{M-1}$.
+- **Policy improvement**: Let $\pi^t_\text{MCTS}$ denote the policy obtained by @def-mcts-policy-value with $\pi_{\theta^t}$ and $v_{\lambda^t}$. We use $\pi^t_\text{MCTS}$ to play against itself $M$ times. This generates $M$ trajectories $\tau_0, \dots, \tau_{M-1}$.
 - **Policy evaluation**: Use behavioral cloning to find a set of policy parameters $\theta^{t+1}$ that mimic the behavior of $\pi^t_\text{MCTS}$ and a set of value function parameters $\lambda^{t+1}$ that approximate its value function. That is,
-  \begin{align*}
+  $$
+  \begin{aligned}
   \theta^{t+1} &\gets \argmin_\theta \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} - \log \pi_\theta(a^m_\hi \mid s^m_\hi) \\
   \lambda^{t+1} &\gets \argmin_\lambda \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} (v_\lambda(s^m_\hi) - R(\tau_m))^2
-  \end{align*}
+  \end{aligned}
+  $$
 
 Note that in implementation,
 the policy and value are typically both returned by a single deep neural network,
@@ -686,12 +689,12 @@ This algorithm was brought to fame by AlphaGo Zero @silver_mastering_2017.
 
 In this chapter,
 we explored tree search-based algorithms for deterministic, zero sum, fully observable two-player games.
-We began with @min-max-search,
+We began with @sec-min-max-search,
 an algorithm for exactly solving the game value of every possible state.
 However, this is impossible to execute in practice,
 and so we must resort to various ways to reduce the number of states and actions that we must explore.
-@alpha-beta-search does this by _pruning_ away states that we already know to be suboptimal,
-and @monte-carlo-tree-search _approximates_ the value of states instead of evaluating them exactly.
+@sec-alpha-beta-search does this by _pruning_ away states that we already know to be suboptimal,
+and @sec-mcts _approximates_ the value of states instead of evaluating them exactly.
 
 
 ## References
