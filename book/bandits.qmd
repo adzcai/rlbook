@@ -56,10 +56,9 @@ def random_argmax(ary: Array) -> int:
 
 # used as decorator
 latex = latexify.algorithmic(
-    prefixes={"mab"},
-    identifiers={"arm": "a_t", "reward": "r", "means": "mu"},
+    trim_prefixes={"mab"},
+    id_to_latex={"arm": "a_t", "reward": "r", "means": "\mu"},
     use_math_symbols=True,
-    escape_underscores=False,
 )
 ```
 
@@ -69,15 +68,23 @@ latex = latexify.algorithmic(
 
 #### Namesake
 
-The name “multi-armed bandits” comes from slot machines in casinos, which are often called “one-armed bandits” since they have one arm (the lever) and take money from the player.
+The name “multi-armed bandits” comes from slot machines in casinos,
+which are often called “one-armed bandits” since they have one arm (the lever) and rob money from the player.
 ::::
 
-Let $K$ denote the number of arms. We’ll label them $0, \dots, K-1$ and use *superscripts* to indicate the arm index; since we seldom need to raise a number to a power, this won’t cause much confusion. In this chapter, we’ll consider the **Bernoulli bandit** setting from the examples above, where arm $k$ either returns reward $1$ with probability $\mu^k$ or $0$ otherwise. The agent gets to pull an arm $T$ times in total. We can formalize the Bernoulli bandit in the following Python code:
+Let $K$ denote the number of arms.
+We’ll label them $0, \dots, K-1$ and use *superscripts* to indicate the arm index;
+since we seldom need to raise a number to a power,
+this won’t cause much confusion.
+In this chapter,
+we’ll consider the **Bernoulli bandit** setting from the examples above,
+where arm $k$ either returns reward $1$ with probability $\mu^k$ or $0$ otherwise.
+The agent gets to pull an arm $T$ times in total.
+We can formalize the Bernoulli bandit in the following Python code:
 
 ```{python}
 class MAB:
-    """
-    The Bernoulli multi-armed bandit environment.
+    """The Bernoulli multi-armed bandit environment.
 
     :param means: the means (success probabilities) of the reward distributions for each arm
     :param T: the time horizon
@@ -145,7 +152,9 @@ What’s the *optimal* strategy for the agent, i.e. the one that achieves
 the highest expected reward? Convince yourself that the agent should try
 to always pull the arm with the highest expected reward:
 
-$$\mu^\star := \max_{k \in [K]} \mu^k.$$
+$$
+\mu^\star := \max_{k \in [K]} \mu^k.
+$$
 
 The goal, then, can be rephrased as to minimize the **regret**, defined
 below:
@@ -334,7 +343,9 @@ This will take a bit more effort. We’ll prove that for any total time $T$, we 
 Let $\hat k$ denote the arm chosen after the exploration phase. We know the regret from the
 exploitation phase is
 
-$$T_{\text{exploit}} (\mu^\star - \mu^{\hat k}) \qquad \text{where} \qquad T_{\text{exploit}} := T - N_{\text{explore}}K.$$
+$$
+T_{\text{exploit}} (\mu^\star - \mu^{\hat k}) \qquad \text{where} \qquad T_{\text{exploit}} := T - N_{\text{explore}}K.
+$$
 
 So we’d like to bound $\mu^\star - \mu^{\hat k} = o(1)$ (as a function
 of $T$) in order to achieve sublinear regret. How can we do this?
@@ -352,7 +363,9 @@ Let $X_0, \dots, X_{n-1}$ be i.i.d. random variables with
 $X_i \in [0, 1]$ almost surely for each $i \in [n]$. Then for any
 $\delta > 0$,
 
-$$\pr\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| > \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.$$
+$$
+\pr\left( \left| \frac{1}{n} \sum_{i=1}^n (X_i - \E[X_i]) \right| > \sqrt{\frac{\ln(2/\delta)}{2n}} \right) \le \delta.
+$$
 :::
 
 The proof of this inequality is beyond the scope of this book. See @vershynin_high-dimensional_2018 Chapter 2.2.
@@ -377,12 +390,16 @@ The **union bound** provides a simple way to do this:
 
 Consider a set of events $A_0, \dots, A_{n-1}$. Then
 
-$$\pr(\exists i \in [n]. A_i) \le \sum_{i=0}^{n-1} \pr(A_i).$$
+$$
+\pr(\exists i \in [n]. A_i) \le \sum_{i=0}^{n-1} \pr(A_i).
+$$
 
 In
 particular, if $\pr(A_i) \ge 1 - \delta$ for each $i \in [n]$, we have
 
-$$\pr(\forall i \in [n]. A_i) \ge 1 - n \delta.$$
+$$
+\pr(\forall i \in [n]. A_i) \ge 1 - n \delta.
+$$
 :::
 
 **Exercise:** Prove the second statement above.
@@ -409,7 +426,9 @@ $$
 where we’ve set $\delta' = K\delta$. Putting this all
 together, we’ve shown that, with probability $1 - \delta'$,
 
-$$\text{Regret}_T \le N_{\text{explore}}K + T_{\text{exploit}} \cdot \sqrt{\frac{2\ln(2K/\delta')}{N_{\text{explore}}}}.$$
+$$
+\text{Regret}_T \le N_{\text{explore}}K + T_{\text{exploit}} \cdot \sqrt{\frac{2\ln(2K/\delta')}{N_{\text{explore}}}}.
+$$
 
 Note that it suffices for $N_{\text{explore}}$ to be on the order of
 $\sqrt{T}$ to achieve sublinear regret. In particular, we can find the
@@ -549,7 +568,9 @@ $$
 
 This bound would then suffice for applying the UCB algorithm! That is, the upper confidence bound for arm $k$ would be
 
-$$M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},$$
+$$
+M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},
+$$
 
 where we can choose $\delta'$ depending on how tight we want the interval to be.
 
@@ -661,7 +682,9 @@ mean to an even looser degree.
 That is, if two arms have means that are within about $1/\sqrt{T}$, we
 won’t be able to confidently tell them apart, and will sample them about
 equally. But then we’ll incur regret
-$$\Omega((T/2) \cdot (1/\sqrt{T})) = \Omega(\sqrt{T}).$$
+$$
+\Omega((T/2) \cdot (1/\sqrt{T})) = \Omega(\sqrt{T}).
+$$
 
 
 
@@ -719,10 +742,12 @@ We’ve been working in the Bernoulli bandit setting, where arm $k$ yields a rew
 
 Under the Bayesian perspective, we think of $\boldsymbol{\mu}$ as a *random* vector drawn from some prior distribution $\pi(\boldsymbol{\mu})$. For example, we might have $\pi$ be the Uniform distribution over the unit hypercube $[0, 1]^K$, that is,
 
-$$\pi(\boldsymbol{\mu}) = \begin{cases}
+$$
+\pi(\boldsymbol{\mu}) = \begin{cases}
     1 & \text{if } \boldsymbol{\mu}\in [0, 1]^K \\
     0 & \text{otherwise}
-\end{cases}$$
+\end{cases}
+$$
 
 In this case, upon viewing some reward, we can exactly calculate the **posterior** distribution of $\boldsymbol{\mu}$ using Bayes’s rule (i.e. the definition of conditional probability):
 
@@ -769,11 +794,15 @@ It turns out that asymptotically, Thompson sampling is optimal in the
 following sense. @lai_asymptotically_1985 prove an
 *instance-dependent* lower bound that says for *any* bandit algorithm,
 
-$$\liminf_{T \to \infty} \frac{\E[N_T^k]}{\ln(T)} \ge \frac{1}{\text{KL}(\mu^k \parallel \mu^\star)}$$
+$$
+\liminf_{T \to \infty} \frac{\E[N_T^k]}{\ln(T)} \ge \frac{1}{\text{KL}(\mu^k \parallel \mu^\star)}
+$$
 
 where
 
-$$\text{KL}(\mu^k \parallel \mu^\star) = \mu^k \ln \frac{\mu^k}{\mu^\star} + (1 - \mu^k) \ln \frac{1 - \mu^k}{1 - \mu^\star}$$
+$$
+\text{KL}(\mu^k \parallel \mu^\star) = \mu^k \ln \frac{\mu^k}{\mu^\star} + (1 - \mu^k) \ln \frac{1 - \mu^k}{1 - \mu^\star}
+$$
 
 measures the **Kullback-Leibler divergence** from the Bernoulli
 distribution with mean $\mu^k$ to the Bernoulli distribution with mean
@@ -844,7 +873,9 @@ $\theta^k \in \mathbb{R}^d$ describes a *feature direction* for arm $k$. Recall
 that **supervised learning** gives us a way to estimate a conditional
 expectation from samples: We learn a *least squares* estimator from the
 timesteps where arm $k$ was selected:
-$$\hat \theta_t^k = \arg\min_{\theta \in \mathbb{R}^d} \sum_{\{ i \in [t] : a_i = k \}} (r_i - x_i^\top \theta)^2.$$
+$$
+\hat \theta_t^k = \arg\min_{\theta \in \mathbb{R}^d} \sum_{\{ i \in [t] : a_i = k \}} (r_i - x_i^\top \theta)^2.
+$$
 This has the closed-form solution known as the *ordinary least squares*
 (OLS) estimator:
 
@@ -870,16 +901,20 @@ inequality** to construct an upper confidence bound.
 
 For a random variable $Y$ such that
 $\E Y = 0$ and $\E Y^2 = \sigma^2$,
-$$|Y| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}$$
+$$
+|Y| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
+$$
 :::
 
 Since the OLS estimator is known to be unbiased (try proving this
 yourself), we can apply Chebyshev's inequality to
 $x_t^\top (\hat \theta_t^k - \theta^k)$:
 
-$$\begin{aligned}
+$$
+\begin{aligned}
     x_t^\top \theta^k \le x_t^\top \hat \theta_t^k + \beta \sqrt{x_t^\top (A_t^k)^{-1} x_t} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
-\end{aligned}$$
+\end{aligned}
+$$
 
 :::{attention}
 We haven't explained why $x_t^\top (A_t^k)^{-1} x_t$ is the correct
@@ -889,9 +924,13 @@ follows from some algebra on the definition of the OLS estimator @eq-ols_bandit.
 
 The first term is exactly our predicted reward $\hat \mu^k_t(x_t)$. To
 interpret the second term, note that
-$$x_t^\top (A_t^k)^{-1} x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,$$
+$$
+x_t^\top (A_t^k)^{-1} x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,
+$$
 where
-$$\Sigma_t^k = \frac{1}{N_t^k} \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top$$
+$$
+\Sigma_t^k = \frac{1}{N_t^k} \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top
+$$
 is the empirical covariance matrix of the contexts (assuming that the
 context has mean zero). That is, the learner is encouraged to choose
 arms when $x_t$ is *not aligned* with the data seen so far, or if arm

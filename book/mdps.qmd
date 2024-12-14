@@ -34,7 +34,9 @@ An interactive environment satisfies the **Markov property** if the
 probability of transitioning to a new state only depends on the current
 state and action:
 
-$$\pr(s_{\hi+1} \mid s_0, a_0, \dots, s_\hi, a_\hi) = P(s_{\hi+1} \mid s_\hi, a_\hi)$$
+$$
+\pr(s_{\hi+1} \mid s_0, a_0, \dots, s_\hi, a_\hi) = P(s_{\hi+1} \mid s_\hi, a_\hi)
+$$
 
 where $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$ describes the state transitions.
 (We’ll elaborate on this notation later in the chapter.)
@@ -94,7 +96,9 @@ The components of a finite-horizon Markov decision process are:
 Combined together, these objects specify a finite-horizon Markov
 decision process:
 
-$$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \hor).$$
+$$
+M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \hor).
+$$
 
 When there are **finitely** many states and actions, i.e.
 $|\mathcal{S}|, |\mathcal{A}| < \infty$, we can express
@@ -291,7 +295,9 @@ immutability makes code much easier to reason about.
 
 A sequence of states, actions, and rewards is called a **trajectory**:
 
-$$\tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})$$
+$$
+\tau = (s_0, a_0, r_0, \dots, s_{H-1}, a_{H-1}, r_{H-1})
+$$
 
 where $r_\hi = r(s_\hi, a_\hi)$.
 (Note that some sources omit the reward at the final time step. This is a minor detail.)
@@ -344,7 +350,9 @@ we can write down the likelihood function of this probability distribution in an
 
 #### Autoregressive trajectory distribution
 
-$$\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})$$
+$$
+\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})
+$$
 :::
 
 ```{python}
@@ -396,7 +404,9 @@ A policy's **value function** at time $\hi$ is its expected remaining reward *fr
 
 #### Value function
 
-$$V_\hi^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s]$$
+$$
+V_\hi^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s]
+$$
 :::
 
 Similarly, we can define the **action-value function** (aka the
@@ -406,7 +416,9 @@ Similarly, we can define the **action-value function** (aka the
 
 #### Action-value function
 
-$$Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a]$$
+$$
+Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a]
+$$
 :::
 
 
@@ -416,7 +428,9 @@ $$Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\h
 Note that the value function is just the expected action-value over
 actions drawn from the policy:
 
-$$V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)]$$
+$$
+V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)]
+$$
 
 ```{python}
 def q_to_v(
@@ -433,7 +447,9 @@ def q_to_v(
 and the action-value is the sum of the immediate reward and the expected value of the following
 state:
 
-$$Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]$$
+$$
+Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]
+$$
 
 ```{python}
 def v_to_q(
@@ -526,7 +542,9 @@ action-value function:
 
 #### Bellman consistency equation for action-values
 
-$$Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}(s')}} [Q_{\hi+1}^\pi(s', a')]$$
+$$
+Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}(s')}} [Q_{\hi+1}^\pi(s', a')]
+$$
 :::
 
 :::{attention}
@@ -560,7 +578,9 @@ equation for that "value function":
 
 #### Bellman operator
 
-$$[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].$$
+$$
+[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + v(s')].
+$$
 
 This is a crucial tool for reasoning about MDPs.
 Intuitively, it answers the following question:
@@ -610,7 +630,9 @@ Note that it's defined on any "value function" mapping states to real numbers;
 $v$ doesn't have to be a well-defined value function for some policy (hence the lowercase notation).
 The Bellman operator also gives us a concise way to express @thm-bellman_consistency for the value function:
 
-$$V_\hi^\pi = \mathcal{J}^{\pi}(V_{\hi+1}^\pi)$$
+$$
+V_\hi^\pi = \mathcal{J}^{\pi}(V_{\hi+1}^\pi)
+$$
 
 Intuitively, the output of the Bellman operator, a new "value function",
 evaluates states as follows: from a given state, take one action
@@ -737,14 +759,18 @@ action-value function:
 
 #### It is optimal to be greedy with respect to the optimal value function
 
-$$\pi_\hi^\star(s) = \arg\max_a Q_\hi^\star(s, a).$$
+$$
+\pi_\hi^\star(s) = \arg\max_a Q_\hi^\star(s, a).
+$$
 :::
 
 ::::{prf:proof} Proof
 Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and
 action-value functions. Consider the greedy policy
 
-$$\hat \pi_\hi(s) := \arg\max_a Q_\hi^{\star}(s, a).$$
+$$
+\hat \pi_\hi(s) := \arg\max_a Q_\hi^{\star}(s, a).
+$$
 
 We aim to show that
 $\hat \pi$ is optimal; that is, $V^{\hat \pi} = V^{\star}$.
@@ -762,7 +788,9 @@ $V^{\star} = V^{\hat \pi}$.
 $\mathcal{J}^{\hat \pi}$ never decreases $V_\hi^{\star}$
 (elementwise):
 
-$$[\mathcal{J}^{\hat \pi} (V_{\hi+1}^{\star})](s) \ge V_\hi^{\star}(s).$$
+$$
+[\mathcal{J}^{\hat \pi} (V_{\hi+1}^{\star})](s) \ge V_\hi^{\star}(s).
+$$
 
 **Proof:**
 
@@ -783,7 +811,9 @@ doesn't affect our result (make sure you see why).
 
 We can now apply this result recursively to get
 
-$$V^{\star}_t(s) \le V^{\hat \pi}_t(s)$$
+$$
+V^{\star}_t(s) \le V^{\hat \pi}_t(s)
+$$
 
 as follows. (Note that even
 though $\hat \pi$ is deterministic, we'll use the $a \sim \hat \pi(s)$
@@ -831,18 +861,24 @@ can do this by working backwards in time using **dynamic programming**
 take any more actions, so the $Q$-function is simply the reward that
 we obtain:
 
-$$Q^\star_{H-1}(s, a) = r(s, a)$$
+$$
+Q^\star_{H-1}(s, a) = r(s, a)
+$$
 
 so the best thing to do
 is just act greedily and get as much reward as we can!
 
-$$\pi^\star_{H-1}(s) = \arg\max_a Q^\star_{H-1}(s, a)$$
+$$
+\pi^\star_{H-1}(s) = \arg\max_a Q^\star_{H-1}(s, a)
+$$
 
 Then
 $V^\star_{H-1}(s)$, the optimal value of state $s$ at the end of the
 trajectory, is simply whatever action gives the most reward.
 
-$$V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)$$
+$$
+V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
+$$
 
 **Recursion.** Then, we can work backwards in time, starting from the
 end, using our consistency equations! i.e. for each
@@ -917,7 +953,9 @@ might blow up to infinity. Instead of a time horizon $H$, we now need a
 **discount factor** $\gamma \in [0, 1)$ such that rewards become less
 valuable the further into the future they are:
 
-$$r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{\hi+k}.$$
+$$
+r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots = \sum_{k=0}^\infty \gamma^k r_{\hi+k}.
+$$
 
 We can think of $\gamma$ as measuring how much we care about the future:
 if it's close to $0$, we only care about the near-term rewards; it's
@@ -939,7 +977,9 @@ useful to review geometric series.
 
 The other components of the MDP remain the same:
 
-$$M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).$$
+$$
+M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).
+$$
 
 Code-wise, we can reuse the `MDP` class from before @def-finite_horizon_mdp and set `mdp.H = float('inf')`.
 
@@ -988,7 +1028,9 @@ for a policy $\pi$ takes in a "value function" $v : \mathcal{S} \to \mathbb{R}$ 
 returns the r.h.s. of the Bellman equation for that "value function". In
 the infinite-horizon setting, this is
 
-$$[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma v(s')].$$
+$$
+[\mathcal{J}^{\pi}(v)](s) := \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma v(s')].
+$$
 
 The crucial property of the Bellman operator is that it is a
 **contraction mapping** for any policy. Intuitively, if we start with
@@ -1003,7 +1045,9 @@ together at an exponential rate.
 Let $X$ be some space with a norm $\|\cdot\|$. We call an operator
 $f: X \to X$ a **contraction mapping** if for any $x, y \in X$,
 
-$$\|f(x) - f(y)\| \le \gamma \|x - y\|$$
+$$
+\|f(x) - f(y)\| \le \gamma \|x - y\|
+$$
 
 for some fixed $\gamma \in (0, 1)$.
 Intuitively, this means that if two points are $\delta$ far apart,
@@ -1015,7 +1059,9 @@ after applying the mapping,
 Show that for a contraction mapping $f$ with coefficient
 $\gamma$, for all $t \in \mathbb{N}$,
 
-$$\|f^{(t)}(x) - f^{(t)}(y)\| \le \gamma^t \|x - y\|,$$
+$$
+\|f^{(t)}(x) - f^{(t)}(y)\| \le \gamma^t \|x - y\|,
+$$
 
 i.e. that any
 two points will be pushed closer by at least a factor of $\gamma$ at
@@ -1036,7 +1082,9 @@ operator. How can we measure the distance between two "value functions"
 $v, u : \mathcal{S} \to \mathbb{R}$? We'll take the **supremum norm** as our distance
 metric:
 
-$$\| v - u \|_{\infty} := \sup_{s \in \mathcal{S}} |v(s) - u(s)|,$$
+$$
+\| v - u \|_{\infty} := \sup_{s \in \mathcal{S}} |v(s) - u(s)|,
+$$
 
 i.e.
 we compare the "value functions" on the state that causes the biggest
@@ -1112,9 +1160,11 @@ The tabular MDP from before has $|\mathcal{S}| = 2$ and $|\mathcal{A}| = 2$. Let
 down the quantities for the policy $\pi$ that tidies if and only if the
 room is messy:
 
-$$r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad
+$$
+r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \quad
         P^{\pi} = \begin{bmatrix} 0.7 & 0.3 \\ 1 & 0 \end{bmatrix}, \quad
-        \mu = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$$
+        \mu = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
+$$
         
 We'll see how to
 evaluate this policy in the next section.
@@ -1123,7 +1173,9 @@ evaluate this policy in the next section.
 The Bellman consistency equation for a deterministic policy can be
 written in tabular notation as
 
-$$V^\pi = r^\pi + \gamma P^\pi V^\pi.$$
+$$
+V^\pi = r^\pi + \gamma P^\pi V^\pi.
+$$
 
 (Unfortunately, this notation doesn't simplify the expression for
 $Q^\pi$.) This system of equations can be solved with a matrix
@@ -1161,15 +1213,21 @@ def eval_deterministic_infinite(
 Let's use the same policy $\pi$ that tidies if and only if the room is
 messy. Setting $\gamma = 0.95$, we must invert
 
-$$I - \gamma P^{\pi} = \begin{bmatrix} 1 - 0.95 \times 0.7 & - 0.95 \times 0.3 \\ - 0.95 \times 1 & 1 - 0.95 \times 0 \end{bmatrix} = \begin{bmatrix} 0.335 & -0.285 \\ -0.95 & 1 \end{bmatrix}.$$
+$$
+I - \gamma P^{\pi} = \begin{bmatrix} 1 - 0.95 \times 0.7 & - 0.95 \times 0.3 \\ - 0.95 \times 1 & 1 - 0.95 \times 0 \end{bmatrix} = \begin{bmatrix} 0.335 & -0.285 \\ -0.95 & 1 \end{bmatrix}.
+$$
 
 The inverse to two decimal points is
 
-$$(I - \gamma P^{\pi})^{-1} = \begin{bmatrix} 15.56 & 4.44 \\ 14.79 & 5.21 \end{bmatrix}.$$
+$$
+(I - \gamma P^{\pi})^{-1} = \begin{bmatrix} 15.56 & 4.44 \\ 14.79 & 5.21 \end{bmatrix}.
+$$
 
 Thus the value function is
 
-$$V^{\pi} = (I - \gamma P^{\pi})^{-1} r^{\pi} = \begin{bmatrix} 15.56 & 4.44 \\ 14.79 & 5.21 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 15.56 \\ 14.79 \end{bmatrix}.$$
+$$
+V^{\pi} = (I - \gamma P^{\pi})^{-1} r^{\pi} = \begin{bmatrix} 15.56 & 4.44 \\ 14.79 & 5.21 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 15.56 \\ 14.79 \end{bmatrix}.
+$$
 
 Let's sanity-check this result. Since rewards are at most $1$, the
 maximum cumulative return of a trajectory is at most
@@ -1192,7 +1250,9 @@ computing the value function. We'll start with an initial guess
 $v^{(0)}$ with elements in $[0, 1/(1-\gamma)]$ and then iterate the
 Bellman operator:
 
-$$v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}),$$
+$$
+v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}),
+$$
 
 i.e. $v^{(t)} = (\mathcal{J}^{\pi})^{(t)} (v^{(0)})$. Note that each iteration
 takes $O(|\mathcal{S}|^2)$ time for the matrix-vector multiplication.
@@ -1218,7 +1278,9 @@ def iterative_evaluation(mdp: MDP, pi: Float[Array, "S A"], ε=1e-6) -> Float[Ar
 
 Then, as we showed in @eq-bellman_convergence, by the Banach fixed-point theorem:
 
-$$\|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.$$
+$$
+\|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.
+$$
 
 ```{python}
 iterative_evaluation(tidy_mdp_inf, tidy_policy_messy_only[0])
@@ -1332,7 +1394,9 @@ As the final step of the algorithm, to return an actual policy
 $\hat \pi$, we can simply act greedily with respect to the final iteration
 $v^{(T)}$ of our above algorithm:
 
-$$\hat \pi(s) = \arg\max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v^{(T)}(s') \right].$$
+$$
+\hat \pi(s) = \arg\max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v^{(T)}(s') \right].
+$$
 
 We must be careful, though: the value function of this greedy policy,
 $V^{\hat \pi}$, is *not* the same as $v^{(T)}$, which need not even be a
@@ -1348,11 +1412,15 @@ which might potentially be very large.
 
 #### Greedy policy value worsening
 
-$$\|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}$$
+$$
+\|V^{\hat \pi} - V^\star \|_{\infty} \le \frac{2 \gamma}{1-\gamma} \|v - V^\star\|_{\infty}
+$$
 
 where $\hat \pi(s) = \arg\max_a q(s, a)$ is the greedy policy with respect to
 
-$$q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s').$$
+$$
+q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s').
+$$
 :::
 
 :::{prf:proof} Proof
@@ -1369,7 +1437,9 @@ Let's bound these two quantities separately.
 
 For the first quantity, note that by the definition of $\hat \pi$, we have
 
-$$q(s, \hat \pi(s)) \ge q(s,\pi^\star(s)).$$
+$$
+q(s, \hat \pi(s)) \ge q(s,\pi^\star(s)).
+$$
 
 Let's add $q(s, \hat \pi(s)) - q(s,\pi^\star(s)) \ge 0$ to the first term to get
 
@@ -1406,11 +1476,15 @@ $$
 
 So in order to compensate and achieve $\|V^{\hat \pi} - V^{\star}\| \le \epsilon$, we must have
 
-$$\|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.$$
+$$
+\|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.
+$$
 
 This means, using @rem-iterations_vi, we need to run value iteration for
 
-$$T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)$$
+$$
+T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)
+$$
 
 iterations to achieve an $\epsilon$-accurate estimate of the optimal value function.
 
@@ -1440,16 +1514,22 @@ Although PI appears more complex than VI, we'll use @thm-bellman_contraction to 
 We aim to show that the number of iterations required for an
 $\epsilon$-accurate estimate of the optimal value function is
 
-$$T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \right).$$
+$$
+T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \right).
+$$
 
 This bound follows from the contraction property @eq-bellman_convergence:
 
-$$\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.$$
+$$
+\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.
+$$
 
 We'll prove that the iterates of PI respect the contraction property by
 showing that the policies improve monotonically:
 
-$$V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s).$$
+$$
+V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s).
+$$
 
 Then we'll use this to show
 $V^{\pi^{t+1}}(s) \ge [\mathcal{J}^{\star}(V^{\pi^{t}})](s)$. Note that
@@ -1500,7 +1580,9 @@ $$
 
 This means we can now apply the Bellman convergence result @eq-bellman_convergence to get
 
-$$\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\mathcal{J}^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.$$
+$$
+\|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\mathcal{J}^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.
+$$
 ::::
 
 ## Summary

@@ -1,40 +1,18 @@
----
-
-
-
----
 {{< include macros.qmd >}}
 
-#  Policy Gradient Methods {#sec-pg}
+# Policy Gradient Methods {#sec-pg}
 
 ## Introduction
 
-The core task of RL is finding the **optimal policy** in a given environment.
-This is essentially an _optimization problem:_
-out of some space of policies,
-we want to find the one that achieves the maximum total reward (in expectation).
+The core task of RL is finding the **optimal policy** in a given environment. This is essentially an *optimization problem:* out of some space of policies, we want to find the one that achieves the maximum total reward (in expectation).
 
-It's typically intractable to compute the optimal policy exactly in some finite number of steps.
-Instead, **policy optimization algorithms** start from some randomly initialized policy,
-and then _improve_ it step by step.
-We've already seen some examples of these,
-namely @sec-policy_iteration for finite MDPs and @sec-iterative_lqr in continuous control.
+It's typically intractable to compute the optimal policy exactly in some finite number of steps. Instead, **policy optimization algorithms** start from some randomly initialized policy, and then *improve* it step by step. We've already seen some examples of these, namely @sec-policy_iteration for finite MDPs and @sec-iterative_lqr in continuous control.
 
-In particular, we often use policies that can be described by some finite set of **parameters.**
-We will see some examples in @sec-parameterizations.
-For such parameterized policies,
-we can approximate the **policy gradient:**
-the gradient of the expected total reward with respect to the parameters.
-This tells us the direction the parameters should be updated to achieve a higher expected total reward.
-Policy gradient methods are responsible for groundbreaking applications including AlphaGo, OpenAI Five, and large language models,
-many of which use policies parameterized as deep neural networks.
+In particular, we often use policies that can be described by some finite set of **parameters.** We will see some examples in @sec-parameterizations. For such parameterized policies, we can approximate the **policy gradient:** the gradient of the expected total reward with respect to the parameters. This tells us the direction the parameters should be updated to achieve a higher expected total reward. Policy gradient methods are responsible for groundbreaking applications including AlphaGo, OpenAI Five, and large language models, many of which use policies parameterized as deep neural networks.
 
-1. We begin the chapter with a short review of gradient ascent,
-   a general **optimization method.**
-2. We'll then see how to estimate the **policy gradient,**
-   enabling us to apply (stochastic) gradient ascent in the RL setting.
-3. Then we'll explore some _proximal optimization_ techniques that ensure the steps taken are "not too large".
-   This is helpful to stabilize training and widely used in practice.
+1.  We begin the chapter with a short review of gradient ascent, a general **optimization method.**
+2.  We'll then see how to estimate the **policy gradient,** enabling us to apply (stochastic) gradient ascent in the RL setting.
+3.  Then we'll explore some *proximal optimization* techniques that ensure the steps taken are "not too large". This is helpful to stabilize training and widely used in practice.
 
 ```{python}
 %load_ext autoreload
@@ -47,21 +25,11 @@ from utils import plt, Array, Float, Callable, jax, jnp, latex, gym
 
 ## Gradient Ascent
 
-
-:::{note}
-You may have previously heard of _gradient descent_ for minimizing functions.
-Optimization problems are usually posed as _minimization_ problems by convention.
-However, in RL, we usually talk about _maximizing_ the expected total reward,
-and so we perform gradient _ascent_ instead.
+::: {note}
+You may have previously heard of *gradient descent* for minimizing functions. Optimization problems are usually posed as *minimization* problems by convention. However, in RL, we usually talk about *maximizing* the expected total reward, and so we perform gradient *ascent* instead.
 :::
 
-**Gradient ascent** is a general optimization algorithm for any differentiable function.
-A suitable analogy for this algorithm is hiking up a mountain,
-where you keep taking steps in the steepest direction upwards.
-Here, your vertical position $y$ is the function being optimized,
-and your horizontal position $(x, z)$ is the input to the function.
-The _slope_ of the mountain at your current position is given by the _gradient_,
-written $\nabla y(x, z) \in \mathbb{R}^2$.
+**Gradient ascent** is a general optimization algorithm for any differentiable function. A suitable analogy for this algorithm is hiking up a mountain, where you keep taking steps in the steepest direction upwards. Here, your vertical position $y$ is the function being optimized, and your horizontal position $(x, z)$ is the input to the function. The *slope* of the mountain at your current position is given by the *gradient*, written $\nabla y(x, z) \in \mathbb{R}^2$.
 
 ```{python}
 def f(x, y):
@@ -97,13 +65,9 @@ $$
 \end{pmatrix}.
 $$
 
-To calculate the _slope_ (aka "directional derivative") of the mountain in a given direction $(\Delta x, \Delta z)$,
-you take the dot product of the difference vector with the gradient.
-This means that the direction with the highest slope is exactly the gradient itself,
-so we can describe the gradient ascent algorithm as follows:
+To calculate the *slope* (aka "directional derivative") of the mountain in a given direction $(\Delta x, \Delta z)$, you take the dot product of the difference vector with the gradient. This means that the direction with the highest slope is exactly the gradient itself, so we can describe the gradient ascent algorithm as follows:
 
 ::: {#def-gradient-ascent}
-
 #### Gradient ascent
 
 $$
@@ -119,69 +83,34 @@ x^{k} \\ z^{k}
 $$
 :::
 
-where $k$ denotes the iteration of the algorithm and $\eta > 0$ is a "step size" hyperparameter that controls the size of the steps we take.
-(Note that we could also vary the step size across iterations, that is, $\eta^0, \dots, \eta^K$.)
+where $k$ denotes the iteration of the algorithm and $\eta > 0$ is a "step size" hyperparameter that controls the size of the steps we take. (Note that we could also vary the step size across iterations, that is, $\eta^0, \dots, \eta^K$.)
 
-The case of a two-dimensional input is easy to visualize.
-But this idea can be straightforwardly extended to higher-dimensional inputs.
+The case of a two-dimensional input is easy to visualize. But this idea can be straightforwardly extended to higher-dimensional inputs.
 
-From now on, we'll use $J$ to denote the function we're trying to maximize,
-and $\theta$ to denote the parameters being optimized over. (In the above example, $\theta = \begin{pmatrix} x & z \end{pmatrix}^\top$).
+From now on, we'll use $J$ to denote the function we're trying to maximize, and $\theta$ to denote the parameters being optimized over. (In the above example, $\theta = \begin{pmatrix} x & z \end{pmatrix}^\top$).
 
-Notice that our parameters will stop changing once $\nabla J(\theta) = 0.$
-Once we reach this **stationary point,** our current parameters are 'locally optimal' in some sense;
-it's impossible to increase the function by moving in any direction.
-If $J$ is _convex_, then the only point where this happens is at the *global optimum.*
-Otherwise, if $J$ is nonconvex, the best we can hope for is a *local optimum.*
-
-
+Notice that our parameters will stop changing once $\nabla J(\theta) = 0.$ Once we reach this **stationary point,** our current parameters are 'locally optimal' in some sense; it's impossible to increase the function by moving in any direction. If $J$ is *convex*, then the only point where this happens is at the *global optimum.* Otherwise, if $J$ is nonconvex, the best we can hope for is a *local optimum.*
 
 ### Computing derivatives
 
 How does a computer compute the gradient of a function?
 
-One way is _symbolic differentiation,_
-which is similar to the way you might compute it by hand:
-the computer applies a list of rules to transform the _symbols_ involved.
-Python's `sympy` package supports symbolic differentiation.
-However, functions implemented in code may not always have a straightforward symbolic representation.
+One way is *symbolic differentiation,* which is similar to the way you might compute it by hand: the computer applies a list of rules to transform the *symbols* involved. Python's `sympy` package supports symbolic differentiation. However, functions implemented in code may not always have a straightforward symbolic representation.
 
-Another way is _numerical differentiation,_
-which is based on the limit definition of a (directional) derivative:
+Another way is *numerical differentiation,* which is based on the limit definition of a (directional) derivative:
 
 $$
 \nabla_{\boldsymbol{u}} J(\boldsymbol{x}) = \lim_{\varepsilon \to 0}
 \frac{J(\boldsymbol{x} + \varepsilon \boldsymbol{u}) - J(\boldsymbol{x})}{\varepsilon}
 $$
 
-Then, we can substitute a small value of $\varepsilon$ on the r.h.s. to approximate the directional derivative.
-How small, though? If we need an accurate estimate,
-we may need such a small value of $\varepsilon$ that typical computers will run into rounding errors.
-Also, to compute the full gradient,
-we would need to compute the r.h.s. once for each input dimension.
-This is an issue if computing $J$ is expensive.
+Then, we can substitute a small value of $\varepsilon$ on the r.h.s. to approximate the directional derivative. How small, though? If we need an accurate estimate, we may need such a small value of $\varepsilon$ that typical computers will run into rounding errors. Also, to compute the full gradient, we would need to compute the r.h.s. once for each input dimension. This is an issue if computing $J$ is expensive.
 
-**Automatic differentiation** achieves the best of both worlds.
-Like symbolic differentiation,
-we manually implement the derivative rules for a few basic operations.
-However, instead of executing these on the _symbols_,
-we execute them on the _values_ when the function gets called,
-like in numerical differentiation.
-This allows us to differentiate through programming constructs such as branches or loops,
-and doesn't involve any arbitrarily small values.
-@baydin_automatic_2018 provides an accessible survey of automatic differentiation.
-
-
+**Automatic differentiation** achieves the best of both worlds. Like symbolic differentiation, we manually implement the derivative rules for a few basic operations. However, instead of executing these on the *symbols*, we execute them on the *values* when the function gets called, like in numerical differentiation. This allows us to differentiate through programming constructs such as branches or loops, and doesn't involve any arbitrarily small values. @baydin_automatic_2018 provides an accessible survey of automatic differentiation.
 
 ### Stochastic gradient ascent
 
-In real applications,
-computing the gradient of the target function is not so simple.
-As an example from supervised learning, $J(\theta)$ might be the sum of squared prediction errors across an entire training dataset.
-However, if our dataset is very large, it might not fit into our computer's memory!
-Typically in these cases, we compute some _estimate_ of the gradient at each step, and walk in that direction instead.
-This is called **stochastic** gradient ascent.
-In the SL example above, we might randomly choose a *minibatch* of samples and use them to estimate the true prediction error. (This approach is known as **_minibatch_ SGD**.)
+In real applications, computing the gradient of the target function is not so simple. As an example from supervised learning, $J(\theta)$ might be the sum of squared prediction errors across an entire training dataset. However, if our dataset is very large, it might not fit into our computer's memory! Typically in these cases, we compute some *estimate* of the gradient at each step, and walk in that direction instead. This is called **stochastic** gradient ascent. In the SL example above, we might randomly choose a *minibatch* of samples and use them to estimate the true prediction error. (This approach is known as ***minibatch*** **SGD**.)
 
 ```{python}
 
@@ -202,38 +131,34 @@ def sgd(
 latex(sgd)
 ```
 
-What makes one gradient estimator better than another?
-Ideally, we want this estimator to be **unbiased;** that is, on average, it matches a single true gradient step:
+What makes one gradient estimator better than another? Ideally, we want this estimator to be **unbiased;** that is, on average, it matches a single true gradient step:
 
 $$
 \E [\tilde \nabla J(\theta)] = \nabla J(\theta).
 $$
 
-We also want the _variance_ of the estimator to be low so that its performance doesn't change drastically at each step.
+We also want the *variance* of the estimator to be low so that its performance doesn't change drastically at each step.
 
-We can actually show that, for many "nice" functions, in a finite number of steps, SGD will find a $\theta$ that is "close" to a stationary point.
-In another perspective, for such functions, the local "landscape" of $J$ around $\theta$ becomes flatter and flatter the longer we run SGD.
+We can actually show that, for many "nice" functions, in a finite number of steps, SGD will find a $\theta$ that is "close" to a stationary point. In another perspective, for such functions, the local "landscape" of $J$ around $\theta$ becomes flatter and flatter the longer we run SGD.
 
-:::{note} SGD convergence
-More formally, suppose we run SGD for $K$ steps, using an unbiased gradient estimator.
-Let the step size $\eta^k$ scale as $O(1/\sqrt{k}).$
-Then if $J$ is bounded and $\beta$-smooth (see below),
-and the _norm_ of the gradient estimator has a bounded second moment $\sigma^2,$
+:::{note} SGD convergence More formally, suppose we run SGD for $K$ steps, using an unbiased gradient estimator. Let the step size $\eta^k$ scale as $O(1/\sqrt{k}).$ Then if $J$ is bounded and $\beta$-smooth (see below), and the *norm* of the gradient estimator has a bounded second moment $\sigma^2,$
 
-$$\|\nabla J(\theta^K)\|^2 \le O \left( M \beta \sigma^2 / K\right).$$
+$$
+\|\nabla J(\theta^K)\|^2 \le O \left( M \beta \sigma^2 / K\right).
+$$
 
 We call a function $\beta$-smooth if its gradient is Lipschitz continuous with constant $\beta$:
 
-$$\|\nabla J(\theta) - \nabla J(\theta')\| \le \beta \|\theta - \theta'\|.$$
+$$
+\|\nabla J(\theta) - \nabla J(\theta')\| \le \beta \|\theta - \theta'\|.
+$$
 :::
 
 We'll now see a concrete application of gradient ascent in the context of policy optimization.
 
-
-
 ## Policy (stochastic) gradient ascent
 
-Remember that in RL, the primary goal is to find the _optimal policy_ that achieves the maximimum total reward, which we can express using @def-value:
+Remember that in RL, the primary goal is to find the *optimal policy* that achieves the maximimum total reward, which we can express using @def-value:
 
 $$
 \begin{aligned}
@@ -245,120 +170,87 @@ where $\rho^\pi$ is the distribution over trajectories induced by $\pi$ (see @de
 
 (Note that we'll continue to work in the *undiscounted, finite-horizon case.* Analogous results hold for the *discounted, infinite-horizon setup.*)
 
-As shown by the notation, this is exactly the function $J$ that we want to maximize using gradient ascent.
-What variables are we optimizing over in this problem?
-Well, the objective function $J$ is a function of the policy $\pi$,
-but in general, $\pi$ is a function,
-and optimizing over the entire space of arbitrary input-output mappings would be intractable.
-Instead, we need to describe $\pi$ in terms of some finite set of _parameters_ $\theta$.
-
-
+As shown by the notation, this is exactly the function $J$ that we want to maximize using gradient ascent. What variables are we optimizing over in this problem? Well, the objective function $J$ is a function of the policy $\pi$, but in general, $\pi$ is a function, and optimizing over the entire space of arbitrary input-output mappings would be intractable. Instead, we need to describe $\pi$ in terms of some finite set of *parameters* $\theta$.
 
 ### Example policy parameterizations {#sec-parameterizations}
+
 What are some ways we could parameterize our policy?
 
-
-
 ::: {#exm-tabular-repr}
-
 #### Tabular representation
 
-If both the state and action spaces are finite, perhaps we could simply learn a preference value $\theta_{s,a}$ for each state-action pair.
-Then to turn this into a valid distribution, we perform a **softmax** operation:
-we exponentiate each of them,
-and then normalize to form a valid distribution.
+If both the state and action spaces are finite, perhaps we could simply learn a preference value $\theta_{s,a}$ for each state-action pair. Then to turn this into a valid distribution, we perform a **softmax** operation: we exponentiate each of them, and then normalize to form a valid distribution.
 
-$$\pi^\text{softmax}_\theta(a | s) = \frac{\exp(\theta_{s,a})}{\sum_{s,a'} \exp (\theta_{s,a'})}.$$
+$$
+\pi^\text{softmax}_\theta(a | s) = \frac{\exp(\theta_{s,a})}{\sum_{s,a'} \exp (\theta_{s,a'})}.
+$$
 
-However, this doesn't make use of any structure in the states or actions,
-so while this is flexible, it is also prone to overfitting.
+However, this doesn't make use of any structure in the states or actions, so while this is flexible, it is also prone to overfitting.
 :::
 
-
-
 ::: {#exm-linear-in-features}
-
 #### Linear in features
 
 Another approach is to map each state-action pair into some **feature space** $\phi(s, a) \in \mathbb{R}^p$. Then, to map a feature vector to a probability, we take a linear combination of the features and take a softmax:
 
-$$\pi^\text{linear in features}_{\theta}(a|s) = \frac{\exp(\theta^\top \phi(s, a))}{\sum_{a'} \exp(\theta^\top \phi(s, a'))}.$$
+$$
+\pi^\text{linear in features}_{\theta}(a|s) = \frac{\exp(\theta^\top \phi(s, a))}{\sum_{a'} \exp(\theta^\top \phi(s, a'))}.
+$$
 
 Another interpretation is that $\theta$ represents the feature vector of the "desired" state-action pair, as state-action pairs whose features align closely with $\theta$ are given higher probability.
 :::
 
-
-
 ::: {#exm-neural-policy}
-
 #### Neural policies
 
-More generally, we could map states and actions to unnormalized scores via some parameterized function $f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},$ such as a neural network, and choose actions according to a softmax: $$\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.$$
+More generally, we could map states and actions to unnormalized scores via some parameterized function $f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},$ such as a neural network, and choose actions according to a softmax:
+
+$$
+\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.
+$$
 :::
 
-
-
 ::: {#exm-gaussian-policy}
-
 #### Diagonal Gaussian policies for continuous action spaces
 
 Consider a continuous $n$-dimensional action space $\mathcal{A} = \mathbb{R}^n$. Then for a stochastic policy, we could use a function to predict the *mean* action and then add some random noise about it. For example, we could use a neural network to predict the mean action $\mu_\theta(s)$ and then add some noise $\epsilon \sim \mathcal{N}(0, \sigma^2 I)$ to it:
 
-$$\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).$$
-
+$$
+\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).
+$$
 :::
 
 <!-- **Exercise:** Can you extend the "linear in features" policy to continuous action spaces in a similar way? -->
 
+Now that we have seen some examples of parameterized policies, we will write the total reward in terms of the parameters, overloading notation and letting $\rho_\theta := \rho^{\pi_\theta}$:
 
-
-Now that we have seen some examples of parameterized policies,
-we will write the total reward in terms of the parameters,
-overloading notation and letting $\rho_\theta := \rho^{\pi_\theta}$:
-
-$$J(\theta) = \E_{\tau \sim \rho_\theta} R(\tau)$$
+$$
+J(\theta) = \E_{\tau \sim \rho_\theta} R(\tau)
+$$
 
 where $R(\tau) = \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi)$ denotes the total reward in the trajectory.
 
-Now how do we maximize this function (the expected total reward) over the parameters?
-One simple idea would be to directly apply gradient ascent:
+Now how do we maximize this function (the expected total reward) over the parameters? One simple idea would be to directly apply gradient ascent:
 
 $$
 \theta^{k+1} = \theta^k + \eta \nabla J(\theta^k).
 $$
 
-In order to apply this technique, we need to be able to evaluate the gradient $\nabla J(\theta).$
-But $J(\theta)$ is very difficult, or even intractable, to compute exactly, since it involves taking an expectation over all possible trajectories $\tau.$
-Can we rewrite it in a form that's more convenient to implement?
-
-
+In order to apply this technique, we need to be able to evaluate the gradient $\nabla J(\theta).$ But $J(\theta)$ is very difficult, or even intractable, to compute exactly, since it involves taking an expectation over all possible trajectories $\tau.$ Can we rewrite it in a form that's more convenient to implement?
 
 ### Importance Sampling {#sec-importance_sampling}
-There is a general trick called **importance sampling** for evaluating difficult expectations.
-Suppose we want to estimate $\E_{x \sim p}[f(x)]$ where $p$ is hard or expensive to sample from,
-but easy to evaluate the likelihood $p(x)$ of.
-Suppose that we _can_ easily sample from a different distribution $q$.
-Since an expectation is just a weighted average, we can sample $x$ from $q$, compute $f(x)$, and then reweight the results:
-if $x$ is very likely under $p$ but unlikely under $q$,
-we should boost its weighting,
-and if it is common under $q$ but uncommon under $p$,
-we should lower its weighting.
-The reweighting factor is exactly the **likelihood ratio** between the target distribution $p$ and the sampling distribution $q$:
+
+There is a general trick called **importance sampling** for evaluating difficult expectations. Suppose we want to estimate $\E_{x \sim p}[f(x)]$ where $p$ is hard or expensive to sample from, but easy to evaluate the likelihood $p(x)$ of. Suppose that we *can* easily sample from a different distribution $q$. Since an expectation is just a weighted average, we can sample $x$ from $q$, compute $f(x)$, and then reweight the results: if $x$ is very likely under $p$ but unlikely under $q$, we should boost its weighting, and if it is common under $q$ but uncommon under $p$, we should lower its weighting. The reweighting factor is exactly the **likelihood ratio** between the target distribution $p$ and the sampling distribution $q$:
 
 $$
 \E_{x \sim p}[f(x)] = \sum_{x \in \mathcal{X}} f(x) p(x) = \sum_{x \in \mathcal{X}} f(x) \frac{p(x)}{q(x)} q(x) = \E_{x \sim q} \left[ \frac{p(x)}{q(x)} f(x) \right].
 $$
 
-Doesn't this seem too good to be true? If there were no drawbacks, we could use this to estimate *any* expectation of any function on any arbitrary distribution! The drawback is that the variance may be very large due to the likelihood ratio term.
-If there are values of $x$ that are very rare in the sampling distribution $q$,
-but common under $p$,
-then the likelihood ratio $p(x)/q(x)$ will cause the variance to blow up.
+Doesn't this seem too good to be true? If there were no drawbacks, we could use this to estimate *any* expectation of any function on any arbitrary distribution! The drawback is that the variance may be very large due to the likelihood ratio term. If there are values of $x$ that are very rare in the sampling distribution $q$, but common under $p$, then the likelihood ratio $p(x)/q(x)$ will cause the variance to blow up.
 
 ## The REINFORCE policy gradient
 
-Returning to RL, suppose there is some trajectory distribution $\rho(\tau)$ that is **easy to sample from,** such as a database of existing trajectories.
-We can then rewrite $\nabla J(\theta)$, a.k.a. the *policy gradient*, as follows.
-All gradients are being taken with respect to $\theta$.
+Returning to RL, suppose there is some trajectory distribution $\rho(\tau)$ that is **easy to sample from,** such as a database of existing trajectories. We can then rewrite $\nabla J(\theta)$, a.k.a. the *policy gradient*, as follows. All gradients are being taken with respect to $\theta$.
 
 $$
 \begin{aligned}
@@ -376,16 +268,13 @@ $$
 
 (The order of operations is $\nabla (\log \rho_\theta)(\tau)$.)
 
-
 Recall that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is time-homogeneous (i.e. $a_\hi \sim \pi_\theta (s_\hi)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$ autoregressively, as in @def-autoregressive_trajectories. Taking the log of the trajectory likelihood turns it into a sum of terms:
 
 $$
 \log \rho_\theta(\tau) = \log \mu(s_0) + \sum_{\hi=0}^{\hor-1} \log \pi_\theta(a_\hi \mid s_\hi) + \log P(s_{\hi+1} \mid s_\hi, a_\hi)
 $$
 
-When we take the gradient with respect to the parameters $\theta$,
-only the $\pi_\theta(a_\hi | s_\hi)$ terms depend on $\theta$.
-This gives the following expression for the policy gradient, known as the "REINFORCE" policy gradient @williams_simple_1992:
+When we take the gradient with respect to the parameters $\theta$, only the $\pi_\theta(a_\hi | s_\hi)$ terms depend on $\theta$. This gives the following expression for the policy gradient, known as the "REINFORCE" policy gradient @williams_simple_1992:
 
 $$
 \begin{aligned}
@@ -393,49 +282,32 @@ $$
 \end{aligned}
 $$ {#eq-reinforce_pg}
 
-This expression allows us to estimate the gradient by sampling a few sample trajectories from $\pi_\theta,$
-calculating the likelihoods of the chosen actions,
-and substituting these into the expression inside the brackets of @eq-reinforce_pg.
-Then we can update the parameters $\theta$ in this direction to perform stochastic gradient ascent.
+This expression allows us to estimate the gradient by sampling a few sample trajectories from $\pi_\theta,$ calculating the likelihoods of the chosen actions, and substituting these into the expression inside the brackets of @eq-reinforce_pg. Then we can update the parameters $\theta$ in this direction to perform stochastic gradient ascent.
 
-The rest of this chapter investigates ways to _reduce the variance_ of this estimator by subtracting off certain correlated quantities.
+The rest of this chapter investigates ways to *reduce the variance* of this estimator by subtracting off certain correlated quantities.
 
-:::{#lem-intuitive-remark}
-
+::: {#lem-intuitive-remark}
 ## Intuition behind REINFORCE
 
-Intuitively speaking,
-we want to update the policy parameters to maximize the probability of taking _optimal actions_.
-That is, suppose we are in state $s$, and $a^\star$ is an optimal action to take.
-Then we want to solve $\theta = \arg\max_{\theta'} \pi_{\theta'}(a^\star \mid s)$,
-which would lead to the gradient ascent expression
+Intuitively speaking, we want to update the policy parameters to maximize the probability of taking *optimal actions*. That is, suppose we are in state $s$, and $a^\star$ is an optimal action to take. Then we want to solve $\theta = \arg\max_{\theta'} \pi_{\theta'}(a^\star \mid s)$, which would lead to the gradient ascent expression
 
 $$
 \theta \gets \theta + \nabla \pi_{\theta}(a^\star \mid s).
 $$
 
-However, we don't know the optimal action $a^\star$ in practice.
-So instead, we must try many actions,
-and _increase_ the probability of the "good" ones
-and _decrease_ the probability of the "bad" ones.
-Suppose $A(s, a)$ is a measure of how good action $a$ is in state $s$.
-Then we could write
+However, we don't know the optimal action $a^\star$ in practice. So instead, we must try many actions, and *increase* the probability of the "good" ones and *decrease* the probability of the "bad" ones. Suppose $A(s, a)$ is a measure of how good action $a$ is in state $s$. Then we could write
 
 $$
 \theta \gets \theta + \sum_a \pi_{\theta}(a \mid s) A(s, a) \nabla \pi_{\theta}(a \mid s).
 $$
 
-But this has an issue: the size of each step doesn't just depend on how good it is,
-but also how _often_ the policy takes it already.
-This could lead to a positive feedback loop where likely actions become more and more likely,
-without respect to the quality of the action.
-So we divide by the likelihood to cancel out this factor:
+But this has an issue: the size of each step doesn't just depend on how good it is, but also how *often* the policy takes it already. This could lead to a positive feedback loop where likely actions become more and more likely, without respect to the quality of the action. So we divide by the likelihood to cancel out this factor:
 
 $$
 \theta \gets \theta + \sum_a \pi_{\theta}(a \mid s) A(s, a) \frac{\nabla \pi_{\theta}(a \mid s)}{\pi_{\theta}(a \mid s)}.
 $$
 
-But once we simplify, and sum across timesteps, this becomes _almost_ exactly the gradient written above!
+But once we simplify, and sum across timesteps, this becomes *almost* exactly the gradient written above!
 
 $$
 \theta \gets \theta + \mathbb{E}_{a \sim \pi_{\theta}(\cdot \mid s)} [\sum_{\hi=0}^{\hor-1} A(s_\hi, a_\hi) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi) ].
@@ -445,8 +317,8 @@ We will see later on what $A$ concretely corresponds to.
 :::
 
 ```{python}
-@latex
 def estimate_gradient_reinforce_pseudocode(env: gym.Env, pi, theta: Float[Array, " D"]):
+    """Estimate the policy gradient using REINFORCE."""
     tau = sample_trajectory(env, pi(theta))
     nabla_hat = jnp.zeros_like(theta)
     total_reward = sum(r for _s, _a, r in tau)
@@ -456,7 +328,7 @@ def estimate_gradient_reinforce_pseudocode(env: gym.Env, pi, theta: Float[Array,
         nabla_hat += jax.grad(policy_log_likelihood)(theta) * total_reward
     return nabla_hat
 
-estimate_gradient_reinforce_pseudocode
+latex(estimate_gradient_reinforce_pseudocode, id_to_latex={"jax.grad": r"\nabla"})
 ```
 
 For some intuition into how this method works, recall that we update our parameters according to
@@ -470,26 +342,17 @@ $$
 
 Consider the "good" trajectories where $R(\tau)$ is large. Then $\theta$ gets updated so that these trajectories become more likely. To see why, recall that $\rho_{\theta}(\tau)$ is the likelihood of the trajectory $\tau$ under the policy $\pi_\theta,$ so the gradient points in the direction that makes $\tau$ more likely.
 
-
-
 ## Baselines and advantages
 
-A central idea from supervised learning is the **bias-variance decomposition**,
-which shows that the mean squared error of an estimator is the sum of its squared bias and its variance.
-The REINFORCE gradient estimator @eq-reinforce_pg is already *unbiased,* meaning that its expectation over trajectories is the true policy gradient.
-Can we find ways to reduce its _variance_ as well?
+A central idea from supervised learning is the **bias-variance decomposition**, which shows that the mean squared error of an estimator is the sum of its squared bias and its variance. The REINFORCE gradient estimator @eq-reinforce_pg is already *unbiased,* meaning that its expectation over trajectories is the true policy gradient. Can we find ways to reduce its *variance* as well?
 
-As a first step,
-consider that the action taken at step $t$ does not affect the reward from previous timesteps, since they're already in the past.
-You can also show rigorously that this is the case,
-and that we only need to consider the present and future rewards to calculate the policy gradient:
+As a first step, consider that the action taken at step $t$ does not affect the reward from previous timesteps, since they're already in the past. You can also show rigorously that this is the case, and that we only need to consider the present and future rewards to calculate the policy gradient:
 
 $$
 \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{\hi=0}^{\hor-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) \sum_{\hi' = \hi}^{\hor-1} r(s_{\hi'}, a_{\hi'}) \right]
 $$
 
-Furthermore, by a conditioning argument, we can replace the inner sum over remaining rewards with the policy's Q-function,
-evaluated at the current state:
+Furthermore, by a conditioning argument, we can replace the inner sum over remaining rewards with the policy's Q-function, evaluated at the current state:
 
 $$
 \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{\hi=0}^{\hor-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) Q^{\pi_\theta}(s_{\hi}, a_{\hi}) \right]
@@ -497,8 +360,7 @@ $$ {#eq-pg_with_q}
 
 **Exercise:** Prove that this is equivalent to the previous definitions. What modification to the expression must be made for the discounted, infinite-horizon setting?
 
-We can further reduce variance by subtracting a **baseline function** $b_\hi : \mathcal{S} \to \mathbb{R}$ at each timestep $\hi$.
-This modifies the policy gradient as follows:
+We can further reduce variance by subtracting a **baseline function** $b_\hi : \mathcal{S} \to \mathbb{R}$ at each timestep $\hi$. This modifies the policy gradient as follows:
 
 $$
 \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
@@ -509,22 +371,15 @@ $$
     \right].
 $$ {#eq-pg_baseline}
 
-(Again, you should try to prove that this equality still holds.)
-For example, we might want $b_\hi$ to estimate the average reward-to-go at a given timestep:
+(Again, you should try to prove that this equality still holds.) For example, we might want $b_\hi$ to estimate the average reward-to-go at a given timestep:
 
-$$b_\hi^\theta = \E_{\tau \sim \rho_\theta} R_\hi(\tau).$$
+$$
+b_\hi^\theta = \E_{\tau \sim \rho_\theta} R_\hi(\tau).
+$$
 
-As a better baseline, we could instead choose the *value function.*
-Note that the random variable $Q^\pi_\hi(s, a) - V^\pi_\hi(s),$
-where the randomness is taken over the actions, is centered around zero.
-(Recall $V^\pi_\hi(s) = \E_{a \sim \pi} Q^\pi_\hi(s, a).$)
-This quantity matches the intuition given in @lem-intuitive-remark:
-it is _positive_ for actions that are better than average (in state $s$),
-and _negative_ for actions that are worse than average.
-In fact, this quantity has a particular name: the **advantage function.**
+As a better baseline, we could instead choose the *value function.* Note that the random variable $Q^\pi_\hi(s, a) - V^\pi_\hi(s),$ where the randomness is taken over the actions, is centered around zero. (Recall $V^\pi_\hi(s) = \E_{a \sim \pi} Q^\pi_\hi(s, a).$) This quantity matches the intuition given in @lem-intuitive-remark: it is *positive* for actions that are better than average (in state $s$), and *negative* for actions that are worse than average. In fact, this quantity has a particular name: the **advantage function.**
 
 ::: {#def-advantage}
-
 #### Advantage function
 
 $$
@@ -532,8 +387,7 @@ A^\pi_\hi(s, a) = Q^\pi_\hi(s, a) - V^\pi_\hi(s)
 $$
 :::
 
-This measures how much better this action does than the average for that policy.
-(Note that for an optimal policy $\pi^\star,$ the advantage of a given state-action pair is always zero or negative.)
+This measures how much better this action does than the average for that policy. (Note that for an optimal policy $\pi^\star,$ the advantage of a given state-action pair is always zero or negative.)
 
 We can now express the policy gradient as follows. Note that the advantage function effectively replaces the $Q$-function from @eq-pg_with_q:
 
@@ -543,8 +397,7 @@ $$
 \right].
 $$ {#eq-pg_advantage}
 
-:::: {#exm-linear-policy-grad}
-
+::: {#exm-linear-policy-grad}
 #### Policy gradient for the linear-in-features parameterization
 
 The gradient-log-likelihood for the linear-in-features parameterization @exm-linear-in-features is also quite elegant:
@@ -555,10 +408,11 @@ $$
         &= \phi(s, a) - \E_{a' \sim \pi_\theta(s)} \phi(s, a')
 \end{aligned}
 $$
-    
+
 Plugging this into our policy gradient expression, we get
 
-$$\begin{aligned}
+$$
+\begin{aligned}
     \nabla J(\theta) & = \E_{\tau \sim \rho_\theta} \left[
     \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A_\hi^{\pi_\theta}
     \right]                                                                                                                    \\
@@ -570,7 +424,7 @@ $$\begin{aligned}
 $$
 
 Why can we drop the $\E \phi(s_\hi, a')$ term? By linearity of expectation, consider the dropped term at a single timestep: $\E_{\tau \sim \rho_\theta} \left[ \left( \E_{a' \sim \pi(s_\hi)} \phi(s, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi) \right].$ By Adam's Law, we can wrap the advantage term in a conditional expectation on the state $s_\hi.$ Then we already know that $\E_{a \sim \pi(s)} A_\hi^{\pi}(s, a) = 0,$ and so this entire term vanishes.
-::::
+:::
 
 Note that to avoid correlations between the gradient estimator and the value estimator (i.e. baseline), we must estimate them with independently sampled trajectories:
 
@@ -596,13 +450,9 @@ def pg_with_learned_baseline(env: gym.Env, pi, eta: float, theta_init, K: int, N
 latex(pg_with_learned_baseline)
 ```
 
-Note that you could also generalize this by allowing the learning rate $\eta$ to vary across steps,
-or take multiple trajectories $\tau$ and compute the sample average of the gradient estimates.
+Note that you could also generalize this by allowing the learning rate $\eta$ to vary across steps, or take multiple trajectories $\tau$ and compute the sample average of the gradient estimates.
 
-The baseline estimation step `fit_value` can be done using any appropriate supervised learning algorithm.
-Note that the gradient estimator will be unbiased regardless of the baseline.
-
-
+The baseline estimation step `fit_value` can be done using any appropriate supervised learning algorithm. Note that the gradient estimator will be unbiased regardless of the baseline.
 
 ## Comparing policy gradient algorithms to policy iteration
 
@@ -610,23 +460,17 @@ Note that the gradient estimator will be unbiased regardless of the baseline.
 
 What advantages does the policy gradient algorithm have over the policy iteration algorithms covered in @sec-policy_iteration?
 
-:::{note} Policy iteration recap
-Recall that policy iteration is an algorithm for MDPs with unknown state transitions where we alternate between these two steps:
+:::{note} Policy iteration recap Recall that policy iteration is an algorithm for MDPs with unknown state transitions where we alternate between these two steps:
 
-- Estimating the $Q$-function (or advantage function) of the current policy;
-- Updating the policy to be greedy with respect to this approximate $Q$-function (or advantage function).
-:::
+-   Estimating the $Q$-function (or advantage function) of the current policy;
+-   Updating the policy to be greedy with respect to this approximate $Q$-function (or advantage function). :::
 
 To analyze the difference between them, we'll make use of the **performance difference lemma**, which provides an expression for comparing the difference between two value functions.
 
-:::: {#thm-pdl}
-
+::: {#thm-pdl}
 #### Performance difference lemma
 
-Suppose Alice is playing a game (an MDP).
-Bob is spectating, and can evaluate how good an action is compared to his own strategy.
-(That is, Bob can compute his _advantage function_ $A_\hi^{\text{Bob}}(s_\hi, a_\hi)$).
-The performance difference lemma says that Bob can now calculate exactly how much better or worse he is than Alice as follows:
+Suppose Alice is playing a game (an MDP). Bob is spectating, and can evaluate how good an action is compared to his own strategy. (That is, Bob can compute his *advantage function* $A_\hi^{\text{Bob}}(s_\hi, a_\hi)$). The performance difference lemma says that Bob can now calculate exactly how much better or worse he is than Alice as follows:
 
 $$
 V_0^{\text{Alice}}(s) - V_0^{\text{Bob}}(s) = \E_{\tau \sim \rho_{\text{Alice}, s}} \left[ \sum_{h=0}^{H-1} A_\hi^{\text{Bob}} (s_\hi, a_\hi) \right]
@@ -634,8 +478,7 @@ $$ {#eq-pdl_eq}
 
 where $\rho_{\text{Alice}, s}$ denotes the distribution over trajectories starting in state $s$ when Alice is playing.
 
-To see why, consider a specific step $\hi$ in the trajectory. We compute how much better actions from Bob are than the actions from Alice, on average.
-But this is exactly the average Bob-advantage across actions from Alice, as described in the PDL!
+To see why, consider a specific step $\hi$ in the trajectory. We compute how much better actions from Bob are than the actions from Alice, on average. But this is exactly the average Bob-advantage across actions from Alice, as described in the PDL!
 
 Formally, this corresponds to a nice telescoping simplification when we expand out the definition of the advantage function. Note that
 
@@ -656,14 +499,9 @@ $$
 $$
 
 as desired. (Note that the "inner" expectation from expanding the advantage function has the same distribution as the outer one, so omitting it here is valid.)
-::::
+:::
 
-The PDL gives insight into why fitted approaches such as PI don't work as well in the "full" RL setting.
-To see why, let's consider a single iteration of policy iteration, where policy $\pi$ gets updated to $\tilde \pi$. We'll assume these policies are deterministic.
-Suppose the new policy $\tilde \pi$ chooses some action with a negative advantage with respect to $\pi$.
-That is, when acting according to $\pi$, taking the action from $\tilde \pi$ would perform worse than expected.
-Define $\Delta_\infty$ to be the most negative advantage, that is, $\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\hi(s, \tilde \pi(s))$.
-Plugging this into the @thm-pdl gives
+The PDL gives insight into why fitted approaches such as PI don't work as well in the "full" RL setting. To see why, let's consider a single iteration of policy iteration, where policy $\pi$ gets updated to $\tilde \pi$. We'll assume these policies are deterministic. Suppose the new policy $\tilde \pi$ chooses some action with a negative advantage with respect to $\pi$. That is, when acting according to $\pi$, taking the action from $\tilde \pi$ would perform worse than expected. Define $\Delta_\infty$ to be the most negative advantage, that is, $\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\hi(s, \tilde \pi(s))$. Plugging this into the @thm-pdl gives
 
 $$
 \begin{aligned}
@@ -675,14 +513,9 @@ V_0^{\tilde \pi}(s) &\ge V_0^{\pi}(s) - H|\Delta_\infty|.
 \end{aligned}
 $$
 
-That is, for some state $s$, the lower bound on the performance of $\tilde \pi$ is _lower_ than the performance of $\pi$.
-This doesn't state that $\tilde \pi$ _will_ necessarily perform worse than $\pi$,
-only suggests that it might be possible.
-If these worst case states do exist, though,
-PI does not avoid situations where the new policy often visits them;
-It does not enforce that the trajectory distributions $\rho_\pi$ and $\rho_{\tilde \pi}$ be close to each other.
-In other words, the "training distribution" that our prediction rule is fitted on, $\rho_\pi$, may differ significantly from the "evaluation distribution" $\rho_{\tilde \pi}$.
+That is, for some state $s$, the lower bound on the performance of $\tilde \pi$ is *lower* than the performance of $\pi$. This doesn't state that $\tilde \pi$ *will* necessarily perform worse than $\pi$, only suggests that it might be possible. If these worst case states do exist, though, PI does not avoid situations where the new policy often visits them; It does not enforce that the trajectory distributions $\rho_\pi$ and $\rho_{\tilde \pi}$ be close to each other. In other words, the "training distribution" that our prediction rule is fitted on, $\rho_\pi$, may differ significantly from the "evaluation distribution" $\rho_{\tilde \pi}$.
 
+```{=html}
 <!-- 
 This is an instance of *distributional shift*.
 To begin, let's ask, where *do* fitted approaches work well?
@@ -691,29 +524,15 @@ where a prediction rule is fit using some labelled training set,
 and then assessed on a test set from the same distribution.
 But policy iteration isn't performed in the same scenario:
 there is now _distributional shift_ between the different iterations of the policy. -->
+```
 
-On the other hand, policy gradient methods _do_, albeit implicitly,
-encourage $\rho_\pi$ and $\rho_{\tilde \pi}$ to be similar.
-Suppose that the mapping from policy parameters to trajectory distributions is relatively smooth.
-Then, by adjusting the parameters only a small distance,
-the new policy will also have a similar trajectory distribution.
-But this is not very rigorous, and in practice the parameter-to-distribution mapping may not be so smooth.
-Can we constrain the distance between the resulting distributions more _explicitly_?
+On the other hand, policy gradient methods *do*, albeit implicitly, encourage $\rho_\pi$ and $\rho_{\tilde \pi}$ to be similar. Suppose that the mapping from policy parameters to trajectory distributions is relatively smooth. Then, by adjusting the parameters only a small distance, the new policy will also have a similar trajectory distribution. But this is not very rigorous, and in practice the parameter-to-distribution mapping may not be so smooth. Can we constrain the distance between the resulting distributions more *explicitly*?
 
-This brings us to the next three methods:
-- **trust region policy optimization** (TRPO), which explicitly constrains the difference between the distributions before and after each step;
-- the **natural policy gradient** (NPG), a first-order approximation of TRPO;
-- **proximal policy optimization** (PPO), a "soft relaxation" of TRPO.
-
-
+This brings us to the next three methods: - **trust region policy optimization** (TRPO), which explicitly constrains the difference between the distributions before and after each step; - the **natural policy gradient** (NPG), a first-order approximation of TRPO; - **proximal policy optimization** (PPO), a "soft relaxation" of TRPO.
 
 ## Trust region policy optimization {#sec-trpo}
 
-We saw above that policy gradient methods are effective because they implicitly constrain how much the policy changes at each iteration.
-Can we design an algorithm that _explicitly_ constrains the "step size"?
-That is, we want to _improve_ the policy as much as possible,
-measured in terms of the r.h.s. of the @thm-pdl,
-while ensuring that its trajectory distribution does not change too much:
+We saw above that policy gradient methods are effective because they implicitly constrain how much the policy changes at each iteration. Can we design an algorithm that *explicitly* constrains the "step size"? That is, we want to *improve* the policy as much as possible, measured in terms of the r.h.s. of the @thm-pdl, while ensuring that its trajectory distribution does not change too much:
 
 $$
 \begin{aligned}
@@ -722,35 +541,23 @@ $$
 \end{aligned}
 $$
 
-Note that we have made a small change to the r.h.s. expression:
-we use the *states* sampled from the old policy, and only use the *actions* from the new policy.
-It would be computationally infeasible to sample entire trajectories from $\pi_\theta$ as we are optimizing over $\theta$.
-On the other hand, if $\pi_\theta$ returns a vector representing a probability distribution over actions,
-then evaluating the expected advantage with respect to this distribution only requires taking a dot product.
-This approximation also matches the r.h.s. of the PDL to first order in $\theta$.
-(We will elaborate more on this later.)
+Note that we have made a small change to the r.h.s. expression: we use the *states* sampled from the old policy, and only use the *actions* from the new policy. It would be computationally infeasible to sample entire trajectories from $\pi_\theta$ as we are optimizing over $\theta$. On the other hand, if $\pi_\theta$ returns a vector representing a probability distribution over actions, then evaluating the expected advantage with respect to this distribution only requires taking a dot product. This approximation also matches the r.h.s. of the PDL to first order in $\theta$. (We will elaborate more on this later.)
 
-How do we describe the distance between $\rho_{\theta^{\text{opt}}}$ and $\rho_{\theta^k}$?
-We'll use the **Kullback-Leibler divergence (KLD)**:
+How do we describe the distance between $\rho_{\theta^{\text{opt}}}$ and $\rho_{\theta^k}$? We'll use the **Kullback-Leibler divergence (KLD)**:
 
 ::: {#def-kld}
-
 #### Kullback-Leibler divergence
 
 For two PDFs $p, q$,
 
-$$\kl{p}{q} := \E_{x \sim p} \left[ \log \frac{p(x)}{q(x)} \right]$$
+$$
+\kl{p}{q} := \E_{x \sim p} \left[ \log \frac{p(x)}{q(x)} \right]
+$$
 
-This can be interpreted in many different ways, many stemming from information theory.
-One such interpretation is that $\kl{p}{q}$ describes my average "surprise" if I _think_ data is being generated by $q$ but it's actually generated by $p$.
-(The **surprise** of an event with probability $p$ is $- \log_2 p$.)
-Note that $\kl{p}{q} = 0$ if and only if $p = q$. Also note that it is generally _not_ symmetric.
+This can be interpreted in many different ways, many stemming from information theory. One such interpretation is that $\kl{p}{q}$ describes my average "surprise" if I *think* data is being generated by $q$ but it's actually generated by $p$. (The **surprise** of an event with probability $p$ is $- \log_2 p$.) Note that $\kl{p}{q} = 0$ if and only if $p = q$. Also note that it is generally *not* symmetric.
 :::
 
-Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories.
-This is intractable in general, so we need to estimate the expectation.
-As before, we can do this by taking an empirical average over samples from the trajectory distribution.
-This gives us the following pseudocode:
+Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories. This is intractable in general, so we need to estimate the expectation. As before, we can do this by taking an empirical average over samples from the trajectory distribution. This gives us the following pseudocode:
 
 ```{python}
 def kl_div_trajectories(pi, theta_1, theta_2, trajectories):
@@ -790,6 +597,7 @@ def trpo(env, δ, theta_init, n_interactions):
 latex(trpo)
 ```
 
+```{=html}
 <!--
 Applying importance sampling allows us to estimate the TRPO objective as follows:
 
@@ -804,29 +612,22 @@ Sample $N$ trajectories from $\rho^k$ to learn a value estimator $\tilde b_\hi(s
 
 Sample $M$ trajectories $\tau_0, \dots, \tau_{M-1} \sim \rho^k$
 
-$$\begin{gathered}
+$$
+\begin{gathered}
             \theta^{k+1} \gets \arg\max_{\theta} \frac{1}{M} \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} [ R_\hi(\tau_m) - \tilde b_\hi(s_\hi) ] \\
             \text{where } \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} \log \frac{\pi_k(a_\hi^m \mid s_\hi^m)}{\pi_\theta(a_\hi^m \mid s_\hi^m)} \le \delta
         
-\end{gathered}$$
+\end{gathered}
+$$
 :::
 :::: -->
+```
 
-The above isn't entirely complete:
-we still need to solve the actual optimization problem at each step.
-Unless we know additional properties of the problem,
-this might be an intractable optimization.
-Do we need to solve it exactly, though?
-Instead, if we assume that both the objective function and the constraint are somewhat smooth in terms of the policy parameters,
-we can use their _Taylor expansions_ to give us a simpler optimization problem with a closed-form solution.
-This brings us to the **natural policy gradient** algorithm.
-
-
+The above isn't entirely complete: we still need to solve the actual optimization problem at each step. Unless we know additional properties of the problem, this might be an intractable optimization. Do we need to solve it exactly, though? Instead, if we assume that both the objective function and the constraint are somewhat smooth in terms of the policy parameters, we can use their *Taylor expansions* to give us a simpler optimization problem with a closed-form solution. This brings us to the **natural policy gradient** algorithm.
 
 ## Natural policy gradient
 
-We take a _linear_ (first-order) approximation to the objective function and a _quadratic_ (second-order) approximation to the KL divergence constraint about the current estimate $\theta^k$.
-This results in the optimization problem
+We take a *linear* (first-order) approximation to the objective function and a *quadratic* (second-order) approximation to the KL divergence constraint about the current estimate $\theta^k$. This results in the optimization problem
 
 $$
 \begin{gathered}
@@ -837,12 +638,10 @@ $$ {#eq-npg_optimization}
 
 where $F_{\theta^k}$ is the **Fisher information matrix** defined below.
 
-:::: {#def-fisher_matrix}
-
+::: {#def-fisher_matrix}
 #### Fisher information matrix
 
-Let $p_\theta$ denote a parameterized distribution.
-Its Fisher information matrix $F_\theta$ can be defined equivalently as:
+Let $p_\theta$ denote a parameterized distribution. Its Fisher information matrix $F_\theta$ can be defined equivalently as:
 
 $$
 \begin{aligned}
@@ -851,29 +650,20 @@ $$
 \end{aligned}
 $$
 
-Recall that the Hessian of a function describes its curvature:
-for a vector $\delta \in \Theta$,
-the quantity $\delta^\top F_\theta \delta$ describes how rapidly the negative log-likelihood changes if we move by $\delta$.
-The Fisher information matrix is precisely the Hessian of the KL divergence (with respect to either one of the parameters).
+Recall that the Hessian of a function describes its curvature: for a vector $\delta \in \Theta$, the quantity $\delta^\top F_\theta \delta$ describes how rapidly the negative log-likelihood changes if we move by $\delta$. The Fisher information matrix is precisely the Hessian of the KL divergence (with respect to either one of the parameters).
 
 In particular, when $p_\theta = \rho_{\theta}$ denotes a trajectory distribution, we can further simplify the expression:
 
 $$
 F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]
 $$ {#eq-fisher_trajectory}
-        
+
 Note that we've used the Markov property to cancel out the cross terms corresponding to two different time steps.
-::::
+:::
 
-This is a convex optimization problem with a closed-form solution.
-To see why, it helps to visualize the case where $\theta$ is two-dimensional:
-the constraint describes the inside of an ellipse,
-and the objective function is linear,
-so we can find the extreme point on the boundary of the ellipse.
-We recommend @boyd_convex_2004 for a comprehensive treatment of convex optimization.
+This is a convex optimization problem with a closed-form solution. To see why, it helps to visualize the case where $\theta$ is two-dimensional: the constraint describes the inside of an ellipse, and the objective function is linear, so we can find the extreme point on the boundary of the ellipse. We recommend @boyd_convex_2004 for a comprehensive treatment of convex optimization.
 
-More generally, for a higher-dimensional $\theta$,
-we can compute the global optima by setting the gradient of the Lagrangian to zero:
+More generally, for a higher-dimensional $\theta$, we can compute the global optima by setting the gradient of the Lagrangian to zero:
 
 $$
 \begin{aligned}
@@ -885,28 +675,17 @@ $$
 \end{aligned}
 $$
 
-This gives us the closed-form update.
-Now the only challenge is to estimate the Fisher information matrix,
-since, as with the KL divergence constraint, it is an expectation over trajectories, and computing it exactly is therefore typically intractable.
+This gives us the closed-form update. Now the only challenge is to estimate the Fisher information matrix, since, as with the KL divergence constraint, it is an expectation over trajectories, and computing it exactly is therefore typically intractable.
 
-:::: {#def-npg}
-
+::: {#def-npg}
 #### Natural policy gradient
 
-How many trajectory samples do we need to accurately estimate the Fisher information matrix?
-As a rule of thumb, the sample complexity should scale with the dimension of the parameter space.
-This makes this approach intractable in the deep learning setting where we might have a very large number of parameters.
-::::
+How many trajectory samples do we need to accurately estimate the Fisher information matrix? As a rule of thumb, the sample complexity should scale with the dimension of the parameter space. This makes this approach intractable in the deep learning setting where we might have a very large number of parameters.
+:::
 
-As you can see, the NPG is the "basic" policy gradient algorithm we saw above,
-but with the gradient transformed by the inverse Fisher information matrix.
-This matrix can be understood as accounting for the **geometry of the parameter space.**
-The typical gradient descent algorithm implicitly measures distances between parameters using the typical _Euclidean distance_.
-Here, where the parameters map to a *distribution*, using the natural gradient update is equivalent to optimizing over **distribution space** rather than parameter space,
-where distance between distributions is measured by the @def-kld.
+As you can see, the NPG is the "basic" policy gradient algorithm we saw above, but with the gradient transformed by the inverse Fisher information matrix. This matrix can be understood as accounting for the **geometry of the parameter space.** The typical gradient descent algorithm implicitly measures distances between parameters using the typical *Euclidean distance*. Here, where the parameters map to a *distribution*, using the natural gradient update is equivalent to optimizing over **distribution space** rather than parameter space, where distance between distributions is measured by the @def-kld.
 
-:::: {#exm-natural_simple}
-
+::: {#exm-natural_simple}
 #### Natural gradient on a simple problem
 
 Let's step away from RL and consider the following optimization problem over Bernoulli distributions $\pi \in \Delta(\{ 0, 1 \})$:
@@ -919,21 +698,16 @@ $$
 
 We can think of the space of such distributions as the line between $(0, 1)$ to $(1, 0)$ on the Cartesian plane:
 
-:::{image} shared/npg_line.png
-:alt: a line from (0, 1) to (1, 0)
-:width: 240px
-:align: center
+:::{image} shared/npg_line.png :alt: a line from (0, 1) to (1, 0) :width: 240px :align: center
 :::
 
-Clearly the optimal distribution is the constant one $\pi(1) = 1$. Suppose we optimize over the parameterized family $\pi_\theta(1) = \frac{\exp(\theta)}{1+\exp(\theta)}$.
-Then our optimization algorithm should set $\theta$ to be unboundedly large.
-Then the "vanilla" gradient is
+Clearly the optimal distribution is the constant one $\pi(1) = 1$. Suppose we optimize over the parameterized family $\pi_\theta(1) = \frac{\exp(\theta)}{1+\exp(\theta)}$. Then our optimization algorithm should set $\theta$ to be unboundedly large. Then the "vanilla" gradient is
 
-$$\nabla_\theta J(\pi_\theta) = \frac{99 \exp(\theta)}{(1 + \exp(\theta))^2}.$$
+$$
+\nabla_\theta J(\pi_\theta) = \frac{99 \exp(\theta)}{(1 + \exp(\theta))^2}.
+$$
 
-Note that as $\theta \to \infty$ that the increments get closer and closer to $0$;
-the rate of increase becomes exponentially slow.
-
+Note that as $\theta \to \infty$ that the increments get closer and closer to $0$; the rate of increase becomes exponentially slow.
 
 However, if we compute the Fisher information "matrix" (which is just a scalar in this case), we can account for the geometry induced by the parameterization.
 
@@ -953,22 +727,13 @@ $$
 \end{aligned}
 $$
 
-which increases at a constant rate, i.e. improves the objective more quickly than "vanilla" gradient ascent.
-::::
+which increases at a constant rate, i.e. improves the objective more quickly than "vanilla" gradient ascent. ::::
 
-Though the NPG now gives a closed-form optimization step,
-it requires computing the inverse Fisher information matrix,
-which typically scales as $O((\dim \Theta)^3)$.
-This can be expensive if the parameter space is large.
-Can we find an algorithm that works in _linear time_ with respect to the dimension of the parameter space?
-
-
+Though the NPG now gives a closed-form optimization step, it requires computing the inverse Fisher information matrix, which typically scales as $O((\dim \Theta)^3)$. This can be expensive if the parameter space is large. Can we find an algorithm that works in *linear time* with respect to the dimension of the parameter space?
 
 ## Proximal policy optimization {#sec-ppo}
 
-We can relax the TRPO optimization problem in a different way:
-Rather than imposing a hard constraint on the KL distance,
-we can instead impose a *soft* constraint by incorporating it into the objective and penalizing parameter values that drastically change the trajectory distribution.
+We can relax the TRPO optimization problem in a different way: Rather than imposing a hard constraint on the KL distance, we can instead impose a *soft* constraint by incorporating it into the objective and penalizing parameter values that drastically change the trajectory distribution.
 
 $$
 \begin{aligned}
@@ -976,11 +741,9 @@ $$
 \end{aligned}
 $$
 
-Here $\lambda$ is a **regularization hyperparameter** that controls the tradeoff between the two terms.
-This is the objective of the **proximal policy optimization** algorithm (@schulman_proximal_2017).
+Here $\lambda$ is a **regularization hyperparameter** that controls the tradeoff between the two terms. This is the objective of the **proximal policy optimization** algorithm (@schulman_proximal_2017).
 
-How do we solve this optimization?
-Let us begin by simplifying the $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ term. Expanding gives
+How do we solve this optimization? Let us begin by simplifying the $\kl{\rho_{\pi^k}}{\rho_{\pi_{\theta}}}$ term. Expanding gives
 
 $$
 \begin{aligned}
@@ -990,8 +753,7 @@ $$
 \end{aligned}
 $$
 
-where $c$ is some constant with respect to $\theta$, and can be ignored.
-This gives the objective
+where $c$ is some constant with respect to $\theta$, and can be ignored. This gives the objective
 
 $$
 \ell^k(\theta)
@@ -999,15 +761,9 @@ $$
 \E_{s_0, \dots, s_{H-1} \sim \rho_{\pi^{k}}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi) \right] - \lambda \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \log \frac{1}{\pi_{\theta}(a_\hi \mid s_\hi)}\right]
 $$
 
-Once again, this takes an expectation over trajectories.
-But here we cannot directly sample trajectories from $\pi^k$,
-since in the first term, the actions actually come from $\pi_\theta$.
-To make this term line up with the other expectation,
-we would need the actions to also come from $\pi^k$.
+Once again, this takes an expectation over trajectories. But here we cannot directly sample trajectories from $\pi^k$, since in the first term, the actions actually come from $\pi_\theta$. To make this term line up with the other expectation, we would need the actions to also come from $\pi^k$.
 
-This should sound familiar:
-we want to estimate an expectation over one distribution by sampling from another.
-We can once again use @sec-importance_sampling to rewrite the inner expectation:
+This should sound familiar: we want to estimate an expectation over one distribution by sampling from another. We can once again use @sec-importance_sampling to rewrite the inner expectation:
 
 $$
 \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi)
@@ -1021,9 +777,7 @@ $$
 \ell^k(\theta) = \E_{\tau \sim \rho_{\pi^k}} \left[ \sum_{h=0}^{H-1} \left( \frac{\pi_\theta(a_\hi \mid s_\hi)}{\pi^k(a_\hi \mid s_\hi)} A^{\pi^k}(s_\hi, a_\hi) - \lambda \log \frac{1}{\pi_\theta(a_\hi \mid s_\hi)} \right) \right]
 $$
 
-Now we can estimate this function by a sample average over trajectories from $\pi^k$.
-Remember that to complete a single iteration of PPO,
-we execute
+Now we can estimate this function by a sample average over trajectories from $\pi^k$. Remember that to complete a single iteration of PPO, we execute
 
 $$
 \theta^{k+1} \gets \arg\max_{\theta} \ell^k(\theta).
@@ -1070,20 +824,8 @@ latex(ppo)
 
 ## Summary
 
-Policy gradient methods are a powerful family of algorithms that directly optimize the expected total reward by iteratively updating the policy parameters.
-Precisely,
-we estimate the gradient of the expected total reward (with respect to the parameters),
-and update the parameters in that direction.
-But estimating the gradient is a tricky task!
-We saw many ways to reduce the variance of the gradient estimator,
-culminating in the advantage-based expression @eq-pg_advantage.
+Policy gradient methods are a powerful family of algorithms that directly optimize the expected total reward by iteratively updating the policy parameters. Precisely, we estimate the gradient of the expected total reward (with respect to the parameters), and update the parameters in that direction. But estimating the gradient is a tricky task! We saw many ways to reduce the variance of the gradient estimator, culminating in the advantage-based expression @eq-pg_advantage.
 
-But updating the parameters doesn't entirely solve the problem:
-Sometimes, a small step in the parameters might lead to a big step in the policy.
-To avoid changing the policy too much at each step,
-we must account for the curvature in the parameter space.
-We first did this explicitly with @sec-trpo,
-and then saw ways to relax the constraint in @def-npg and @sec-ppo.
+But updating the parameters doesn't entirely solve the problem: Sometimes, a small step in the parameters might lead to a big step in the policy. To avoid changing the policy too much at each step, we must account for the curvature in the parameter space. We first did this explicitly with @sec-trpo, and then saw ways to relax the constraint in @def-npg and @sec-ppo.
 
-These are still popular methods to this day,
-especially because they efficiently integrate with _deep neural networks_ for representing complex functions.
+These are still popular methods to this day, especially because they efficiently integrate with *deep neural networks* for representing complex functions.

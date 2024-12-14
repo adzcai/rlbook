@@ -516,7 +516,9 @@ this is the sum of a quadratic term and a constant,
 which is exactly what we were aiming for!
 The scalar term is clearly
 
-$$p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.$$
+$$
+p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
+$$
 
 We can simplify the quadratic term by substituting in $K_\hi$ from @eq-k_pi.
 Notice that when we do this,

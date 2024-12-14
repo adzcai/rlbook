@@ -275,7 +275,9 @@ and then using this new dataset to fit the next iterate.
    1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the Bellman optimality operator @eq-bellman_optimality_operator
    2. Set $\hat f$ to the function that minimizes the empirical risk:
    
-      $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
+      $$
+\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.
+$$
 :::
 
 ```{code-cell}
@@ -313,7 +315,9 @@ We can also use this fixed-point interation to *evaluate* a policy using the dat
    1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the @thm-bellman_consistency for the given policy.
    2. Set $\hat f$ to the function that minimizes the empirical risk:
    
-      $$\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.$$
+      $$
+\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.
+$$
 :::
 
 ```{code-cell}

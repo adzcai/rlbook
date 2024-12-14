@@ -244,7 +244,7 @@ def minimax_search(s, player) -> tuple["Action", "Value"]:
                 a_min, v_min = a, v
         return a_min, v_min
 
-latex(minimax_search, custom_identifiers={"env.step": "P", "env.action_space": r"\mathcal{A}"})
+latex(minimax_search, id_to_latex={"env.step": "P", "env.action_space": r"\mathcal{A}"})
 ```
 
 ::: {#exm-min-max-example}
@@ -486,10 +486,14 @@ The most commonly used bandit algorithm in practice for MCTS is the @sec-ucb alg
 :::{note} Summary of UCB
 Let us quickly review the UCB bandit algorithm.
 For each arm $k$, we track the sample mean
-$$\hat \mu^k_t = \frac{1}{N_t^k} \sum_{\tau=0}^{t-1} \ind{a_\tau = k} r_\tau$$
+$$
+\hat \mu^k_t = \frac{1}{N_t^k} \sum_{\tau=0}^{t-1} \ind{a_\tau = k} r_\tau
+$$
 of all rewards from that arm up to time $t$.
 Then we construct a _confidence interval_
-$$C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],$$
+$$
+C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
+$$
 where $B_t^k = \sqrt{\frac{\ln(2 t / \delta)}{2 N_t^k}}$ is given by Hoeffding's inequality,
 so that with probability $\delta$ (some fixed parameter we choose),
 the true mean $\mu^k$ lies within $C_t^k$.
@@ -534,7 +538,7 @@ it repeats the following four steps $T$ times:
 
 1. **Selection**: We start at $s = s_{\text{start}}$. Let $\tau$ be an empty list that we will use to track states and actions.
    - Until $s$ has at least one action that hasn't been taken:
-     - Choose $a \gets \argmax_k \text{UCB}^{s, k}$, where
+     - Choose $a \gets \arg\max_k \text{UCB}^{s, k}$, where
        $$
        \text{UCB}^{s, a} = \frac{W^{s, a}}{N^{s, a}} + c \sqrt{\frac{\ln N^s}{N^{s, a}}}
        $$ {#eq-ucb-tree}
@@ -592,7 +596,7 @@ To select a move in state $s_\text{start}$, we repeat the following four steps $
 
 1. **Selection**: We start at $s = s_{\text{start}}$. Let $\tau$ be an empty list that we will use to track states and actions.
    - Until $s$ has at least one action that hasn't been taken:
-     - Choose $a \gets \argmax_k \text{UCB}^{s, k}$, where
+     - Choose $a \gets \arg\max_k \text{UCB}^{s, k}$, where
        $$
        \text{UCB}^{s, a} = \frac{W^{s, a}}{N^s} + c \cdot \pi_\text{guide}(a \mid s) \sqrt{\frac{\ln N^s}{N^{s, a}}}
        $$ {#eq-ucb-tree-policy}
@@ -671,8 +675,8 @@ For $t = 0, \dots, T-1$:
 - **Policy evaluation**: Use behavioral cloning to find a set of policy parameters $\theta^{t+1}$ that mimic the behavior of $\pi^t_\text{MCTS}$ and a set of value function parameters $\lambda^{t+1}$ that approximate its value function. That is,
   $$
   \begin{aligned}
-  \theta^{t+1} &\gets \argmin_\theta \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} - \log \pi_\theta(a^m_\hi \mid s^m_\hi) \\
-  \lambda^{t+1} &\gets \argmin_\lambda \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} (v_\lambda(s^m_\hi) - R(\tau_m))^2
+  \theta^{t+1} &\gets \arg\min_\theta \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} - \log \pi_\theta(a^m_\hi \mid s^m_\hi) \\
+  \lambda^{t+1} &\gets \arg\min_\lambda \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} (v_\lambda(s^m_\hi) - R(\tau_m))^2
   \end{aligned}
   $$
 

@@ -1,8 +1,0 @@
-\begin{algorithmic}
-    \Function{softmax\_policy}{$\theta: \mathrm{Float}_{\mathopen{}\left( \mathrm{Array}, \textrm{"S A"} \mathclose{}\right)}$}
-            \Function{compute}{$s: \mathrm{int}, a: \mathrm{int}$}
-                \State \Return $\frac{\exp \theta_{\mathopen{}\left( s, a \mathclose{}\right)}}{\sum_{a \in \mathrm{actions}}^{} \mathopen{}\left({\exp \theta_{\mathopen{}\left( s, a \mathclose{}\right)}}\mathclose{}\right)}$
-            \EndFunction
-        \State \Return $\mathrm{compute}$
-    \EndFunction
-\end{algorithmic}

@@ -22,8 +22,18 @@ import gymnasium as gym
 
 # print functions as latex
 import latexify
+from latexify.plugins.sum_prod import SumProdPlugin
+from latexify.plugins.jaxtyping import JaxTypingPlugin
 
-latex = partial(latexify.algorithmic, use_math_symbols=True, to_file="./pseudocode")
+
+latex = partial(
+    latexify.algorithmic,
+    use_math_symbols=True,
+    plugins=[
+        SumProdPlugin(),
+        JaxTypingPlugin(),
+    ]
+)
 
 plt.style.use("fivethirtyeight")
 
