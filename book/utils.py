@@ -2,8 +2,10 @@
 
 import matplotlib.pyplot as plt
 
+from collections.abc import Callable
+
 # convenient class builder
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 # function typings
 from collections.abc import Callable
@@ -17,8 +19,13 @@ from functools import partial
 # numerical computing and linear algebra
 import jax
 import jax.numpy as jnp
+import jax.random as rand
 
+# reinforcement learning environments
 import gymnasium as gym
+
+# progress bars
+from tqdm import tqdm
 
 # print functions as latex
 import latexify
@@ -37,3 +44,9 @@ latex = partial(
 
 plt.style.use("fivethirtyeight")
 
+def rng(seed: int):
+    """An iterator of JAX PRNG keys."""
+    key = rand.PRNGKey(seed)
+    while True:
+        key, subkey = rand.split(key)
+        yield subkey

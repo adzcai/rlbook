@@ -939,7 +939,7 @@ $k$ has not been explored much and so $N_t^k$ is small.
 We can now substitute these quantities into UCB to get the **LinUCB**
 algorithm:
 
-```{code-cell}
+```{python}
 class LinUCBPseudocode(Agent):
     def __init__(
         self, K: int, T: int, D: int, lam: float, get_c: Callable[[int], float]
