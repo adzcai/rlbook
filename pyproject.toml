@@ -7,4 +7,18 @@ authors = [
     { name = "Alexander Cai", email = "alexandercai@outlook.com" }
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "gymnasium[box2d]>=1.0.0",
+    "jax>=0.4.38",
+    "jaxtyping>=0.2.36",
+    "jupyter>=1.1.1",
+    "latexify-py",
+    "matplotlib>=3.10.0",
+    "pandas>=2.2.3",
+    "quarto-cli>=1.6.39",
+    "statsmodels>=0.14.4",
+    "tqdm>=4.67.1",
+]
+
+[tool.uv.sources]
+latexify-py = { path = "../latexify-py" }
