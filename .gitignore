@@ -5,7 +5,7 @@
 __pycache__/
 
 # exercise solutions
-solutions/
+solutions
 
 # use markdown as authoritative source
 *.ipynb

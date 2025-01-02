@@ -11,12 +11,14 @@ dependencies = [
     "gymnasium[box2d]>=1.0.0",
     "jax>=0.4.38",
     "jaxtyping>=0.2.36",
+    "jupyter-cache>=1.0.1",
     "jupyter>=1.1.1",
     "latexify-py",
     "matplotlib>=3.10.0",
     "pandas>=2.2.3",
     "quarto-cli>=1.6.39",
     "statsmodels>=0.14.4",
+    "torchvision>=0.20.1",
     "tqdm>=4.67.1",
 ]
 

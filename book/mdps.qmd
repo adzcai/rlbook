@@ -45,7 +45,7 @@ where $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$ describes 
 Environments that satisfy the Markov property are called **Markov decision processes** (MDPs).
 This chapter will focus on introducing core vocabulary for MDPs that will be useful throughout the book.
 
-:::{attention}
+::: {attention}
 What information might be encoded in the _state_ for each of the above examples?
 What might the valid set of _actions_ be?
 Describe the _state transitions_ heuristically and verify that they satisfy the Markov property.
@@ -60,14 +60,14 @@ the **optimal policy** for a given MDP.
 We’ll introduce the **Bellman consistency condition**, which allows us to analyze the whole sequence of interactions in terms of individual timesteps.
 
 ```{python}
-from utils import NamedTuple, Float, Array, partial, jax, jnp, latexify
+from utils import NamedTuple, Float, Array, partial, jax, jnp, latexify, latex
 ```
 
 ## Finite-horizon MDPs
 
 ### Definition
 
-:::: {#def-finite_horizon_mdp}
+:::: {#def-finite-horizon-mdp}
 
 #### Finite-horizon Markov decision process
 
@@ -114,7 +114,7 @@ $$
 $$
 ::::
 
-:::{attention}
+::: {attention}
 Verify that the types and shapes provided above make sense!
 :::
 
@@ -130,7 +130,7 @@ class MDP(NamedTuple):
     γ: float = 1.0  # discount factor (used later)
 ```
 
-::: {#exm-tidy_mdp}
+::: {#exm-tidy-mdp}
 
 #### Tidying MDP
 
@@ -212,16 +212,10 @@ inputs, and time-dependence.
     actions while a stochastic policy outputs *distributions* over
     actions.
 
-:::{figure} ./shared/deterministic_policy.png
-:align: center
+::: {layout-ncol="2"}
+![A deterministic policy](shared/deterministic_policy.png)
 
-A deterministic policy.
-:::
-
-:::{figure} ./shared/stochastic_policy.png
-:align: center
-
-A stochastic policy.
+![A stochastic policy](shared/stochastic_policy.png)
 :::
 
 2.  **State-dependent or history-dependent.** A state-dependent (a.k.a.
@@ -247,11 +241,11 @@ A fascinating result is that every finite-horizon MDP has an optimal determinist
 Intuitively, the Markov property implies that the current state contains all the information we need to make the optimal decision.
 We'll prove this result constructively later in the chapter.
 
-::: {#exm-tidy_policy}
+::: {#exm-tidy-policy}
 
 #### Policies for the tidying MDP
 
-Here are some possible policies for the tidying MDP @exm-tidy_mdp:
+Here are some possible policies for the tidying MDP @exm-tidy-mdp:
 
 -   Always tidy: $\pi(s) = \text{tidy}$.
 
@@ -280,10 +274,10 @@ tidy_policy_messy_only = (
 )
 ```
 
-:::{note}
+::: {#rem-jax-immutable}
 Array objects in Jax are **immutable,** that is, they cannot be _changed._
 This might seem inconvenient, but in larger projects,
-immutability makes code much easier to reason about.
+immutability makes code easier to reason about.
 :::
 
 
@@ -318,21 +312,29 @@ Once we've chosen a policy,
 we can sample trajectories by repeatedly choosing actions according to the policy,
 transitioning according to the state transitions, and observing the rewards.
 
-:::{image} shared/trajectory.png
-:width: 240px
-:align: center
-:::
+```mermaid
+graph LR
+    S0($$s_0$$) -- $$\pi_0$$ --> A0{{$$a_0$$}}
+    S0 & A0 --> R0[$$r_0$$]
+    A0 & S0 -- $$P$$ --> S1($$s_1$$)
+    S1 -- $$\pi_1$$ --> A1{{$$a_1$$}}
+    S1 & A1 --> R1[$$r_1$$]
+    A1 & S1 -- $$P$$ --> S2($$s_2$$)
+    S2 -- $$\pi_2$$ --> A2{{$$a_2$$}}
+    S2 & A2 --> R2[$$r_2$$]
+    A2 & S2 -- $$P$$ --> S3($$s_3$$)
+```
 
 That is, a policy induces a distribution $\rho^{\pi}$ over trajectories.
 (We assume that $\mu$ and $P$ are clear from context.)
 
-:::: {#exm-tidy_traj}
+:::: {#exm-tidy-traj}
 
 #### Trajectories in the tidying environment
 
 Here is a possible trajectory for the tidying example:
 
-:::{table}
+::: {table}
 |  $\hi$  |    $0$    |    $1$    |    $2$    |   $3$    |   $4$   |    $5$    |    $6$    |
 | :-----: | :-------: | :-------: | :-------: | :------: | :-----: | :-------: | :-------: |
 |  $s$    |  orderly  |  orderly  |  orderly  |  messy   |  messy  |  orderly  |  orderly  |
@@ -340,13 +342,13 @@ Here is a possible trajectory for the tidying example:
 |  $r$    |   $-1$    |    $1$    |    $1$    |   $-1$   |   $0$   |    $1$    |    $1$    |
 :::
 
-Could any of the policies in @exm-tidy_policy have generated this trajectory?
+Could any of the policies in @exm-tidy-policy have generated this trajectory?
 ::::
 
 Note that for a state-dependent policy, using the Markov property @def-markov,
 we can write down the likelihood function of this probability distribution in an **autoregressive** way (i.e. one timestep at a time):
 
-::: {#def-autoregressive_trajectories}
+::: {#def-autoregressive-trajectories}
 
 #### Autoregressive trajectory distribution
 
@@ -375,7 +377,7 @@ def trajectory_log_likelihood(
     return total
 ```
 
-:::{attention}
+::: {attention}
 How would you modify this to include stochastic rewards?
 :::
 
@@ -390,7 +392,7 @@ In this case, the only randomness in sampling trajectories comes from the initia
 The main goal of RL is to find a policy that maximizes the expected total
 reward $\E [r_0 + \cdots + r_{\hor-1}]$.
 
-:::{attention}
+::: {attention}
 Note that $r_0 + \cdots + r_{\hor-1}$ is a random variable.
 What sources of randomness does it depend on?
 Describe the generating process.
@@ -412,7 +414,7 @@ $$
 Similarly, we can define the **action-value function** (aka the
 **Q-function**) at time $h$ as the expected remaining reward *from a given state and taking a given action*:
 
-::: {#def-action_value}
+::: {#def-action-value}
 
 #### Action-value function
 
@@ -500,7 +502,7 @@ value function recursively (in terms of itself). This is named the
 **Bellman consistency equation** after **Richard Bellman** (1920--1984),
 who is credited with introducing dynamic programming in 1953.
 
-::: {#thm-bellman_consistency}
+::: {#thm-bellman-consistency}
 
 #### Bellman consistency equation for the value function
 
@@ -530,7 +532,7 @@ def check_bellman_consistency_v(
     )
 ```
 
-:::{attention}
+::: {attention}
 Verify that this equation holds by expanding $V_\hi^\pi(s)$
 and $V_{\hi+1}^\pi(s')$.
 :::
@@ -538,7 +540,7 @@ and $V_{\hi+1}^\pi(s')$.
 One can analogously derive the Bellman consistency equation for the
 action-value function:
 
-::: {#thm-bellman_consistency_action}
+::: {#thm-bellman-consistency-action}
 
 #### Bellman consistency equation for action-values
 
@@ -547,11 +549,11 @@ Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}
 $$
 :::
 
-:::{attention}
+::: {attention}
 Write a `check_bellman_consistency_q` function for the action-value function.
 :::
 
-::: {#rem-bellman_det}
+::: {#rem-bellman-det}
 
 #### The Bellman consistency equation for deterministic policies
 
@@ -574,7 +576,7 @@ Fix a policy $\pi$. Consider the higher-order operator that takes in a
 "value function" $v : \mathcal{S} \to \mathbb{R}$ and returns the r.h.s. of the Bellman
 equation for that "value function":
 
-::: {#def-bellman_operator}
+::: {#def-bellman-operator}
 
 #### Bellman operator
 
@@ -628,7 +630,7 @@ We'll call $\mathcal{J}^\pi : \mathbb{R}^{\mathcal{S}} \to \mathbb{R}^{\mathcal{
 operator** of $\pi$.
 Note that it's defined on any "value function" mapping states to real numbers;
 $v$ doesn't have to be a well-defined value function for some policy (hence the lowercase notation).
-The Bellman operator also gives us a concise way to express @thm-bellman_consistency for the value function:
+The Bellman operator also gives us a concise way to express @thm-bellman-consistency for the value function:
 
 $$
 V_\hi^\pi = \mathcal{J}^{\pi}(V_{\hi+1}^\pi)
@@ -644,15 +646,17 @@ out to be more than just a notational convenience: We'll use it to
 construct algorithms for computing the optimal policy.
 
 
-## Solving finite-horizon MDPs {#sec-finite_horizon_mdps}
-### Policy evaluation in finite-horizon MDPs {#sec-eval_dp}
+## Solving finite-horizon MDPs {#sec-finite-horizon-mdps}
+### Policy evaluation in finite-horizon MDPs {#sec-eval-dp}
 How can we actually compute the value function of a given policy? This
 is the task of **policy evaluation**.
 
-:::{prf:definition} DP algorithm to evaluate a policy in a finite-horizon MDP
+::: {def-dp-evaluate}
+
+#### DP algorithm to evaluate a policy in a finite-horizon MDP
 
 The Bellman consistency equation
-@thm-bellman_consistency
+@thm-bellman-consistency
 gives us a convenient algorithm for
 evaluating stationary policies: it expresses the value function at
 timestep $\hi$ as a function of the value function at timestep $\hi+1$. This
@@ -668,22 +672,24 @@ def dp_eval_finite(mdp: MDP, policy: Float[Array, "S A"]) -> Float[Array, "H S"]
     for h in range(mdp.H - 1, -1, -1):
         V_ary[h] = bellman_operator(mdp, policy[h], V_ary[h + 1])
     return jnp.stack(V_ary[:-1])
+
+latex(dp_eval_finite)
 ```
 
 This runs in time $O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)$ by counting the
 loops.
 
-:::{attention}
+::: {attention}
 Do you see where we compute $Q^\pi_\hi$ along the way? Make
 this step explicit.
 :::
 
-::: {#exm-tidy_eval_finite}
+::: {#exm-tidy-eval-finite}
 
 #### Tidying policy evaluation
 
 Let's evaluate the policy from
-@exm-tidy_policy in the tidying MDP
+@exm-tidy-policy in the tidying MDP
 that tidies if and only if the room is
 messy. We'll use the Bellman consistency equation to compute the value
 function at each time step.
@@ -720,11 +726,11 @@ V_messy = dp_eval_finite(tidy_mdp, tidy_policy_messy_only)
 V_messy
 ```
 
-### Optimal policies in finite-horizon MDPs {#sec-opt_dynamic_programming}
+### Optimal policies in finite-horizon MDPs {#sec-opt-dynamic-programming}
 We've just seen how to *evaluate* a given policy. But how can we find
 the **optimal policy** for a given environment?
 
-::: {#def-optimal_policy_finite}
+::: {#def-optimal-policy-finite}
 
 #### Optimal policies
 
@@ -755,7 +761,7 @@ construct such a policy by acting *greedily* with respect to the optimal
 action-value function:
 
 
-::: {#thm-optimal_greedy}
+::: {#thm-optimal-greedy}
 
 #### It is optimal to be greedy with respect to the optimal value function
 
@@ -764,7 +770,7 @@ $$
 $$
 :::
 
-::::{prf:proof} Proof
+:::: {.proof}
 Let $V^{\star}$ and $Q^{\star}$ denote the optimal value and
 action-value functions. Consider the greedy policy
 
@@ -784,7 +790,9 @@ show that the Bellman operator $\mathcal{J}^{\hat \pi}$ never decreases
 $V_\hi^{\star}$. Then we'll apply this result recursively to show that
 $V^{\star} = V^{\hat \pi}$.
 
-:::{prf:lemma} The Bellman operator never decreases the optimal value function
+::: {lem-bellman-increases}
+#### The Bellman operator never decreases the optimal value function
+
 $\mathcal{J}^{\hat \pi}$ never decreases $V_\hi^{\star}$
 (elementwise):
 
@@ -834,9 +842,9 @@ $$
 And so we have $V^{\star} = V^{\hat \pi}$, making $\hat \pi$ optimal.
 ::::
 
-Note that this also gives simplified forms of the @thm-bellman_consistency for the optimal policy:
+Note that this also gives simplified forms of the @thm-bellman-consistency for the optimal policy:
 
-:::: {#thm-bellman_consistency_optimal}
+:::: {#thm-bellman-consistency-optimal}
 
 #### Bellman consistency equations for the optimal policy
 
@@ -853,7 +861,7 @@ need to do is compute the optimal value function and optimal policy. We
 can do this by working backwards in time using **dynamic programming**
 (DP).
 
-::: {#def-pi_star_dp}
+::: {#def-pi-star-dp}
 
 #### DP algorithm to compute an optimal policy in a finite-horizon MDP
 
@@ -917,7 +925,7 @@ operations to evaluate the average value over $s'$. This gives a total
 computation time of $O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)$.
 
 Note that this algorithm is identical to the policy evaluation algorithm
-`dp_eval_finite` in @sec-eval_dp, but instead of *averaging* over the
+`dp_eval_finite` in @sec-eval-dp, but instead of *averaging* over the
 actions chosen by a policy, we instead simply take a *maximum* over the
 action-values. We'll see this relationship between **policy evaluation**
 and **optimal policy computation** show up again in the infinite-horizon
@@ -931,7 +939,7 @@ assert jnp.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
 "Assertions passed (the 'tidy when messy' policy is optimal)"
 ```
 
-## Infinite-horizon MDPs {#sec-infinite_horizon_mdps}
+## Infinite-horizon MDPs {#sec-infinite-horizon-mdps}
 What happens if a trajectory is allowed to continue forever (i.e.
 $H = \infty$)? This is the setting of **infinite horizon** MDPs.
 
@@ -969,7 +977,7 @@ close to $0$, the trajectory will likely be very short, while if
 $\gamma$ is close to $1$, the trajectory will likely continue for a long
 time.
 
-:::{attention}
+::: {attention}
 Assuming that $r_\hi \in [0, 1]$ for all $\hi \in \mathbb{N}$,
 what is the maximum **discounted** cumulative reward? You may find it
 useful to review geometric series.
@@ -981,7 +989,7 @@ $$
 M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).
 $$
 
-Code-wise, we can reuse the `MDP` class from before @def-finite_horizon_mdp and set `mdp.H = float('inf')`.
+Code-wise, we can reuse the `MDP` class from before @def-finite-horizon-mdp and set `mdp.H = float('inf')`.
 
 ```{python}
 tidy_mdp_inf = tidy_mdp._replace(H=float("inf"), γ=0.95)
@@ -995,15 +1003,15 @@ the DP approaches we saw required us to start at the end of the
 trajectory, which is no longer possible. We'll shift to **stationary**
 policies $\pi : \mathcal{S} \to \mathcal{A}$ (deterministic) or $\Delta(\mathcal{A})$ (stochastic).
 
-:::{attention}
-Which of the policies in @exm-tidy_policy are stationary?
+::: {attention}
+Which of the policies in @exm-tidy-policy are stationary?
 :::
 
 ### Value functions and Bellman consistency
 
 We also consider stationary value functions $V^\pi : \mathcal{S} \to \mathbb{R}$ and
 $Q^\pi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$. We need to insert a factor of $\gamma$
-into the Bellman consistency equation @thm-bellman_consistency to account for the discounting:
+into the Bellman consistency equation @thm-bellman-consistency to account for the discounting:
 
 $$
 \begin{aligned}
@@ -1012,9 +1020,9 @@ $$
     Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid s_\hi = s, a_\hi = a] && \text{for any } \hi \in \mathbb{N} \\
     &= r(s, a) + \gamma \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi(s')}} [Q^\pi(s', a')]
 \end{aligned}
-$$ {#eq-bellman_consistency_infinite}
+$$ {#eq-bellman-consistency-infinite}
 
-:::{attention}
+::: {attention}
 Heuristically speaking, why does it no longer matter which
 time step we condition on when defining the value function?
 :::
@@ -1023,7 +1031,7 @@ time step we condition on when defining the value function?
 
 ### The Bellman operator is a contraction mapping
 
-Recall from @def-bellman_operator that the Bellman operator $\mathcal{J}^{\pi}$
+Recall from @def-bellman-operator that the Bellman operator $\mathcal{J}^{\pi}$
 for a policy $\pi$ takes in a "value function" $v : \mathcal{S} \to \mathbb{R}$ and
 returns the r.h.s. of the Bellman equation for that "value function". In
 the infinite-horizon setting, this is
@@ -1055,7 +1063,7 @@ after applying the mapping,
 
 :::
 
-:::{attention}
+::: {attention}
 Show that for a contraction mapping $f$ with coefficient
 $\gamma$, for all $t \in \mathbb{N}$,
 
@@ -1075,7 +1083,7 @@ to any starting point, we will eventually converge to $x^\star$:
 
 $$
 \|f^{(t)}(x) - x^\star\| \le \gamma^t \|x - x^\star\|.
-$$ {#eq-contraction_convergence}
+$$ {#eq-contraction-convergence}
 
 Let's return to the RL setting and apply this result to the Bellman
 operator. How can we measure the distance between two "value functions"
@@ -1088,18 +1096,18 @@ $$
 
 i.e.
 we compare the "value functions" on the state that causes the biggest
-gap between them. Then @eq-contraction_convergence implies that if we repeatedly
+gap between them. Then @eq-contraction-convergence implies that if we repeatedly
 apply $\mathcal{J}^\pi$ to any starting "value function", we will eventually
 converge to $V^\pi$:
 
 $$
 \|(\mathcal{J}^\pi)^{(t)}(v) - V^\pi \|_{\infty} \le \gamma^{t} \| v - V^\pi\|_{\infty}.
-$$ {#eq-bellman_convergence}
+$$ {#eq-bellman-convergence}
 
 We'll use this useful fact to prove the convergence of several
 algorithms later on.
 
-::: {#thm-bellman_contraction}
+::: {#thm-bellman-contraction}
 
 #### The Bellman operator is a contraction mapping
 
@@ -1108,7 +1116,7 @@ $$
 $$
 :::
 
-:::{prf:proof} Proof of @thm-bellman_contraction
+::: {.proof}
 
 For all states $s \in \mathcal{S}$,
 
@@ -1126,7 +1134,7 @@ $$
 
 ### Policy evaluation in infinite-horizon MDPs
 
-The backwards DP technique we used in the finite-horizon case (@sec-eval_dp) no
+The backwards DP technique we used in the finite-horizon case (@sec-eval-dp) no
 longer works since there is no "final timestep" to start from. We'll
 need another approach to policy evaluation.
 
@@ -1152,7 +1160,7 @@ For $P^\pi$, we'll treat the rows as the states and the
 columns as the next states. Then $P^\pi_{s, s'}$ is the probability of
 transitioning from state $s$ to state $s'$ under policy $\pi$.
 
-::: {#exm-tidy_tabular}
+::: {#exm-tidy-tabular}
 
 #### Tidying MDP
 
@@ -1183,9 +1191,9 @@ inversion:
 
 $$
 V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.
-$$ {#eq-matrix_inversion_pe}
+$$ {#eq-matrix-inversion-pe}
 
-:::{attention}
+::: {attention}
 Note we've assumed that $I - \gamma P^\pi$ is invertible. Can you see
 why this is the case?
 
@@ -1206,7 +1214,7 @@ def eval_deterministic_infinite(
     return jnp.linalg.solve(jnp.eye(mdp.S) - mdp.γ * P_π, r_π)
 ```
 
-::: {#exm-tidy_eval_infinite}
+::: {#exm-tidy-eval-infinite}
 
 #### Tidying policy evaluation
 
@@ -1239,7 +1247,7 @@ lower than this.
 eval_deterministic_infinite(tidy_mdp_inf, tidy_policy_messy_only[0])
 ```
 
-#### Iterative policy evaluation {#sec-iterative_pe}
+#### Iterative policy evaluation {#sec-iterative-pe}
 The matrix inversion above takes roughly $O(|\mathcal{S}|^3)$ time.
 It also only works for deterministic policies.
 Can we trade off the requirement of finding the *exact* value function for a faster
@@ -1276,7 +1284,7 @@ def iterative_evaluation(mdp: MDP, pi: Float[Array, "S A"], ε=1e-6) -> Float[Ar
     return loop_until_convergence(op, jnp.zeros(mdp.S), ε)
 ```
 
-Then, as we showed in @eq-bellman_convergence, by the Banach fixed-point theorem:
+Then, as we showed in @eq-bellman-convergence, by the Banach fixed-point theorem:
 
 $$
 \|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.
@@ -1286,7 +1294,7 @@ $$
 iterative_evaluation(tidy_mdp_inf, tidy_policy_messy_only[0])
 ```
 
-:::: {#rem-iterations_vi}
+:::: {#rem-iterations-vi}
 
 #### Convergence of iterative policy evaluation
 
@@ -1316,7 +1324,7 @@ $\log (1/x) \ge 1-x$.
 ### Optimal policies in infinite-horizon MDPs
 
 Now let's move on to solving for an optimal policy in the
-infinite-horizon case. As in @def-optimal_policy_finite, an **optimal policy** $\pi^\star$
+infinite-horizon case. As in @def-optimal-policy-finite, an **optimal policy** $\pi^\star$
 is one that does at least as well as any other policy in all situations.
 That is, for all policies $\pi$, states $s \in \mathcal{S}$, times
 $\hi \in \mathbb{N}$, and initial trajectories
@@ -1327,37 +1335,37 @@ $$
     V^{\pi^\star}(s) &= \E_{\tau \sim \rho^{\pi^{\star}}}[r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2}  + \cdots \mid s_\hi = s] \\
     &\ge \E_{\tau \sim \rho^{\pi}}[r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid \tau_\hi]
 \end{aligned}
-$$ {#eq-optimal_policy_infinite}
+$$ {#eq-optimal-policy-infinite}
 
 
 Once again, all optimal policies share the same **optimal value function** $V^\star$, and the greedy policy with respect to this value function
 is optimal.
 
-:::{attention}
-Verify this by modifying the proof @thm-optimal_greedy from the finite-horizon case.
+::: {attention}
+Verify this by modifying the proof @thm-optimal-greedy from the finite-horizon case.
 :::
 
 So how can we compute such an optimal policy? We can't use the backwards
-DP approach from the finite-horizon case @def-pi_star_dp since there's no "final timestep" to start
+DP approach from the finite-horizon case @def-pi-star-dp since there's no "final timestep" to start
 from. Instead, we'll exploit the fact that the Bellman consistency
-equation @eq-bellman_consistency_infinite for the optimal value
+equation @eq-bellman-consistency-infinite for the optimal value
 function doesn't depend on any policy:
 
 $$
 V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]
-$$ {#eq-bellman_optimality}
+$$ {#eq-bellman-optimality}
 
-:::{attention}
+::: {attention}
 Verify this by substituting the greedy policy into the
 Bellman consistency equation.
 :::
 
-As before, thinking of the r.h.s. of @eq-bellman_optimality as an operator on value functions
+As before, thinking of the r.h.s. of @eq-bellman-optimality as an operator on value functions
 gives the **Bellman optimality operator**
 
 $$
 [\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right]
-$$ {#eq-bellman_optimality_operator}
+$$ {#eq-bellman-optimality-operator}
 
 ```{python}
 def bellman_optimality_operator(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, " S"]:
@@ -1368,7 +1376,7 @@ def check_optimal(v: Float[Array, " S"], mdp: MDP):
     return jnp.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
-#### Value iteration {#sec-value_iteration}
+#### Value iteration {#sec-value-iteration}
 Since the optimal policy is still a policy, our result that the Bellman
 operator is a contracting map still holds, and so we can repeatedly
 apply this operator to converge to the optimal value function! This
@@ -1386,7 +1394,7 @@ value_iteration(tidy_mdp_inf)
 ```
 
 Note that the runtime analysis for an $\epsilon$-optimal value function
-is exactly the same as @sec-iterative_pe! This is because value iteration is simply
+is exactly the same as @sec-iterative-pe! This is because value iteration is simply
 the special case of applying iterative policy evaluation to the
 *optimal* value function.
 
@@ -1408,7 +1416,7 @@ $\hat \pi$ satisfies
 $\|V^{\hat \pi} - V^\star\|_{\infty} \le \frac{2\gamma}{1-\gamma} \epsilon$,
 which might potentially be very large.
 
-::: {#thm-greedy_worsen}
+::: {#thm-greedy-worsen}
 
 #### Greedy policy value worsening
 
@@ -1423,7 +1431,7 @@ q(s, a) = r(s, a) + \E_{s' \sim P(s, a)} v(s').
 $$
 :::
 
-:::{prf:proof} Proof
+::: {.proof}
 We first have
 
 $$
@@ -1480,7 +1488,7 @@ $$
 \|v^{(T)} - V^\star\|_{\infty} \le \frac{1-\gamma}{2 \gamma} \epsilon.
 $$
 
-This means, using @rem-iterations_vi, we need to run value iteration for
+This means, using @rem-iterations-vi, we need to run value iteration for
 
 $$
 T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\right) \right)
@@ -1489,7 +1497,7 @@ $$
 iterations to achieve an $\epsilon$-accurate estimate of the optimal value function.
 
 
-#### Policy iteration {#sec-policy_iteration}
+#### Policy iteration {#sec-policy-iteration}
 Can we mitigate this "greedy worsening"? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function *together*? This is the idea behind **policy iteration**. In each step, we simply set the policy to act greedily with respect to its own value function.
 
 ```{python}
@@ -1505,9 +1513,9 @@ def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
 policy_iteration(tidy_mdp_inf)
 ```
 
-Although PI appears more complex than VI, we'll use @thm-bellman_contraction to show convergence. This will give us the same runtime bound as value iteration and iterative policy evaluation for an $\epsilon$-optimal value function @rem-iterations_vi, although in practice, PI often converges much faster.
+Although PI appears more complex than VI, we'll use @thm-bellman-contraction to show convergence. This will give us the same runtime bound as value iteration and iterative policy evaluation for an $\epsilon$-optimal value function @rem-iterations-vi, although in practice, PI often converges much faster.
 
-:::: {#thm-pi_iter_analysis}
+:::: {#thm-pi-iter-analysis}
 
 #### Policy Iteration runtime and convergence
 
@@ -1518,7 +1526,7 @@ $$
 T = O\left( \frac{1}{1-\gamma} \log\left(\frac{1}{\epsilon (1-\gamma)}\right) \right).
 $$
 
-This bound follows from the contraction property @eq-bellman_convergence:
+This bound follows from the contraction property @eq-bellman-convergence:
 
 $$
 \|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.
@@ -1549,7 +1557,7 @@ $$
     V^{\pi^{t+1}}(s) - V^{\pi^{t}}(s) &\ge V^{\pi^{t+1}}(s) - \mathcal{J}^{\star} (V^{\pi^{t}})(s) \\
     &= \gamma \E_{s' \sim P(s, \pi^{t+1}(s))} \left[V^{\pi^{t+1}}(s') -  V^{\pi^{t}}(s') \right].
 \end{aligned}
-$$ {#eq-pi_iter_proof}
+$$ {#eq-pi-iter-proof}
 
 But note that the
 expression being averaged is the same as the expression on the l.h.s.
@@ -1567,7 +1575,7 @@ $$
 which implies that $V^{\pi^{t+1}}(s) \ge V^{\pi^{t}}(s)$
 for all $s$ (since the r.h.s. converges to zero). We can then plug this
 back into
-@eq-pi_iter_proof
+@eq-pi-iter-proof
 to get the desired result:
 
 $$
@@ -1578,7 +1586,7 @@ $$
 \end{aligned}
 $$
 
-This means we can now apply the Bellman convergence result @eq-bellman_convergence to get
+This means we can now apply the Bellman convergence result @eq-bellman-convergence to get
 
 $$
 \|V^{\pi^{t+1}} - V^\star \|_{\infty} \le \|\mathcal{J}^{\star} (V^{\pi^{t}}) - V^{\star}\|_{\infty} \le \gamma \|V^{\pi^{t}} - V^\star \|_{\infty}.

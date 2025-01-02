@@ -20,6 +20,7 @@ from functools import partial
 import jax
 import jax.numpy as jnp
 import jax.random as rand
+import numpy as np
 
 # reinforcement learning environments
 import gymnasium as gym

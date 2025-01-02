@@ -27,7 +27,7 @@ In particular, we’ll spend a lot of time discussing the **Exploration-Exploita
 Let’s suppose you, the agent, are an advertising company. You have $K$ different ads that you can show to users; For concreteness, let’s suppose there’s just a single user. You receive $1$ reward if the user clicks the ad, and $0$ otherwise. Thus, the unknown *reward distribution* associated to each ad is a Bernoulli distribution defined by the probability that the user clicks on the ad. Your goal is to maximize the total number of clicks by the user.
 ::::
 
-:::: {#exm-clinical_trials}
+:::: {#exm-clinical-trials}
 
 #### Clinical trials
 
@@ -220,7 +220,7 @@ def plot_strategy(mab: MAB, agent: Agent):
     plt.show()
 ```
 
-## Pure exploration {#sec-pure_exploration}
+## Pure exploration {#sec-pure-exploration}
 
 A trivial strategy is to always choose arms at random (i.e. "pure
 exploration").
@@ -255,7 +255,7 @@ mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
-## Pure greedy {#sec-pure_greedy}
+## Pure greedy {#sec-pure-greedy}
 
 How might we improve on pure exploration? Instead, we could try each arm
 once, and then commit to the one with the highest observed reward. We’ll
@@ -384,7 +384,7 @@ what* $\hat k$ “crystallizes” to.
 
 The **union bound** provides a simple way to do this:
 
-::: {#thm-union_bound}
+::: {#thm-union-bound}
 
 #### Union bound
 
@@ -490,7 +490,7 @@ plot_strategy(mab, agent)
 
 Note that we let $\epsilon$ vary over time. In particular, we might want to gradually *decrease* $\epsilon$ as we learn more about the reward distributions and no longer need to spend time exploring.
 
-:::{attention}
+::: {attention}
 What is the expected regret of the algorithm if we set $\epsilon$ to be a constant?
 :::
 
@@ -688,7 +688,7 @@ $$
 
 
 
-## Thompson sampling and Bayesian bandits {#sec-thompson_sampling}
+## Thompson sampling and Bayesian bandits {#sec-thompson-sampling}
 So far, we’ve treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the
 reward distributions as *fixed*. Instead, we can take a **Bayesian**
 approach where we treat them as random variables from some **prior
@@ -734,7 +734,7 @@ less certain about, and exploit more for arms that we’re more certain
 about. Thompson sampling is a simple yet powerful algorithm that
 achieves state-of-the-art performance in many settings.
 
-::: {#exm-bayesian_bernoulli}
+::: {#exm-bayesian-bernoulli}
 
 #### Bayesian Bernoulli bandit
 
@@ -814,10 +814,6 @@ the *constant factor* is optimal as well.
 
 ## Contextual bandits
 
-:::{note}
-This content is advanced material taught at the end of the course.
-:::
-
 In the above MAB environment, the reward distributions of the arms
 remain constant. However, in many real-world settings, we might receive
 additional information that affects these distributions. For example, in
@@ -826,7 +822,7 @@ show the user, we might receive information about the user's preferences
 that changes how likely they are to click on a given ad. We can model
 such environments using **contextual bandits**.
 
-::: {#def-contextual_bandit}
+::: {#def-contextual-bandit}
 
 #### Contextual bandit
 
@@ -844,7 +840,7 @@ Assuming our context is *discrete*, we can just perform the same
 algorithms, treating each context-arm pair as its own arm. This gives us
 an enlarged MAB of $K |\mathcal{X}|$ arms.
 
-:::{attention}
+::: {attention}
 Write down the UCB algorithm for this enlarged MAB. That is, write an
 expression for $\pi_t(x_t) = \arg\max_a \dots$.
 :::
@@ -865,7 +861,7 @@ incorporate this structure into our solution?
 
 
 
-### Linear contextual bandits {#sec-lin_ucb}
+### Linear contextual bandits {#sec-lin-ucb}
 We want to model the *mean reward* of arm $k$ as a function of the
 context, i.e. $\mu^k(x)$. One simple model is the *linear* one:
 $\mu^k(x) = x^\top \theta^k$, where $x \in \mathcal{X} = \mathbb{R}^d$ and
@@ -884,7 +880,7 @@ $$
     \hat \theta_t^k          & = (A_t^k)^{-1} \sum_{\{ i \in [t] : a_i = k \}} x_i r_i \\
     \text{where} \quad A_t^k & = \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top.
 \end{aligned}
-$$ {#eq-ols_bandit}
+$$ {#eq-ols-bandit}
 
 We can now apply the UCB algorithm in this environment in order to
 balance *exploration* of new arms and *exploitation* of arms that we
@@ -892,7 +888,7 @@ believe to have high reward. But how should we construct the upper
 confidence bound? Previously, we treated the pulls of an arm as i.i.d.
 samples and used Hoeffding's inequality to bound the distance of the
 sample mean, our estimator, from the true mean. However, now our
-estimator is not a sample mean, but rather the OLS estimator above @eq-ols_bandit. Instead, we'll use **Chebyshev's
+estimator is not a sample mean, but rather the OLS estimator above @eq-ols-bandit. Instead, we'll use **Chebyshev's
 inequality** to construct an upper confidence bound.
 
 ::: {#thm-chebyshev}
@@ -916,10 +912,10 @@ $$
 \end{aligned}
 $$
 
-:::{attention}
+::: {attention}
 We haven't explained why $x_t^\top (A_t^k)^{-1} x_t$ is the correct
 expression for the variance of $x_t^\top \hat \theta_t^k$. This result
-follows from some algebra on the definition of the OLS estimator @eq-ols_bandit.
+follows from some algebra on the definition of the OLS estimator @eq-ols-bandit.
 :::
 
 The first term is exactly our predicted reward $\hat \mu^k_t(x_t)$. To
@@ -965,7 +961,7 @@ class LinUCBPseudocode(Agent):
         self.w[arm] = np.linalg.solve(self.A[arm], self.targets[arm])
 ```
 
-:::{attention}
+::: {attention}
 Note that the matrix $A_t^k$ above might not be invertible. When does this occur? One way to address this is to include a $\lambda I$ regularization term to ensure that $A_t^k$ is invertible. This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem. Implement this solution.
 :::
 

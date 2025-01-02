@@ -40,13 +40,7 @@ and since we only consider deterministic games,
 we can represent actions as edges leading from the current state to the next.
 Each path through the tree, from root to leaf, represents a single game.
 
-
-:::{figure} shared/tic_tac_toe.png
-:align: center
-
-The first two layers of the complete game tree of tic-tac-toe.
-From Wikimedia.
-:::
+![The first two layers of the complete game tree of tic-tac-toe.](shared/tic_tac_toe.png)
 
 
 If you could store the complete game tree on a computer,
@@ -99,7 +93,7 @@ while Min seeks to minimize the final game score.
 
 We also call the sequence of states and actions a **trajectory**.
 
-:::{attention}
+::: {attention}
 Above, we suppose that the game ends after $H$ total moves.
 But most real games have a _variable_ length.
 How would you describe this?
@@ -483,7 +477,9 @@ where each action corresponds to an arm,
 and the reward distribution of arm $k$ is the distribution of the game score over random games after choosing that arm.
 The most commonly used bandit algorithm in practice for MCTS is the @sec-ucb algorithm.
 
-:::{note} Summary of UCB
+::: {#rem-ucb-summary}
+#### Summary of UCB
+
 Let us quickly review the UCB bandit algorithm.
 For each arm $k$, we track the sample mean
 $$
@@ -574,7 +570,7 @@ we might end up with a poor value approximation.
 
 To remedy this,
 we might make use of a value function $v : \mathcal{S} \to \mathbb{R}$ that more efficiently approximates the value of a state.
-Then, we can replace the simulation step of @def-mcts-algorithm with evaluating $r = v(s_\text{next})$, where $s_\text{next} = P(s_\text{new}, a_\text{new})$.
+Then, we can replace the simulation step of @def-mcts-algorithm with evaluating $r = v(s-\text{next})$, where $s-\text{next} = P(s-\text{new}, a-\text{new})$.
 
 We might also make use of a **"guiding" policy** $\pi_\text{guide} : \mathcal{S} \to \triangle(\mathcal{A})$ that provides "intuition" as to which actions are more valuable in a given state.
 We can scale the exploration term of @eq-ucb-tree according to the policy's outputs.
@@ -634,7 +630,7 @@ def mcts_iter(tree, s_init):
 
 How do we actually compute a useful $\pi_\text{guide}$ and $v$?
 If we have some existing dataset of trajectories,
-we could use @sec-imitation_learning (that is, imitation learning)
+we could use @sec-imitation-learning (that is, imitation learning)
 to generate a policy $\pi_\text{guide}$ via behavioral cloning
 and learn $v$ by regressing the game outcomes onto states.
 Then, plugging these into @def-mcts-policy-value
@@ -646,14 +642,14 @@ we could iterate this process via **self-play**.
 
 ### Self-play
 
-Recall the @sec-policy_iteration algorithm from the @sec-mdps.
+Recall the @sec-policy-iteration algorithm from the @sec-mdps.
 Policy iteration alternates between **policy evaluation** (taking $\pi$ and computing $V^\pi$)
 and **policy improvement** (setting $\pi$ to be greedy with respect to $V^\pi$).
 Above, we saw how MCTS can be thought of as a "policy improvement" operation:
 for a given policy $\pi^0$,
 we can use it to guide MCTS,
 resulting in an algorithm that is itself a policy $\pi^0_\text{MCTS}$ that maps from states to actions.
-Now, we can use @sec-imitation_learning
+Now, we can use @sec-imitation-learning
 to obtain a new policy $\pi^1$ that imitates $\pi^0_\text{MCTS}$.
 We can now use $\pi^1$ to guide MCTS,
 and repeat.
@@ -671,7 +667,7 @@ Input:
 
 For $t = 0, \dots, T-1$:
 
-- **Policy improvement**: Let $\pi^t_\text{MCTS}$ denote the policy obtained by @def-mcts-policy-value with $\pi_{\theta^t}$ and $v_{\lambda^t}$. We use $\pi^t_\text{MCTS}$ to play against itself $M$ times. This generates $M$ trajectories $\tau_0, \dots, \tau_{M-1}$.
+- **Policy improvement**: Let $\pi^t_\text{MCTS}$ denote the policy obtained by @def-mcts-policy-value with $\pi-{\theta^t}$ and $v-{\lambda^t}$. We use $\pi^t-\text{MCTS}$ to play against itself $M$ times. This generates $M$ trajectories $\tau-0, \dots, \tau-{M-1}$.
 - **Policy evaluation**: Use behavioral cloning to find a set of policy parameters $\theta^{t+1}$ that mimic the behavior of $\pi^t_\text{MCTS}$ and a set of value function parameters $\lambda^{t+1}$ that approximate its value function. That is,
   $$
   \begin{aligned}
@@ -697,8 +693,8 @@ We began with @sec-min-max-search,
 an algorithm for exactly solving the game value of every possible state.
 However, this is impossible to execute in practice,
 and so we must resort to various ways to reduce the number of states and actions that we must explore.
-@sec-alpha-beta-search does this by _pruning_ away states that we already know to be suboptimal,
-and @sec-mcts _approximates_ the value of states instead of evaluating them exactly.
+@sec-alpha-beta-search does this by -pruning- away states that we already know to be suboptimal,
+and @sec-mcts -approximates- the value of states instead of evaluating them exactly.
 
 
 ## References

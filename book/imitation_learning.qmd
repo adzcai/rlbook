@@ -5,7 +5,7 @@
 ---
 {{< include macros.qmd >}}
 
-# Imitation Learning {#sec-imitation_learning}
+# Imitation Learning {#sec-imitation-learning}
 
 ## Introduction
 
@@ -44,7 +44,7 @@ What's stopping us from applying supervised learning techniques to mimic the exp
 In principle, nothing!
 This is called **behavioral cloning**.
 
-::: {#def-behavioral_cloning}
+::: {#def-behavioral-cloning}
 
 #### Behavioral cloning
 
@@ -52,7 +52,7 @@ This is called **behavioral cloning**.
 2. Use a supervised learning algorithm $\texttt{fit} : \mathcal{D} \mapsto \widetilde{\pi}$ to extract a policy $\widetilde{\pi}$ that approximates the expert policy.
 :::
 
-Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in @def-parameterized_empirical_risk_minimization):
+Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in @def-parameterized-empirical-risk-minimization):
 
 $$
 \widetilde{\pi} = \arg\min_{\pi \in \Pi} \sum_{n=0}^{N-1} \text{loss}(\pi(s^n), a^n)
@@ -111,9 +111,11 @@ $$
 
 where $H$ is the horizon.
 
-:::{prf:theorem} Performance of behavioral cloning
+::: {thm-bc-performance}
 
-Recall the Performance Difference Lemma (@thm-pdl) allows us to express the difference between $\pi_{\text{expert}}$ and $\widetilde{\pi}$ as
+#### Performance of behavioral cloning
+
+Recall the Performance Difference Lemma (@thm-pdl) allows us to express the difference between $\pi-{\text{expert}}$ and $\widetilde{\pi}$ as
 
 $$
 V_0^{\pi_{\text{expert}}}(s) - V_0^{\widetilde{\pi}} (s) = \E_{\tau \sim \rho^{\pi_{\text{expert}}} \mid s_0 = s} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\widetilde{\pi}} (s_\hi, a_\hi) \right].
@@ -128,7 +130,7 @@ $$
 A^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) = Q^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) - V^{\pi_{\text{expert}}}(s) = 0.
 $$
 
-But the right-hand-side of @eq-pdl-rhs uses $A^{\widetilde{\pi}}$, not $A^{\pi_{\text{expert}}}$.
+But the right-hand-side of @eq-pdl-rhs uses $A^{\widetilde{\pi}}$, not $A^{\pi-{\text{expert}}}$.
 To bridge this gap,
 we now use the assumption that $\widetilde{\pi}$ obtains $\varepsilon$ classification error.
 Note that $A_\hi^{\widetilde{\pi}}(s_\hi, \pi_{\text{expert}}(s_\hi)) = 0$ when $\pi_{\text{expert}}(s_\hi) = \widetilde{\pi}(s_\hi)$.
@@ -164,7 +166,9 @@ which is **offline** since we don't need to act in the environment at all.
 
 You can think of DAgger as a specific way of collecting the dataset $\mathcal{D}$.
 
-:::{prf:algorithm} DAgger
+::: {#def-dagger-alg}
+
+#### DAgger algorithm
 
 Inputs: $\pi_{\text{expert}}$, an initial policy $\pi_{\text{init}}$, the number of iterations $T$, and the number of trajectories $N$ to collect per iteration.
 

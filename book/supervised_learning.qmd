@@ -1,14 +1,64 @@
 ---
 
-
-
 ---
 # Supervised learning {#sec-sl}
 
 ## Introduction
 
-This section will cover the details of implementing the `fit` function above:
-That is, how to use a dataset of labelled samples $(x_1, y_1), \dots, (x_N, y_N)$ to find a function $f$ that minimizes the empirical risk.
+
+```{python}
+from utils import Float, Array, Callable, plt
+from torchvision.datasets import MNIST
+from config import MNIST_PATH
+```
+
+**Supervised learning** (SL) is another core subfield of machine learning,
+alongside RL and unsupervised learning.
+The term "supervised" refers to the type of data SL algorithms deal with:
+a dataset of input-output pairs.
+
+::: {#exm-image-classification}
+#### Image classification
+
+One of the most common examples of an SL problem is the task of **image classification**:
+Given a dataset of images and their respective labels,
+construct a function that takes an image and outputs the correct label.
+:::
+
+```{python}
+#| label: fig-mnist
+#| fig-cap: "The MNIST image classification dataset of handwritten digits."
+#| layout-ncol: 2
+data = MNIST(MNIST_PATH, train=True, download=True)
+
+plt.axis('off')
+plt.imshow(data.data[0], cmap='gray')
+plt.title(f"Label: {data.targets[0]}")
+plt.show()
+
+plt.axis('off')
+plt.imshow(data.data[1], cmap='gray')
+plt.title(f"Label: {data.targets[1]}")
+plt.show()
+```
+
+In other words, the main concern of SL is **function approximation**
+(also known as **modeling**):
+given a dataset of inputs to a function,
+paired with their corresponding outputs,
+can we reconstruct or approximate the unknown function?
+
+Where might function approximation be useful in RL?
+There are many functions involved in the definition of an MDP (@def-finite-horizon-mdp),
+such as the state transitions or the reward function,
+any of which might be unknown.
+Instead, we could interact with the environment,
+collecting a dataset of input-output pairs of these functions,
+and then plug in an SL algorithm to approximate the unknown functions.
+
+The rest of this chapter will cover details of SL,
+that is, how to use a dataset of labelled samples $(x_1, y_1), \dots, (x_N, y_N)$
+to find a function $f$ that approximates the true function.
 This requires two ingredients:
 
 1. A **function class** $\mathcal{F}$ to search over
@@ -18,7 +68,7 @@ The two main function classes we will cover are **linear models** and **neural n
 Both of these function classes are *parameterized* by some parameters $\theta$,
 and the fitting method will search over these parameters to minimize the empirical risk:
 
-::: {#def-parameterized_empirical_risk_minimization}
+::: {#def-parameterized-empirical-risk-minimization}
 
 #### Parameterized empirical risk minimization
 
@@ -32,7 +82,7 @@ $$
 
 The most common fitting method for parameterized models is **gradient descent**.
 
-::: {#def-gd_def}
+::: {#def-gd-def}
 
 #### Gradient descent
 
@@ -45,12 +95,6 @@ $$
 
 where $\eta > 0$ is the **learning rate**.
 :::
-
-```{python}
-
-from jaxtyping import Float, Array
-from collections.abc import Callable
-```
 
 ```{python}
 Params = Float[Array, " D"]
@@ -112,6 +156,8 @@ Another reason for their popularity is the efficient **backpropagation** algorit
 Essentially, the hierarchical structure of the neural network,
 i.e. computing the output of the network as a composition of functions,
 allows us to use the chain rule to compute the gradient of the output with respect to the parameters of each layer.
+
+## References
 
 @nielsen_neural_2015 provides a comprehensive introduction to neural networks and backpropagation.
 
