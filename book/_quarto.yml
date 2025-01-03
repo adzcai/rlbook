@@ -2,9 +2,9 @@ project:
   type: book
 
 book:
-  title: "rlbook"
+  title: "CS 1840: Introduction to Reinforcement Learning"
   author: "Alexander Cai"
-  date: "2024-12-09"
+  date: "2025-01-03"
   chapters:
     - index.qmd
     - mdps.qmd
@@ -27,7 +27,6 @@ format:
     code-fold: true
     fig-width: 4
     fig-height: 3
-    fig-align: center
   pdf:
     documentclass: scrreprt
 

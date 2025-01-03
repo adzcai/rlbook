@@ -26,9 +26,9 @@ Specifically, we will assume that you know the following topics. The _italicized
 -   **Probability:** Random variables, probability distributions,
     expectation and variance, the law of iterated expectations (Adam's rule), covariance, conditional probability, Bayes's rule, and the law of total probability.
 
-You should also be comfortable with programming in Python.
-See @sec-programming for more about this textbook's philosophy regarding programming.
-
+You should also be familiar with basic programming concepts
+such as variables, functions, loops, etc.
+Pseudocode listings will be provided for certain algorithms.
 
 
 ## Reinforcement learning in a nutshell
@@ -177,36 +177,9 @@ There are some ways in which the code style differs from typical software projec
 
 We also make extensive use of Python _type annotations_ to explicitly specify variable types, including shapes of vectors and matrices using the [jaxtyping](https://github.com/patrick-kidger/jaxtyping) library.
 
-This is an interactive book built with [Jupyter Book](https://jupyterbook.org/en/stable/intro.html).
+This is an interactive book built with Quarto [@allaire_quarto_2024].
 It uses [Python 3.11](https://docs.python.org/3.11/contents.html).
 It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for numerical computing.
 JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem,
 sustained in large part by the Google DeepMind research group and a large body of open-source contributors.
 We use the standard [Gymnasium](https://gymnasium.farama.org/) library for interfacing with RL environments.
-
-The following names are exported from the `utils` module:
-
-```python
-import matplotlib.pyplot as plt
-
-# convenient class builder
-from typing import NamedTuple
-
-# function typings
-from collections.abc import Callable
-
-# array typings
-from jaxtyping import Float, Array
-
-# convenient function composition
-from functools import partial
-
-# numerical computing and linear algebra
-import jax
-import jax.numpy as jnp
-
-# print functions as latex
-import latexify
-
-plt.style.use("fivethirtyeight")
-```

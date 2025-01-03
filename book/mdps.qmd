@@ -123,7 +123,7 @@ class MDP(NamedTuple):
     """A description of a Markov decision process with finitely many states and actions."""
     S: int  # number of states
     A: int  # number of actions
-    μ: Float[Array, " S"]
+    mu: Float[Array, " S"]
     P: Float[Array, "S A S"]  # "current" state, "current" action, "next" state
     r: Float[Array, "S A"]
     H: int
@@ -170,7 +170,7 @@ $t = 0$ correspond to Monday and $t = 6$ correspond to Sunday.
 tidy_mdp = MDP(
     S=2,  # 0 = orderly, 1 = messy
     A=2,  # 0 = ignore, 1 = tidy
-    μ=jnp.array([1.0, 0.0]),  # start in orderly state
+    mu=jnp.array([1.0, 0.0]),  # start in orderly state
     P=jnp.array([
         [
             [0.7, 0.3],  # orderly, ignore
@@ -212,10 +212,10 @@ inputs, and time-dependence.
     actions while a stochastic policy outputs *distributions* over
     actions.
 
-::: {layout-ncol="2"}
-![A deterministic policy](shared/deterministic_policy.png)
+::: {#fig-deterministic-stochastic-policy layout-ncol=1}
+![A deterministic policy, which produces a single action](shared/deterministic_policy.png)
 
-![A stochastic policy](shared/stochastic_policy.png)
+![A stochastic policy, which produces a distribution over possible actions](shared/stochastic_policy.png)
 :::
 
 2.  **State-dependent or history-dependent.** A state-dependent (a.k.a.
@@ -312,7 +312,7 @@ Once we've chosen a policy,
 we can sample trajectories by repeatedly choosing actions according to the policy,
 transitioning according to the state transitions, and observing the rewards.
 
-```mermaid
+```{mermaid}
 graph LR
     S0($$s_0$$) -- $$\pi_0$$ --> A0{{$$a_0$$}}
     S0 & A0 --> R0[$$r_0$$]
@@ -360,19 +360,19 @@ $$
 ```{python}
 def trajectory_log_likelihood(
     mdp: MDP,
-    τ: list[Transition],
-    π: Float[Array, "S A"],
+    trj: list[Transition],
+    pi: Float[Array, "S A"],
 ) -> float:
     """Compute the log-likelihood of a trajectory under a given MDP and policy."""
 
     # initial distribution and action
-    total = jnp.log(mdp.μ[τ[0].s])
-    total += jnp.log(π[τ[0].s, τ[0].a])
+    total = jnp.log(mdp.mu[trj[0].s])
+    total += jnp.log(pi[trj[0].s, trj[0].a])
 
     # remaining state transitions and actions
     for i in range(1, mdp.H):
-        total += jnp.log(mdp.P[τ[i - 1].s, τ[i - 1].a, τ[i].s])
-        total += jnp.log(π[τ[i].s, τ[i].a])
+        total += jnp.log(mdp.P[trj[i - 1].s, trj[i - 1].a, trj[i].s])
+        total += jnp.log(pi[trj[i].s, trj[i].a])
 
     return total
 ```
@@ -932,8 +932,8 @@ and **optimal policy computation** show up again in the infinite-horizon
 setting.
 
 ```{python}
-π_opt, V_opt, Q_opt = find_optimal_policy(tidy_mdp)
-assert jnp.allclose(π_opt, tidy_policy_messy_only)
+pi_opt, V_opt, Q_opt = find_optimal_policy(tidy_mdp)
+assert jnp.allclose(pi_opt, tidy_policy_messy_only)
 assert jnp.allclose(V_opt, V_messy)
 assert jnp.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
 "Assertions passed (the 'tidy when messy' policy is optimal)"
@@ -1209,9 +1209,9 @@ def eval_deterministic_infinite(
     mdp: MDP, policy: Float[Array, "S A"]
 ) -> Float[Array, " S"]:
     pi = jnp.argmax(policy, axis=1)  # un-one-hot
-    P_π = mdp.P[jnp.arange(mdp.S), pi]
-    r_π = mdp.r[jnp.arange(mdp.S), pi]
-    return jnp.linalg.solve(jnp.eye(mdp.S) - mdp.γ * P_π, r_π)
+    P_pi = mdp.P[jnp.arange(mdp.S), pi]
+    r_pi = mdp.r[jnp.arange(mdp.S), pi]
+    return jnp.linalg.solve(jnp.eye(mdp.S) - mdp.γ * P_pi, r_pi)
 ```
 
 ::: {#exm-tidy-eval-infinite}
@@ -1505,8 +1505,8 @@ def policy_iteration(mdp: MDP, ε=1e-6) -> Float[Array, "S A"]:
     """Iteratively improve the policy and value function."""
     def op(pi):
         return v_to_greedy(mdp, eval_deterministic_infinite(mdp, pi))
-    π_init = jnp.ones((mdp.S, mdp.A)) / mdp.A  # uniform random policy
-    return loop_until_convergence(op, π_init, ε)
+    pi_init = jnp.ones((mdp.S, mdp.A)) / mdp.A  # uniform random policy
+    return loop_until_convergence(op, pi_init, ε)
 ```
 
 ```{python}

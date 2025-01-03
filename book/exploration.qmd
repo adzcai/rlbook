@@ -166,7 +166,7 @@ Then, we will use DP to solve for the optimal policy in $\widetilde{\mathcal{M}}
 
 At a high level, the UCB-VI algorithm can be described as follows:
 
-1.  **modeling:** Use previous data to model the transitions $\widehat{P}_0, \dots, \widehat{P}_{\hor-1}$.
+1.  **Modeling:** Use previous data to model the transitions $\widehat{P}_0, \dots, \widehat{P}_{\hor-1}$.
 
 2.  **Reward bonus:** Design a reward bonus $b_\hi(s, a) \in \mathbb{R}$ to encourage exploration, analogous to the UCB term.
 
@@ -182,7 +182,7 @@ We detail each of these steps below. The full definition follows in @def-ucb-vi.
 
 
 
-### modeling the transitions
+### deling the transitions
 
 We seek to approximate $P_\hi(s_{h+1} \mid s_\hi, a_\hi) = \frac{\pr(s_\hi, a_\hi, s_{h+1})}{\pr(s_\hi, a_\hi)}$. We can estimate these using their sample probabilities from the dataset. That is, define
 
@@ -392,7 +392,7 @@ Show that $Q^\pi_\hi$ is also linear with respect to $\phi(s, a)$ for any policy
 
 ### UCB-VI in a linear MDP {#sec-lin-ucb-vi}
 
-#### modeling the transitions
+#### Modeling the transitions
 
 This linear assumption on the MDP will also allow us to model the unknown dynamics $P^?_\hi(s' \mid s, a)$ with techniques from **supervised learning** (SL). Recall that SL is useful for estimating conditional expectations by minimizing mean squared error. We can rephrase the estimation of $P^?_\hi(s' \mid s, a)$ as a least-squares problem as follows: Write $\delta_s$ to denote a one-hot vector in $\mathbb{R}^{|\mathcal{S}|}$, with a $1$ in the $s$-th entry and $0$ everywhere else. Note that
 
