@@ -246,7 +246,7 @@ window.Quarto = {
   <li><a href="#sec-mdp-mab" id="toc-sec-mdp-mab" class="nav-link" data-scroll-target="#sec-mdp-mab"><span class="header-section-number">9.3</span> Treating an unknown MDP as a MAB</a></li>
   <li><a href="#ucb-vi" id="toc-ucb-vi" class="nav-link" data-scroll-target="#ucb-vi"><span class="header-section-number">9.4</span> UCB-VI</a>
   <ul class="collapse">
-  <li><a href="#modeling-the-transitions" id="toc-modeling-the-transitions" class="nav-link" data-scroll-target="#modeling-the-transitions"><span class="header-section-number">9.4.1</span> modeling the transitions</a></li>
+  <li><a href="#deling-the-transitions" id="toc-deling-the-transitions" class="nav-link" data-scroll-target="#deling-the-transitions"><span class="header-section-number">9.4.1</span> deling the transitions</a></li>
   <li><a href="#reward-bonus" id="toc-reward-bonus" class="nav-link" data-scroll-target="#reward-bonus"><span class="header-section-number">9.4.2</span> Reward bonus</a></li>
   <li><a href="#performance-of-ucb-vi" id="toc-performance-of-ucb-vi" class="nav-link" data-scroll-target="#performance-of-ucb-vi"><span class="header-section-number">9.4.3</span> Performance of UCB-VI</a></li>
   </ul></li>
@@ -373,7 +373,7 @@ k_{t+1} \gets \arg\max_{k \in [K]} \frac{R^{k}_t}{N^{k}_t} + \sqrt{\frac{\ln(2t/
 <p><strong>Assumptions:</strong> For simplicity, here we assume the reward function of <span class="math inline">\(\mathcal{M}^{?}\)</span> is known, so we only need to model the state transitions, though the rewards can be modelled similarly. We will also consider the more general case of a <strong>time-varying</strong> MDP, where the transition and reward functions may change over time. We take the convention that <span class="math inline">\(P_h\)</span> is the distribution of <span class="math inline">\(s_{h+1} \mid s_{h}, a_{h}\)</span> and <span class="math inline">\(r_h\)</span> is applied to <span class="math inline">\(s_h, a_h\)</span>.</p>
 <p>At a high level, the UCB-VI algorithm can be described as follows:</p>
 <ol type="1">
-<li><p><strong>modeling:</strong> Use previous data to model the transitions <span class="math inline">\(\widehat{P}_0, \dots, \widehat{P}_{H-1}\)</span>.</p></li>
+<li><p><strong>Modeling:</strong> Use previous data to model the transitions <span class="math inline">\(\widehat{P}_0, \dots, \widehat{P}_{H-1}\)</span>.</p></li>
 <li><p><strong>Reward bonus:</strong> Design a reward bonus <span class="math inline">\(b_h(s, a) \in \mathbb{R}\)</span> to encourage exploration, analogous to the UCB term.</p></li>
 <li><p><strong>Optimistic planning:</strong> Use DP to compute the optimal policy <span class="math inline">\(\widehat \pi_h(s)\)</span> in the modelled MDP</p></li>
 </ol>
@@ -384,8 +384,8 @@ k_{t+1} \gets \arg\max_{k \in [K]} \frac{R^{k}_t}{N^{k}_t} + \sqrt{\frac{\ln(2t/
 <li><strong>Execution:</strong> Use <span class="math inline">\(\widehat \pi_h(s)\)</span> to collect a new trajectory, and repeat.</li>
 </ol>
 <p>We detail each of these steps below. The full definition follows in <a href="#def-ucb-vi" class="quarto-xref">Definition&nbsp;<span>9.3</span></a>.</p>
-<section id="modeling-the-transitions" class="level3" data-number="9.4.1">
-<h3 data-number="9.4.1" class="anchored" data-anchor-id="modeling-the-transitions"><span class="header-section-number">9.4.1</span> modeling the transitions</h3>
+<section id="deling-the-transitions" class="level3" data-number="9.4.1">
+<h3 data-number="9.4.1" class="anchored" data-anchor-id="deling-the-transitions"><span class="header-section-number">9.4.1</span> deling the transitions</h3>
 <p>We seek to approximate <span class="math inline">\(P_h(s_{h+1} \mid s_h, a_h) = \frac{\mathbb{P}(s_h, a_h, s_{h+1})}{\mathbb{P}(s_h, a_h)}\)</span>. We can estimate these using their sample probabilities from the dataset. That is, define</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -524,8 +524,8 @@ V^\star_h(s) - V^{\pi^t}_h(s) \le \widehat{V}_h^t(s) - V^{\pi^t}_h(s).
 </section>
 <section id="sec-lin-ucb-vi" class="level3" data-number="9.5.2">
 <h3 data-number="9.5.2" class="anchored" data-anchor-id="sec-lin-ucb-vi"><span class="header-section-number">9.5.2</span> UCB-VI in a linear MDP</h3>
-<section id="modeling-the-transitions-1" class="level4" data-number="9.5.2.1">
-<h4 data-number="9.5.2.1" class="anchored" data-anchor-id="modeling-the-transitions-1"><span class="header-section-number">9.5.2.1</span> modeling the transitions</h4>
+<section id="modeling-the-transitions" class="level4" data-number="9.5.2.1">
+<h4 data-number="9.5.2.1" class="anchored" data-anchor-id="modeling-the-transitions"><span class="header-section-number">9.5.2.1</span> Modeling the transitions</h4>
 <p>This linear assumption on the MDP will also allow us to model the unknown dynamics <span class="math inline">\(P^?_h(s' \mid s, a)\)</span> with techniques from <strong>supervised learning</strong> (SL). Recall that SL is useful for estimating conditional expectations by minimizing mean squared error. We can rephrase the estimation of <span class="math inline">\(P^?_h(s' \mid s, a)\)</span> as a least-squares problem as follows: Write <span class="math inline">\(\delta_s\)</span> to denote a one-hot vector in <span class="math inline">\(\mathbb{R}^{|\mathcal{S}|}\)</span>, with a <span class="math inline">\(1\)</span> in the <span class="math inline">\(s\)</span>-th entry and <span class="math inline">\(0\)</span> everywhere else. Note that</p>
 <p><span class="math display">\[
 \mathbb{E}_{s' \sim P_h(\cdot \mid s, a)} [\delta_{s'}] = P_h(\cdot \mid s, a) = \mu_h^\star \phi(s, a).

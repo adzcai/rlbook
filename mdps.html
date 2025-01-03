@@ -332,7 +332,7 @@ window.Quarto = {
 </div>
 <p>MDPs are usually classified as <strong>finite-horizon</strong>, where the interactions end after some finite number of time steps, or <strong>infinite-horizon</strong>, where the interactions can continue indefinitely. We’ll begin with the finite-horizon case and discuss the infinite-horizon case in the second half of the chapter.</p>
 <p>We’ll describe how to <em>evaluate</em> different strategies, called <strong>policies,</strong> and how to compute (or approximate) the <strong>optimal policy</strong> for a given MDP. We’ll introduce the <strong>Bellman consistency condition</strong>, which allows us to analyze the whole sequence of interactions in terms of individual timesteps.</p>
-<div id="369f79bb" class="cell" data-execution_count="1">
+<div id="5f74d269" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> NamedTuple, Float, Array, partial, jax, jnp, latexify, latex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -369,7 +369,7 @@ M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \hor).
 <div class="{attention}">
 <p>Verify that the types and shapes provided above make sense!</p>
 </div>
-<div id="bca5bd95" class="cell" data-execution_count="2">
+<div id="fc93e05e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MDP(NamedTuple):</span>
@@ -400,7 +400,7 @@ M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \hor).
 \]</span></p>
 <p>Consider a time horizon of <span class="math inline">\(\hor = 7\)</span> days (one interaction per day). Let <span class="math inline">\(t = 0\)</span> correspond to Monday and <span class="math inline">\(t = 6\)</span> correspond to Sunday.</p>
 </div>
-<div id="9e3b6015" class="cell" data-execution_count="3">
+<div id="dfc81150" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tidy_mdp <span class="op">=</span> MDP(</span>
@@ -484,7 +484,7 @@ Figure&nbsp;1.1
 <li><p>Only tidy if the room is messy: <span class="math inline">\(\pi_\hi(\text{messy}) = \text{tidy}\)</span> and <span class="math inline">\(\pi_\hi(\text{orderly}) = \text{ignore}\)</span> for all <span class="math inline">\(\hi\)</span>.</p></li>
 </ul>
 </div>
-<div id="cb7e7ec8" class="cell" data-execution_count="4">
+<div id="536685a6" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># arrays of shape (H, S, A) represent time-dependent policies</span></span>
@@ -517,7 +517,7 @@ Figure&nbsp;1.1
 \]</span></p>
 <p>where <span class="math inline">\(r_\hi = r(s_\hi, a_\hi)\)</span>. (Note that some sources omit the reward at the final time step. This is a minor detail.)</p>
 </div>
-<div id="f82ba8ff" class="cell" data-execution_count="5">
+<div id="62fdf26e" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transition(NamedTuple):</span>
@@ -621,7 +621,7 @@ Figure&nbsp;1.1
 \rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})
 \]</span></p>
 </div>
-<div id="7407bec7" class="cell" data-execution_count="6">
+<div id="1b44bdf6" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> trajectory_log_likelihood(</span>
@@ -673,7 +673,7 @@ Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi 
 <p><span class="math display">\[
 V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)]
 \]</span></p>
-<div id="9fe4f2a6" class="cell" data-execution_count="7">
+<div id="80104233" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_to_v(</span>
@@ -691,7 +691,7 @@ V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)]
 <p><span class="math display">\[
 Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]
 \]</span></p>
-<div id="cba9c90c" class="cell" data-execution_count="8">
+<div id="5c111d24" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> v_to_q(</span>
@@ -717,7 +717,7 @@ Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]
 <p><span class="math display">\[
 \hat \pi_Q(s) = \arg\max_{a} Q_{sa}
 \]</span></p>
-<div id="97623c38" class="cell" data-execution_count="9">
+<div id="b2b29830" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_to_greedy(q: Float[Array, <span class="st">"S A"</span>]) <span class="op">-&gt;</span> Float[Array, <span class="st">"S A"</span>]:</span>
@@ -745,7 +745,7 @@ Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')]
 V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]
 \]</span></p>
 </div>
-<div id="99122450" class="cell" data-execution_count="10">
+<div id="603517a8" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check_bellman_consistency_v(</span>
@@ -799,7 +799,7 @@ Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}
 \]</span></p>
 <p>This is a crucial tool for reasoning about MDPs. Intuitively, it answers the following question: if we evaluate the <em>next</em> state using <span class="math inline">\(v\)</span>, how good is the <em>current</em> state, according to the given policy?</p>
 </div>
-<div id="a6117389" class="cell" data-execution_count="11">
+<div id="7582a42f" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> bellman_operator_looping(</span>
@@ -824,7 +824,7 @@ Q_\hi^\pi(s, a) = r(s, a) + \E_{\substack{s' \sim P(s, a) \\ a' \sim \pi_{\hi+1}
 </details>
 </div>
 <p>Note that we can concisely implement this using the <code>q_to_v</code> and <code>v_to_q</code> utilities from above:</p>
-<div id="7ba304b0" class="cell" data-execution_count="12">
+<div id="56ee52b8" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> bellman_operator(</span>
@@ -854,7 +854,7 @@ V_\hi^\pi = \mathcal{J}^{\pi}(V_{\hi+1}^\pi)
 <h4 data-number="1.3.1.1" class="anchored" data-anchor-id="dp-algorithm-to-evaluate-a-policy-in-a-finite-horizon-mdp"><span class="header-section-number">1.3.1.1</span> DP algorithm to evaluate a policy in a finite-horizon MDP</h4>
 <p>The Bellman consistency equation <a href="#thm-bellman-consistency" class="quarto-xref">Theorem&nbsp;<span>1.1</span></a> gives us a convenient algorithm for evaluating stationary policies: it expresses the value function at timestep <span class="math inline">\(\hi\)</span> as a function of the value function at timestep <span class="math inline">\(\hi+1\)</span>. This means we can start at the end of the time horizon, where the value is known, and work backwards in time, using the Bellman consistency equation to compute the value function at each time step.</p>
 </section>
-<div id="81679385" class="cell" data-execution_count="13">
+<div id="de2a5cb9" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dp_eval_finite(mdp: MDP, policy: Float[Array, <span class="st">"S A"</span>]) <span class="op">-&gt;</span> Float[Array, <span class="st">"H S"</span>]:</span>
@@ -867,7 +867,7 @@ V_\hi^\pi = \mathcal{J}^{\pi}(V_{\hi+1}^\pi)
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>latex(dp_eval_finite)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="13">
-<pre><code>&lt;latexify.ipython_wrappers.LatexifyWrapper at 0x11eb118d0&gt;</code></pre>
+<pre><code>&lt;latexify.ipython_wrappers.LatexifyWrapper at 0x15184ce50&gt;</code></pre>
 </div>
 </div>
 <p>This runs in time <span class="math inline">\(O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)\)</span> by counting the loops.</p>
@@ -900,7 +900,7 @@ V_{H-3}^\pi(\text{messy}) &amp;= r(\text{messy}, \text{tidy}) + \E_{s' \sim P(\t
 \]</span></p>
 <p>etc. You may wish to repeat this computation for the other policies to get a better sense of this algorithm.</p>
 </div>
-<div id="8c67ff95" class="cell" data-execution_count="14">
+<div id="aa2e8b24" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>V_messy <span class="op">=</span> dp_eval_finite(tidy_mdp, tidy_policy_messy_only)</span>
@@ -1013,7 +1013,7 @@ V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
 \end{aligned}
 \]</span></p>
 </div>
-<div id="57590723" class="cell" data-execution_count="15">
+<div id="7184fcf0" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> find_optimal_policy(mdp: MDP):</span>
@@ -1035,7 +1035,7 @@ V^\star_{H-1} = \max_a Q^\star_{H-1}(s, a)
 </div>
 <p>At each of the <span class="math inline">\(H\)</span> timesteps, we must compute <span class="math inline">\(Q^{\star}\)</span> for each of the <span class="math inline">\(|\mathcal{S}| |\mathcal{A}|\)</span> state-action pairs. Each computation takes <span class="math inline">\(|\mathcal{S}|\)</span> operations to evaluate the average value over <span class="math inline">\(s'\)</span>. This gives a total computation time of <span class="math inline">\(O(H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)\)</span>.</p>
 <p>Note that this algorithm is identical to the policy evaluation algorithm <code>dp_eval_finite</code> in <a href="#sec-eval-dp" class="quarto-xref"><span>Section 1.3.1</span></a>, but instead of <em>averaging</em> over the actions chosen by a policy, we instead simply take a <em>maximum</em> over the action-values. We’ll see this relationship between <strong>policy evaluation</strong> and <strong>optimal policy computation</strong> show up again in the infinite-horizon setting.</p>
-<div id="a75b25ed" class="cell" data-execution_count="16">
+<div id="c8a7f91b" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pi_opt, V_opt, Q_opt <span class="op">=</span> find_optimal_policy(tidy_mdp)</span>
@@ -1070,7 +1070,7 @@ r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots = \sum_{k=0}^\infty \gamm
 M = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).
 \]</span></p>
 <p>Code-wise, we can reuse the <code>MDP</code> class from before <a href="#def-finite-horizon-mdp" class="quarto-xref">Definition&nbsp;<span>1.2</span></a> and set <code>mdp.H = float('inf')</code>.</p>
-<div id="ffe5d862" class="cell" data-execution_count="17">
+<div id="aab3cf53" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>tidy_mdp_inf <span class="op">=</span> tidy_mdp._replace(H<span class="op">=</span><span class="bu">float</span>(<span class="st">"inf"</span>), γ<span class="op">=</span><span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1190,7 +1190,7 @@ V^\pi = (I - \gamma P^\pi)^{-1} r^\pi.
 <p>Note we’ve assumed that <span class="math inline">\(I - \gamma P^\pi\)</span> is invertible. Can you see why this is the case?</p>
 <p>(Recall that a linear operator, i.e.&nbsp;a square matrix, is invertible if and only if its null space is trivial; that is, it doesn’t map any nonzero vector to zero. In this case, we can see that <span class="math inline">\(I - \gamma P^\pi\)</span> is invertible because it maps any nonzero vector to a vector with at least one nonzero element.)</p>
 </div>
-<div id="b096797c" class="cell" data-execution_count="18">
+<div id="a81e9cc1" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> eval_deterministic_infinite(</span>
@@ -1217,7 +1217,7 @@ V^{\pi} = (I - \gamma P^{\pi})^{-1} r^{\pi} = \begin{bmatrix} 15.56 &amp; 4.44 \
 \]</span></p>
 <p>Let’s sanity-check this result. Since rewards are at most <span class="math inline">\(1\)</span>, the maximum cumulative return of a trajectory is at most <span class="math inline">\(1/(1-\gamma) = 20\)</span>. We see that the value function is indeed slightly lower than this.</p>
 </div>
-<div id="eeee5a99" class="cell" data-execution_count="19">
+<div id="69ee9f83" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>eval_deterministic_infinite(tidy_mdp_inf, tidy_policy_messy_only[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1235,7 +1235,7 @@ V^{\pi} = (I - \gamma P^{\pi})^{-1} r^{\pi} = \begin{bmatrix} 15.56 &amp; 4.44 \
 v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}),
 \]</span></p>
 <p>i.e.&nbsp;<span class="math inline">\(v^{(t)} = (\mathcal{J}^{\pi})^{(t)} (v^{(0)})\)</span>. Note that each iteration takes <span class="math inline">\(O(|\mathcal{S}|^2)\)</span> time for the matrix-vector multiplication.</p>
-<div id="d84d21fc" class="cell" data-execution_count="20">
+<div id="89f2548b" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> supremum_norm(v):</span>
@@ -1260,7 +1260,7 @@ v^{(t+1)} = \mathcal{J}^{\pi}(v^{(t)}),
 <p><span class="math display">\[
 \|v^{(t)} - V^\pi \|_{\infty} \le \gamma^{t} \| v^{(0)} - V^\pi\|_{\infty}.
 \]</span></p>
-<div id="bb2aa951" class="cell" data-execution_count="21">
+<div id="9406da14" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>iterative_evaluation(tidy_mdp_inf, tidy_policy_messy_only[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1310,7 +1310,7 @@ V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \r
 <p><span id="eq-bellman-optimality-operator"><span class="math display">\[
 [\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right]
 \tag{1.7}\]</span></span></p>
-<div id="5b5a6cf9" class="cell" data-execution_count="22">
+<div id="747a3273" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> bellman_optimality_operator(mdp: MDP, v: Float[Array, <span class="st">" S"</span>]) <span class="op">-&gt;</span> Float[Array, <span class="st">" S"</span>]:</span>
@@ -1324,7 +1324,7 @@ V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \r
 <section id="sec-value-iteration" class="level4" data-number="1.5.3.1">
 <h4 data-number="1.5.3.1" class="anchored" data-anchor-id="sec-value-iteration"><span class="header-section-number">1.5.3.1</span> Value iteration</h4>
 <p>Since the optimal policy is still a policy, our result that the Bellman operator is a contracting map still holds, and so we can repeatedly apply this operator to converge to the optimal value function! This algorithm is known as <strong>value iteration</strong>.</p>
-<div id="b7b7c396" class="cell" data-execution_count="23">
+<div id="30cd8d6d" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> value_iteration(mdp: MDP, ε: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1e-6</span>) <span class="op">-&gt;</span> Float[Array, <span class="st">" S"</span>]:</span>
@@ -1333,7 +1333,7 @@ V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \r
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loop_until_convergence(op, jnp.zeros(mdp.S), ε)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="a4448d0e" class="cell" data-execution_count="24">
+<div id="4d637e09" class="cell" data-execution_count="24">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>value_iteration(tidy_mdp_inf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1410,7 +1410,7 @@ T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\ri
 <section id="sec-policy-iteration" class="level4" data-number="1.5.3.2">
 <h4 data-number="1.5.3.2" class="anchored" data-anchor-id="sec-policy-iteration"><span class="header-section-number">1.5.3.2</span> Policy iteration</h4>
 <p>Can we mitigate this “greedy worsening”? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function <em>together</em>? This is the idea behind <strong>policy iteration</strong>. In each step, we simply set the policy to act greedily with respect to its own value function.</p>
-<div id="0f7db056" class="cell" data-execution_count="25">
+<div id="dc0bab6b" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> policy_iteration(mdp: MDP, ε<span class="op">=</span><span class="fl">1e-6</span>) <span class="op">-&gt;</span> Float[Array, <span class="st">"S A"</span>]:</span>
@@ -1421,7 +1421,7 @@ T = O\left( \frac{1}{1-\gamma} \log\left(\frac{\gamma}{\epsilon (1-\gamma)^2}\ri
 <span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> loop_until_convergence(op, pi_init, ε)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="e2b6036e" class="cell" data-execution_count="26">
+<div id="64c34c44" class="cell" data-execution_count="26">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>policy_iteration(tidy_mdp_inf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

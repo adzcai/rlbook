@@ -327,14 +327,14 @@ window.Quarto = {
 <li>We’ll then see how to estimate the <strong>policy gradient,</strong> enabling us to apply (stochastic) gradient ascent in the RL setting.</li>
 <li>Then we’ll explore some <em>proximal optimization</em> techniques that ensure the steps taken are “not too large”. This is helpful to stabilize training and widely used in practice.</li>
 </ol>
-<div id="ad6af616" class="cell" data-execution_count="1">
+<div id="b5c3283e" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="203cdba0" class="cell" data-execution_count="2">
+<div id="6beadb67" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> plt, Array, Float, Callable, jax, jnp, latex, gym</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -347,7 +347,7 @@ window.Quarto = {
 <p>You may have previously heard of <em>gradient descent</em> for minimizing functions. Optimization problems are usually posed as <em>minimization</em> problems by convention. However, in RL, we usually talk about <em>maximizing</em> the expected total reward, and so we perform gradient <em>ascent</em> instead.</p>
 </div>
 <p><strong>Gradient ascent</strong> is a general optimization algorithm for any differentiable function. A suitable analogy for this algorithm is hiking up a mountain, where you keep taking steps in the steepest direction upwards. Here, your vertical position <span class="math inline">\(y\)</span> is the function being optimized, and your horizontal position <span class="math inline">\((x, z)\)</span> is the input to the function. The <em>slope</em> of the mountain at your current position is given by the <em>gradient</em>, written <span class="math inline">\(\nabla y(x, z) \in \mathbb{R}^2\)</span>.</p>
-<div id="2665d13f" class="cell" data-execution_count="3">
+<div id="f573b0f7" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, y):</span>
@@ -421,7 +421,7 @@ x^{k} \\ z^{k}
 <section id="stochastic-gradient-ascent" class="level3" data-number="6.2.2">
 <h3 data-number="6.2.2" class="anchored" data-anchor-id="stochastic-gradient-ascent"><span class="header-section-number">6.2.2</span> Stochastic gradient ascent</h3>
 <p>In real applications, computing the gradient of the target function is not so simple. As an example from supervised learning, <span class="math inline">\(J(\theta)\)</span> might be the sum of squared prediction errors across an entire training dataset. However, if our dataset is very large, it might not fit into our computer’s memory! Typically in these cases, we compute some <em>estimate</em> of the gradient at each step, and walk in that direction instead. This is called <strong>stochastic</strong> gradient ascent. In the SL example above, we might randomly choose a <em>minibatch</em> of samples and use them to estimate the true prediction error. (This approach is known as <strong><em>minibatch</em></strong> <strong>SGD</strong>.)</p>
-<div id="4012121f" class="cell" data-execution_count="4">
+<div id="4ef17f19" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sgd(</span>
@@ -573,7 +573,7 @@ J(\theta) = \mathbb{E}_{\tau \sim \rho_\theta} R(\tau)
 \]</span></p>
 <p>We will see later on what <span class="math inline">\(A\)</span> concretely corresponds to.</p>
 </div>
-<div id="01c1cfe9" class="cell" data-execution_count="5">
+<div id="4a11dc4a" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_gradient_reinforce_pseudocode(env: gym.Env, pi, theta: Float[Array, <span class="st">" D"</span>]):</span>
@@ -666,7 +666,7 @@ A^\pi_h(s, a) = Q^\pi_h(s, a) - V^\pi_h(s)
 </div>
 <p>Note that to avoid correlations between the gradient estimator and the value estimator (i.e.&nbsp;baseline), we must estimate them with independently sampled trajectories:</p>
 <!-- TODO could use more explanation _why_ we want to avoid correlations -->
-<div id="912fc598" class="cell" data-execution_count="6">
+<div id="792515e6" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pg_with_learned_baseline(env: gym.Env, pi, eta: <span class="bu">float</span>, theta_init, K: <span class="bu">int</span>, N: <span class="bu">int</span>) <span class="op">-&gt;</span> Float[Array, <span class="st">" D"</span>]:</span>
@@ -772,7 +772,7 @@ there is now _distributional shift_ between the different iterations of the poli
 <p>This can be interpreted in many different ways, many stemming from information theory. One such interpretation is that <span class="math inline">\(\mathrm{KL}\left(p\parallel q\right)\)</span> describes my average “surprise” if I <em>think</em> data is being generated by <span class="math inline">\(q\)</span> but it’s actually generated by <span class="math inline">\(p\)</span>. (The <strong>surprise</strong> of an event with probability <span class="math inline">\(p\)</span> is <span class="math inline">\(- \log_2 p\)</span>.) Note that <span class="math inline">\(\mathrm{KL}\left(p\parallel q\right) = 0\)</span> if and only if <span class="math inline">\(p = q\)</span>. Also note that it is generally <em>not</em> symmetric.</p>
 </div>
 <p>Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories. This is intractable in general, so we need to estimate the expectation. As before, we can do this by taking an empirical average over samples from the trajectory distribution. This gives us the following pseudocode:</p>
-<div id="1618c8c2" class="cell" data-execution_count="7">
+<div id="2c9aab19" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kl_div_trajectories(pi, theta_1, theta_2, trajectories):</span>
@@ -791,7 +791,7 @@ $
 <p>$</p>
 </div>
 </div>
-<div id="6a92a79c" class="cell" data-execution_count="8">
+<div id="6f441253" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> trpo(env, δ, theta_init, n_interactions):</span>
@@ -897,7 +897,7 @@ F_{\theta} = \mathbb{E}_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla 
 \end{aligned}
 \]</span></p>
 <p>We can think of the space of such distributions as the line between <span class="math inline">\((0, 1)\)</span> to <span class="math inline">\((1, 0)\)</span> on the Cartesian plane:</p>
-<div id="b68195cc" class="cell" data-execution_count="9">
+<div id="c8211e33" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jnp.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
@@ -979,7 +979,7 @@ F_{\theta} = \mathbb{E}_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla 
 \theta^{k+1} \gets \arg\max_{\theta} \ell^k(\theta).
 \]</span></p>
 <p>If <span class="math inline">\(\ell^k\)</span> is differentiable, we can optimize it by gradient ascent, completing a single iteration of PPO.</p>
-<div id="b3a106a5" class="cell" data-execution_count="10">
+<div id="656aef44" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> TypeVar</span>
