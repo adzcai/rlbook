@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; Multi-Armed Bandits – rlbook</title>
+<title>3&nbsp; Multi-Armed Bandits – CS 1840: Introduction to Reinforcement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -179,7 +179,7 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">rlbook</a> 
+      <a href="./">CS 1840: Introduction to Reinforcement Learning</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -336,7 +336,7 @@ window.Quarto = {
 <p><span class="theorem-title"><strong>Example 3.2 (Clinical trials)</strong></span> Suppose you’re a pharmaceutical company, and you’re testing a new drug. You have <span class="math inline">\(K\)</span> different dosages of the drug that you can administer to patients. You receive <span class="math inline">\(1\)</span> reward if the patient recovers, and <span class="math inline">\(0\)</span> otherwise. Thus, the unknown <em>reward distribution</em> associated to each dosage is a Bernoulli distribution defined by the probability that the patient recovers. Your goal is to maximize the total number of patients that recover.</p>
 </div>
 <p>In this chapter, we will introduce the multi-armed bandits setting, and discuss some of the challenges that arise when trying to solve problems in this setting. We will also introduce some of the key concepts that we will use throughout the book, such as regret and exploration-exploitation tradeoffs.</p>
-<div id="3db793b4" class="cell" data-execution_count="1">
+<div id="389aab61" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jaxtyping <span class="im">import</span> Float, Array</span>
@@ -367,7 +367,7 @@ window.Quarto = {
 <p><span class="proof-title"><em>Remark 3.1</em> (Namesake). </span>The name “multi-armed bandits” comes from slot machines in casinos, which are often called “one-armed bandits” since they have one arm (the lever) and rob money from the player.</p>
 </div>
 <p>Let <span class="math inline">\(K\)</span> denote the number of arms. We’ll label them <span class="math inline">\(0, \dots, K-1\)</span> and use <em>superscripts</em> to indicate the arm index; since we seldom need to raise a number to a power, this won’t cause much confusion. In this chapter, we’ll consider the <strong>Bernoulli bandit</strong> setting from the examples above, where arm <span class="math inline">\(k\)</span> either returns reward <span class="math inline">\(1\)</span> with probability <span class="math inline">\(\mu^k\)</span> or <span class="math inline">\(0\)</span> otherwise. The agent gets to pull an arm <span class="math inline">\(T\)</span> times in total. We can formalize the Bernoulli bandit in the following Python code:</p>
-<div id="26537493" class="cell" data-execution_count="2">
+<div id="2f9177f6" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MAB:</span>
@@ -390,14 +390,14 @@ window.Quarto = {
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">+</span>reward</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="c1c8f499" class="cell" data-execution_count="3">
+<div id="cc13fc38" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mab <span class="op">=</span> MAB(means<span class="op">=</span>np.array([<span class="fl">0.1</span>, <span class="fl">0.8</span>, <span class="fl">0.4</span>]), T<span class="op">=</span><span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>In pseudocode, the agent’s interaction with the MAB environment can be described by the following process:</p>
-<div id="b9b916e7" class="cell" data-execution_count="4">
+<div id="b4c91b4a" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">@latex</span></span>
@@ -417,7 +417,7 @@ $
 </div>
 </div>
 <p>The <code>Agent</code> class stores the pull history and uses it to decide which arm to pull next. Since we are working with Bernoulli bandits, we can summarize the pull history concisely in a <span class="math inline">\(\mathbb{N}^{K \times 2}\)</span> array.</p>
-<div id="e9c57a9d" class="cell" data-execution_count="5">
+<div id="0f3aa12c" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Agent:</span>
@@ -454,7 +454,7 @@ $
 \text{Regret}_T := \sum_{t=0}^{T-1} \mu^\star - \mu^{a_t}.
 \]</span></p>
 </div>
-<div id="5b0cb7ed" class="cell" data-execution_count="6">
+<div id="e725fbb6" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regret_per_step(mab: MAB, agent: Agent):</span>
@@ -471,7 +471,7 @@ $
 <p>Note that these two different approaches say very different things about the regret. The first approach says that the <em>average</em> regret is at most <span class="math inline">\(M_T\)</span>. However, the agent might still achieve higher regret on many runs. The second approach says that, <em>with high probability</em>, the agent will achieve regret at most <span class="math inline">\(M_{T, \delta}\)</span>. However, it doesn’t say anything about the regret in the remaining <span class="math inline">\(\delta\)</span> fraction of runs, which might be arbitrarily high.</p>
 <p>We’d like to achieve <strong>sublinear regret</strong> in expectation, i.e.&nbsp;<span class="math inline">\(\mathbb{E}[\text{Regret}_T] = o(T)\)</span>. That is, as we learn more about the environment, we’d like to be able to exploit that knowledge to take the optimal arm as often as possible.</p>
 <p>The rest of the chapter comprises a series of increasingly sophisticated MAB algorithms.</p>
-<div id="e3467f3a" class="cell" data-execution_count="7">
+<div id="9d706233" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_strategy(mab: MAB, agent: Agent):</span>
@@ -498,7 +498,7 @@ $
 <section id="sec-pure-exploration" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="sec-pure-exploration"><span class="header-section-number">3.2</span> Pure exploration</h2>
 <p>A trivial strategy is to always choose arms at random (i.e.&nbsp;“pure exploration”).</p>
-<div id="1125f48c" class="cell" data-execution_count="8">
+<div id="5c955851" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PureExploration(Agent):</span>
@@ -519,7 +519,7 @@ $
 \end{aligned}
 \]</span></p>
 <p>This scales as <span class="math inline">\(\Theta(T)\)</span>, i.e.&nbsp;<em>linear</em> in the number of timesteps <span class="math inline">\(T\)</span>. There’s no learning here: the agent doesn’t use any information about the environment to improve its strategy. You can see that the distribution over its arm choices always appears “(uniformly) random”.</p>
-<div id="327e8486" class="cell" data-execution_count="9">
+<div id="aa3c9d46" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> PureExploration(mab.K, mab.T)</span>
@@ -538,7 +538,7 @@ $
 <section id="sec-pure-greedy" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="sec-pure-greedy"><span class="header-section-number">3.3</span> Pure greedy</h2>
 <p>How might we improve on pure exploration? Instead, we could try each arm once, and then commit to the one with the highest observed reward. We’ll call this the <strong>pure greedy</strong> strategy.</p>
-<div id="f05cbc35" class="cell" data-execution_count="10">
+<div id="9aafbb19" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PureGreedy(Agent):</span>
@@ -557,7 +557,7 @@ $
 \end{aligned}
 \]</span></p>
 <p>Which is still <span class="math inline">\(\Theta(T)\)</span>, the same as pure exploration!</p>
-<div id="03238d8c" class="cell" data-execution_count="11">
+<div id="ef11b582" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> PureGreedy(mab.K, mab.T)</span>
@@ -577,7 +577,7 @@ $
 <section id="sec-etc" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="sec-etc"><span class="header-section-number">3.4</span> Explore-then-commit</h2>
 <p>We can improve the pure greedy algorithm as follows: let’s reduce the variance of the reward estimates by pulling each arm <span class="math inline">\(N_{\text{explore}}&gt; 1\)</span> times before committing. This is called the <strong>explore-then-commit</strong> strategy. Note that the “pure greedy” strategy above is just the special case where <span class="math inline">\(N_{\text{explore}}= 1\)</span>.</p>
-<div id="7d41dad7" class="cell" data-execution_count="12">
+<div id="c401b1d8" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ExploreThenCommit(Agent):</span>
@@ -589,7 +589,7 @@ $
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> solutions.etc_choose_arm(<span class="va">self</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="0f9aa383" class="cell" data-execution_count="13">
+<div id="59eadaf7" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> ExploreThenCommit(mab.K, mab.T, mab.T <span class="op">//</span> <span class="dv">15</span>)</span>
@@ -684,7 +684,7 @@ T_{\text{exploit}} (\mu^\star - \mu^{\hat k}) \qquad \text{where} \qquad T_{\tex
 <section id="epsilon-greedy" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="epsilon-greedy"><span class="header-section-number">3.5</span> Epsilon-greedy</h2>
 <p>Instead of doing all of the exploration and then all of the exploitation separately – which additionally requires knowing the time horizon beforehand – we can instead interleave exploration and exploitation by, at each timestep, choosing a random action with some probability. We call this the <strong>epsilon-greedy</strong> algorithm.</p>
-<div id="ab9faaba" class="cell" data-execution_count="14">
+<div id="b18aae60" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EpsilonGreedy(Agent):</span>
@@ -701,7 +701,7 @@ T_{\text{exploit}} (\mu^\star - \mu^{\hat k}) \qquad \text{where} \qquad T_{\tex
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> solutions.epsilon_greedy_choose_arm(<span class="va">self</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="7be4c5b6" class="cell" data-execution_count="15">
+<div id="ae86893a" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> EpsilonGreedy(mab.K, mab.T, np.full(mab.T, <span class="fl">0.1</span>))</span>
@@ -760,7 +760,7 @@ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},
 <li>A larger <span class="math inline">\(\delta'\)</span> would give a tighter and lower-confidence interval, prioritizing the current sample averages.</li>
 </ul>
 <p>We can now use this to define the UCB algorithm.</p>
-<div id="ccf50c01" class="cell" data-execution_count="16">
+<div id="ed3ca3b6" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UCB(Agent):</span>
@@ -778,7 +778,7 @@ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},
 <li><p><span class="math inline">\(\sqrt{\frac{\ln(2t/\delta')}{2N^k_t}}\)</span> is large, i.e.&nbsp;we’re still uncertain about the arm, and we’d choose it for <em>exploration</em>.</p></li>
 </ol>
 <p>As desired, this explores in a smarter, <em>adaptive</em> way compared to the previous algorithms. Does it achieve lower regret?</p>
-<div id="a0c49934" class="cell" data-execution_count="17">
+<div id="4772fcb0" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>agent <span class="op">=</span> UCB(mab.K, mab.T, <span class="fl">0.9</span>)</span>
@@ -847,7 +847,7 @@ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},
 <h2 data-number="3.7" class="anchored" data-anchor-id="sec-thompson-sampling"><span class="header-section-number">3.7</span> Thompson sampling and Bayesian bandits</h2>
 <p>So far, we’ve treated the parameters <span class="math inline">\(\mu^0, \dots, \mu^{K-1}\)</span> of the reward distributions as <em>fixed</em>. Instead, we can take a <strong>Bayesian</strong> approach where we treat them as random variables from some <strong>prior distribution</strong>. Then, upon pulling an arm and observing a reward, we can simply <em>condition</em> on this observation to exactly describe the <strong>posterior distribution</strong> over the parameters. This fully describes the information we gain about the parameters from observing the reward.</p>
 <p>From this Bayesian perspective, the <strong>Thompson sampling</strong> algorithm follows naturally: just sample from the distribution of the optimal arm, given the observations!</p>
-<div id="fc4e36e4" class="cell" data-execution_count="18">
+<div id="acdf73a1" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Distribution:</span>
@@ -860,7 +860,7 @@ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="e7c1e39c" class="cell" data-execution_count="19">
+<div id="450f2a4d" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ThompsonSampling(Agent):</span>
@@ -896,7 +896,7 @@ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},
 \]</span></p>
 <p>This is the PDF of the <span class="math inline">\(\text{Beta}(1 + r_0, 1 + (1 - r_0))\)</span> distribution, which is a conjugate prior for the Bernoulli distribution. That is, if we start with a Beta prior on <span class="math inline">\(\mu^k\)</span> (note that <span class="math inline">\(\text{Unif}([0, 1]) = \text{Beta}(1, 1)\)</span>), then the posterior, after conditioning on samples from <span class="math inline">\(\text{Bern}(\mu^k)\)</span>, will also be Beta. This is a very convenient property, since it means we can simply update the parameters of the Beta distribution upon observing a reward, rather than having to recompute the entire posterior distribution from scratch.</p>
 </div>
-<div id="5a0d5a6e" class="cell" data-execution_count="20">
+<div id="8d79c32c" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Beta(Distribution):</span>
@@ -912,7 +912,7 @@ M^k_t := \hat \mu^k_t + \sqrt{\frac{\ln(2t/\delta')}{2N^k_t}},
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.betas[arm] <span class="op">+=</span> <span class="dv">1</span> <span class="op">-</span> reward</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="d354f3b6" class="cell" data-execution_count="21">
+<div id="cb936d45" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>beta_distribution <span class="op">=</span> Beta(mab.K)</span>
@@ -982,7 +982,7 @@ x_t^\top (A_t^k)^{-1} x_t = \frac{1}{N_t^k} x_t^\top (\Sigma_t^k)^{-1} x_t,
 \Sigma_t^k = \frac{1}{N_t^k} \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top
 \]</span> is the empirical covariance matrix of the contexts (assuming that the context has mean zero). That is, the learner is encouraged to choose arms when <span class="math inline">\(x_t\)</span> is <em>not aligned</em> with the data seen so far, or if arm <span class="math inline">\(k\)</span> has not been explored much and so <span class="math inline">\(N_t^k\)</span> is small.</p>
 <p>We can now substitute these quantities into UCB to get the <strong>LinUCB</strong> algorithm:</p>
-<div id="bd5d6bc2" class="cell" data-execution_count="22">
+<div id="e37eb081" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LinUCBPseudocode(Agent):</span>

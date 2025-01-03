@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; Supervised learning – rlbook</title>
+<title>4&nbsp; Supervised learning – CS 1840: Introduction to Reinforcement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -179,7 +179,7 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">rlbook</a> 
+      <a href="./">CS 1840: Introduction to Reinforcement Learning</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -322,7 +322,7 @@ window.Quarto = {
 </div>
 <section id="introduction" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">4.1</span> Introduction</h2>
-<div id="8d01d1a6" class="cell" data-execution_count="1">
+<div id="71e07cd0" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> Float, Array, Callable, plt, np, latex</span>
@@ -517,7 +517,7 @@ Figure&nbsp;4.2: Squared loss.
 <div id="fig-pathological-predictor-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-pathological-predictor-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-1.png" class="quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor" width="302" height="198">
+<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-1.png" class="quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor" width="320" height="198">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pathological-predictor-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) One training dataset.
@@ -529,7 +529,7 @@ Figure&nbsp;4.2: Squared loss.
 <div id="fig-pathological-predictor-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-pathological-predictor-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-2.png" class="quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor" width="320" height="198">
+<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-2.png" class="quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor" width="302" height="201">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pathological-predictor-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Another training dataset.
@@ -660,7 +660,7 @@ p(x) = a' (x - b')^2 + c'.
 \theta^{t+1} = \theta^t - \eta \nabla_\theta L(\theta^t)
 \]</span></p>
 <p>where <span class="math inline">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong> and <span class="math inline">\(\nabla_\theta L(\theta^t)\)</span> indicates the <strong>gradient</strong> of <span class="math inline">\(L\)</span> at the point <span class="math inline">\(\theta^t\)</span>. Recall that the gradient of a function at a point is a vector in the direction that increases the function’s value the most within a <em>neighborhood</em>. So by taking small steps in the oppposite direction, we obtain a solution that achieves a slightly lower loss than the current one.</p>
-<div id="9805e5ef" class="cell" data-execution_count="6">
+<div id="33c6d40e" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="lst-gd"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-gd-1"><a href="#lst-gd-1" aria-hidden="true" tabindex="-1"></a>Params <span class="op">=</span> Float[Array, <span class="st">" D"</span>]</span>
