@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>10&nbsp; Appendix: Background – rlbook</title>
+<title>References – rlbook</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,7 +20,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -30,8 +49,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
-<link href="./exploration.html" rel="prev">
+<link href="./background.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -69,35 +87,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -110,7 +99,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./background.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">References</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -197,13 +186,13 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link active">
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">
+  <a href="./references.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">References</span></a>
   </div>
 </li>
@@ -212,21 +201,15 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#o-notation" id="toc-o-notation" class="nav-link active" data-scroll-target="#o-notation"><span class="header-section-number">10.1</span> O notation</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-background" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></h1>
+<h1 class="title">References</h1>
 </div>
 
 
@@ -243,20 +226,113 @@ window.Quarto = {
 </header>
 
 
-<hr>
-<hr>
-<section id="o-notation" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="o-notation"><span class="header-section-number">10.1</span> O notation</h2>
-<p>Throughout this chapter and the rest of the book, we will describe the asymptotic behavior of a function using <span class="math inline">\(O\)</span> notation.</p>
-<p>For two functions <span class="math inline">\(f(t)\)</span> and <span class="math inline">\(g(t)\)</span>, we say that <span class="math inline">\(f(t) \le O(g(t))\)</span> if <span class="math inline">\(f\)</span> is asymptotically upper bounded by <span class="math inline">\(g\)</span>. Formally, this means that there exists some constant <span class="math inline">\(C &gt; 0\)</span> such that <span class="math inline">\(f(t) \le C \cdot g(t)\)</span> for all <span class="math inline">\(t\)</span> past some point <span class="math inline">\(t_0\)</span>.</p>
-<p>We say <span class="math inline">\(f(t) &lt; o(g(t))\)</span> if asymptotically <span class="math inline">\(f\)</span> grows strictly slower than <span class="math inline">\(g\)</span>. Formally, this means that for <em>any</em> scalar <span class="math inline">\(C &gt; 0\)</span>, there exists some <span class="math inline">\(t_0\)</span> such that <span class="math inline">\(f(t) \le C \cdot g(t)\)</span> for all <span class="math inline">\(t &gt; t_0\)</span>. Equivalently, we say <span class="math inline">\(f(t) &lt; o(g(t))\)</span> if <span class="math inline">\(\lim_{t \to \infty} f(t)/g(t) = 0\)</span>.</p>
-<p><span class="math inline">\(f(t) = \Theta(g(t))\)</span> means that <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> grow at the same rate asymptotically. That is, <span class="math inline">\(f(t) \le O(g(t))\)</span> and <span class="math inline">\(g(t) \le O(f(t))\)</span>.</p>
-<p>Finally, we use <span class="math inline">\(f(t) \ge \Omega(g(t))\)</span> to mean that <span class="math inline">\(g(t) \le O(f(t))\)</span>, and <span class="math inline">\(f(t) &gt; \omega(g(t))\)</span> to mean that <span class="math inline">\(g(t) &lt; o(f(t))\)</span>.</p>
-<p>We also use the notation <span class="math inline">\(\tilde O(g(t))\)</span> to hide logarithmic factors. That is, <span class="math inline">\(f(t) = \tilde O(g(t))\)</span> if there exists some constant <span class="math inline">\(C\)</span> such that <span class="math inline">\(f(t) \le C \cdot g(t) \cdot \log^k(t)\)</span> for some <span class="math inline">\(k\)</span> and all <span class="math inline">\(t\)</span>.</p>
-<p>Occasionally, we will also use <span class="math inline">\(O(f(t))\)</span> (or one of the other symbols) as shorthand to manipulate function classes. For example, we might write <span class="math inline">\(O(f(t)) + O(g(t)) = O(f(t) + g(t))\)</span> to mean that the sum of two functions in <span class="math inline">\(O(f(t))\)</span> and <span class="math inline">\(O(g(t))\)</span> is in <span class="math inline">\(O(f(t) + g(t))\)</span>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-agarwal_reinforcement_2022" class="csl-entry" role="listitem">
+Agarwal, Alekh, Nan Jiang, Sham M Kakade, and Wen Sun. 2022.
+<em>Reinforcement <span>Learning</span>: <span>Theory</span> and
+<span>Algorithms</span></em>. <a href="https://rltheorybook.github.io/rltheorybook_AJKS.pdf">https://rltheorybook.github.io/rltheorybook_AJKS.pdf</a>.
+</div>
+<div id="ref-baydin_automatic_2018" class="csl-entry" role="listitem">
+Baydin, Atilim Gunes, Barak A. Pearlmutter, Alexey Andreyevich Radul,
+and Jeffrey Mark Siskind. 2018. <span>“Automatic Differentiation in
+Machine Learning: A Survey.”</span> February 5, 2018. <a href="https://doi.org/10.48550/arXiv.1502.05767">https://doi.org/10.48550/arXiv.1502.05767</a>.
+</div>
+<div id="ref-boyd_convex_2004" class="csl-entry" role="listitem">
+Boyd, Stephen, and Lieven Vandenberghe. 2004. <em>Convex
+<span>Optimization</span></em>. Cambridge University Press. <a href="https://web.stanford.edu/~boyd/cvxbook/">https://web.stanford.edu/~boyd/cvxbook/</a>.
+</div>
+<div id="ref-deng_mnist_2012" class="csl-entry" role="listitem">
+Deng, Li. 2012. <span>“The <span>MNIST Database</span> of
+<span>Handwritten Digit Images</span> for <span>Machine Learning
+Research</span> [<span>Best</span> of the <span>Web</span>].”</span>
+<em>IEEE Signal Processing Magazine</em> 29 (6): 141–42. <a href="https://doi.org/10.1109/MSP.2012.2211477">https://doi.org/10.1109/MSP.2012.2211477</a>.
+</div>
+<div id="ref-hastie_elements_2013" class="csl-entry" role="listitem">
+Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2013. <em>The
+<span>Elements</span> of <span>Statistical Learning</span>: <span>Data
+Mining</span>, <span>Inference</span>, and <span>Prediction</span></em>.
+Springer Science &amp; Business Media. <a href="https://books.google.com?id=yPfZBwAAQBAJ">https://books.google.com?id=yPfZBwAAQBAJ</a>.
+</div>
+<div id="ref-james_introduction_2023" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, Robert Tibshirani, and
+Jonathan Taylor. 2023. <em>An <span>Introduction</span> to
+<span>Statistical Learning</span>: With <span>Applications</span> in
+<span>Python</span></em>. Springer <span>Texts</span> in
+<span>Statistics</span>. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-031-38747-0">https://doi.org/10.1007/978-3-031-38747-0</a>.
+</div>
+<div id="ref-lai_asymptotically_1985" class="csl-entry" role="listitem">
+Lai, T. L, and Herbert Robbins. 1985. <span>“Asymptotically Efficient
+Adaptive Allocation Rules.”</span> <em>Advances in Applied
+Mathematics</em> 6 (1): 4–22. <a href="https://doi.org/10.1016/0196-8858(85)90002-8">https://doi.org/10.1016/0196-8858(85)90002-8</a>.
+</div>
+<div id="ref-nielsen_neural_2015" class="csl-entry" role="listitem">
+Nielsen, Michael A. 2015. <em>Neural <span>Networks</span> and
+<span>Deep Learning</span></em>. Determination Press. <a href="http://neuralnetworksanddeeplearning.com/">http://neuralnetworksanddeeplearning.com/</a>.
+</div>
+<div id="ref-ross_reduction_2010" class="csl-entry" role="listitem">
+Ross, Stéphane, Geoffrey J. Gordon, and J. Bagnell. 2010. <span>“A
+<span>Reduction</span> of <span>Imitation Learning</span> and
+<span>Structured Prediction</span> to <span>No-Regret Online
+Learning</span>.”</span> In. <a href="https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e">https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e</a>.
+</div>
+<div id="ref-russell_artificial_2021" class="csl-entry" role="listitem">
+Russell, Stuart J., and Peter Norvig. 2021. <em>Artificial Intelligence:
+A Modern Approach</em>. Fourth edition. Pearson Series in Artificial
+Intelligence. Hoboken: Pearson.
+</div>
+<div id="ref-schrittwieser_mastering_2020" class="csl-entry" role="listitem">
+Schrittwieser, Julian, Ioannis Antonoglou, Thomas Hubert, Karen
+Simonyan, Laurent Sifre, Simon Schmitt, Arthur Guez, et al. 2020.
+<span>“Mastering <span>Atari</span>, <span>Go</span>, Chess and Shogi by
+Planning with a Learned Model.”</span> <em>Nature</em> 588 (7839, 7839):
+604–9. <a href="https://doi.org/10.1038/s41586-020-03051-4">https://doi.org/10.1038/s41586-020-03051-4</a>.
+</div>
+<div id="ref-schulman_proximal_2017" class="csl-entry" role="listitem">
+Schulman, John, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg
+Klimov. 2017. <span>“Proximal <span>Policy Optimization
+Algorithms</span>.”</span> August 28, 2017. <a href="https://doi.org/10.48550/arXiv.1707.06347">https://doi.org/10.48550/arXiv.1707.06347</a>.
+</div>
+<div id="ref-silver_mastering_2016" class="csl-entry" role="listitem">
+Silver, David, Aja Huang, Chris J. Maddison, Arthur Guez, Laurent Sifre,
+George van den Driessche, Julian Schrittwieser, et al. 2016.
+<span>“Mastering the Game of <span>Go</span> with Deep Neural Networks
+and Tree Search.”</span> <em>Nature</em> 529 (7587, 7587): 484–89. <a href="https://doi.org/10.1038/nature16961">https://doi.org/10.1038/nature16961</a>.
+</div>
+<div id="ref-silver_general_2018" class="csl-entry" role="listitem">
+Silver, David, Thomas Hubert, Julian Schrittwieser, Ioannis Antonoglou,
+Matthew Lai, Arthur Guez, Marc Lanctot, et al. 2018. <span>“A General
+Reinforcement Learning Algorithm That Masters Chess, Shogi, and
+<span>Go</span> Through Self-Play.”</span> <em>Science</em> 362 (6419):
+1140–44. <a href="https://doi.org/10.1126/science.aar6404">https://doi.org/10.1126/science.aar6404</a>.
+</div>
+<div id="ref-silver_mastering_2017" class="csl-entry" role="listitem">
+Silver, David, Julian Schrittwieser, Karen Simonyan, Ioannis Antonoglou,
+Aja Huang, Arthur Guez, Thomas Hubert, et al. 2017. <span>“Mastering the
+Game of <span>Go</span> Without Human Knowledge.”</span> <em>Nature</em>
+550 (7676, 7676): 354–59. <a href="https://doi.org/10.1038/nature24270">https://doi.org/10.1038/nature24270</a>.
+</div>
+<div id="ref-sussman_functional_2013" class="csl-entry" role="listitem">
+Sussman, Gerald Jay, Jack Wisdom, and Will Farr. 2013. <em>Functional
+Differential Geometry</em>. Cambridge, MA: The MIT Press.
+</div>
+<div id="ref-sutton_reinforcement_2018" class="csl-entry" role="listitem">
+Sutton, Richard S., and Andrew G. Barto. 2018. <em>Reinforcement
+Learning: An Introduction</em>. Second edition. Adaptive Computation and
+Machine Learning Series. Cambridge, Massachusetts: The MIT Press. <a href="http://incompleteideas.net/book/RLbook2020trimmed.pdf">http://incompleteideas.net/book/RLbook2020trimmed.pdf</a>.
+</div>
+<div id="ref-vershynin_high-dimensional_2018" class="csl-entry" role="listitem">
+Vershynin, Roman. 2018. <em>High-<span>Dimensional Probability</span>:
+<span>An Introduction</span> with <span>Applications</span> in
+<span>Data Science</span></em>. Cambridge University Press. <a href="https://books.google.com?id=NDdqDwAAQBAJ">https://books.google.com?id=NDdqDwAAQBAJ</a>.
+</div>
+<div id="ref-williams_simple_1992" class="csl-entry" role="listitem">
+Williams, Ronald J. 1992. <span>“Simple Statistical Gradient-Following
+Algorithms for Connectionist Reinforcement Learning.”</span> <em>Machine
+Learning</em> 8 (3): 229–56. <a href="https://doi.org/10.1007/BF00992696">https://doi.org/10.1007/BF00992696</a>.
+</div>
+</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -678,14 +754,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./exploration.html" class="pagination-link" aria-label="Exploration in MDPs">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span>
+      <a href="./background.html" class="pagination-link" aria-label="Appendix: Background">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

@@ -1,100 +1,954 @@
-<!DOCTYPE html><html lang="en" class="" style="scroll-padding:60px"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>CS/STAT 184: Introduction to Reinforcement Learning</title><meta property="og:title" content="CS/STAT 184: Introduction to Reinforcement Learning"/><meta name="generator" content="mystmd"/><meta name="keywords" content=""/><link rel="icon" href="/favicon.ico"/><link rel="stylesheet" href="/build/_assets/app-H3NBUYVS.css"/><link rel="stylesheet" href="/build/_assets/thebe-core-VKVHG5VY.css"/><link rel="stylesheet" href="/myst-theme.css"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jupyter-matplotlib@0.11.3/css/mpl_widget.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous"/><script>
-  const savedTheme = localStorage.getItem("myst:theme");
-  const theme = window.matchMedia("(prefers-color-scheme: light)").matches ? 'light' : 'dark';
-  const classes = document.documentElement.classList;
-  const hasAnyTheme = classes.contains('light') || classes.contains('dark');
-  if (!hasAnyTheme) classes.add(savedTheme ?? theme);
-</script></head><body class="m-0 transition-colors duration-500 bg-white dark:bg-stone-900"><div class="fixed top-1 left-1 h-[0px] w-[0px] focus-within:z-40 focus-within:h-auto focus-within:w-auto bg-white overflow-hidden focus-within:p-2 focus-within:ring-1" aria-label="skip to content options"><a href="#skip-to-frontmatter" class="block px-2 py-1 text-black underline">Skip to article frontmatter</a><a href="#skip-to-article" class="block px-2 py-1 text-black underline">Skip to article content</a></div><div class="bg-white/80 backdrop-blur dark:bg-stone-900/80 shadow dark:shadow-stone-700 p-3 md:px-8 sticky w-screen top-0 z-30 h-[60px]"><nav class="flex items-center justify-between flex-nowrap max-w-[1440px] mx-auto"><div class="flex flex-row xl:min-w-[19.5rem] mr-2 sm:mr-7 justify-start items-center shrink-0"><div class="block xl:hidden"><button class="flex items-center border-stone-400 text-stone-800 hover:text-stone-900 dark:text-stone-200 hover:dark:text-stone-100"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" width="2rem" height="2rem" class="m-1"><path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd"></path></svg><span class="sr-only">Open Menu</span></button></div><a class="flex items-center ml-3 dark:text-white w-fit md:ml-5 xl:ml-7" href="/"><div class="p-1 mr-3 dark:bg-white dark:rounded"><img src="/build/184-5f23de62f8c37b6a5894408ebcf81c79.png" class="h-9" height="2.25rem"/></div><span class="text-md sm:text-xl tracking-tight sm:mr-5 sr-only">Made with MyST</span></a></div><div class="flex items-center flex-grow w-auto"><div class="flex-grow hidden text-md lg:block"></div><div class="flex-grow block"></div><button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:R3iop:" data-state="closed" class="flex items-center h-10 aspect-square sm:w-64 text-left text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 hover:ring-blue-500 dark:hover:ring-blue-500 hover:border-blue-500 dark:hover:border-blue-500"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" class="p-2.5 h-10 w-10 aspect-square"><path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd"></path></svg><span class="hidden sm:block grow">Search</span><div aria-hidden="true" class="items-center hidden mx-1 font-mono text-sm text-gray-400 sm:flex gap-x-1"><kbd class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:shadow-none hide-mac">CTRL</kbd><kbd class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:shadow-none show-mac">⌘</kbd><kbd class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:shadow-none ">K</kbd><script>
-;(() => {
-const script = document.currentScript;
-const root = script.parentElement;
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-const isMac = /mac/i.test(
-      window.navigator.userAgentData?.platform ?? window.navigator.userAgent,
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alexander Cai">
+<meta name="dcterms.date" content="2024-12-09">
+
+<title>rlbook</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./mdps.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">rlbook</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mdps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bandits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./planning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#reinforcement-learning-in-a-nutshell" id="toc-reinforcement-learning-in-a-nutshell" class="nav-link" data-scroll-target="#reinforcement-learning-in-a-nutshell">Reinforcement learning in a nutshell</a></li>
+  <li><a href="#core-tasks-of-reinforcement-learning" id="toc-core-tasks-of-reinforcement-learning" class="nav-link" data-scroll-target="#core-tasks-of-reinforcement-learning">Core tasks of reinforcement learning</a></li>
+  <li><a href="#course-overview" id="toc-course-overview" class="nav-link" data-scroll-target="#course-overview">Course overview</a></li>
+  <li><a href="#notation" id="toc-notation" class="nav-link" data-scroll-target="#notation">Notation</a></li>
+  <li><a href="#sec-programming" id="toc-sec-programming" class="nav-link" data-scroll-target="#sec-programming">Programming</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">rlbook</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Alexander Cai </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 9, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<hr>
+<hr>
+<div class="hidden">
+
+</div>
+<section id="introduction" class="level1 unnumbered">
+<h1 class="unnumbered">Introduction</h1>
+<p>Welcome to the study of reinforcement learning! This textbook accompanies the undergraduate course <a href="http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html">CS 1840/STAT 184</a> taught at Harvard. It is intended to be a friendly yet rigorous introduction to this active subfield of machine learning.</p>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<p>This book assumes the same prerequisites as the course: You should be familiar with multivariable calculus, linear algebra, and probability. For Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents. Stat 111 is strongly recommended but not required. Specifically, we will assume that you know the following topics. The <em>italicized terms</em> have brief re-introductions in the text or in the <a href="background.html" class="quarto-xref"><span>10&nbsp; Appendix: Background</span></a>:</p>
+<ul>
+<li><strong>Linear Algebra:</strong> Vectors and matrices, matrix multiplication, matrix inversion, eigenvalues and eigenvectors.</li>
+<li><strong>Multivariable Calculus:</strong> Partial derivatives, the chain rule, Taylor series, <em>gradients, directional derivatives, Lagrange multipliers.</em></li>
+<li><strong>Probability:</strong> Random variables, probability distributions, expectation and variance, the law of iterated expectations (Adam’s rule), covariance, conditional probability, Bayes’s rule, and the law of total probability.</li>
+</ul>
+<p>You should also be comfortable with programming in Python. See <a href="#sec-programming" class="quarto-xref"><span>Programming</span></a> for more about this textbook’s philosophy regarding programming.</p>
+</section>
+<section id="reinforcement-learning-in-a-nutshell" class="level2">
+<h2 class="anchored" data-anchor-id="reinforcement-learning-in-a-nutshell">Reinforcement learning in a nutshell</h2>
+<p>Broadly speaking, RL studies <strong>sequential decision-making</strong> in <strong>dynamic environments.</strong> An RL algorithm finds a strategy, called a <strong>policy,</strong> that maximizes the <strong>reward</strong> it obtains from the environment.</p>
+<p>RL provides a powerful framework for attacking a wide variety of problems, including robotic control, video games and board games, resource management, language modeling, and more. It also provides an interdisciplinary paradigm for studying animal and human behavior. Many of the most stunning results in machine learning, ranging from AlphaGo to ChatGPT, are built using RL algorithms.</p>
+<p>How does RL compare to the other two core machine learning paradigms, <strong>supervised learning</strong> and <strong>unsupervised learning?</strong></p>
+<ul>
+<li><p><strong>Supervised learning</strong> (SL) concerns itself with learning a mapping from inputs to outputs. Typically the data takes the form of <em>statistically independent</em> input-output pairs. In RL, however, the data is generated by the agent interacting with the environment, meaning the sequential observations of the state are <em>not independent</em> from each other.</p>
+<p>Conversely, SL is a well-studied field that provides many useful tools for RL.</p></li>
+<li><p><strong>Unsupervised learning</strong> concerns itself with learning the <em>structure</em> of data without the use of outside feedback or labels. In RL, though, the agent receives a <strong>reward signal</strong> from the environment, which can be thought of as a sort of feedback.</p>
+<p>Unsupervised learning is crucial in many real-world applications of RL for dimensionality reduction and other purposes.</p></li>
+</ul>
+</section>
+<section id="core-tasks-of-reinforcement-learning" class="level2">
+<h2 class="anchored" data-anchor-id="core-tasks-of-reinforcement-learning">Core tasks of reinforcement learning</h2>
+<p>What tasks, exactly, does RL comprise? An RL algorithm must typically solve two main subtasks:</p>
+<ul>
+<li><p><strong>Policy evaluation (prediction):</strong> How ‘good’ is a specific state, or state-action pair (under a given policy)? That is, how much reward does it lead to in the long run?</p></li>
+<li><p><strong>Policy optimization (control):</strong> Suppose we fully understand how the environment behaves. What is the best action to take in every scenario?</p></li>
+</ul>
+<!-- **Recursion (bootstrapping):** How can we "reuse" our current predictions to generate new information? -->
+<!-- **Exploration-exploitation tradeoff:** Should we try new actions, or capitalize on actions that we currently believe to be good? -->
+</section>
+<section id="course-overview" class="level2">
+<h2 class="anchored" data-anchor-id="course-overview">Course overview</h2>
+<p>The course will progress through the following units:</p>
+<p><a href="mdps.html" class="quarto-xref"><span>1&nbsp; Markov Decision Processes</span></a> introduces <strong>Markov Decision Processes,</strong> the core mathematical framework for describing a large class of interactive environments.</p>
+<p><a href="control.html" class="quarto-xref"><span>2&nbsp; Linear Quadratic Regulators</span></a> is a standalone chapter on the <strong>linear quadratic regulator</strong> (LQR), an important tool for <em>continuous control</em>, in which the state and action spaces are no longer <em>finite</em> but rather <em>continuous</em>. This has widespread applications in robotics.</p>
+<p><a href="bandits.html" class="quarto-xref"><span>3&nbsp; Multi-Armed Bandits</span></a> introduces the <strong>multi-armed bandit</strong> (MAB) model for -stateless- sequential decision-making tasks. In exploring a number of algorithms, we will see how each of them strikes a different balance between <em>exploring</em> new options and <em>exploiting</em> known options. This <strong>exploration-exploitation tradeoff</strong> is a core consideration in RL algorithm design.</p>
+<p><a href="supervised_learning.html" class="quarto-xref"><span>4&nbsp; Supervised learning</span></a> is a standalone crash course on some tools from supervised learning that we will use in later chapters.</p>
+<p><a href="fitted_dp.html" class="quarto-xref"><span>5&nbsp; Fitted Dynamic Programming Algorithms</span></a> introduces <strong>fitted dynamic programming</strong> (fitted DP) algorithms for solving MDPs. These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.</p>
+<p><a href="pg.html" class="quarto-xref"><span>6&nbsp; Policy Gradient Methods</span></a> explores an important class of algorithms based on iteratively improving a policy. We will also encounter the use of <em>deep neural networks</em> to express more complicated policies and approximate complicated functions.</p>
+<p><a href="imitation_learning.html" class="quarto-xref"><span>7&nbsp; Imitation Learning</span></a> attempts to learn a good policy from expert demonstrations. At its most basic, this is an application of supervised learning to RL tasks.</p>
+<p><a href="planning.html" class="quarto-xref"><span>8&nbsp; Tree Search Methods</span></a> looks at ways to -explicitly- plan ahead when the environment’s dynamics are known. We will study the <em>Monte Carlo Tree Search</em> heuristic, which has been used to great success in the famous AlphaGo algorithm and its successors.</p>
+<p><a href="exploration.html" class="quarto-xref"><span>9&nbsp; Exploration in MDPs</span></a> continues to investigate the exploration-exploitation tradeoff. We will extend ideas from multi-armed bandits to the MDP setting.</p>
+<p><a href="background.html" class="quarto-xref"><span>10&nbsp; Appendix: Background</span></a> contains an overview of selected background mathematical content and programming content.</p>
+<!-- 
+| Chapter | States | Actions | Rewards (or costs) |
+|:-------:|:------:|:-------:|:-------:|
+| @bandits | N/A | Finite | Stochastic |
+| @mdps | Finite | Finite | Deterministic |
+| @fitted-dp | Large or continuous | Finite | Deterministic |
+| @lqr | Continuous | Continuous | Deterministic |
+-->
+</section>
+<section id="notation" class="level2">
+<h2 class="anchored" data-anchor-id="notation">Notation</h2>
+<p>We will use the following notation throughout the book. This notation is inspired by <span class="citation" data-cites="sutton_reinforcement_2018">Sutton and Barto (<a href="references.html#ref-sutton_reinforcement_2018" role="doc-biblioref">2018</a>)</span> and <span class="citation" data-cites="agarwal_reinforcement_2022">(<a href="references.html#ref-agarwal_reinforcement_2022" role="doc-biblioref">Agarwal et al. 2022</a>)</span>. We use <span class="math inline">\([N]\)</span> as shorthand for the set <span class="math inline">\(\{ 0, 1, \dots, N-1 \}\)</span>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 38%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Element</th>
+<th style="text-align: center;">Space</th>
+<th style="text-align: left;">Definition (of element)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(s\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathcal{S}\)</span></td>
+<td style="text-align: left;">A state.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(a\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathcal{A}\)</span></td>
+<td style="text-align: left;">An action.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(r\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">A reward.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(\gamma\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: left;">A discount factor.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\tau\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathcal{T}\)</span></td>
+<td style="text-align: left;">A trajectory.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(\pi\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\Pi\)</span></td>
+<td style="text-align: left;">A policy.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(V^\pi\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathcal{S} \to \mathbb{R}\)</span></td>
+<td style="text-align: left;">The value function of policy <span class="math inline">\(\pi\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(Q^\pi\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span></td>
+<td style="text-align: left;">The action-value function (a.k.a. Q-function) of policy <span class="math inline">\(\pi\)</span>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(A^\pi\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span></td>
+<td style="text-align: left;">The advantage function of policy <span class="math inline">\(\pi\)</span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\(\triangle(\mathcal{X})\)</span></td>
+<td style="text-align: left;">A distribution supported on <span class="math inline">\(\mathcal{X}\)</span>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(h\)</span></td>
+<td style="text-align: center;"><span class="math inline">\([H]\)</span></td>
+<td style="text-align: left;">Time horizon index of an MDP (subscript).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(k\)</span></td>
+<td style="text-align: center;"><span class="math inline">\([K]\)</span></td>
+<td style="text-align: left;">Arm index of a multi-armed bandit (superscript).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(t\)</span></td>
+<td style="text-align: center;"><span class="math inline">\([T]\)</span></td>
+<td style="text-align: left;">Iteration index of an algorithm (subscript).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(\theta\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\Theta\)</span></td>
+<td style="text-align: left;">A set of parameters.</td>
+</tr>
+</tbody>
+</table>
+<p>Note that throughout the text, certain symbols will stand for either random variables or fixed values. We aim to clarify in ambiguous settings. Be warned that notation in RL can appear quite complicated, since we often need to index across algorithm iterations, trajectories, and timesteps, so that certain values can have two or three indices attached to them.</p>
+</section>
+<section id="sec-programming" class="level2">
+<h2 class="anchored" data-anchor-id="sec-programming">Programming</h2>
+<p>Why include code in a textbook? We believe that implementing an algorithm is a strong test of your understanding of it; mathematical notation can often abstract away details, while a computer must be given every single instruction. We have sought to write readable Python code that is self-contained within each file. This approach is inspired by <span class="citation" data-cites="sussman_functional_2013">Sussman, Wisdom, and Farr (<a href="references.html#ref-sussman_functional_2013" role="doc-biblioref">2013</a>)</span>. There are some ways in which the code style differs from typical software projects:</p>
+<ul>
+<li>We keep use of language features to a minimum, even if it leads to code that could otherwise be more concisely or idiomatically expressed.</li>
+<li>The variable names used in the code match those used in the main text. For example, the variable <code>s</code> will be used instead of the more explicit <code>state</code>.</li>
+</ul>
+<p>We also make extensive use of Python <em>type annotations</em> to explicitly specify variable types, including shapes of vectors and matrices using the <a href="https://github.com/patrick-kidger/jaxtyping">jaxtyping</a> library.</p>
+<p>This is an interactive book built with <a href="https://jupyterbook.org/en/stable/intro.html">Jupyter Book</a>. It uses <a href="https://docs.python.org/3.11/contents.html">Python 3.11</a>. It uses the <a href="https://jax.readthedocs.io/en/latest/index.html">JAX</a> library for numerical computing. JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem, sustained in large part by the Google DeepMind research group and a large body of open-source contributors. We use the standard <a href="https://gymnasium.farama.org/">Gymnasium</a> library for interfacing with RL environments.</p>
+<p>The following names are exported from the <code>utils</code> module:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># convenient class builder</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> NamedTuple</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># function typings</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections.abc <span class="im">import</span> Callable</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># array typings</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> jaxtyping <span class="im">import</span> Float, Array</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># convenient function composition</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># numerical computing and linear algebra</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> jax.numpy <span class="im">as</span> jnp</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># print functions as latex</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> latexify</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">"fivethirtyeight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-agarwal_reinforcement_2022" class="csl-entry" role="listitem">
+Agarwal, Alekh, Nan Jiang, Sham M Kakade, and Wen Sun. 2022. <em>Reinforcement <span>Learning</span>: <span>Theory</span> and <span>Algorithms</span></em>. <a href="https://rltheorybook.github.io/rltheorybook_AJKS.pdf">https://rltheorybook.github.io/rltheorybook_AJKS.pdf</a>.
+</div>
+<div id="ref-sussman_functional_2013" class="csl-entry" role="listitem">
+Sussman, Gerald Jay, Jack Wisdom, and Will Farr. 2013. <em>Functional Differential Geometry</em>. Cambridge, MA: The MIT Press.
+</div>
+<div id="ref-sutton_reinforcement_2018" class="csl-entry" role="listitem">
+Sutton, Richard S., and Andrew G. Barto. 2018. <em>Reinforcement Learning: An Introduction</em>. Second edition. Adaptive Computation and Machine Learning Series. Cambridge, Massachusetts: The MIT Press. <a href="http://incompleteideas.net/book/RLbook2020trimmed.pdf">http://incompleteideas.net/book/RLbook2020trimmed.pdf</a>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
     );
-root.querySelectorAll(".hide-mac").forEach(node => {node.classList.add(isMac ? "hidden" : "block")});
-root.querySelectorAll(".show-mac").forEach(node => {node.classList.add(!isMac ? "hidden" : "block")});
-})()</script></div></button><button class="theme rounded-full aspect-square border border-stone-700 dark:border-white hover:bg-neutral-100 border-solid overflow-hidden text-stone-700 dark:text-white hover:text-stone-500 dark:hover:text-neutral-800 w-8 h-8 mx-3" title="Toggle theme between light and dark mode." aria-label="Toggle theme between light and dark mode."><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" class="h-full w-full p-0.5 hidden dark:block"><path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clip-rule="evenodd"></path></svg><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" class="h-full w-full p-0.5 dark:hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"></path></svg></button><div class="block sm:hidden"></div><div class="hidden sm:block"></div></div></nav></div><div class="fixed xl:article-grid grid-gap xl:w-screen xl:pointer-events-none overflow-auto max-xl:min-w-[300px] hidden z-10" style="top:60px"><div class="pointer-events-auto xl:col-margin-left flex-col overflow-hidden hidden xl:flex"><div class="flex-grow py-6 overflow-y-auto"><nav aria-label="Navigation" class="overflow-y-hidden transition-opacity ml-3 xl:ml-0 mr-3 max-w-[350px] lg:hidden"><div class="w-full px-1 dark:text-white"></div></nav><div class="my-3 border-b-2 lg:hidden"></div><nav aria-label="Table of Contents" class="flex-grow overflow-y-hidden transition-opacity ml-3 xl:ml-0 mr-3 max-w-[350px]"><div class="w-full px-1 dark:text-white"><a title="CS/STAT 184: Introduction to Reinforcement Learning" aria-current="page" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg bg-blue-300/30 font-bold active" href="/">CS/STAT 184: Introduction to Reinforcement Learning</a><a title="1 Markov Decision Processes" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/mdps">1 Markov Decision Processes</a><a title="2 Linear Quadratic Regulators" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/control">2 Linear Quadratic Regulators</a><a title="3 Multi-Armed Bandits" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/bandits">3 Multi-Armed Bandits</a><a title="4 Supervised learning" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/supervised-learning">4 Supervised learning</a><a title="5 Fitted Dynamic Programming Algorithms" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/fitted-dp">5 Fitted Dynamic Programming Algorithms</a><a title="6  Policy Gradient Methods" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/pg">6  Policy Gradient Methods</a><a title="7 Imitation Learning" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/imitation-learning">7 Imitation Learning</a><a title="8 Tree Search Methods" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/planning">8 Tree Search Methods</a><a title="9 Exploration in MDPs" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/exploration">9 Exploration in MDPs</a><a title="Appendix: Background" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/background">Appendix: Background</a></div></nav></div><div class="flex-none py-6 transition-all duration-700 translate-y-6 opacity-0"><a class="flex mx-auto text-gray-700 w-fit hover:text-blue-700 dark:text-gray-200 dark:hover:text-blue-400" href="https://mystmd.org/made-with-myst" target="_blank" rel="noreferrer"><svg style="width:24px;height:24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke="none"><g id="icon"><path fill="currentColor" d="M23.8,54.8v-3.6l4.7-0.8V17.5l-4.7-0.8V13H36l13.4,31.7h0.2l13-31.7h12.6v3.6l-4.7,0.8v32.9l4.7,0.8v3.6h-15
-          v-3.6l4.9-0.8V20.8H65L51.4,53.3h-3.8l-14-32.5h-0.1l0.2,17.4v12.1l5,0.8v3.6H23.8z"></path><path fill="#F37726" d="M47,86.9c0-5.9-3.4-8.8-10.1-8.8h-8.4c-5.2,0-9.4-1.3-12.5-3.8c-3.1-2.5-5.4-6.2-6.8-11l4.8-1.6
-          c1.8,5.6,6.4,8.6,13.8,8.8h9.2c6.4,0,10.8,2.5,13.1,7.5c2.3-5,6.7-7.5,13.1-7.5h8.4c7.8,0,12.7-2.9,14.6-8.7l4.8,1.6
-          c-1.4,4.9-3.6,8.6-6.8,11.1c-3.1,2.5-7.3,3.7-12.4,3.8H63c-6.7,0-10,2.9-10,8.8"></path></g></svg><span class="self-center ml-2 text-sm">Made with MyST</span></a></div></div></div><article class="article content article-grid grid-gap"><main class="article-grid subgrid-gap col-screen"><div class="hidden"></div><div id="skip-to-frontmatter" aria-label="article frontmatter" class="mb-8 pt-9"><div class="flex items-center h-6 mb-5 text-sm font-light"><div class="flex-grow"></div><a href="https://github.com/adzcai/cs-stat-184-notes" title="GitHub Repository: adzcai/cs-stat-184-notes" target="_blank" rel="noopener noreferrer" class="text-inherit hover:text-inherit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="1.25rem" height="1.25rem" class="inline-block mr-1 opacity-60 hover:opacity-100"><path d="M12 2.5c-5.4 0-9.8 4.4-9.8 9.7 0 4.3 2.8 8 6.7 9.2.5.1.7-.2.7-.5v-1.8c-2.4.5-3.1-.6-3.3-1.1-.1-.3-.6-1.1-1-1.4-.3-.2-.8-.6 0-.6s1.3.7 1.5 1c.9 1.5 2.3 1.1 2.8.8.1-.6.3-1.1.6-1.3-2.2-.2-4.4-1.1-4.4-4.8 0-1.1.4-1.9 1-2.6-.1-.2-.4-1.2.1-2.6 0 0 .8-.3 2.7 1 .8-.2 1.6-.3 2.4-.3.8 0 1.7.1 2.4.3 1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.5 1 2.6 0 3.7-2.3 4.6-4.4 4.8.4.3.7.9.7 1.8V21c0 .3.2.6.7.5 3.9-1.3 6.6-4.9 6.6-9.2 0-5.4-4.4-9.8-9.8-9.8z"></path></svg></a><div class="inline-block mr-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="1.25rem" height="1.25rem" class="inline-block"><title>Jupyter Notebook</title><path d="M20.2 1.7c0 .8-.5 1.4-1.3 1.5-.8 0-1.4-.5-1.5-1.3 0-.8.5-1.4 1.3-1.5.8-.1 1.5.5 1.5 1.3zM12 17.9c-3.7 0-7-1.3-8.7-3.3 1.8 4.8 7.1 7.3 11.9 5.5 2.5-.9 4.5-2.9 5.5-5.5-1.7 2-4.9 3.3-8.7 3.3zM12 5.1c3.7 0 7 1.3 8.7 3.3-1.8-4.8-7.1-7.3-11.9-5.5-2.5.9-4.5 2.9-5.5 5.5 1.7-2 5-3.3 8.7-3.3zM6.9 21.8c.1 1-.7 1.8-1.7 1.9-1 .1-1.8-.7-1.9-1.7 0-1 .7-1.8 1.7-1.9 1-.1 1.8.7 1.9 1.7zM3.7 4.6c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1c0 .5-.4 1-1 1z"></path></svg></div><div class="relative flex inline-block mx-1 grow-0" data-headlessui-state=""><button class="relative ml-2 -mr-1" id="headlessui-menu-button-:Rd4fop:" type="button" aria-haspopup="menu" aria-expanded="false" data-headlessui-state=""><span class="sr-only">Downloads</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="1.25rem" height="1.25rem"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"></path></svg></button></div></div><h1 class="mb-0">Introduction</h1><header class="mt-4 not-prose"><div><span class="font-semibold text-sm inline-block"><button class="focus:shadow-[0_0_0_2px] focus:shadow-black outline-none hover:underline" aria-label="Author Details" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:R3kfop:" data-state="closed">Fall 2024</button></span></div></header></div><div class="block my-10 lg:sticky lg:z-10 lg:h-0 lg:pt-0 lg:my-0 lg:ml-10 lg:col-margin-right" style="top:60px"><nav></nav></div><div id="skip-to-article"></div><div id="xEMESJQmW0" class="relative group/block article-grid subgrid-gap col-screen"><p>Welcome to the study of reinforcement learning!
-This textbook accompanies the undergraduate course <a target="_blank" href="http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html" rel="noreferrer">CS 1840/STAT 184</a> taught at Harvard.
-It is intended to be a friendly yet rigorous introduction to this active subfield of machine learning.</p></div><div id="Paw2Rtt4Pd" class="relative group/block article-grid subgrid-gap col-screen"><h2 id="prerequisites" class="relative group"><span class="mr-3 select-none">1</span><span class="heading-text">Prerequisites</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#prerequisites" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>This book assumes the same prerequisites as the course: You should be familiar with multivariable calculus, linear algebra, and probability.
-For Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents.
-Stat 111 is strongly recommended but not required.
-Specifically, we will assume that you know the following topics. The <em>italicized terms</em> have brief re-introductions in the text or in the <a href="/background">Appendix: Background</a>:</p><ul><li><strong>Linear Algebra:</strong> Vectors and matrices, matrix multiplication, matrix
-inversion, eigenvalues and eigenvectors.</li><li><strong>Multivariable Calculus:</strong> Partial derivatives, the chain rule, Taylor series, <em>gradients, directional derivatives, Lagrange multipliers.</em></li><li><strong>Probability:</strong> Random variables, probability distributions,
-expectation and variance, the law of iterated expectations (Adam’s rule), covariance, conditional probability, Bayes’s rule, and the law of total probability.</li></ul><p>You should also be comfortable with programming in Python.
-See <span data-state="closed"><a href="#programming" class="hover-link">Section <!-- -->6</a></span> for more about this textbook’s philosophy regarding programming.</p></div><div id="IdysTFHh0m" class="relative group/block article-grid subgrid-gap col-screen"><h2 id="reinforcement-learning-in-a-nutshell" class="relative group"><span class="mr-3 select-none">2</span><span class="heading-text">Reinforcement learning in a nutshell</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#reinforcement-learning-in-a-nutshell" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>Broadly speaking,
-RL studies <strong>sequential decision-making</strong> in <strong>dynamic environments.</strong>
-An RL algorithm finds a strategy, called a <strong>policy,</strong> that maximizes the <strong>reward</strong> it obtains from the environment.</p><p>RL provides a powerful framework for attacking a wide variety of problems,
-including robotic control, video games and board games, resource management, language modelling, and more.
-It also provides an interdisciplinary paradigm for studying animal and human behavior.
-Many of the most stunning results in machine learning, ranging from AlphaGo to ChatGPT, are built using RL algorithms.</p></div><div id="DWq2HP0IjU" class="relative group/block article-grid subgrid-gap col-screen"><p>How does RL compare to the other two core machine learning paradigms,
-<strong>supervised learning</strong> and <strong>unsupervised learning?</strong></p><ul><li><p><strong>Supervised learning</strong> (SL) concerns itself with learning a mapping from inputs to outputs.
-Typically the data takes the form of <em>statistically independent</em> input-output pairs.
-In RL, however, the data is generated by the agent interacting with the environment,
-meaning the sequential observations of the state are <em>not independent</em> from each other.</p><p>Conversely, SL is a well-studied field that provides many useful tools for RL.</p></li><li><p><strong>Unsupervised learning</strong> concerns itself with learning the <em>structure</em> of data without the use of outside feedback or labels.
-In RL, though, the agent receives a <strong>reward signal</strong> from the environment,
-which can be thought of as a sort of feedback.</p><p>Unsupervised learning is crucial in many real-world applications of RL for dimensionality reduction and other purposes.</p></li></ul></div><div id="PabpFE3sC4" class="relative group/block article-grid subgrid-gap col-screen"><h2 id="core-tasks-of-reinforcement-learning" class="relative group"><span class="mr-3 select-none">3</span><span class="heading-text">Core tasks of reinforcement learning</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#core-tasks-of-reinforcement-learning" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>What tasks, exactly, does RL comprise?
-An RL algorithm must typically solve two main subtasks:</p><ul><li><p><strong>Policy evaluation (prediction):</strong>
-How ‘good’ is a specific state, or state-action pair (under a given policy)?
-That is, how much reward does it lead to in the long run?</p></li><li><p><strong>Policy optimization (control):</strong>
-Suppose we fully understand how the environment behaves.
-What is the best action to take in every scenario?</p></li></ul></div><div id="PEtbkKzlh7" class="relative group/block article-grid subgrid-gap col-screen"><h2 id="course-overview" class="relative group"><span class="mr-3 select-none">4</span><span class="heading-text">Course overview</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#course-overview" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>The course will progress through the following units:</p><p><a data-state="closed" href="/mdps">1 Markov Decision Processes</a> introduces <strong>Markov Decision Processes,</strong>
-the core mathematical framework for describing a large class of interactive environments.</p><p><a data-state="closed" href="/control">2 Linear Quadratic Regulators</a> is a standalone chapter on the <strong>linear quadratic regulator</strong> (LQR),
-an important tool for <em>continuous control</em>,
-in which the state and action spaces are no longer <em>finite</em> but rather <em>continuous</em>.
-This has widespread applications in robotics.</p><p><a href="/bandits">3 Multi-Armed Bandits</a> introduces the <strong>multi-armed bandit</strong> (MAB) model for <em>stateless</em> sequential decision-making tasks.
-In exploring a number of algorithms,
-we will see how each of them strikes a different balance between <em>exploring</em> new options and <em>exploiting</em> known options.
-This <strong>exploration-exploitation tradeoff</strong> is a core consideration in RL algorithm design.</p><p><a href="/supervised-learning">4 Supervised learning</a> is a standalone crash course on some tools from supervised learning that we will use in later chapters.</p><p><a href="/fitted-dp">5 Fitted Dynamic Programming Algorithms</a> introduces <strong>fitted dynamic programming</strong> (fitted DP) algorithms for solving MDPs.
-These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.</p><p><a data-state="closed" href="/pg">6  Policy Gradient Methods</a> explores an important class of algorithms based on iteratively improving a policy.
-We will also encounter the use of <em>deep neural networks</em> to express more complicated policies and approximate complicated functions.</p><p><a data-state="closed" href="/imitation-learning">7 Imitation Learning</a> attempts to learn a good policy from expert demonstrations.
-At its most basic, this is an application of supervised learning to RL tasks.</p><p><a data-state="closed" href="/planning">8 Tree Search Methods</a> looks at ways to <em>explicitly</em> plan ahead when the environment’s dynamics are known.
-We will study the <em>Monte Carlo Tree Search</em> heuristic,
-which has been used to great success in the famous AlphaGo algorithm and its successors.</p><p><a data-state="closed" href="/exploration">9 Exploration in MDPs</a> continues to investigate the exploration-exploitation tradeoff.
-We will extend ideas from multi-armed bandits to the MDP setting.</p><p><a href="/background">Appendix: Background</a> contains an overview of selected background mathematical content and programming content.</p></div><div id="ODZ6XQVV61" class="relative group/block article-grid subgrid-gap col-screen"><h2 id="notation" class="relative group"><span class="mr-3 select-none">5</span><span class="heading-text">Notation</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#notation" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>We will use the following notation throughout the book.
-This notation is inspired by <cite data-state="closed"><span class="hover-link">Sutton &amp; Barto (2018)</span></cite> and <cite data-state="closed"><span class="hover-link">Agarwal <em>et al.</em> (2022)</span></cite>.
-We use <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>N</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[N]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">]</span></span></span></span></span> as shorthand for the set <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><mi>N</mi><mo>−</mo><mn>1</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{ 0, 1, \dots, N-1 \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">}</span></span></span></span></span>.</p><table><tbody><tr><th class="text-center">Element</th><th class="text-center">Space</th><th class="text-left">Definition (of element)</th></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">s</span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">S</mi></mrow><annotation encoding="application/x-tex">\mathcal{S}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.075em;">S</span></span></span></span></span></td><td class="text-left">A state.</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">a</span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">A</mi></mrow><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal">A</span></span></span></span></span></td><td class="text-left">An action.</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi></mrow><annotation encoding="application/x-tex">r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span></span></span></td><td class="text-center"></td><td class="text-left">A reward.</td></tr><tr><td class="text-center">γ</td><td class="text-center"></td><td class="text-left">A discount factor.</td></tr><tr><td class="text-center">τ</td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">T</mi></mrow><annotation encoding="application/x-tex">\mathcal{T}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.25417em;">T</span></span></span></span></span></td><td class="text-left">A trajectory.</td></tr><tr><td class="text-center">π</td><td class="text-center">Π</td><td class="text-left">A policy.</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>V</mi><mi>π</mi></msup></mrow><annotation encoding="application/x-tex">V^\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span></span></span></span></span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">S</mi><mo>→</mo><mi mathvariant="double-struck">R</mi></mrow><annotation encoding="application/x-tex">\mathcal{S} \to \mathbb{R}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.075em;">S</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6889em;"></span><span class="mord mathbb">R</span></span></span></span></span></td><td class="text-left">The value function of policy <!-- -->π<!-- -->.</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Q</mi><mi>π</mi></msup></mrow><annotation encoding="application/x-tex">Q^\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">Q</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span></span></span></span></span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">S</mi><mo>×</mo><mi mathvariant="script">A</mi><mo>→</mo><mi mathvariant="double-struck">R</mi></mrow><annotation encoding="application/x-tex">\mathcal{S} \times \mathcal{A} \to \mathbb{R}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathcal" style="margin-right:0.075em;">S</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal">A</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6889em;"></span><span class="mord mathbb">R</span></span></span></span></span></td><td class="text-left">The action-value function (a.k.a. Q-function) of policy <!-- -->π<!-- -->.</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>A</mi><mi>π</mi></msup></mrow><annotation encoding="application/x-tex">A^\pi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span></span></span></span></span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">S</mi><mo>×</mo><mi mathvariant="script">A</mi><mo>→</mo><mi mathvariant="double-struck">R</mi></mrow><annotation encoding="application/x-tex">\mathcal{S} \times \mathcal{A} \to \mathbb{R}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathcal" style="margin-right:0.075em;">S</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal">A</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6889em;"></span><span class="mord mathbb">R</span></span></span></span></span></td><td class="text-left">The advantage function of policy <!-- -->π<!-- -->.</td></tr><tr><td class="text-center"></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">△</mi><mo stretchy="false">(</mo><mi mathvariant="script">X</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\triangle(\mathcal{X})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">△</span><span class="mopen">(</span><span class="mord mathcal" style="margin-right:0.14643em;">X</span><span class="mclose">)</span></span></span></span></span></td><td class="text-left">A distribution supported on <span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">X</mi></mrow><annotation encoding="application/x-tex">\mathcal{X}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.14643em;">X</span></span></span></span></span>.</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">\hi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>H</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[\hor]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mclose">]</span></span></span></span></span></td><td class="text-left">Time horizon index of an MDP (subscript).</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>K</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[K]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mclose">]</span></span></span></span></span></td><td class="text-left">Arm index of a multi-armed bandit (superscript).</td></tr><tr><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span></span></td><td class="text-center"><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>T</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[T]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mclose">]</span></span></span></span></span></td><td class="text-left">Iteration index of an algorithm (subscript).</td></tr><tr><td class="text-center">θ</td><td class="text-center">Θ</td><td class="text-left">A set of parameters.</td></tr></tbody></table><p>Note that throughout the text, certain symbols will stand for either random variables or fixed values.
-We aim to clarify in ambiguous settings.
-Be warned that</p></div><div id="FzCNu1tCt6" class="relative group/block article-grid subgrid-gap col-screen"><h2 id="programming" class="relative group"><span class="mr-3 select-none">6</span><span class="heading-text">Programming</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#programming" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>Why include code in a textbook?
-We believe that implementing an algorithm is a strong test of your understanding of it;
-mathematical notation can often abstract away details,
-while a computer must be given every single instruction.
-We have sought to write readable Python code that is self-contained within each file.
-This approach is inspired by <cite data-state="closed"><span class="hover-link">Sussman <em>et al.</em> (2013)</span></cite>.
-There are some ways in which the code style differs from typical software projects:</p><ul><li>We keep use of language features to a minimum,
-even if it leads to code that could otherwise be more concisely or idiomatically expressed.</li><li>The variable names used in the code match those used in the main text.
-For example, the variable <code>s</code> will be used instead of the more explicit <code>state</code>.</li></ul><p>We also make extensive use of Python <em>type annotations</em> to explicitly specify variable types, including shapes of vectors and matrices using the <a target="_blank" href="https://github.com/patrick-kidger/jaxtyping" rel="noreferrer">jaxtyping</a> library.</p><p>This is an interactive book built with <a target="_blank" href="https://jupyterbook.org/en/stable/intro.html" rel="noreferrer">Jupyter Book</a>.
-It uses <a target="_blank" href="https://docs.python.org/3.11/contents.html" rel="noreferrer">Python 3.11</a>.
-It uses the <a target="_blank" href="https://jax.readthedocs.io/en/latest/index.html" rel="noreferrer">JAX</a> library for numerical computing.
-JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem,
-sustained in large part by the Google DeepMind research group and a large body of open-source contributors.
-We use the standard <a target="_blank" href="https://gymnasium.farama.org/" rel="noreferrer">Gymnasium</a> library for interfacing with RL environments.</p><p>The following names are exported from the <code>utils</code> module:</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-python" style="white-space:pre">import matplotlib.pyplot as plt
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./mdps.html" class="pagination-link" aria-label="Markov Decision Processes">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
 
-# convenient class builder
-from typing import NamedTuple
 
-# function typings
-from collections.abc import Callable
 
-# array typings
-from jaxtyping import Float, Array
 
-# convenient function composition
-from functools import partial
-
-# numerical computing and linear algebra
-import jax
-import jax.numpy as jnp
-
-# print functions as latex
-import latexify
-
-plt.style.use(&quot;fivethirtyeight&quot;)</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div></div><div></div><section id="references" class="article-grid subgrid-gap col-screen"><div><header class="text-lg font-semibold text-stone-900 dark:text-white group">References<a class="no-underline text-inherit hover:text-inherit ml-2 select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#references" title="Link to References" aria-label="Link to References">¶</a></header></div><div class="pl-3 mb-8 text-xs text-stone-500 dark:text-stone-300"><ol><li class="break-words" id="cite-sutton_reinforcement_2018">Sutton, R. S., & Barto, A. G. (2018). <i>Reinforcement Learning: An Introduction</i> (Second edition). The MIT Press.</li><li class="break-words" id="cite-agarwal_reinforcement_2022">Agarwal, A., Jiang, N., Kakade, S. M., & Sun, W. (2022). <i>Reinforcement Learning: Theory and Algorithms</i>.</li><li class="break-words" id="cite-sussman_functional_2013">Sussman, G. J., Wisdom, J., & Farr, W. (2013). <i>Functional Differential Geometry</i>. The MIT Press.</li></ol></div></section><div class="flex pt-10 mb-10 space-x-4"><a class="flex-1 block p-4 font-normal text-gray-600 no-underline border border-gray-200 rounded shadow-sm group hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 dark:text-gray-100 dark:border-gray-500 hover:shadow-lg dark:shadow-neutral-700" href="/mdps"><div class="flex h-full align-middle"><div class="flex-grow"><div class="text-xs text-gray-500 dark:text-gray-400">CS/STAT 184: Introduction to Reinforcement Learning</div>1 Markov Decision Processes</div><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="1.5rem" height="1.5rem" class="self-center transition-transform group-hover:translate-x-1 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"></path></svg></div></a></div></main></article><script>((a,d)=>{if(!window.history.state||!window.history.state.key){let h=Math.random().toString(32).slice(2);window.history.replaceState({key:h},"")}try{let f=JSON.parse(sessionStorage.getItem(a)||"{}")[d||window.history.state.key];typeof f=="number"&&window.scrollTo(0,f)}catch(h){console.error(h),sessionStorage.removeItem(a)}})("positions", null)</script><link rel="modulepreload" href="/build/entry.client-UNPC4GT3.js"/><link rel="modulepreload" href="/build/_shared/chunk-OCTKKCIL.js"/><link rel="modulepreload" href="/build/_shared/chunk-UAI5KRM7.js"/><link rel="modulepreload" href="/build/_shared/chunk-2NH4LW52.js"/><link rel="modulepreload" href="/build/_shared/chunk-JLDGA2DL.js"/><link rel="modulepreload" href="/build/_shared/chunk-YAIQ7LUU.js"/><link rel="modulepreload" href="/build/_shared/chunk-OCWQY3HK.js"/><link rel="modulepreload" href="/build/_shared/chunk-ZQWAZXET.js"/><link rel="modulepreload" href="/build/_shared/chunk-HYMQ7M2K.js"/><link rel="modulepreload" href="/build/_shared/chunk-3CVK3PYF.js"/><link rel="modulepreload" href="/build/_shared/chunk-J6FHCSRC.js"/><link rel="modulepreload" href="/build/_shared/chunk-IQBJE7PC.js"/><link rel="modulepreload" href="/build/_shared/chunk-5CFTM6YW.js"/><link rel="modulepreload" href="/build/_shared/chunk-GUCIBHGO.js"/><link rel="modulepreload" href="/build/root-HROFNPGU.js"/><link rel="modulepreload" href="/build/_shared/chunk-N544LW6X.js"/><link rel="modulepreload" href="/build/routes/_index-ZB6LFFEX.js"/><script>window.__remixContext = {"url":"/","state":{"loaderData":{"root":{"config":{"options":{"logo":"/build/184-5f23de62f8c37b6a5894408ebcf81c79.png"},"myst":"1.3.17","nav":[],"actions":[],"projects":[{"numbering":{"all":{"enabled":true}},"bibliography":["/Users/adzcai/Developer/rlbook/book/shared/references.bib"],"math":{"\\E":{"macro":"\\mathop{\\mathbb{E}}"},"\\pr":{"macro":"\\mathop{\\mathbb{P}}"},"\\kl":{"macro":"\\mathrm{KL}\\left(#1\\parallel#2\\right)"},"\\ind":{"macro":"\\mathbf{1}\\left\\{#1\\right\\}"},"\\hi":{"macro":"h"},"\\hor":{"macro":"H"},"\\st":{"macro":"s"},"\\act":{"macro":"a"}},"exports":[],"title":"CS/STAT 184: Introduction to Reinforcement Learning","authors":[{"nameParsed":{"literal":"Fall 2024","given":"Fall","family":"2024"},"name":"Fall 2024","id":"contributors-myst-generated-uid-0"}],"github":"https://github.com/adzcai/cs-stat-184-notes","toc":[{"file":"index.md"},{"file":"mdps.md"},{"file":"control.md"},{"file":"bandits.md"},{"file":"supervised_learning.md"},{"file":"fitted_dp.md"},{"file":"pg.md"},{"file":"imitation_learning.md"},{"file":"planning.md"},{"file":"exploration.md"},{"file":"background.md"}],"index":"index","pages":[{"slug":"mdps","title":"1 Markov Decision Processes","description":"","date":"","thumbnail":"/build/deterministic_policy-812169be9756946f7e3c7d574430be33.png","thumbnailOptimized":"/build/deterministic_policy-812169be9756946f7e3c7d574430be33.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"control","title":"2 Linear Quadratic Regulators","description":"","date":"","thumbnail":"/build/rubiks_cube-736e8f94de8f8c4e720bad966191ed3f.jpg","thumbnailOptimized":"/build/rubiks_cube-736e8f94de8f8c4e720bad966191ed3f.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"bandits","title":"3 Multi-Armed Bandits","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"supervised-learning","title":"4 Supervised learning","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"fitted-dp","title":"5 Fitted Dynamic Programming Algorithms","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"pg","title":"6  Policy Gradient Methods","description":"","date":"","thumbnail":"/build/npg_line-d866eed4d36f0f17d1b36b6fa0a76770.png","thumbnailOptimized":"/build/npg_line-d866eed4d36f0f17d1b36b6fa0a76770.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"imitation-learning","title":"7 Imitation Learning","description":"","date":"","thumbnail":"/build/robot-imitation-lear-3959133f2c440537594fb904c12725f5.jpg","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"planning","title":"8 Tree Search Methods","description":"","date":"","thumbnail":"/build/tic_tac_toe-b48eec3dc0012079611b6294983f5b74.png","thumbnailOptimized":"/build/tic_tac_toe-b48eec3dc0012079611b6294983f5b74.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"exploration","title":"9 Exploration in MDPs","description":"","date":"","thumbnail":"/build/sparse_reward_mdp-78fc15b37994af884414c2a05bc09dc2.png","thumbnailOptimized":"/build/sparse_reward_mdp-78fc15b37994af884414c2a05bc09dc2.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"background","title":"Appendix: Background","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1}]}]},"CONTENT_CDN_PORT":"3100","MODE":"static"},"routes/_index":{"config":{"options":{"logo":"/build/184-5f23de62f8c37b6a5894408ebcf81c79.png"},"myst":"1.3.17","nav":[],"actions":[],"projects":[{"numbering":{"all":{"enabled":true}},"bibliography":["/Users/adzcai/Developer/rlbook/book/shared/references.bib"],"math":{"\\E":{"macro":"\\mathop{\\mathbb{E}}"},"\\pr":{"macro":"\\mathop{\\mathbb{P}}"},"\\kl":{"macro":"\\mathrm{KL}\\left(#1\\parallel#2\\right)"},"\\ind":{"macro":"\\mathbf{1}\\left\\{#1\\right\\}"},"\\hi":{"macro":"h"},"\\hor":{"macro":"H"},"\\st":{"macro":"s"},"\\act":{"macro":"a"}},"exports":[],"title":"CS/STAT 184: Introduction to Reinforcement Learning","authors":[{"nameParsed":{"literal":"Fall 2024","given":"Fall","family":"2024"},"name":"Fall 2024","id":"contributors-myst-generated-uid-0"}],"github":"https://github.com/adzcai/cs-stat-184-notes","toc":[{"file":"index.md"},{"file":"mdps.md"},{"file":"control.md"},{"file":"bandits.md"},{"file":"supervised_learning.md"},{"file":"fitted_dp.md"},{"file":"pg.md"},{"file":"imitation_learning.md"},{"file":"planning.md"},{"file":"exploration.md"},{"file":"background.md"}],"index":"index","pages":[{"slug":"mdps","title":"1 Markov Decision Processes","description":"","date":"","thumbnail":"/build/deterministic_policy-812169be9756946f7e3c7d574430be33.png","thumbnailOptimized":"/build/deterministic_policy-812169be9756946f7e3c7d574430be33.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"control","title":"2 Linear Quadratic Regulators","description":"","date":"","thumbnail":"/build/rubiks_cube-736e8f94de8f8c4e720bad966191ed3f.jpg","thumbnailOptimized":"/build/rubiks_cube-736e8f94de8f8c4e720bad966191ed3f.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"bandits","title":"3 Multi-Armed Bandits","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"supervised-learning","title":"4 Supervised learning","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"fitted-dp","title":"5 Fitted Dynamic Programming Algorithms","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"pg","title":"6  Policy Gradient Methods","description":"","date":"","thumbnail":"/build/npg_line-d866eed4d36f0f17d1b36b6fa0a76770.png","thumbnailOptimized":"/build/npg_line-d866eed4d36f0f17d1b36b6fa0a76770.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"imitation-learning","title":"7 Imitation Learning","description":"","date":"","thumbnail":"/build/robot-imitation-lear-3959133f2c440537594fb904c12725f5.jpg","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"planning","title":"8 Tree Search Methods","description":"","date":"","thumbnail":"/build/tic_tac_toe-b48eec3dc0012079611b6294983f5b74.png","thumbnailOptimized":"/build/tic_tac_toe-b48eec3dc0012079611b6294983f5b74.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"exploration","title":"9 Exploration in MDPs","description":"","date":"","thumbnail":"/build/sparse_reward_mdp-78fc15b37994af884414c2a05bc09dc2.png","thumbnailOptimized":"/build/sparse_reward_mdp-78fc15b37994af884414c2a05bc09dc2.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"background","title":"Appendix: Background","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1}]}]},"page":{"kind":"Notebook","sha256":"2cdeee9bc604ea0150aa2ba9d0d7b73c09784f007761496df1c2715f83d28614","slug":"index","location":"/index.md","dependencies":[],"frontmatter":{"title":"Introduction","kernelspec":{"name":"python3","display_name":"Python 3 (ipykernel)","language":"python"},"jupytext":{"text_representation":{"extension":".md","format_name":"myst","format_version":"0.13","jupytext_version":"1.16.2"}},"content_includes_title":false,"authors":[{"nameParsed":{"literal":"Fall 2024","given":"Fall","family":"2024"},"name":"Fall 2024","id":"contributors-myst-generated-uid-0"}],"github":"https://github.com/adzcai/cs-stat-184-notes","numbering":{"all":{"enabled":true}},"math":{"\\E":{"macro":"\\mathop{\\mathbb{E}}"},"\\pr":{"macro":"\\mathop{\\mathbb{P}}"},"\\kl":{"macro":"\\mathrm{KL}\\left(#1\\parallel#2\\right)"},"\\ind":{"macro":"\\mathbf{1}\\left\\{#1\\right\\}"},"\\hi":{"macro":"h"},"\\hor":{"macro":"H"},"\\st":{"macro":"s"},"\\act":{"macro":"a"}},"exports":[{"format":"md","filename":"index.md","url":"/build/index-13f6c5e902459e1ccd0243b5c466c84a.md"}]},"mdast":{"type":"root","children":[{"type":"block","children":[{"type":"paragraph","position":{"start":{"line":16,"column":1},"end":{"line":18,"column":1}},"children":[{"type":"text","value":"Welcome to the study of reinforcement learning!\nThis textbook accompanies the undergraduate course ","position":{"start":{"line":16,"column":1},"end":{"line":16,"column":1}},"key":"EKlXdwrzx9"},{"type":"link","url":"http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html","position":{"start":{"line":16,"column":1},"end":{"line":16,"column":1}},"children":[{"type":"text","value":"CS 1840/STAT 184","position":{"start":{"line":16,"column":1},"end":{"line":16,"column":1}},"key":"UKrr6RszE9"}],"urlSource":"http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html","key":"nHxE87If6H"},{"type":"text","value":" taught at Harvard.\nIt is intended to be a friendly yet rigorous introduction to this active subfield of machine learning.","position":{"start":{"line":16,"column":1},"end":{"line":16,"column":1}},"key":"CpMkb0i8eq"}],"key":"FIZ7GMFPrJ"}],"key":"xEMESJQmW0"},{"type":"block","position":{"start":{"line":20,"column":1},"end":{"line":20,"column":1}},"children":[{"type":"heading","depth":2,"position":{"start":{"line":22,"column":1},"end":{"line":22,"column":1}},"children":[{"type":"text","value":"Prerequisites","position":{"start":{"line":22,"column":1},"end":{"line":22,"column":1}},"key":"PaHht6hAGn"}],"identifier":"prerequisites","label":"Prerequisites","html_id":"prerequisites","implicit":true,"enumerator":"1","key":"on4Rqxtkhq"},{"type":"paragraph","position":{"start":{"line":24,"column":1},"end":{"line":27,"column":1}},"children":[{"type":"text","value":"This book assumes the same prerequisites as the course: You should be familiar with multivariable calculus, linear algebra, and probability.\nFor Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents.\nStat 111 is strongly recommended but not required.\nSpecifically, we will assume that you know the following topics. The ","position":{"start":{"line":24,"column":1},"end":{"line":24,"column":1}},"key":"kecoe0n04E"},{"type":"emphasis","position":{"start":{"line":24,"column":1},"end":{"line":24,"column":1}},"children":[{"type":"text","value":"italicized terms","position":{"start":{"line":24,"column":1},"end":{"line":24,"column":1}},"key":"eMfjK26RVg"}],"key":"nSKkaZXUzH"},{"type":"text","value":" have brief re-introductions in the text or in the ","position":{"start":{"line":24,"column":1},"end":{"line":24,"column":1}},"key":"MNAHk4B73l"},{"type":"link","url":"/background","position":{"start":{"line":24,"column":1},"end":{"line":24,"column":1}},"children":[{"type":"text","value":"Appendix: Background","key":"Mli0qzwMan"}],"urlSource":"./background.md","dataUrl":"/background.json","internal":true,"protocol":"file","key":"iBQU5x1z8w"},{"type":"text","value":":","position":{"start":{"line":24,"column":1},"end":{"line":24,"column":1}},"key":"bUv2li763o"}],"key":"s8UH5OBBq3"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":29,"column":1},"end":{"line":34,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":29,"column":1},"end":{"line":30,"column":1}},"children":[{"type":"strong","position":{"start":{"line":29,"column":1},"end":{"line":29,"column":1}},"children":[{"type":"text","value":"Linear Algebra:","position":{"start":{"line":29,"column":1},"end":{"line":29,"column":1}},"key":"ROcDKKDCvC"}],"key":"ocjJF1kYTJ"},{"type":"text","value":" Vectors and matrices, matrix multiplication, matrix\ninversion, eigenvalues and eigenvectors.","position":{"start":{"line":29,"column":1},"end":{"line":29,"column":1}},"key":"Dt9p9QCGuf"}],"key":"JhN25mn3KT"},{"type":"listItem","spread":true,"position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"children":[{"type":"strong","position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"children":[{"type":"text","value":"Multivariable Calculus:","position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"key":"TuP40g0V01"}],"key":"Gom18ophaM"},{"type":"text","value":" Partial derivatives, the chain rule, Taylor series, ","position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"key":"q9PlUPcaFN"},{"type":"emphasis","position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"children":[{"type":"text","value":"gradients, directional derivatives, Lagrange multipliers.","position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"key":"cF1iXc6a3z"}],"key":"gP0zKyMEtn"}],"key":"k9ZZdWhG5K"},{"type":"listItem","spread":true,"position":{"start":{"line":32,"column":1},"end":{"line":34,"column":1}},"children":[{"type":"strong","position":{"start":{"line":32,"column":1},"end":{"line":32,"column":1}},"children":[{"type":"text","value":"Probability:","position":{"start":{"line":32,"column":1},"end":{"line":32,"column":1}},"key":"TkCUozcmoR"}],"key":"NlXu9lcFCr"},{"type":"text","value":" Random variables, probability distributions,\nexpectation and variance, the law of iterated expectations (Adam’s rule), covariance, conditional probability, Bayes’s rule, and the law of total probability.","position":{"start":{"line":32,"column":1},"end":{"line":32,"column":1}},"key":"E3YRTptz8p"}],"key":"uRu6XSmAj2"}],"key":"aImuNXW6Yt"},{"type":"paragraph","position":{"start":{"line":35,"column":1},"end":{"line":36,"column":1}},"children":[{"type":"text","value":"You should also be comfortable with programming in Python.\nSee ","position":{"start":{"line":35,"column":1},"end":{"line":35,"column":1}},"key":"iOuIbV7xmK"},{"type":"crossReference","position":{"start":{"line":35,"column":1},"end":{"line":35,"column":1}},"children":[{"type":"text","value":"Section ","key":"jupKEncAOk"},{"type":"text","value":"6","key":"IpDDMaENom"}],"identifier":"programming","label":"programming","kind":"heading","template":"Section %s","enumerator":"6","resolved":true,"html_id":"programming","key":"HDU56BtnVB"},{"type":"text","value":" for more about this textbook’s philosophy regarding programming.","position":{"start":{"line":35,"column":1},"end":{"line":35,"column":1}},"key":"ZCf3Smn7ET"}],"key":"vIjEOClQLU"}],"key":"Paw2Rtt4Pd"},{"type":"block","position":{"start":{"line":38,"column":1},"end":{"line":38,"column":1}},"children":[{"type":"heading","depth":2,"position":{"start":{"line":40,"column":1},"end":{"line":40,"column":1}},"children":[{"type":"text","value":"Reinforcement learning in a nutshell","position":{"start":{"line":40,"column":1},"end":{"line":40,"column":1}},"key":"jQq7hGRvyc"}],"identifier":"reinforcement-learning-in-a-nutshell","label":"Reinforcement learning in a nutshell","html_id":"reinforcement-learning-in-a-nutshell","implicit":true,"enumerator":"2","key":"sMDOkAq2t7"},{"type":"paragraph","position":{"start":{"line":42,"column":1},"end":{"line":44,"column":1}},"children":[{"type":"text","value":"Broadly speaking,\nRL studies ","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"jXagkZd79x"},{"type":"strong","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"children":[{"type":"text","value":"sequential decision-making","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"zAKCFrQ8Kx"}],"key":"yUfAbQwrQy"},{"type":"text","value":" in ","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"r2wnimpM79"},{"type":"strong","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"children":[{"type":"text","value":"dynamic environments.","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"Ry1ouprVMf"}],"key":"aEsjJ3mKbs"},{"type":"text","value":"\nAn RL algorithm finds a strategy, called a ","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"n5jPoRWhnb"},{"type":"strong","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"children":[{"type":"text","value":"policy,","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"bKf1U1oBW9"}],"key":"E2Dl8ppkQv"},{"type":"text","value":" that maximizes the ","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"th83gllUvh"},{"type":"strong","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"children":[{"type":"text","value":"reward","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"XDOCEgy8GB"}],"key":"NthxkqUGls"},{"type":"text","value":" it obtains from the environment.","position":{"start":{"line":42,"column":1},"end":{"line":42,"column":1}},"key":"UXJXuf209u"}],"key":"oN9LYgs0gi"},{"type":"paragraph","position":{"start":{"line":46,"column":1},"end":{"line":49,"column":1}},"children":[{"type":"text","value":"RL provides a powerful framework for attacking a wide variety of problems,\nincluding robotic control, video games and board games, resource management, language modelling, and more.\nIt also provides an interdisciplinary paradigm for studying animal and human behavior.\nMany of the most stunning results in machine learning, ranging from AlphaGo to ChatGPT, are built using RL algorithms.","position":{"start":{"line":46,"column":1},"end":{"line":46,"column":1}},"key":"bDxJCcGyDN"}],"key":"zLfjl7x3g4"}],"key":"IdysTFHh0m"},{"type":"block","position":{"start":{"line":51,"column":1},"end":{"line":51,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":53,"column":1},"end":{"line":54,"column":1}},"children":[{"type":"text","value":"How does RL compare to the other two core machine learning paradigms,\n","position":{"start":{"line":53,"column":1},"end":{"line":53,"column":1}},"key":"K8PUYgB2mr"},{"type":"strong","position":{"start":{"line":53,"column":1},"end":{"line":53,"column":1}},"children":[{"type":"text","value":"supervised learning","position":{"start":{"line":53,"column":1},"end":{"line":53,"column":1}},"key":"ybuFfAYHF0"}],"key":"QsMlHZzKFn"},{"type":"text","value":" and ","position":{"start":{"line":53,"column":1},"end":{"line":53,"column":1}},"key":"oApeN5cC4c"},{"type":"strong","position":{"start":{"line":53,"column":1},"end":{"line":53,"column":1}},"children":[{"type":"text","value":"unsupervised learning?","position":{"start":{"line":53,"column":1},"end":{"line":53,"column":1}},"key":"K8HoC3X1Ei"}],"key":"STU7bIdm1s"}],"key":"io07oZy4K5"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":56,"column":1},"end":{"line":68,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":56,"column":1},"end":{"line":62,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":56,"column":1},"end":{"line":59,"column":1}},"children":[{"type":"strong","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"children":[{"type":"text","value":"Supervised learning","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"key":"nOXA8c7jUP"}],"key":"K7gJatLamI"},{"type":"text","value":" (SL) concerns itself with learning a mapping from inputs to outputs.\nTypically the data takes the form of ","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"key":"lCYfna8lP9"},{"type":"emphasis","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"children":[{"type":"text","value":"statistically independent","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"key":"xCO1kUXJ8W"}],"key":"OGnQqH6Wiz"},{"type":"text","value":" input-output pairs.\nIn RL, however, the data is generated by the agent interacting with the environment,\nmeaning the sequential observations of the state are ","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"key":"EissIQ84Rf"},{"type":"emphasis","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"children":[{"type":"text","value":"not independent","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"key":"veiwAJXaaF"}],"key":"bnUvm1mgUr"},{"type":"text","value":" from each other.","position":{"start":{"line":56,"column":1},"end":{"line":56,"column":1}},"key":"PHrzNBtjy9"}],"key":"DcmoeFM61l"},{"type":"paragraph","position":{"start":{"line":61,"column":1},"end":{"line":61,"column":1}},"children":[{"type":"text","value":"Conversely, SL is a well-studied field that provides many useful tools for RL.","position":{"start":{"line":61,"column":1},"end":{"line":61,"column":1}},"key":"o7QScTOBcg"}],"key":"EvUPw7IqiN"}],"key":"Nd6Aznb4fc"},{"type":"listItem","spread":true,"position":{"start":{"line":63,"column":1},"end":{"line":68,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":63,"column":1},"end":{"line":65,"column":1}},"children":[{"type":"strong","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"children":[{"type":"text","value":"Unsupervised learning","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"key":"IG8Md7vG9T"}],"key":"zmKxammXtz"},{"type":"text","value":" concerns itself with learning the ","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"key":"hPSe2nRzU8"},{"type":"emphasis","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"children":[{"type":"text","value":"structure","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"key":"Nxu6UQDO4k"}],"key":"kfdtFThcq6"},{"type":"text","value":" of data without the use of outside feedback or labels.\nIn RL, though, the agent receives a ","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"key":"wfucmLgsTf"},{"type":"strong","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"children":[{"type":"text","value":"reward signal","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"key":"Hy46Xm6RdI"}],"key":"hzHFX4mxdE"},{"type":"text","value":" from the environment,\nwhich can be thought of as a sort of feedback.","position":{"start":{"line":63,"column":1},"end":{"line":63,"column":1}},"key":"Fvg6vuq30i"}],"key":"XlA8MxnRa6"},{"type":"paragraph","position":{"start":{"line":67,"column":1},"end":{"line":67,"column":1}},"children":[{"type":"text","value":"Unsupervised learning is crucial in many real-world applications of RL for dimensionality reduction and other purposes.","position":{"start":{"line":67,"column":1},"end":{"line":67,"column":1}},"key":"lBHUF0y0Wy"}],"key":"l1KTj4TG6g"}],"key":"ubXSekaAJv"}],"key":"Gj43DFSeGH"}],"key":"DWq2HP0IjU"},{"type":"block","position":{"start":{"line":69,"column":1},"end":{"line":69,"column":1}},"children":[{"type":"heading","depth":2,"position":{"start":{"line":71,"column":1},"end":{"line":71,"column":1}},"children":[{"type":"text","value":"Core tasks of reinforcement learning","position":{"start":{"line":71,"column":1},"end":{"line":71,"column":1}},"key":"VeFwoiJoUr"}],"identifier":"core-tasks-of-reinforcement-learning","label":"Core tasks of reinforcement learning","html_id":"core-tasks-of-reinforcement-learning","implicit":true,"enumerator":"3","key":"t8dkknxQO5"},{"type":"paragraph","position":{"start":{"line":73,"column":1},"end":{"line":74,"column":1}},"children":[{"type":"text","value":"What tasks, exactly, does RL comprise?\nAn RL algorithm must typically solve two main subtasks:","position":{"start":{"line":73,"column":1},"end":{"line":73,"column":1}},"key":"L97DcZNWJ0"}],"key":"rSKcxEF72b"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":76,"column":1},"end":{"line":83,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":76,"column":1},"end":{"line":79,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":76,"column":1},"end":{"line":78,"column":1}},"children":[{"type":"strong","position":{"start":{"line":76,"column":1},"end":{"line":76,"column":1}},"children":[{"type":"text","value":"Policy evaluation (prediction):","position":{"start":{"line":76,"column":1},"end":{"line":76,"column":1}},"key":"kB5jyoxjyd"}],"key":"Uf7BB4XSCb"},{"type":"text","value":"\nHow ‘good’ is a specific state, or state-action pair (under a given policy)?\nThat is, how much reward does it lead to in the long run?","position":{"start":{"line":76,"column":1},"end":{"line":76,"column":1}},"key":"Nqq81lRWDK"}],"key":"a50R5qrFFJ"}],"key":"Z9q0SisViD"},{"type":"listItem","spread":true,"position":{"start":{"line":80,"column":1},"end":{"line":83,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":80,"column":1},"end":{"line":82,"column":1}},"children":[{"type":"strong","position":{"start":{"line":80,"column":1},"end":{"line":80,"column":1}},"children":[{"type":"text","value":"Policy optimization (control):","position":{"start":{"line":80,"column":1},"end":{"line":80,"column":1}},"key":"kFtghhBrmZ"}],"key":"hm1HJ5jZJu"},{"type":"text","value":"\nSuppose we fully understand how the environment behaves.\nWhat is the best action to take in every scenario?","position":{"start":{"line":80,"column":1},"end":{"line":80,"column":1}},"key":"nDUijYzErx"}],"key":"Da3Bdml5EA"}],"key":"VRcC6O8WgB"}],"key":"ERiX7aByCC"},{"type":"comment","value":" **Recursion (bootstrapping):** How can we \"reuse\" our current predictions to generate new information? ","key":"HHQ5NnLH9j"},{"type":"comment","value":" **Exploration-exploitation tradeoff:** Should we try new actions, or capitalize on actions that we currently believe to be good? ","key":"GgGklQZyCi"}],"key":"PabpFE3sC4"},{"type":"block","position":{"start":{"line":88,"column":1},"end":{"line":88,"column":1}},"children":[{"type":"heading","depth":2,"position":{"start":{"line":90,"column":1},"end":{"line":90,"column":1}},"children":[{"type":"text","value":"Course overview","position":{"start":{"line":90,"column":1},"end":{"line":90,"column":1}},"key":"E5le5UDv6c"}],"identifier":"course-overview","label":"Course overview","html_id":"course-overview","implicit":true,"enumerator":"4","key":"XqbQQQ1bCm"},{"type":"paragraph","position":{"start":{"line":92,"column":1},"end":{"line":92,"column":1}},"children":[{"type":"text","value":"The course will progress through the following units:","position":{"start":{"line":92,"column":1},"end":{"line":92,"column":1}},"key":"KW5De8CeZj"}],"key":"Jy3D7Nq5Iw"},{"type":"paragraph","position":{"start":{"line":94,"column":1},"end":{"line":95,"column":1}},"children":[{"type":"link","url":"/mdps","position":{"start":{"line":94,"column":1},"end":{"line":94,"column":1}},"children":[{"type":"text","value":"1 Markov Decision Processes","key":"fsEG5ZYnjw"}],"urlSource":"./mdps.md","dataUrl":"/mdps.json","internal":true,"protocol":"file","key":"zsAfl5m6VK"},{"type":"text","value":" introduces ","position":{"start":{"line":94,"column":1},"end":{"line":94,"column":1}},"key":"WQ2Ed4aY61"},{"type":"strong","position":{"start":{"line":94,"column":1},"end":{"line":94,"column":1}},"children":[{"type":"text","value":"Markov Decision Processes,","position":{"start":{"line":94,"column":1},"end":{"line":94,"column":1}},"key":"WsCb9e9eXo"}],"key":"lroqU2QZ1l"},{"type":"text","value":"\nthe core mathematical framework for describing a large class of interactive environments.","position":{"start":{"line":94,"column":1},"end":{"line":94,"column":1}},"key":"O9rHIgNPTT"}],"key":"q2AEXrqXoD"},{"type":"paragraph","position":{"start":{"line":97,"column":1},"end":{"line":100,"column":1}},"children":[{"type":"link","url":"/control","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"children":[{"type":"text","value":"2 Linear Quadratic Regulators","key":"TzpDFe1p3C"}],"urlSource":"./control.md","dataUrl":"/control.json","internal":true,"protocol":"file","key":"JUfI6gpBnw"},{"type":"text","value":" is a standalone chapter on the ","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"nxB2oaKpov"},{"type":"strong","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"children":[{"type":"text","value":"linear quadratic regulator","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"LZS7xZfMDj"}],"key":"GLHoUF7dyM"},{"type":"text","value":" (LQR),\nan important tool for ","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"KcZ2Wvhjif"},{"type":"emphasis","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"children":[{"type":"text","value":"continuous control","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"UuLPedxap9"}],"key":"O1vL3BEGmf"},{"type":"text","value":",\nin which the state and action spaces are no longer ","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"FuNrflBZrK"},{"type":"emphasis","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"children":[{"type":"text","value":"finite","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"eyEJClIfVF"}],"key":"c3bVX688yH"},{"type":"text","value":" but rather ","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"ZPv1pczof5"},{"type":"emphasis","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"children":[{"type":"text","value":"continuous","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"lj57Op5Ib7"}],"key":"oUiCXopn06"},{"type":"text","value":".\nThis has widespread applications in robotics.","position":{"start":{"line":97,"column":1},"end":{"line":97,"column":1}},"key":"DSCX0IwJ0s"}],"key":"MYxj0FhvDm"},{"type":"paragraph","position":{"start":{"line":102,"column":1},"end":{"line":105,"column":1}},"children":[{"type":"link","url":"/bandits","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"children":[{"type":"text","value":"3 Multi-Armed Bandits","key":"g2hMzVPwRD"}],"urlSource":"./bandits.md","dataUrl":"/bandits.json","internal":true,"protocol":"file","key":"rc3pPar0Fh"},{"type":"text","value":" introduces the ","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"D7qSVTFEs6"},{"type":"strong","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"children":[{"type":"text","value":"multi-armed bandit","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"NDvkErk2tz"}],"key":"lmsT080WrO"},{"type":"text","value":" (MAB) model for ","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"gewUQdzqYq"},{"type":"emphasis","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"children":[{"type":"text","value":"stateless","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"uaAPEvzT6w"}],"key":"UkYzmvg2ix"},{"type":"text","value":" sequential decision-making tasks.\nIn exploring a number of algorithms,\nwe will see how each of them strikes a different balance between ","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"VbhnOWcWVP"},{"type":"emphasis","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"children":[{"type":"text","value":"exploring","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"BomWiUsPye"}],"key":"qyHNE4ttPO"},{"type":"text","value":" new options and ","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"qfHep9mHWz"},{"type":"emphasis","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"children":[{"type":"text","value":"exploiting","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"nbp2rEWilP"}],"key":"VivR4RTp5S"},{"type":"text","value":" known options.\nThis ","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"pBPuYJQgVe"},{"type":"strong","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"children":[{"type":"text","value":"exploration-exploitation tradeoff","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"cRt7UOcfRN"}],"key":"Q5JeWha4PK"},{"type":"text","value":" is a core consideration in RL algorithm design.","position":{"start":{"line":102,"column":1},"end":{"line":102,"column":1}},"key":"tb9kJPyajI"}],"key":"gFWKefqq7e"},{"type":"paragraph","position":{"start":{"line":107,"column":1},"end":{"line":107,"column":1}},"children":[{"type":"link","url":"/supervised-learning","position":{"start":{"line":107,"column":1},"end":{"line":107,"column":1}},"children":[{"type":"text","value":"4 Supervised learning","key":"gVLNtaarcY"}],"urlSource":"./supervised_learning.md","dataUrl":"/supervised-learning.json","internal":true,"protocol":"file","key":"ftONmAvGC4"},{"type":"text","value":" is a standalone crash course on some tools from supervised learning that we will use in later chapters.","position":{"start":{"line":107,"column":1},"end":{"line":107,"column":1}},"key":"T68CxkOYpm"}],"key":"zXBseQ8njY"},{"type":"paragraph","position":{"start":{"line":109,"column":1},"end":{"line":110,"column":1}},"children":[{"type":"link","url":"/fitted-dp","position":{"start":{"line":109,"column":1},"end":{"line":109,"column":1}},"children":[{"type":"text","value":"5 Fitted Dynamic Programming Algorithms","key":"bxH1lE2BiH"}],"urlSource":"./fitted_dp.md","dataUrl":"/fitted-dp.json","internal":true,"protocol":"file","key":"b83ksBdL8P"},{"type":"text","value":" introduces ","position":{"start":{"line":109,"column":1},"end":{"line":109,"column":1}},"key":"ymtggdBDGU"},{"type":"strong","position":{"start":{"line":109,"column":1},"end":{"line":109,"column":1}},"children":[{"type":"text","value":"fitted dynamic programming","position":{"start":{"line":109,"column":1},"end":{"line":109,"column":1}},"key":"Ihd2fPWeyO"}],"key":"WDyqay07R3"},{"type":"text","value":" (fitted DP) algorithms for solving MDPs.\nThese algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.","position":{"start":{"line":109,"column":1},"end":{"line":109,"column":1}},"key":"NwFj7rVQqD"}],"key":"GInD669HnJ"},{"type":"paragraph","position":{"start":{"line":112,"column":1},"end":{"line":113,"column":1}},"children":[{"type":"link","url":"/pg","position":{"start":{"line":112,"column":1},"end":{"line":112,"column":1}},"children":[{"type":"text","value":"6  Policy Gradient Methods","key":"qb118leJIH"}],"urlSource":"./pg.md","dataUrl":"/pg.json","internal":true,"protocol":"file","key":"alN3XNXk7l"},{"type":"text","value":" explores an important class of algorithms based on iteratively improving a policy.\nWe will also encounter the use of ","position":{"start":{"line":112,"column":1},"end":{"line":112,"column":1}},"key":"kn2KmEgfNi"},{"type":"emphasis","position":{"start":{"line":112,"column":1},"end":{"line":112,"column":1}},"children":[{"type":"text","value":"deep neural networks","position":{"start":{"line":112,"column":1},"end":{"line":112,"column":1}},"key":"sfHDEcwUJJ"}],"key":"RVR6HRyPea"},{"type":"text","value":" to express more complicated policies and approximate complicated functions.","position":{"start":{"line":112,"column":1},"end":{"line":112,"column":1}},"key":"iXMRYE0YOW"}],"key":"mXEZUq0JJP"},{"type":"paragraph","position":{"start":{"line":115,"column":1},"end":{"line":116,"column":1}},"children":[{"type":"link","url":"/imitation-learning","position":{"start":{"line":115,"column":1},"end":{"line":115,"column":1}},"children":[{"type":"text","value":"7 Imitation Learning","key":"WobXe6ni8O"}],"urlSource":"./imitation_learning.md","dataUrl":"/imitation-learning.json","internal":true,"protocol":"file","key":"FnzZ4zbUn7"},{"type":"text","value":" attempts to learn a good policy from expert demonstrations.\nAt its most basic, this is an application of supervised learning to RL tasks.","position":{"start":{"line":115,"column":1},"end":{"line":115,"column":1}},"key":"A9xXy6THQW"}],"key":"Om644jnZpg"},{"type":"paragraph","position":{"start":{"line":118,"column":1},"end":{"line":120,"column":1}},"children":[{"type":"link","url":"/planning","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"children":[{"type":"text","value":"8 Tree Search Methods","key":"P6pBtDIQ8B"}],"urlSource":"./planning.md","dataUrl":"/planning.json","internal":true,"protocol":"file","key":"ljjVcdMCbF"},{"type":"text","value":" looks at ways to ","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"key":"FHAosfGvRM"},{"type":"emphasis","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"children":[{"type":"text","value":"explicitly","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"key":"Bl5JOSmSPj"}],"key":"szXaRVNEB4"},{"type":"text","value":" plan ahead when the environment’s dynamics are known.\nWe will study the ","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"key":"y8fBKDYYat"},{"type":"emphasis","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"children":[{"type":"text","value":"Monte Carlo Tree Search","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"key":"jy3cWVfi6s"}],"key":"P3sEx10yXy"},{"type":"text","value":" heuristic,\nwhich has been used to great success in the famous AlphaGo algorithm and its successors.","position":{"start":{"line":118,"column":1},"end":{"line":118,"column":1}},"key":"ty3m1k4TZo"}],"key":"VrSpxQsg32"},{"type":"paragraph","position":{"start":{"line":122,"column":1},"end":{"line":123,"column":1}},"children":[{"type":"link","url":"/exploration","position":{"start":{"line":122,"column":1},"end":{"line":122,"column":1}},"children":[{"type":"text","value":"9 Exploration in MDPs","key":"Kpn9h6WVmf"}],"urlSource":"./exploration.md","dataUrl":"/exploration.json","internal":true,"protocol":"file","key":"Daje01c3E2"},{"type":"text","value":" continues to investigate the exploration-exploitation tradeoff.\nWe will extend ideas from multi-armed bandits to the MDP setting.","position":{"start":{"line":122,"column":1},"end":{"line":122,"column":1}},"key":"PAWwUZkMF6"}],"key":"YOKdoEJ6qy"},{"type":"paragraph","position":{"start":{"line":125,"column":1},"end":{"line":125,"column":1}},"children":[{"type":"link","url":"/background","position":{"start":{"line":125,"column":1},"end":{"line":125,"column":1}},"children":[{"type":"text","value":"Appendix: Background","key":"gFmECMW73T"}],"urlSource":"./background.md","dataUrl":"/background.json","internal":true,"protocol":"file","key":"hnJ9B9ktL2"},{"type":"text","value":" contains an overview of selected background mathematical content and programming content.","position":{"start":{"line":125,"column":1},"end":{"line":125,"column":1}},"key":"ed3ffYJUKP"}],"key":"rZlnM7Zlr2"},{"type":"comment","value":" \n| Chapter | States | Actions | Rewards (or costs) |\n|:-------:|:------:|:-------:|:-------:|\n| [](#bandits) | N/A | Finite | Stochastic |\n| [](#mdps) | Finite | Finite | Deterministic |\n| [](#fitted_dp) | Large or continuous | Finite | Deterministic |\n| [](#lqr) | Continuous | Continuous | Deterministic |\n","key":"SHjEN1ux8R"}],"key":"PEtbkKzlh7"},{"type":"block","position":{"start":{"line":136,"column":1},"end":{"line":136,"column":1}},"children":[{"type":"heading","depth":2,"position":{"start":{"line":138,"column":1},"end":{"line":138,"column":1}},"children":[{"type":"text","value":"Notation","position":{"start":{"line":138,"column":1},"end":{"line":138,"column":1}},"key":"nVz3PExnmT"}],"identifier":"notation","label":"Notation","html_id":"notation","implicit":true,"enumerator":"5","key":"Xq2EsEmu9m"},{"type":"paragraph","position":{"start":{"line":140,"column":1},"end":{"line":142,"column":1}},"children":[{"type":"text","value":"We will use the following notation throughout the book.\nThis notation is inspired by ","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"key":"ZDnBl2GJKl"},{"type":"cite","kind":"narrative","label":"sutton_reinforcement_2018","identifier":"sutton_reinforcement_2018","children":[{"type":"text","value":"Sutton \u0026 Barto (2018)","key":"liJynon9dF"}],"enumerator":"1","key":"vJY5M7nU72"},{"type":"text","value":" and ","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"key":"gBB952ojyz"},{"type":"cite","kind":"narrative","label":"agarwal_reinforcement_2022","identifier":"agarwal_reinforcement_2022","children":[{"type":"text","value":"Agarwal ","key":"VqjIqGml6p"},{"type":"emphasis","children":[{"type":"text","value":"et al.","key":"gt9THsCLcb"}],"key":"orvDmwuMm8"},{"type":"text","value":" (2022)","key":"sRaj308Dy9"}],"enumerator":"2","key":"q8EyX8eWxZ"},{"type":"text","value":".\nWe use ","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"key":"FuRK0OCTvf"},{"type":"inlineMath","value":"[N]","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmo stretchy=\"false\"\u003e[\u003c/mo\u003e\u003cmi\u003eN\u003c/mi\u003e\u003cmo stretchy=\"false\"\u003e]\u003c/mo\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e[N]\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"\u003e\u003c/span\u003e\u003cspan class=\"mopen\"\u003e[\u003c/span\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.10903em;\"\u003eN\u003c/span\u003e\u003cspan class=\"mclose\"\u003e]\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"CNnpGTGnin"},{"type":"text","value":" as shorthand for the set ","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"key":"a9kuKgnvz9"},{"type":"inlineMath","value":"\\{ 0, 1, \\dots, N-1 \\}","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmo stretchy=\"false\"\u003e{\u003c/mo\u003e\u003cmn\u003e0\u003c/mn\u003e\u003cmo separator=\"true\"\u003e,\u003c/mo\u003e\u003cmn\u003e1\u003c/mn\u003e\u003cmo separator=\"true\"\u003e,\u003c/mo\u003e\u003cmo\u003e…\u003c/mo\u003e\u003cmo separator=\"true\"\u003e,\u003c/mo\u003e\u003cmi\u003eN\u003c/mi\u003e\u003cmo\u003e−\u003c/mo\u003e\u003cmn\u003e1\u003c/mn\u003e\u003cmo stretchy=\"false\"\u003e}\u003c/mo\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\{ 0, 1, \\dots, N-1 \\}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"\u003e\u003c/span\u003e\u003cspan class=\"mopen\"\u003e{\u003c/span\u003e\u003cspan class=\"mord\"\u003e0\u003c/span\u003e\u003cspan class=\"mpunct\"\u003e,\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.1667em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord\"\u003e1\u003c/span\u003e\u003cspan class=\"mpunct\"\u003e,\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.1667em;\"\u003e\u003c/span\u003e\u003cspan class=\"minner\"\u003e…\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.1667em;\"\u003e\u003c/span\u003e\u003cspan class=\"mpunct\"\u003e,\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.1667em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.10903em;\"\u003eN\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2222em;\"\u003e\u003c/span\u003e\u003cspan class=\"mbin\"\u003e−\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2222em;\"\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord\"\u003e1\u003c/span\u003e\u003cspan class=\"mclose\"\u003e}\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"lMBYlnxX7o"},{"type":"text","value":".","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"key":"G3rg2NiD5s"}],"key":"EjFe4EAcHQ"},{"type":"table","position":{"start":{"line":144,"column":1},"end":{"line":159,"column":1}},"children":[{"type":"tableRow","position":{"start":{"line":144,"column":1},"end":{"line":144,"column":1}},"children":[{"type":"tableCell","header":true,"align":"center","position":{"start":{"line":144,"column":1},"end":{"line":144,"column":1}},"children":[{"type":"text","value":"Element","position":{"start":{"line":144,"column":1},"end":{"line":144,"column":1}},"key":"eUkVoECzWz"}],"key":"Meb6PN78q3"},{"type":"tableCell","header":true,"align":"center","position":{"start":{"line":144,"column":1},"end":{"line":144,"column":1}},"children":[{"type":"text","value":"Space","position":{"start":{"line":144,"column":1},"end":{"line":144,"column":1}},"key":"JJ0F5AIPmR"}],"key":"uwQJ6v4pmd"},{"type":"tableCell","header":true,"align":"left","position":{"start":{"line":144,"column":1},"end":{"line":144,"column":1}},"children":[{"type":"text","value":"Definition (of element)","position":{"start":{"line":144,"column":1},"end":{"line":144,"column":1}},"key":"SmcOPKRXNE"}],"key":"LBxhSmGcJf"}],"key":"r7sITZ4lq4"},{"type":"tableRow","position":{"start":{"line":146,"column":1},"end":{"line":146,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":146,"column":1},"end":{"line":146,"column":1}},"children":[{"type":"inlineMath","value":"s","position":{"start":{"line":146,"column":1},"end":{"line":146,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi\u003es\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003es\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.4306em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathnormal\"\u003es\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"W8yVjIIC77"}],"key":"RapOHCkhZ3"},{"type":"tableCell","align":"center","position":{"start":{"line":146,"column":1},"end":{"line":146,"column":1}},"children":[{"type":"inlineMath","value":"\\mathcal{S}","position":{"start":{"line":146,"column":1},"end":{"line":146,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"script\"\u003eS\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\mathcal{S}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\" style=\"margin-right:0.075em;\"\u003eS\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"zOF8Y5mKNW"}],"key":"OURZT9QhFR"},{"type":"tableCell","align":"left","position":{"start":{"line":146,"column":1},"end":{"line":146,"column":1}},"children":[{"type":"text","value":"A state.","position":{"start":{"line":146,"column":1},"end":{"line":146,"column":1}},"key":"U9eF3cklAJ"}],"key":"IwrKrPFILy"}],"key":"KxLlgTHTjP"},{"type":"tableRow","position":{"start":{"line":147,"column":1},"end":{"line":147,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":147,"column":1},"end":{"line":147,"column":1}},"children":[{"type":"inlineMath","value":"a","position":{"start":{"line":147,"column":1},"end":{"line":147,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi\u003ea\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003ea\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.4306em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathnormal\"\u003ea\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"bWm8Q5zxPq"}],"key":"jfhFDOepbs"},{"type":"tableCell","align":"center","position":{"start":{"line":147,"column":1},"end":{"line":147,"column":1}},"children":[{"type":"inlineMath","value":"\\mathcal{A}","position":{"start":{"line":147,"column":1},"end":{"line":147,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"script\"\u003eA\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\mathcal{A}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\"\u003eA\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"GlVfdmHwSi"}],"key":"sE3xzDyobU"},{"type":"tableCell","align":"left","position":{"start":{"line":147,"column":1},"end":{"line":147,"column":1}},"children":[{"type":"text","value":"An action.","position":{"start":{"line":147,"column":1},"end":{"line":147,"column":1}},"key":"r2wV6MH8tX"}],"key":"H7FJkd9Mc7"}],"key":"hElTR3hIy4"},{"type":"tableRow","position":{"start":{"line":148,"column":1},"end":{"line":148,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":148,"column":1},"end":{"line":148,"column":1}},"children":[{"type":"inlineMath","value":"r","position":{"start":{"line":148,"column":1},"end":{"line":148,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi\u003er\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003er\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.4306em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.02778em;\"\u003er\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"EyDn7SrPXB"}],"key":"xrjSlioGTi"},{"type":"tableCell","align":"center","position":{"start":{"line":148,"column":1},"end":{"line":148,"column":1}},"children":[],"key":"f0oSGhM7fx"},{"type":"tableCell","align":"left","position":{"start":{"line":148,"column":1},"end":{"line":148,"column":1}},"children":[{"type":"text","value":"A reward.","position":{"start":{"line":148,"column":1},"end":{"line":148,"column":1}},"key":"HtVovPSZ0C"}],"key":"GpNBWjJuxv"}],"key":"pQGNvTGGPO"},{"type":"tableRow","position":{"start":{"line":149,"column":1},"end":{"line":149,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":149,"column":1},"end":{"line":149,"column":1}},"children":[{"type":"text","value":"γ","position":{"start":{"line":149,"column":1},"end":{"line":149,"column":1}},"key":"h3okjrpu69"}],"key":"e6dWELz4h5"},{"type":"tableCell","align":"center","position":{"start":{"line":149,"column":1},"end":{"line":149,"column":1}},"children":[],"key":"UCvYrzFWVj"},{"type":"tableCell","align":"left","position":{"start":{"line":149,"column":1},"end":{"line":149,"column":1}},"children":[{"type":"text","value":"A discount factor.","position":{"start":{"line":149,"column":1},"end":{"line":149,"column":1}},"key":"UYc9C1rOLe"}],"key":"QLJ2sdWSbZ"}],"key":"bvsfaq69zZ"},{"type":"tableRow","position":{"start":{"line":150,"column":1},"end":{"line":150,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":150,"column":1},"end":{"line":150,"column":1}},"children":[{"type":"text","value":"τ","position":{"start":{"line":150,"column":1},"end":{"line":150,"column":1}},"key":"gjEydDNyTt"}],"key":"r0NGFxSzYW"},{"type":"tableCell","align":"center","position":{"start":{"line":150,"column":1},"end":{"line":150,"column":1}},"children":[{"type":"inlineMath","value":"\\mathcal{T}","position":{"start":{"line":150,"column":1},"end":{"line":150,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"script\"\u003eT\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\mathcal{T}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\" style=\"margin-right:0.25417em;\"\u003eT\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"WzYUIm2nDF"}],"key":"RIRQX94CHT"},{"type":"tableCell","align":"left","position":{"start":{"line":150,"column":1},"end":{"line":150,"column":1}},"children":[{"type":"text","value":"A trajectory.","position":{"start":{"line":150,"column":1},"end":{"line":150,"column":1}},"key":"DxvWLf9qRm"}],"key":"TJ0F0IFzrZ"}],"key":"KCeIaTxO49"},{"type":"tableRow","position":{"start":{"line":151,"column":1},"end":{"line":151,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":151,"column":1},"end":{"line":151,"column":1}},"children":[{"type":"text","value":"π","position":{"start":{"line":151,"column":1},"end":{"line":151,"column":1}},"key":"u99qi21V5d"}],"key":"l256rwDjj4"},{"type":"tableCell","align":"center","position":{"start":{"line":151,"column":1},"end":{"line":151,"column":1}},"children":[{"type":"text","value":"Π","position":{"start":{"line":151,"column":1},"end":{"line":151,"column":1}},"key":"ziIRp1KKUT"}],"key":"XxAytwyfz9"},{"type":"tableCell","align":"left","position":{"start":{"line":151,"column":1},"end":{"line":151,"column":1}},"children":[{"type":"text","value":"A policy.","position":{"start":{"line":151,"column":1},"end":{"line":151,"column":1}},"key":"yymMP0jrLm"}],"key":"EuNT7Flxsh"}],"key":"fMT3psTf9o"},{"type":"tableRow","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"children":[{"type":"inlineMath","value":"V^\\pi","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmsup\u003e\u003cmi\u003eV\u003c/mi\u003e\u003cmi\u003eπ\u003c/mi\u003e\u003c/msup\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003eV^\\pi\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord\"\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.22222em;\"\u003eV\u003c/span\u003e\u003cspan class=\"msupsub\"\u003e\u003cspan class=\"vlist-t\"\u003e\u003cspan class=\"vlist-r\"\u003e\u003cspan class=\"vlist\" style=\"height:0.6644em;\"\u003e\u003cspan style=\"top:-3.063em;margin-right:0.05em;\"\u003e\u003cspan class=\"pstrut\" style=\"height:2.7em;\"\u003e\u003c/span\u003e\u003cspan class=\"sizing reset-size6 size3 mtight\"\u003e\u003cspan class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\"\u003eπ\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"VA3E5NFmtj"}],"key":"YeHevAZsoL"},{"type":"tableCell","align":"center","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"children":[{"type":"inlineMath","value":"\\mathcal{S} \\to \\mathbb{R}","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"script\"\u003eS\u003c/mi\u003e\u003cmo\u003e→\u003c/mo\u003e\u003cmi mathvariant=\"double-struck\"\u003eR\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\mathcal{S} \\to \\mathbb{R}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\" style=\"margin-right:0.075em;\"\u003eS\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2778em;\"\u003e\u003c/span\u003e\u003cspan class=\"mrel\"\u003e→\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2778em;\"\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6889em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathbb\"\u003eR\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"UJ1KWeqCND"}],"key":"HqyR4DyPjg"},{"type":"tableCell","align":"left","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"children":[{"type":"text","value":"The value function of policy ","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"key":"OTWdD2Ks2W"},{"type":"text","value":"π","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"key":"hxW3KwGq3w"},{"type":"text","value":".","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"key":"dDWEgPJbPc"}],"key":"I2YP4hmIts"}],"key":"Se7X5rMUCz"},{"type":"tableRow","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"children":[{"type":"inlineMath","value":"Q^\\pi","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmsup\u003e\u003cmi\u003eQ\u003c/mi\u003e\u003cmi\u003eπ\u003c/mi\u003e\u003c/msup\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003eQ^\\pi\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.8778em;vertical-align:-0.1944em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord\"\u003e\u003cspan class=\"mord mathnormal\"\u003eQ\u003c/span\u003e\u003cspan class=\"msupsub\"\u003e\u003cspan class=\"vlist-t\"\u003e\u003cspan class=\"vlist-r\"\u003e\u003cspan class=\"vlist\" style=\"height:0.6644em;\"\u003e\u003cspan style=\"top:-3.063em;margin-right:0.05em;\"\u003e\u003cspan class=\"pstrut\" style=\"height:2.7em;\"\u003e\u003c/span\u003e\u003cspan class=\"sizing reset-size6 size3 mtight\"\u003e\u003cspan class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\"\u003eπ\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"Qt9ng8Rozv"}],"key":"YMz88nuuvT"},{"type":"tableCell","align":"center","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"children":[{"type":"inlineMath","value":"\\mathcal{S} \\times \\mathcal{A} \\to \\mathbb{R}","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"script\"\u003eS\u003c/mi\u003e\u003cmo\u003e×\u003c/mo\u003e\u003cmi mathvariant=\"script\"\u003eA\u003c/mi\u003e\u003cmo\u003e→\u003c/mo\u003e\u003cmi mathvariant=\"double-struck\"\u003eR\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\mathcal{S} \\times \\mathcal{A} \\to \\mathbb{R}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.7667em;vertical-align:-0.0833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\" style=\"margin-right:0.075em;\"\u003eS\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2222em;\"\u003e\u003c/span\u003e\u003cspan class=\"mbin\"\u003e×\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2222em;\"\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\"\u003eA\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2778em;\"\u003e\u003c/span\u003e\u003cspan class=\"mrel\"\u003e→\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2778em;\"\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6889em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathbb\"\u003eR\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"PLeGWWOJl0"}],"key":"hF9LXLRRpk"},{"type":"tableCell","align":"left","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"children":[{"type":"text","value":"The action-value function (a.k.a. Q-function) of policy ","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"key":"yYxMXbwvIP"},{"type":"text","value":"π","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"key":"Gsx7swkB5d"},{"type":"text","value":".","position":{"start":{"line":153,"column":1},"end":{"line":153,"column":1}},"key":"R2urfQikxK"}],"key":"IJeYIftFG8"}],"key":"rtRPF2pQWY"},{"type":"tableRow","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"children":[{"type":"inlineMath","value":"A^\\pi","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmsup\u003e\u003cmi\u003eA\u003c/mi\u003e\u003cmi\u003eπ\u003c/mi\u003e\u003c/msup\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003eA^\\pi\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord\"\u003e\u003cspan class=\"mord mathnormal\"\u003eA\u003c/span\u003e\u003cspan class=\"msupsub\"\u003e\u003cspan class=\"vlist-t\"\u003e\u003cspan class=\"vlist-r\"\u003e\u003cspan class=\"vlist\" style=\"height:0.6644em;\"\u003e\u003cspan style=\"top:-3.063em;margin-right:0.05em;\"\u003e\u003cspan class=\"pstrut\" style=\"height:2.7em;\"\u003e\u003c/span\u003e\u003cspan class=\"sizing reset-size6 size3 mtight\"\u003e\u003cspan class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\"\u003eπ\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"AskW1BhWlZ"}],"key":"Qlq0Lh5THn"},{"type":"tableCell","align":"center","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"children":[{"type":"inlineMath","value":"\\mathcal{S} \\times \\mathcal{A} \\to \\mathbb{R}","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"script\"\u003eS\u003c/mi\u003e\u003cmo\u003e×\u003c/mo\u003e\u003cmi mathvariant=\"script\"\u003eA\u003c/mi\u003e\u003cmo\u003e→\u003c/mo\u003e\u003cmi mathvariant=\"double-struck\"\u003eR\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\mathcal{S} \\times \\mathcal{A} \\to \\mathbb{R}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.7667em;vertical-align:-0.0833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\" style=\"margin-right:0.075em;\"\u003eS\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2222em;\"\u003e\u003c/span\u003e\u003cspan class=\"mbin\"\u003e×\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2222em;\"\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\"\u003eA\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2778em;\"\u003e\u003c/span\u003e\u003cspan class=\"mrel\"\u003e→\u003c/span\u003e\u003cspan class=\"mspace\" style=\"margin-right:0.2778em;\"\u003e\u003c/span\u003e\u003c/span\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6889em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathbb\"\u003eR\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"Q2aRQZ5dGF"}],"key":"wEtqwrF39d"},{"type":"tableCell","align":"left","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"children":[{"type":"text","value":"The advantage function of policy ","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"key":"XR8awkWnZR"},{"type":"text","value":"π","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"key":"YOkgKyJWkO"},{"type":"text","value":".","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"key":"j0FQ0O8rr4"}],"key":"iCilOKhTJH"}],"key":"KE7NjD7J0r"},{"type":"tableRow","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"children":[],"key":"B60UB2NmHP"},{"type":"tableCell","align":"center","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"children":[{"type":"inlineMath","value":"\\triangle(\\mathcal{X})","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"normal\"\u003e△\u003c/mi\u003e\u003cmo stretchy=\"false\"\u003e(\u003c/mo\u003e\u003cmi mathvariant=\"script\"\u003eX\u003c/mi\u003e\u003cmo stretchy=\"false\"\u003e)\u003c/mo\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\triangle(\\mathcal{X})\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord\"\u003e△\u003c/span\u003e\u003cspan class=\"mopen\"\u003e(\u003c/span\u003e\u003cspan class=\"mord mathcal\" style=\"margin-right:0.14643em;\"\u003eX\u003c/span\u003e\u003cspan class=\"mclose\"\u003e)\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"NXe48YsUEH"}],"key":"q8qjjRCXU5"},{"type":"tableCell","align":"left","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"children":[{"type":"text","value":"A distribution supported on ","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"key":"nN3BKvtXqB"},{"type":"inlineMath","value":"\\mathcal{X}","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi mathvariant=\"script\"\u003eX\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\mathcal{X}\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6833em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathcal\" style=\"margin-right:0.14643em;\"\u003eX\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"MxVX6d8F0Q"},{"type":"text","value":".","position":{"start":{"line":155,"column":1},"end":{"line":155,"column":1}},"key":"nrItRrewEW"}],"key":"c3qDl6ATg4"}],"key":"jatSOXvWwd"},{"type":"tableRow","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"children":[{"type":"inlineMath","value":"\\hi","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi\u003eh\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e\\hi\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6944em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathnormal\"\u003eh\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"lb2Vt3xUby"}],"key":"q3r3XVGb1k"},{"type":"tableCell","align":"center","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"children":[{"type":"inlineMath","value":"[\\hor]","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmo stretchy=\"false\"\u003e[\u003c/mo\u003e\u003cmi\u003eH\u003c/mi\u003e\u003cmo stretchy=\"false\"\u003e]\u003c/mo\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e[\\hor]\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"\u003e\u003c/span\u003e\u003cspan class=\"mopen\"\u003e[\u003c/span\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.08125em;\"\u003eH\u003c/span\u003e\u003cspan class=\"mclose\"\u003e]\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"LfgJ1iuYdU"}],"key":"DX6TXfuEjM"},{"type":"tableCell","align":"left","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"children":[{"type":"text","value":"Time horizon index of an MDP (subscript).","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"key":"KyObpMLuWm"}],"key":"sxDhUZudPi"}],"key":"ZfocGHwktD"},{"type":"tableRow","position":{"start":{"line":157,"column":1},"end":{"line":157,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":157,"column":1},"end":{"line":157,"column":1}},"children":[{"type":"inlineMath","value":"k","position":{"start":{"line":157,"column":1},"end":{"line":157,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi\u003ek\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003ek\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6944em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.03148em;\"\u003ek\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"Vd6QX1X26I"}],"key":"Li2tOmnMqc"},{"type":"tableCell","align":"center","position":{"start":{"line":157,"column":1},"end":{"line":157,"column":1}},"children":[{"type":"inlineMath","value":"[K]","position":{"start":{"line":157,"column":1},"end":{"line":157,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmo stretchy=\"false\"\u003e[\u003c/mo\u003e\u003cmi\u003eK\u003c/mi\u003e\u003cmo stretchy=\"false\"\u003e]\u003c/mo\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e[K]\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"\u003e\u003c/span\u003e\u003cspan class=\"mopen\"\u003e[\u003c/span\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.07153em;\"\u003eK\u003c/span\u003e\u003cspan class=\"mclose\"\u003e]\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"xvi3dqLtZ5"}],"key":"kDzCZGMUUU"},{"type":"tableCell","align":"left","position":{"start":{"line":157,"column":1},"end":{"line":157,"column":1}},"children":[{"type":"text","value":"Arm index of a multi-armed bandit (superscript).","position":{"start":{"line":157,"column":1},"end":{"line":157,"column":1}},"key":"jqPsrIYK2E"}],"key":"ZyiBWNeton"}],"key":"fs1GlDklGM"},{"type":"tableRow","position":{"start":{"line":158,"column":1},"end":{"line":158,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":158,"column":1},"end":{"line":158,"column":1}},"children":[{"type":"inlineMath","value":"t","position":{"start":{"line":158,"column":1},"end":{"line":158,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmi\u003et\u003c/mi\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003et\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:0.6151em;\"\u003e\u003c/span\u003e\u003cspan class=\"mord mathnormal\"\u003et\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"zIaK3PRL5F"}],"key":"o8T74JCH8Z"},{"type":"tableCell","align":"center","position":{"start":{"line":158,"column":1},"end":{"line":158,"column":1}},"children":[{"type":"inlineMath","value":"[T]","position":{"start":{"line":158,"column":1},"end":{"line":158,"column":1}},"html":"\u003cspan class=\"katex\"\u003e\u003cspan class=\"katex-mathml\"\u003e\u003cmath xmlns=\"http://www.w3.org/1998/Math/MathML\"\u003e\u003csemantics\u003e\u003cmrow\u003e\u003cmo stretchy=\"false\"\u003e[\u003c/mo\u003e\u003cmi\u003eT\u003c/mi\u003e\u003cmo stretchy=\"false\"\u003e]\u003c/mo\u003e\u003c/mrow\u003e\u003cannotation encoding=\"application/x-tex\"\u003e[T]\u003c/annotation\u003e\u003c/semantics\u003e\u003c/math\u003e\u003c/span\u003e\u003cspan class=\"katex-html\" aria-hidden=\"true\"\u003e\u003cspan class=\"base\"\u003e\u003cspan class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"\u003e\u003c/span\u003e\u003cspan class=\"mopen\"\u003e[\u003c/span\u003e\u003cspan class=\"mord mathnormal\" style=\"margin-right:0.13889em;\"\u003eT\u003c/span\u003e\u003cspan class=\"mclose\"\u003e]\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e\u003c/span\u003e","key":"TOjiV91OE0"}],"key":"n7UabZ47es"},{"type":"tableCell","align":"left","position":{"start":{"line":158,"column":1},"end":{"line":158,"column":1}},"children":[{"type":"text","value":"Iteration index of an algorithm (subscript).","position":{"start":{"line":158,"column":1},"end":{"line":158,"column":1}},"key":"y9J5HbzYXs"}],"key":"yusC96QxHL"}],"key":"hx22Iv3l3i"},{"type":"tableRow","position":{"start":{"line":159,"column":1},"end":{"line":159,"column":1}},"children":[{"type":"tableCell","align":"center","position":{"start":{"line":159,"column":1},"end":{"line":159,"column":1}},"children":[{"type":"text","value":"θ","position":{"start":{"line":159,"column":1},"end":{"line":159,"column":1}},"key":"IRKyyLjDpl"}],"key":"mf0ifhBUq5"},{"type":"tableCell","align":"center","position":{"start":{"line":159,"column":1},"end":{"line":159,"column":1}},"children":[{"type":"text","value":"Θ","position":{"start":{"line":159,"column":1},"end":{"line":159,"column":1}},"key":"m0cENoW924"}],"key":"nODOmGzwB7"},{"type":"tableCell","align":"left","position":{"start":{"line":159,"column":1},"end":{"line":159,"column":1}},"children":[{"type":"text","value":"A set of parameters.","position":{"start":{"line":159,"column":1},"end":{"line":159,"column":1}},"key":"iEa5BtbD5B"}],"key":"Q4hgEg9HrC"}],"key":"mucNluyU6o"}],"key":"mDJCH4QOMa"},{"type":"paragraph","position":{"start":{"line":161,"column":1},"end":{"line":163,"column":1}},"children":[{"type":"text","value":"Note that throughout the text, certain symbols will stand for either random variables or fixed values.\nWe aim to clarify in ambiguous settings.\nBe warned that","position":{"start":{"line":161,"column":1},"end":{"line":161,"column":1}},"key":"iFWqcgWaTL"}],"key":"lK0GwfbCK5"}],"key":"ODZ6XQVV61"},{"type":"block","position":{"start":{"line":165,"column":1},"end":{"line":165,"column":1}},"children":[{"type":"heading","depth":2,"position":{"start":{"line":168,"column":1},"end":{"line":168,"column":1}},"children":[{"type":"text","value":"Programming","position":{"start":{"line":168,"column":1},"end":{"line":168,"column":1}},"key":"fkC6lyyKRg"}],"label":"programming","identifier":"programming","html_id":"programming","enumerator":"6","key":"UrH9gd1LiC"},{"type":"paragraph","position":{"start":{"line":170,"column":1},"end":{"line":176,"column":1}},"children":[{"type":"text","value":"Why include code in a textbook?\nWe believe that implementing an algorithm is a strong test of your understanding of it;\nmathematical notation can often abstract away details,\nwhile a computer must be given every single instruction.\nWe have sought to write readable Python code that is self-contained within each file.\nThis approach is inspired by ","position":{"start":{"line":170,"column":1},"end":{"line":170,"column":1}},"key":"FeLzR0ai8X"},{"type":"cite","kind":"narrative","label":"sussman_functional_2013","identifier":"sussman_functional_2013","children":[{"type":"text","value":"Sussman ","key":"cx7TSWpUf0"},{"type":"emphasis","children":[{"type":"text","value":"et al.","key":"sGUfyj6cWM"}],"key":"CihyuNaPhx"},{"type":"text","value":" (2013)","key":"KZWsKRWYbQ"}],"enumerator":"3","key":"mgnlueWWcW"},{"type":"text","value":".\nThere are some ways in which the code style differs from typical software projects:","position":{"start":{"line":170,"column":1},"end":{"line":170,"column":1}},"key":"Uu6VEVm05D"}],"key":"rIGE4IzPFM"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":178,"column":1},"end":{"line":182,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":178,"column":1},"end":{"line":179,"column":1}},"children":[{"type":"text","value":"We keep use of language features to a minimum,\neven if it leads to code that could otherwise be more concisely or idiomatically expressed.","position":{"start":{"line":178,"column":1},"end":{"line":178,"column":1}},"key":"NGBc7lxR9n"}],"key":"GnZzVDwrJa"},{"type":"listItem","spread":true,"position":{"start":{"line":180,"column":1},"end":{"line":182,"column":1}},"children":[{"type":"text","value":"The variable names used in the code match those used in the main text.\nFor example, the variable ","position":{"start":{"line":180,"column":1},"end":{"line":180,"column":1}},"key":"eksIDyTkjl"},{"type":"inlineCode","value":"s","position":{"start":{"line":180,"column":1},"end":{"line":180,"column":1}},"key":"NFELY8KhQU"},{"type":"text","value":" will be used instead of the more explicit ","position":{"start":{"line":180,"column":1},"end":{"line":180,"column":1}},"key":"LTbFiMOlfb"},{"type":"inlineCode","value":"state","position":{"start":{"line":180,"column":1},"end":{"line":180,"column":1}},"key":"v0HvGlzaeR"},{"type":"text","value":".","position":{"start":{"line":180,"column":1},"end":{"line":180,"column":1}},"key":"LmnBsiSGcm"}],"key":"VTr5LJm0Xn"}],"key":"YgEHe7SC0K"},{"type":"paragraph","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"children":[{"type":"text","value":"We also make extensive use of Python ","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"key":"rdlfW5KDAb"},{"type":"emphasis","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"children":[{"type":"text","value":"type annotations","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"key":"pgpBx9EfF2"}],"key":"iSyUoQlQE9"},{"type":"text","value":" to explicitly specify variable types, including shapes of vectors and matrices using the ","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"key":"k9JoNbdUzz"},{"type":"link","url":"https://github.com/patrick-kidger/jaxtyping","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"children":[{"type":"text","value":"jaxtyping","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"key":"xgmeQXejdh"}],"urlSource":"https://github.com/patrick-kidger/jaxtyping","error":true,"key":"PijAoAYVoX"},{"type":"text","value":" library.","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"key":"vnRqar5v0B"}],"key":"uTwjnmsDnD"},{"type":"paragraph","position":{"start":{"line":185,"column":1},"end":{"line":190,"column":1}},"children":[{"type":"text","value":"This is an interactive book built with ","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"YibVDn1KcI"},{"type":"link","url":"https://jupyterbook.org/en/stable/intro.html","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"children":[{"type":"text","value":"Jupyter Book","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"qhBeaRa5fQ"}],"urlSource":"https://jupyterbook.org/en/stable/intro.html","key":"fTSTfUlO6r"},{"type":"text","value":".\nIt uses ","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"mDoO6xbJ6O"},{"type":"link","url":"https://docs.python.org/3.11/contents.html","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"children":[{"type":"text","value":"Python 3.11","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"CUVkZAIebU"}],"urlSource":"https://docs.python.org/3.11/contents.html","key":"GnNjyas63e"},{"type":"text","value":".\nIt uses the ","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"cqxRUiRTT2"},{"type":"link","url":"https://jax.readthedocs.io/en/latest/index.html","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"children":[{"type":"text","value":"JAX","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"Rk9zEPjUVe"}],"urlSource":"https://jax.readthedocs.io/en/latest/index.html","key":"HYsYUwgYP6"},{"type":"text","value":" library for numerical computing.\nJAX was chosen for the clarity of its functional style and due to its mature RL ecosystem,\nsustained in large part by the Google DeepMind research group and a large body of open-source contributors.\nWe use the standard ","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"GxXq3beyes"},{"type":"link","url":"https://gymnasium.farama.org/","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"children":[{"type":"text","value":"Gymnasium","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"P2gvHN4Xiw"}],"urlSource":"https://gymnasium.farama.org/","key":"YeC64noWA6"},{"type":"text","value":" library for interfacing with RL environments.","position":{"start":{"line":185,"column":1},"end":{"line":185,"column":1}},"key":"xh5yj6pmRt"}],"key":"zbpk3hwBtV"},{"type":"paragraph","position":{"start":{"line":192,"column":1},"end":{"line":192,"column":1}},"children":[{"type":"text","value":"The following names are exported from the ","position":{"start":{"line":192,"column":1},"end":{"line":192,"column":1}},"key":"ABbEepXSAT"},{"type":"inlineCode","value":"utils","position":{"start":{"line":192,"column":1},"end":{"line":192,"column":1}},"key":"rhlBIP6dNd"},{"type":"text","value":" module:","position":{"start":{"line":192,"column":1},"end":{"line":192,"column":1}},"key":"rghGwhKG6I"}],"key":"UfQrGO3VBH"},{"type":"code","lang":"python","value":"import matplotlib.pyplot as plt\n\n# convenient class builder\nfrom typing import NamedTuple\n\n# function typings\nfrom collections.abc import Callable\n\n# array typings\nfrom jaxtyping import Float, Array\n\n# convenient function composition\nfrom functools import partial\n\n# numerical computing and linear algebra\nimport jax\nimport jax.numpy as jnp\n\n# print functions as latex\nimport latexify\n\nplt.style.use(\"fivethirtyeight\")","position":{"start":{"line":194,"column":1},"end":{"line":217,"column":1}},"key":"HmYzaPdG7w"}],"key":"FzCNu1tCt6"}],"key":"l5tLyIXvht"},"references":{"cite":{"order":["sutton_reinforcement_2018","agarwal_reinforcement_2022","sussman_functional_2013"],"data":{"sutton_reinforcement_2018":{"label":"sutton_reinforcement_2018","enumerator":"1","html":"Sutton, R. S., \u0026 Barto, A. G. (2018). \u003ci\u003eReinforcement Learning: An Introduction\u003c/i\u003e (Second edition). The MIT Press."},"agarwal_reinforcement_2022":{"label":"agarwal_reinforcement_2022","enumerator":"2","html":"Agarwal, A., Jiang, N., Kakade, S. M., \u0026 Sun, W. (2022). \u003ci\u003eReinforcement Learning: Theory and Algorithms\u003c/i\u003e."},"sussman_functional_2013":{"label":"sussman_functional_2013","enumerator":"3","html":"Sussman, G. J., Wisdom, J., \u0026 Farr, W. (2013). \u003ci\u003eFunctional Differential Geometry\u003c/i\u003e. The MIT Press."}}}},"footer":{"navigation":{"next":{"title":"1 Markov Decision Processes","url":"/mdps","group":"CS/STAT 184: Introduction to Reinforcement Learning"}}},"domain":"http://localhost:3000"},"project":{"numbering":{"all":{"enabled":true}},"bibliography":["/Users/adzcai/Developer/rlbook/book/shared/references.bib"],"math":{"\\E":{"macro":"\\mathop{\\mathbb{E}}"},"\\pr":{"macro":"\\mathop{\\mathbb{P}}"},"\\kl":{"macro":"\\mathrm{KL}\\left(#1\\parallel#2\\right)"},"\\ind":{"macro":"\\mathbf{1}\\left\\{#1\\right\\}"},"\\hi":{"macro":"h"},"\\hor":{"macro":"H"},"\\st":{"macro":"s"},"\\act":{"macro":"a"}},"exports":[],"title":"CS/STAT 184: Introduction to Reinforcement Learning","authors":[{"nameParsed":{"literal":"Fall 2024","given":"Fall","family":"2024"},"name":"Fall 2024","id":"contributors-myst-generated-uid-0"}],"github":"https://github.com/adzcai/cs-stat-184-notes","toc":[{"file":"index.md"},{"file":"mdps.md"},{"file":"control.md"},{"file":"bandits.md"},{"file":"supervised_learning.md"},{"file":"fitted_dp.md"},{"file":"pg.md"},{"file":"imitation_learning.md"},{"file":"planning.md"},{"file":"exploration.md"},{"file":"background.md"}],"index":"index","pages":[{"slug":"mdps","title":"1 Markov Decision Processes","description":"","date":"","thumbnail":"/build/deterministic_policy-812169be9756946f7e3c7d574430be33.png","thumbnailOptimized":"/build/deterministic_policy-812169be9756946f7e3c7d574430be33.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"control","title":"2 Linear Quadratic Regulators","description":"","date":"","thumbnail":"/build/rubiks_cube-736e8f94de8f8c4e720bad966191ed3f.jpg","thumbnailOptimized":"/build/rubiks_cube-736e8f94de8f8c4e720bad966191ed3f.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"bandits","title":"3 Multi-Armed Bandits","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"supervised-learning","title":"4 Supervised learning","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"fitted-dp","title":"5 Fitted Dynamic Programming Algorithms","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"pg","title":"6  Policy Gradient Methods","description":"","date":"","thumbnail":"/build/npg_line-d866eed4d36f0f17d1b36b6fa0a76770.png","thumbnailOptimized":"/build/npg_line-d866eed4d36f0f17d1b36b6fa0a76770.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"imitation-learning","title":"7 Imitation Learning","description":"","date":"","thumbnail":"/build/robot-imitation-lear-3959133f2c440537594fb904c12725f5.jpg","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"planning","title":"8 Tree Search Methods","description":"","date":"","thumbnail":"/build/tic_tac_toe-b48eec3dc0012079611b6294983f5b74.png","thumbnailOptimized":"/build/tic_tac_toe-b48eec3dc0012079611b6294983f5b74.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"exploration","title":"9 Exploration in MDPs","description":"","date":"","thumbnail":"/build/sparse_reward_mdp-78fc15b37994af884414c2a05bc09dc2.png","thumbnailOptimized":"/build/sparse_reward_mdp-78fc15b37994af884414c2a05bc09dc2.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"background","title":"Appendix: Background","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1}]}}},"actionData":null,"errors":null},"future":{"unstable_dev":false,"unstable_postcss":false,"unstable_tailwind":false,"v2_errorBoundary":true,"v2_headers":true,"v2_meta":true,"v2_normalizeFormMethod":true,"v2_routeConvention":true}};</script><script type="module" async="">import "/build/manifest-A92797E9.js";
-import * as route0 from "/build/root-HROFNPGU.js";
-import * as route1 from "/build/routes/_index-ZB6LFFEX.js";
-window.__remixRouteModules = {"root":route0,"routes/_index":route1};
-
-import("/build/entry.client-UNPC4GT3.js");</script></body></html>
+</body></html>
