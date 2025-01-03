@@ -25,6 +25,9 @@ format:
   html:
     theme: cosmo
     code-fold: true
+    fig-width: 4
+    fig-height: 3
+    fig-align: center
   pdf:
     documentclass: scrreprt
 

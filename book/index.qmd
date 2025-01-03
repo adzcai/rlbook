@@ -132,7 +132,7 @@ We will extend ideas from multi-armed bandits to the MDP setting.
 ## Notation
 
 We will use the following notation throughout the book.
-This notation is inspired by @sutton_reinforcement_2018 and @agarwal_reinforcement_2022.
+This notation is inspired by @sutton_reinforcement_2018 and [@agarwal_reinforcement_2022].
 We use $[N]$ as shorthand for the set $\{ 0, 1, \dots, N-1 \}$.
 
 | Element      | Space                    | Definition (of element)   |

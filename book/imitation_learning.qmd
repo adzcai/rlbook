@@ -52,7 +52,7 @@ This is called **behavioral cloning**.
 2. Use a supervised learning algorithm $\texttt{fit} : \mathcal{D} \mapsto \widetilde{\pi}$ to extract a policy $\widetilde{\pi}$ that approximates the expert policy.
 :::
 
-Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in @def-parameterized-empirical-risk-minimization):
+Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in @sec-sl-parameterized:
 
 $$
 \widetilde{\pi} = \arg\min_{\pi \in \Pi} \sum_{n=0}^{N-1} \text{loss}(\pi(s^n), a^n)

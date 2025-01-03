@@ -91,7 +91,7 @@ From now on, we'll use $J$ to denote the function we're trying to maximize, and 
 
 Notice that our parameters will stop changing once $\nabla J(\theta) = 0.$ Once we reach this **stationary point,** our current parameters are 'locally optimal' in some sense; it's impossible to increase the function by moving in any direction. If $J$ is *convex*, then the only point where this happens is at the *global optimum.* Otherwise, if $J$ is nonconvex, the best we can hope for is a *local optimum.*
 
-### Computing derivatives
+### Computing derivatives {#sec-computing-derivatives}
 
 How does a computer compute the gradient of a function?
 

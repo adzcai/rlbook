@@ -221,7 +221,7 @@ $$
 b_\hi^t(s, a) = 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_\hi^t(s, a)}}.
 $$ {#eq-ucb-vi-bonus}
 
-We will only provide a heuristic sketch of the proof; see @agarwal_reinforcement_2022 (Section 7.3) for a full proof.
+We will only provide a heuristic sketch of the proof; see [@agarwal_reinforcement_2022] (Section 7.3) for a full proof.
 
 :::: {#rem-ucb-vi-bonus}
 

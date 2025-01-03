@@ -3,100 +3,411 @@
 ---
 # Supervised learning {#sec-sl}
 
+{{< include macros.qmd >}}
+
 ## Introduction
 
 
 ```{python}
-from utils import Float, Array, Callable, plt
+from utils import Float, Array, Callable, plt, np, latex
 from torchvision.datasets import MNIST
 from config import MNIST_PATH
 ```
 
-**Supervised learning** (SL) is another core subfield of machine learning,
+**Supervised learning** (SL) is a core subfield of machine learning
 alongside RL and unsupervised learning.
-The term "supervised" refers to the type of data SL algorithms deal with:
-a dataset of input-output pairs.
+The typical SL task is to approximate an unknown function
+given a dataset of input-output pairs from that function.
 
 ::: {#exm-image-classification}
 #### Image classification
 
-One of the most common examples of an SL problem is the task of **image classification**:
+One of the most common examples of an SL problem is the task of image classification:
 Given a dataset of images and their respective labels,
 construct a function that takes an image and outputs the correct label.
+
+@fig-mnist illustrates two samples (that is, input-output pairs)
+from the MNIST database of handwritten digits [@deng_mnist_2012].
+This is a task that most humans can easily accomplish.
+By providing many samples of digits and their labels to a machine,
+SL algorithms can learn to solve this task as well.
 :::
 
 ```{python}
 #| label: fig-mnist
 #| fig-cap: "The MNIST image classification dataset of handwritten digits."
+#| fig-subcap:
+#| - A handwritten digit.
+#| - Another handwritten digit.
 #| layout-ncol: 2
 data = MNIST(MNIST_PATH, train=True, download=True)
 
 plt.axis('off')
 plt.imshow(data.data[0], cmap='gray')
 plt.title(f"Label: {data.targets[0]}")
+plt.gcf().set_size_inches(2, 2)
 plt.show()
 
 plt.axis('off')
 plt.imshow(data.data[1], cmap='gray')
 plt.title(f"Label: {data.targets[1]}")
+plt.gcf().set_size_inches(2, 2)
 plt.show()
 ```
 
-In other words, the main concern of SL is **function approximation**
-(also known as **modeling**):
-given a dataset of inputs to a function,
-paired with their corresponding outputs,
-can we reconstruct or approximate the unknown function?
-
 Where might function approximation be useful in RL?
 There are many functions involved in the definition of an MDP (@def-finite-horizon-mdp),
-such as the state transitions or the reward function,
+such as the state transitions $P$ or the reward function $r$,
 any of which might be unknown.
-Instead, we could interact with the environment,
-collecting a dataset of input-output pairs of these functions,
-and then plug in an SL algorithm to approximate the unknown functions.
+We can plug in an SL algorithm to **model** these functions,
+and then solve the modeled environment using dynamic programming (@sec-opt-dynamic-programming).
+This approach is called **fitted DP** and will be covered in @sec-fitted-dp.
+In the rest of this chapter,
+we'll formalize the SL task and examine some basic algorithms.
 
-The rest of this chapter will cover details of SL,
-that is, how to use a dataset of labelled samples $(x_1, y_1), \dots, (x_N, y_N)$
-to find a function $f$ that approximates the true function.
-This requires two ingredients:
+## The supervised learning task
 
-1. A **function class** $\mathcal{F}$ to search over
-2. A **fitting method** for minimizing the empirical risk over this class
+In SL,
+we are given a dataset of labelled samples $(x_1, y_1), \dots, (x_N, y_N)$
+that are independently sampled from some joint distribution $p \in \triangle(X \times Y)$
+known as the **data generating process**.
+Note that, by the chain rule of probability,
+this can be factored as $p(x, y) = p(y \mid x) p(x)$.
 
-The two main function classes we will cover are **linear models** and **neural networks**.
-Both of these function classes are *parameterized* by some parameters $\theta$,
-and the fitting method will search over these parameters to minimize the empirical risk:
+::: {#exm-sl-distributions}
+For example, in @exm-image-classification,
+the marginal distribution over $x$ is assumed to be the distribution of handwritten digits by humans,
+scanned as $28 \times 28$ grayscale images,
+and the conditional distribution $y \mid x$ is assumed to be
+the distribution over $\{ 0, \dots, 9 \}$ that a human would assign to the image $x$.
+:::
 
-::: {#def-parameterized-empirical-risk-minimization}
+Our task is to compute a "good" **predictor** $\hat f : X \to Y$ that,
+as its name suggests, takes an input and tries to predict the corresponding output.
 
-#### Parameterized empirical risk minimization
+### Loss functions
 
-Given a dataset of samples $(x_1, y_1), \dots, (x_N, y_N)$ and a class of functions $\mathcal{F}$ parameterized by $\theta$,
-we to find a parameter (vector) $\hat \theta$ that minimizes the empirical risk:
+How can we measure how "good" a predictor is?
+The most common way is to use a **loss function**
+$\ell : Y \times Y \to \R$
+that compares the guess $\hat y := \hat f(x)$
+with the true output $y$.
+$\ell(\hat y, y)$ should be low if the predictor accurately guessed the output,
+and high if the prediction was incorrect.
+
+::: {#exm-zero-one-loss}
+#### Zero-one loss
+
+In the image classification task @exm-image-classification,
+we have $X = [0, 1]^{28 \times 28}$ (the space of $28$-by-$28$ grayscale images)
+and $Y = \{ 0, \dots, 9 \}$ (the image's label).
+We could use the zero-one loss function,
 
 $$
-\hat \theta = \arg\min_{\theta} \frac{1}{N} \sum_{i=1}^N (y_i - f_\theta(x_i))^2
+\ell(\hat y, y) = \begin{cases}
+0 & \hat y = y \\
+1 & \hat y \ne y
+\end{cases}
+$$
+
+to measure the accuracy of the predictor.
+That is,
+if the predictor assigns the wrong label to an image,
+it incurs a loss of one for that sample.
+:::
+
+::: {#exm-square-loss}
+#### Square loss
+
+For a continuous output (i.e. $Y \subseteq \R$),
+we typically use the **squared difference** as the loss function:
+
+$$
+\ell(\hat y, y) = (\hat y - y)^2
+$$
+
+The squared loss is nice to work with analytically
+since its derivative with respect to $\hat y$ is simply $2 (\hat y - y)$.
+(Sometimes authors define the square loss as *half* of the above value to cancel the factor of $2$ in the derivative;
+generally speaking,
+scaling the loss by some constant scalar has no practical effect.)
+:::
+
+```{python}
+#| label: fig-squared-loss
+#| fig-cap: Squared loss.
+#| fig-align: center
+x = np.linspace(-1, 1, 20)
+y = x ** 2
+plt.plot(x, y)
+plt.xlabel(r"$\hat y - y$")
+plt.ylabel(r"$\ell(\hat y, y)$")
+plt.show()
+```
+
+### Model selection
+
+Ultimately,
+we want a predictor that does well on new, unseen samples from the data generating process.
+We can thus ask,
+how much loss does the predictor incur *in expectation*?
+This is called the prediction's **generalization error** or **test error**:
+
+$$
+\text{test error}(\hat f) := \E_{(x, y) \sim p} [ \ell(\hat f(x), y) ]
+$$
+
+Our goal is then to find the function $\hat f$ that minimizes the test error.
+For certain loss functions,
+this can be analytically computed,
+such as for squared error.
+
+::: {#thm-conditional-expectation-minimizes-mse}
+
+#### The conditional expectation minimizes mean squared error
+
+An important result is that, under the squared loss,
+the optimal predictor is the **conditional expectation**:
+
+$$
+\arg\min_{f} \E[(y - f(x))^2] = (x \mapsto \E[y \mid x])
 $$
 :::
 
-The most common fitting method for parameterized models is **gradient descent**.
+::: {.proof}
+We can decompose the mean squared error as
 
-::: {#def-gd-def}
+$$
+\begin{aligned}
+\E[(y - f(x))^2] &= \E[ (y - \E[y \mid x] + \E[y \mid x] - f(x))^2 ] \\
+&= \E[ (y - \E[y \mid x])^2 ] + \E[ (\E[y \mid x] - f(x))^2 ] \\
+&\quad {} + 2 \E[ (y - \E[y \mid x])(\E[y \mid x] - f(x)) ] \\
+\end{aligned}
+$$
 
-#### Gradient descent
+We leave it as an exercise to show that the last term is zero.
+(Hint: use the law of iterated expectations.)
+The first term is the **noise**, or irreducible error, that doesn't depend on $f$,
+and the second term is the error due to the approximation,
+which is minimized at $0$ when $f(x) = \E[y \mid x]$.
+:::
 
-Letting $L(\theta) \in \mathbb{R}$ denote the empirical risk in terms of the parameters,
-the gradient descent algorithm updates the parameters according to the rule
+In most applications, such as in @exm-sl-distributions,
+the joint distribution of $x, y$ is intractable to compute,
+and so we can't evaluate $\E [y \mid x]$ analytically.
+Instead, all we have are $N$ samples from the joint distribution of $x$ and $y$.
+How might we use these to _approximate_ the generalization error?
+
+## Empirical risk minimization {#sec-erm}
+
+To estimate the generalization error,
+we can simply take the _sample average_ of the loss over the training data.
+This is called the **training loss** or **empirical risk**:
+
+$$
+\text{training loss}(\hat f) := \frac 1 N \sum_{n=1}^N \ell(\hat f(x_n), y_n).
+$$
+
+By the law of large numbers,
+as $N$ grows to infinity,
+the training loss converges to the generalization error.
+
+The **empirical risk minimization** (ERM) approach is to find a predictor that minimizes the empirical risk.
+An ERM algorithm requires two ingredients
+to be chosen based on our **domain knowledge** about the DGP:
+
+1. A **function class** $\mathcal{F}$, that is, the space of functions to consider.
+2. A **fitting method** that uses the dataset to find the element of $\mathcal{F}$ that minimizes the training loss.
+
+This allows us to compute the empirical risk minimizer:
+
+$$
+\begin{aligned}
+\hat f_\text{ERM} &:= \arg\min_{f \in \mathcal{F}} \text{training loss}(f) \\
+&= \arg\min_{f \in \mathcal{F}}\frac 1 N \sum_{n=1}^N \ell(f(x_n), y_n).
+\end{aligned}
+$$ {#eq-erm}
+
+### Function classes
+
+How should we choose the correct function class?
+In fact,
+why do we need to constrain our search at all?
+
+::: {#exr-function-space}
+
+#### Overfitting
+
+Suppose we are trying to approximate a relationship between real-valued inputs and outputs
+using squared loss as our loss function.
+Consider the predictor (visualized in @fig-pathological-predictor)
+
+$$\hat f(x) = \sum_{n=1}^N y_n \ind{x = x_n}.$$
+
+What is the empirical risk of this function?
+How well does it perform on newly generated samples?
+:::
+
+```{python}
+#| label: fig-pathological-predictor
+#| fig-align: center
+#| fig-cap: A pathological predictor.
+#| fig-subcap:
+#| - One training dataset.
+#| - Another training dataset.
+#| layout-ncol: 2
+n = 1000
+x_axis = np.linspace(-1, +1, n)
+
+for _ in range(2):
+    x_train = np.random.uniform(-1, +1, 10)
+    y_train = np.sin(np.pi * x_train)
+    y_hat = np.where(np.isclose(x_axis[:, None], x_train, atol=2/n), y_train, 0).sum(axis=-1)
+
+    plt.plot(x_axis, y_hat, label=r'\hat f(x)')
+    plt.scatter(x_train, y_train, color='red', marker='x', label='training data')
+    plt.legend()
+    plt.gcf().set_size_inches(3, 2)
+    plt.show()
+
+```
+
+The choice of $\mathcal{F}$ depends on our **domain knowledge** about the task.
+On one hand, $\mathcal{F}$ should be large enough to contain the true relationship,
+but on the other, it shouldn't be _too_ expressive;
+otherwise, it will **overfit** to random noise in the labels.
+The larger and more complex the function class,
+the more accurately we will be able to approximate any particular training dataset (i.e. smaller **bias**),
+but the more drastically the function will vary for different training datasets (i.e. larger **variance**).
+The mathematical details of the so-called **bias-variance tradeoff**
+can be found, for example, in @hastie_elements_2013 [chap. 2.9].
+
+```{python}
+#| layout-ncol: 3
+#| fig-cap: Demonstrating the bias-variance tradeoff through polynomial regression. Increasing the degree increases the complexity of the polynomial function class.
+#| label: fig-bias-variance
+#| fig-subcap:
+#| - Degree $2$ polynomials
+#| - Degree $5$ polynomials
+#| - Degree $50$ polynomials
+n_samples = 10
+x_axis = np.linspace(-1, +1, 50)
+
+
+def generate_data(sigma=0.2):
+    x_train = np.random.uniform(-1, +1, n_samples)
+    y_train = np.sin(np.pi * x_train) + sigma * np.random.normal(size=n_samples)
+    return x_train, y_train
+
+
+def transform(x: Float[Array, " N"], d: int):
+    return np.column_stack([
+        x ** d_
+        for d_ in range(d + 1)
+    ])
+
+
+for d in [2, 5, 50]:
+    for _ in range(2):
+        x_train, y_train = generate_data()
+
+        x_features = transform(x_train, d)
+        w = np.linalg.lstsq(x_features, y_train)[0]
+        y_hat = transform(x_axis, d) @ w
+
+        color = 'blue' if _ == 0 else 'red'
+        plt.scatter(x_train, y_train, color=color, marker='x')
+        plt.plot(x_axis, y_hat, color=color)
+    plt.xlim(-1, +1)
+    plt.ylim(-1.2, 1.2)
+    plt.gcf().set_size_inches(2, 2)
+    plt.show()
+```
+
+We must also consider *practical* constraints on the function class.
+We need an efficient algorithm to actually compute the function in the class that minimizes the training error.
+This point should not be underestimated!
+The success of modern deep learning, for example,
+is in large part due to hardware developments that make certain parallelizable operations more efficient.
+
+
+
+
+### Parameterized function classes {#sec-sl-parameterized}
+
+Both of the function classes we will consider, linear maps and neural networks, are **finite-dimensional**,
+a.k.a. **parameterized**.
+This means each function can be identified using some finite set of **parameters**,
+which we denote $\theta \in \R^D$.
+
+
+::: {#exm-quadratics}
+
+#### Quadratic functions
+
+As a third example of a parameterized function class,
+consider the class of **quadratic functions**, i.e. polynomials of degree $2$.
+This is a three-dimensional function space,
+since we can describe any quadratic $p$ as
+
+$$
+p(x) = a x^2 + b x + c,
+$$
+
+where $a, b, c$ are the three parameters.
+We could also use a different parameterization:
+
+$$
+p(x) = a' (x - b')^2 + c'.
+$$
+
+Note that the choice of parameterization
+can impact the performance of the chosen fitting method.
+What is the derivative of the first expression with respect to $a, b, c$?
+Compare this to the derivative of the second expression with respect to $a', b', c'$.
+This shows that gradient-based fitting methods
+may change their behavior depending on the parameterization.
+:::
+
+Using a parameterized function class allows us
+to reframe the ERM problem @eq-erm
+in terms of optimizing over the *parameters*
+instead of over the functions they represent:
+
+$$
+\begin{aligned}
+\hat \theta_\text{ERM} &:= \arg\min_{\theta \in \R^D} \text{training loss}(f_\theta) \\
+&= \frac{1}{N} \sum_{n=1}^N (y_n - f_\theta(x_n))^2
+\end{aligned}
+$$ {#eq-erm-parameterized}
+
+In general,
+optimizing over a *finite-dimensional* space
+is much, much easier than optimizing over an *infinite-dimensional* space.
+
+### Gradient descent
+
+One widely applicable fitting method for parameterized function classes
+is **gradient descent**.
+
+Let $L(\theta) = \text{training loss}(f_\theta)$
+denote the empirical risk in terms of the parameters.
+The **gradient descent** algorithm iteratively updates the parameters according to the rule
 
 $$
 \theta^{t+1} = \theta^t - \eta \nabla_\theta L(\theta^t)
 $$
 
-where $\eta > 0$ is the **learning rate**.
-:::
+where $\eta > 0$ is the **learning rate** and $\nabla_\theta L(\theta^t)$
+indicates the **gradient** of $L$ at the point $\theta^t$.
+Recall that the gradient of a function at a point
+is a vector in the direction that increases the function's value the most
+within a *neighborhood*.
+So by taking small steps in the oppposite direction,
+we obtain a solution that achieves a slightly lower loss than the current one.
 
 ```{python}
+#| lst-label: lst-gd
 Params = Float[Array, " D"]
 
 
@@ -116,7 +427,45 @@ def gradient_descent(
     return θ
 ```
 
-## Linear regression
+In @sec-computing-derivatives,
+we will discuss methods for implementing the `grad` function above,
+which takes in a function and returns its gradient,
+which can then be evaluated at a point.
+
+Why do we need to scale down the step size by $\eta$?
+The key word above is "neighborhood".
+The gradient only describes the function
+within a local region around the point,
+whose size depends on the function's smoothness.
+If we take a step that's too large,
+we might end up with a _worse_ solution
+by overshooting the region where the gradient is accurate.
+Note that, as a result,
+we can't guarantee finding a _global_ optimum of the function;
+we can only find _local_ optima that are the best parameters within some neighborhood.
+
+Another issue is that it's often expensive to compute $\nabla_\theta L$ when $N$ is very large.
+Instead of calculating the gradient for every point in the dataset and averaging these,
+we can simply draw a **batch** of samples from the dataset
+and average the gradient across just these samples.
+Note that this is an unbiased random _estimator_ of the true gradient.
+This algorithm is known as **stochastic gradient descent**.
+The added noise sometimes helps to jump to better solutions
+with a lower overall empirical risk.
+
+Stepping for a moment back into the world of RL,
+you might wonder,
+why can't we simply apply gradient descent (or rather, gradient ascent)
+to the total reward?
+It turns out that the gradient of the total reward with respect to the policy parameters
+known as the **policy gradient**,
+is challenging but possible to approximate.
+In @sec-pg,
+we will do exactly this.
+
+## Examples of parameterized function classes
+
+### Linear regression {#sec-sl-linear}
 
 In linear regression, we assume that the function $f$ is linear in the parameters:
 
@@ -124,11 +473,67 @@ $$
 \mathcal{F} = \{ x \mapsto \theta^\top x \mid \theta \in \mathbb{R}^D \}
 $$
 
-This function class is extremely simple and only contains linear functions.
-To expand its expressivity, we can _transform_ the input $x$ using some feature function $\phi$,
-i.e. $\widetilde x = \phi(x)$, and then fit a linear model in the transformed space instead.
+You may already be familiar with linear regression from an introductory statistics course.
+This function class is extremely simple and only contains linear functions,
+whose graphs look like "lines of best fit" through the training data.
+It turns out that, when minimizing the squared error,
+the empirical risk minimizer has a closed-form solution,
+known as the **ordinary least squares** estimator.
+Let us write $Y = (y_1, \dots, y_n)^\top \in \R^N$ and $X = (x_1, \dots, x_N)^\top \in \R^{N \times D}$.
+Then we can write
+
+$$
+\begin{aligned}
+\hat \theta &= \arg\min_{\theta \in \R^D} \frac{1}{2} \sum_{n=1}^N (y_n - \theta^\top x_n)^2 \\
+&= \arg\min_{\theta \in \R^D} \frac 1 2 \|Y - X \theta \|^2 \\
+&= (X^\top X)^{-1} X^\top Y,
+\end{aligned}
+$$ {#eq-erm-linear-regression}
+
+where we have assumed that the columns of $X$
+are linearly independent so that the matrix $X^\top X$ is invertible.
+
+What happens if the columns aren't linearly independent?
+In this case, out of the possible solutions with the minimum empirical risk,
+we typically choose the one with the *smallest norm*.
+
+
+::: {#exr-smallest-norm}
+Gradient descent on the ERM problem (@eq-erm-linear-regression),
+initialized at the origin and using a small enough step size,
+eventually finds the parameters with the smallest norm.
+In practice, since the squared error gradient is convenient to compute,
+running gradient descent can be faster
+than explicitly computing the inverse (or pseudoinverse)
+of a matrix.
+
+Assume that $N < D$ and that the data points are linearly independent.
+
+1. Let $\hat{\theta}$ be the solution found by gradient descent.
+   Show that $\hat{\theta}$ is a linear combination of the data points,
+   that is, $\hat{\theta} = X^\top a$, where $a \in \R^N$.
+   
+2. Let $w \in \R^D$ be another empirical risk minimizer i.e. $X w = y$.
+   Show that $\hat{\theta}^\top (w - \hat{\theta}) = 0$.
+
+3. Use this to show that $\|\hat{\theta}\| \le \|w\|$,
+   showing that the gradient descent solution has the smallest norm
+   out of all solutions that fit the data.
+   (No need for algebra; there is a nice geometric solution!)
+:::
+
+Though linear regression may appear trivially simple,
+it is a very powerful tool for more complex models to build upon.
+For instance,
+to expand the expressiveness of linear models,
+we can first _transform_ the input $x$ using some feature mapping $\phi$,
+i.e. $\widetilde x = \phi(x)$,
+and then fit a linear model in the transformed space instead.
+By using domain knowledge to choose a useful feature mapping,
+we can obtain a powerful SL method for a particular task.
 
 ```{python}
+#| echo: false
 def fit_linear(X: Float[Array, "N D"], y: Float[Array, " N"], φ=lambda x: x):
     """Fit a linear model to the given dataset using ordinary least squares."""
     X = vmap(φ)(X)
@@ -136,7 +541,8 @@ def fit_linear(X: Float[Array, "N D"], y: Float[Array, " N"], φ=lambda x: x):
     return lambda x: np.dot(φ(x), θ)
 ```
 
-## Neural networks
+
+### Neural networks {#sec-sl-nn}
 
 In neural networks, we assume that the function $f$ is a composition of linear functions (represented by matrices $W_i$) and non-linear activation functions (denoted by $\sigma$):
 
@@ -144,21 +550,42 @@ $$
 \mathcal{F} = \{ x \mapsto \sigma(W_L \sigma(W_{L-1} \dots \sigma(W_1 x + b_1) \dots + b_{L-1}) + b_L) \}
 $$
 
-where $W_i \in \mathbb{R}^{D_{i+1} \times D_i}$ and $b_i \in \mathbb{R}^{D_{i+1}}$ are the parameters of the $i$-th layer, and $\sigma$ is the activation function.
+where $W_\ell \in \mathbb{R}^{D_{\ell+1} \times D_\ell}$ and $b_\ell \in \mathbb{R}^{D_{\ell+1}}$ are the parameters of the $i$-th layer, and $\sigma$ is the activation function.
 
-This function class is much more expressive and contains many more parameters.
+This function class is highly expressive and allows for more parameters.
 This makes it more susceptible to overfitting on smaller datasets,
 but also allows it to represent more complex functions.
-In practice, however, neural networks exhibit interesting phenomena during training,
+In practice, however,
+neural networks exhibit interesting phenomena during training,
 and are often able to generalize well even with many parameters.
 
-Another reason for their popularity is the efficient **backpropagation** algorithm for computing the gradient of the empirical risk with respect to the parameters.
+Another reason for their popularity is the efficient **backpropagation** algorithm for computing
+the gradient of the output with respect to the parameters.
 Essentially, the hierarchical structure of the neural network,
 i.e. computing the output of the network as a composition of functions,
 allows us to use the chain rule to compute the gradient of the output with respect to the parameters of each layer.
 
+## Summary
+
+We have now gotten a glimpse into **supervised learning**,
+which seeks to learn about some input-output relationship
+using a dataset of example points.
+In particular, we typically seek to compute a **predictor**
+that takes in an input value and returns a good guess for the corresponding output.
+We score predictors using a **loss function**
+that measures how incorrectly it guesses.
+We want to find a predictor that achieves low loss
+on unseen data points.
+We do this by searching over a class of functions
+to find one that minimizes the **empirical risk** over the training dataset.
+We finally saw two popular examples of **parameterized** function classes:
+linear regression and neural networks.
+
 ## References
 
+@james_introduction_2023 provides an accessible introduction to supervised learning.
+@hastie_elements_2013 examines the subject in even further depth
+and covers many relevant supervised learning methods.
 @nielsen_neural_2015 provides a comprehensive introduction to neural networks and backpropagation.
 
 
