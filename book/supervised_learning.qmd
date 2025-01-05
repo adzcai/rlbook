@@ -264,7 +264,7 @@ for _ in range(2):
     y_train = np.sin(np.pi * x_train)
     y_hat = np.where(np.isclose(x_axis[:, None], x_train, atol=2/n), y_train, 0).sum(axis=-1)
 
-    plt.plot(x_axis, y_hat, label=r'\hat f(x)')
+    plt.plot(x_axis, y_hat, label=r'$\hat f(x)$')
     plt.scatter(x_train, y_train, color='red', marker='x', label='training data')
     plt.legend()
     plt.gcf().set_size_inches(3, 2)

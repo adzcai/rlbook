@@ -5,6 +5,8 @@
 ---
 # Markov Decision Processes {#sec-mdps}
 
+{{< include macros.qmd >}}
+
 ## Introduction
 
 The field of RL studies how an agent can learn to make sequential decisions in an interactive environment.
