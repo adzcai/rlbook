@@ -21,6 +21,9 @@ book:
 
 bibliography: references.bib
 
+resources:
+  - CNAME
+
 format:
   html:
     theme: cosmo
@@ -29,6 +32,7 @@ format:
     fig-height: 3
   pdf:
     documentclass: scrreprt
+    echo: false
 
 
 
