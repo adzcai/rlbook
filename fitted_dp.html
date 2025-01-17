@@ -289,7 +289,7 @@ window.Quarto = {
 <section id="introduction" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">5.1</span> Introduction</h2>
 <p>We borrow these definitions from the <a href="mdps.html" class="quarto-xref"><span>Chapter 1</span></a> chapter:</p>
-<div id="4e638f13" class="cell" data-execution_count="1">
+<div id="d173daa3" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> gym, tqdm, rand, Float, Array, NamedTuple, Callable, Optional, np</span>
@@ -347,7 +347,7 @@ window.Quarto = {
 <p><span class="math display">\[
 \tau_i = \{ s_0^i, a_0^i, r_0^i, s_1^i, a_1^i, r_1^i, \dots, s_{H-1}^i, a_{H-1}^i, r_{H-1}^i \}.
 \]</span></p>
-<div id="62a177fc" class="cell" data-execution_count="2">
+<div id="44cc71cd" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> collect_data(</span>
@@ -371,7 +371,7 @@ window.Quarto = {
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> trajectories</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="084a2cc3" class="cell" data-execution_count="3">
+<div id="56a08226" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>env <span class="op">=</span> gym.make(<span class="st">"LunarLander-v3"</span>)</span>
@@ -379,7 +379,7 @@ window.Quarto = {
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>trajectories[<span class="dv">0</span>][:<span class="dv">5</span>]  <span class="co"># show first five transitions from first trajectory</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>  0%|          | 0/100 [00:00&lt;?, ?it/s] 56%|█████▌    | 56/100 [00:00&lt;00:00, 556.30it/s]100%|██████████| 100/100 [00:00&lt;00:00, 553.95it/s]</code></pre>
+<pre><code>  0%|          | 0/100 [00:00&lt;?, ?it/s] 57%|█████▋    | 57/100 [00:00&lt;00:00, 569.63it/s]100%|██████████| 100/100 [00:00&lt;00:00, 556.57it/s]</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>[Transition(s=array([-0.00767412,  1.4020356 , -0.77731264, -0.3948966 ,  0.00889908,
@@ -387,11 +387,11 @@ window.Quarto = {
  Transition(s=array([-0.01526899,  1.392572  , -0.76625407, -0.42065707,  0.01559265,
          0.133885  ,  0.        ,  0.        ], dtype=float32), a=np.int64(0), r=np.float64(-0.9906062816993995)),
  Transition(s=array([-0.02286405,  1.3825084 , -0.76627475, -0.4473554 ,  0.02228237,
-         0.13380662,  0.        ,  0.        ], dtype=float32), a=np.int64(2), r=np.float64(0.44950252733719936)),
- Transition(s=array([-0.0304204 ,  1.3725091 , -0.76263446, -0.44453415,  0.02920453,
-         0.13845648,  0.        ,  0.        ], dtype=float32), a=np.int64(3), r=np.float64(0.06551356333889771)),
- Transition(s=array([-0.03789301,  1.3619156 , -0.7521127 , -0.47092268,  0.03400932,
-         0.09610461,  0.        ,  0.        ], dtype=float32), a=np.int64(0), r=np.float64(-0.8292746714117243))]</code></pre>
+         0.13380662,  0.        ,  0.        ], dtype=float32), a=np.int64(0), r=np.float64(-0.9934907824199968)),
+ Transition(s=array([-0.0304594 ,  1.3718452 , -0.7662946 , -0.47403094,  0.02897083,
+         0.133782  ,  0.        ,  0.        ], dtype=float32), a=np.int64(2), r=np.float64(1.4450094337078212)),
+ Transition(s=array([-0.03802614,  1.361714  , -0.76368487, -0.45042533,  0.03589971,
+         0.13859043,  0.        ,  0.        ], dtype=float32), a=np.int64(0), r=np.float64(-1.0299876604044584))]</code></pre>
 </div>
 </div>
 <p>Can we view the dataset of trajectories as a “labelled dataset” in order to apply supervised learning to approximate the optimal Q-function? Yes! Recall that we can characterize the optimal Q-function using the <a href="mdps.html#thm-bellman-consistency-optimal" class="quarto-xref">Theorem&nbsp;<span>1.3</span></a>, which don’t depend on an actual policy:</p>
@@ -407,7 +407,7 @@ f(x) = \mathbb{E}[y \mid x] \quad \text{where} \quad y = r(s_h, a_h) + \max_{a'}
 <p><span class="math display">\[
 x_{i h} = (s_h^i, a_h^i, h) \qquad y_{i h} = r(s_h^i, a_h^i) + \max_{a'} Q^\star_{h+ 1}(s_{h+ 1}^i, a')
 \]</span></p>
-<div id="d9fb9a9a" class="cell" data-execution_count="4">
+<div id="249e3f5f" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_X(trajectories: <span class="bu">list</span>[Trajectory]):</span>
@@ -440,7 +440,7 @@ x_{i h} = (s_h^i, a_h^i, h) \qquad y_{i h} = r(s_h^i, a_h^i) + \max_{a'} Q^\star
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="c89ac8be" class="cell" data-execution_count="5">
+<div id="2b60bf09" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>s, a, h <span class="op">=</span> get_X(trajectories[:<span class="dv">1</span>])</span>
@@ -455,25 +455,25 @@ x_{i h} = (s_h^i, a_h^i, h) \qquad y_{i h} = r(s_h^i, a_h^i) + \max_{a'} Q^\star
    0.          0.        ]
  [-0.02286405  1.3825084  -0.76627475 -0.4473554   0.02228237  0.13380662
    0.          0.        ]
- [-0.0304204   1.3725091  -0.76263446 -0.44453415  0.02920453  0.13845648
+ [-0.0304594   1.3718452  -0.7662946  -0.47403094  0.02897083  0.133782
    0.          0.        ]
- [-0.03789301  1.3619156  -0.7521127  -0.47092268  0.03400932  0.09610461
+ [-0.03802614  1.361714   -0.76368487 -0.45042533  0.03589971  0.13859043
    0.          0.        ]]
-actions: [3 0 2 3 0]
+actions: [3 0 0 2 0]
 timesteps: [0 1 2 3 4]</code></pre>
 </div>
 </div>
-<div id="f7f264b4" class="cell" data-execution_count="6">
+<div id="233efb9a" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>get_y(trajectories[:<span class="dv">1</span>])[:<span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="6">
-<pre><code>array([ 0.01510256, -0.99060628,  0.44950253,  0.06551356, -0.82927467])</code></pre>
+<pre><code>array([ 0.01510256, -0.99060628, -0.99349078,  1.44500943, -1.02998766])</code></pre>
 </div>
 </div>
 <p>Then we can use empirical risk minimization to find a function <span class="math inline">\(\hat f\)</span> that approximates the optimal Q-function.</p>
-<div id="ca9db218" class="cell" data-execution_count="7">
+<div id="f73b1d36" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We will see some examples of fitting methods in the next section</span></span>
@@ -495,7 +495,7 @@ timesteps: [0 1 2 3 4]</code></pre>
 \hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.
 \]</span></p>
 </div>
-<div id="45767dec" class="cell" data-execution_count="8">
+<div id="eb280635" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fitted_q_iteration(</span>
@@ -535,7 +535,7 @@ timesteps: [0 1 2 3 4]</code></pre>
 \hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.
 \]</span></p>
 </div>
-<div id="15a6229a" class="cell" data-execution_count="9">
+<div id="b268b39e" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fitted_evaluation(</span>
@@ -564,7 +564,7 @@ timesteps: [0 1 2 3 4]</code></pre>
 <section id="fitted-policy-iteration" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="fitted-policy-iteration"><span class="header-section-number">5.4</span> Fitted policy iteration</h2>
 <p>We can use this policy evaluation algorithm to adapt <a href="mdps.html#sec-policy-iteration" class="quarto-xref"><span>Section 1.3.7.2</span></a> to this new setting. The algorithm remains exactly the same – repeatedly make the policy greedy w.r.t. its own value function – except now we must evaluate the policy (i.e.&nbsp;compute its value function) using the iterative <code>fitted-evaluation</code> algorithm.</p>
-<div id="cce8802e" class="cell" data-execution_count="10">
+<div id="a818b012" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fitted_policy_iteration(</span>

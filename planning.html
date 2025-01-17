@@ -321,14 +321,14 @@ window.Quarto = {
 <section id="introduction" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">8.1</span> Introduction</h2>
 <p>Have you ever lost a strategy game against a skilled opponent? It probably seemed like they were <em>ahead of you at every turn</em>. They might have been <em>planning ahead</em> and anticipating your actions, then formulating their strategy to counter yours. If this opponent was a computer, they might have been using one of the strategies that we are about to explore.</p>
-<div id="bd3dbc8d" class="cell" data-execution_count="1">
+<div id="133cc481" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="13e89640" class="cell" data-execution_count="2">
+<div id="d57452cf" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> Int, Array, latex, jnp, NamedTuple</span>
@@ -383,7 +383,7 @@ window.Quarto = {
 </ul>
 </div>
 <p>Our notation may remind you of <a href="mdps.html" class="quarto-xref"><span>Chapter 1</span></a>. Given that these games also involve a sequence of states and actions, can we formulate them as finite-horizon MDPs? The two settings are not exactly analogous, since in MDPs we only consider a <em>single</em> policy, while these games involve two distinct players with opposite objectives. Since we want to analyze the behavior of <em>both</em> players at the same time, describing such a game as an MDP is more trouble than it’s worth.</p>
-<div id="5a2d0fbe" class="cell" data-execution_count="3">
+<div id="ba841c02" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Player(IntEnum):</span>
@@ -463,7 +463,7 @@ r(s) &amp; \hi = \hor \\
 </div>
 <p>We can compute this by starting at the terminal states, when the game’s outcome is known, and working backwards, assuming that Max chooses the action that leads to the highest score and Min chooses the action that leads to the lowest score.</p>
 <p>This translates directly into a recursive depth-first search algorithm for searching the complete game tree.</p>
-<div id="f1ee3dda" class="cell" data-execution_count="4">
+<div id="08ac51a3" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> minimax_search(s, player) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="st">"Action"</span>, <span class="st">"Value"</span>]:</span>
@@ -566,7 +566,7 @@ r(s) &amp; \hi = \hor \\
 <p>Finally, we see that Min taking action F achieves the minimum value at this state. This shows that optimal play is for Max to take action C, and Min to take action F.</p>
 <p><img src="./shared/alpha-beta-9.png" class="img-fluid"></p>
 </div>
-<div id="614b7a12" class="cell" data-execution_count="5">
+<div id="0446b574" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> alpha_beta_search(s, player, alpha, beta) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="st">"Action"</span>, <span class="st">"Value"</span>]:</span>
@@ -690,7 +690,7 @@ C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
 </ol>
 <p>We finally return the action with the highest UCB value <a href="#eq-ucb-tree-policy" class="quarto-xref">Equation&nbsp;<span>8.2</span></a>. Then play continues. As before, we can reuse the tree across timesteps.</p>
 </div>
-<div id="cbc1756b" class="cell" data-execution_count="6">
+<div id="3261511b" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EdgeStatistics(NamedTuple):</span>
