@@ -77,7 +77,7 @@ div.csl-indent {
 }</style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -122,6 +122,9 @@ div.csl-indent {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -320,21 +323,21 @@ window.Quarto = {
 <section id="introduction" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">6.1</span> Introduction</h2>
 <p>The core task of RL is finding the <strong>optimal policy</strong> in a given environment. This is essentially an <em>optimization problem:</em> out of some space of policies, we want to find the one that achieves the maximum total reward (in expectation).</p>
-<p>It’s typically intractable to compute the optimal policy exactly in some finite number of steps. Instead, <strong>policy optimization algorithms</strong> start from some randomly initialized policy, and then <em>improve</em> it step by step. We’ve already seen some examples of these, namely <a href="mdps.html#sec-policy-iteration" class="quarto-xref"><span>Section 1.5.3.2</span></a> for finite MDPs and <a href="control.html#sec-iterative-lqr" class="quarto-xref"><span>Section 2.6.4</span></a> in continuous control.</p>
+<p>It’s typically intractable to compute the optimal policy exactly in some finite number of steps. Instead, <strong>policy optimization algorithms</strong> start from some randomly initialized policy, and then <em>improve</em> it step by step. We’ve already seen some examples of these, namely <a href="mdps.html#sec-policy-iteration" class="quarto-xref"><span>Section 1.3.7.2</span></a> for finite MDPs and <a href="control.html#sec-iterative-lqr" class="quarto-xref"><span>Section 2.6.4</span></a> in continuous control.</p>
 <p>In particular, we often use policies that can be described by some finite set of <strong>parameters.</strong> We will see some examples in <a href="#sec-parameterizations" class="quarto-xref"><span>Section 6.3.1</span></a>. For such parameterized policies, we can approximate the <strong>policy gradient:</strong> the gradient of the expected total reward with respect to the parameters. This tells us the direction the parameters should be updated to achieve a higher expected total reward. Policy gradient methods are responsible for groundbreaking applications including AlphaGo, OpenAI Five, and large language models, many of which use policies parameterized as deep neural networks.</p>
 <ol type="1">
 <li>We begin the chapter with a short review of gradient ascent, a general <strong>optimization method.</strong></li>
 <li>We’ll then see how to estimate the <strong>policy gradient,</strong> enabling us to apply (stochastic) gradient ascent in the RL setting.</li>
 <li>Then we’ll explore some <em>proximal optimization</em> techniques that ensure the steps taken are “not too large”. This is helpful to stabilize training and widely used in practice.</li>
 </ol>
-<div id="b5c3283e" class="cell" data-execution_count="1">
+<div id="67fb7ffa" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="6beadb67" class="cell" data-execution_count="2">
+<div id="421ed86d" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> plt, Array, Float, Callable, jax, jnp, latex, gym</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -347,7 +350,7 @@ window.Quarto = {
 <p>You may have previously heard of <em>gradient descent</em> for minimizing functions. Optimization problems are usually posed as <em>minimization</em> problems by convention. However, in RL, we usually talk about <em>maximizing</em> the expected total reward, and so we perform gradient <em>ascent</em> instead.</p>
 </div>
 <p><strong>Gradient ascent</strong> is a general optimization algorithm for any differentiable function. A suitable analogy for this algorithm is hiking up a mountain, where you keep taking steps in the steepest direction upwards. Here, your vertical position <span class="math inline">\(y\)</span> is the function being optimized, and your horizontal position <span class="math inline">\((x, z)\)</span> is the input to the function. The <em>slope</em> of the mountain at your current position is given by the <em>gradient</em>, written <span class="math inline">\(\nabla y(x, z) \in \mathbb{R}^2\)</span>.</p>
-<div id="f573b0f7" class="cell" data-execution_count="3">
+<div id="3c4b01c5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, y):</span>
@@ -421,7 +424,7 @@ x^{k} \\ z^{k}
 <section id="stochastic-gradient-ascent" class="level3" data-number="6.2.2">
 <h3 data-number="6.2.2" class="anchored" data-anchor-id="stochastic-gradient-ascent"><span class="header-section-number">6.2.2</span> Stochastic gradient ascent</h3>
 <p>In real applications, computing the gradient of the target function is not so simple. As an example from supervised learning, <span class="math inline">\(J(\theta)\)</span> might be the sum of squared prediction errors across an entire training dataset. However, if our dataset is very large, it might not fit into our computer’s memory! Typically in these cases, we compute some <em>estimate</em> of the gradient at each step, and walk in that direction instead. This is called <strong>stochastic</strong> gradient ascent. In the SL example above, we might randomly choose a <em>minibatch</em> of samples and use them to estimate the true prediction error. (This approach is known as <strong><em>minibatch</em></strong> <strong>SGD</strong>.)</p>
-<div id="4ef17f19" class="cell" data-execution_count="4">
+<div id="5ff6ceb3" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sgd(</span>
@@ -440,10 +443,8 @@ x^{k} \\ z^{k}
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>latex(sgd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
-$
-<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{sgd}(\theta_{\mathrm{init}}: \mathbb{R}^{D}, \mathrm{estimate\_gradient}: \mathrm{Callable}_{\mathopen{}\left( \mathopen{}\left[ \mathbb{R}^{D} \mathclose{}\right], \mathbb{R}^{D} \mathclose{}\right)}, \eta: \mathrm{float}, n_{\mathrm{steps}}: \mathrm{int}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ \mathrm{step} \in \mathrm{range} \mathopen{}\left( n_{\mathrm{steps}} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \theta \gets \theta + \eta \cdot \mathrm{estimate\_gradient} \mathopen{}\left( \theta \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}\]</span>
-<p>$</p>
+<div class="cell-output cell-output-display" data-execution_count="4">
+\begin{array}{l} \mathbf{function} \ \mathrm{sgd}(\theta_{\mathrm{init}}: \mathbb{R}^{D}, \mathrm{estimate\_gradient}: \mathrm{Callable}_{\mathopen{}\left[ \mathbb{R}^{D} \mathclose{}\right], \mathbb{R}^{D}}, \eta: \mathrm{float}, n_{\mathrm{steps}}: \mathrm{int}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ \mathrm{step} \in \mathrm{range} \mathopen{}\left( n_{\mathrm{steps}} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \theta \gets \theta + \eta \cdot \mathrm{estimate\_gradient} \mathopen{}\left( \theta \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}
 </div>
 </div>
 <p>What makes one gradient estimator better than another? Ideally, we want this estimator to be <strong>unbiased;</strong> that is, on average, it matches a single true gradient step:</p>
@@ -468,13 +469,13 @@ $
 </section>
 <section id="policy-stochastic-gradient-ascent" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="policy-stochastic-gradient-ascent"><span class="header-section-number">6.3</span> Policy (stochastic) gradient ascent</h2>
-<p>Remember that in RL, the primary goal is to find the <em>optimal policy</em> that achieves the maximimum total reward, which we can express using <a href="mdps.html#def-value" class="quarto-xref">Definition&nbsp;<span>1.6</span></a>:</p>
+<p>Remember that in RL, the primary goal is to find the <em>optimal policy</em> that achieves the maximimum total reward, which we can express using <a href="mdps.html#def-value" class="quarto-xref">Definition&nbsp;<span>1.5</span></a>:</p>
 <p><span id="eq-objective-fn"><span class="math display">\[
 \begin{aligned}
     J(\pi) := \mathbb{E}_{s_0 \sim \mu_0} V^{\pi} (s_0) = &amp; \mathbb{E}_{\tau \sim \rho^\pi} \sum_{h=0}^{H-1} r(s_h, a_h)
 \end{aligned}
 \tag{6.1}\]</span></span></p>
-<p>where <span class="math inline">\(\rho^\pi\)</span> is the distribution over trajectories induced by <span class="math inline">\(\pi\)</span> (see <a href="mdps.html#def-autoregressive-trajectories" class="quarto-xref">Definition&nbsp;<span>1.5</span></a>).</p>
+<p>where <span class="math inline">\(\rho^\pi\)</span> is the distribution over trajectories induced by <span class="math inline">\(\pi\)</span> (see <a href="mdps.html#eq-autoregressive-trajectories" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>).</p>
 <p>(Note that we’ll continue to work in the <em>undiscounted, finite-horizon case.</em> Analogous results hold for the <em>discounted, infinite-horizon setup.</em>)</p>
 <p>As shown by the notation, this is exactly the function <span class="math inline">\(J\)</span> that we want to maximize using gradient ascent. What variables are we optimizing over in this problem? Well, the objective function <span class="math inline">\(J\)</span> is a function of the policy <span class="math inline">\(\pi\)</span>, but in general, <span class="math inline">\(\pi\)</span> is a function, and optimizing over the entire space of arbitrary input-output mappings would be intractable. Instead, we need to describe <span class="math inline">\(\pi\)</span> in terms of some finite set of <em>parameters</em> <span class="math inline">\(\theta\)</span>.</p>
 <section id="sec-parameterizations" class="level3" data-number="6.3.1">
@@ -542,7 +543,7 @@ J(\theta) = \mathbb{E}_{\tau \sim \rho_\theta} R(\tau)
 \nabla J(\theta) = \mathbb{E}_{\tau \sim \rho_\theta} [ \nabla \log \rho_\theta(\tau) \cdot R(\tau)].
 \]</span></p>
 <p>(The order of operations is <span class="math inline">\(\nabla (\log \rho_\theta)(\tau)\)</span>.)</p>
-<p>Recall that when the state transitions are Markov (i.e.&nbsp;<span class="math inline">\(s_{t}\)</span> only depends on <span class="math inline">\(s_{t-1}, a_{t-1}\)</span>) and the policy is time-homogeneous (i.e.&nbsp;<span class="math inline">\(a_h\sim \pi_\theta (s_h)\)</span>), we can write out the <em>likelihood of a trajectory</em> under the policy <span class="math inline">\(\pi_\theta\)</span> autoregressively, as in <a href="mdps.html#def-autoregressive-trajectories" class="quarto-xref">Definition&nbsp;<span>1.5</span></a>. Taking the log of the trajectory likelihood turns it into a sum of terms:</p>
+<p>Recall that when the state transitions are Markov (i.e.&nbsp;<span class="math inline">\(s_{t}\)</span> only depends on <span class="math inline">\(s_{t-1}, a_{t-1}\)</span>) and the policy is time-homogeneous (i.e.&nbsp;<span class="math inline">\(a_h\sim \pi_\theta (s_h)\)</span>), we can write out the <em>likelihood of a trajectory</em> under the policy <span class="math inline">\(\pi_\theta\)</span> autoregressively, as in <a href="mdps.html#eq-autoregressive-trajectories" class="quarto-xref">Equation&nbsp;<span>1.1</span></a>. Taking the log of the trajectory likelihood turns it into a sum of terms:</p>
 <p><span class="math display">\[
 \log \rho_\theta(\tau) = \log \mu(s_0) + \sum_{h=0}^{H-1} \log \pi_\theta(a_h\mid s_h) + \log P(s_{h+1} \mid s_h, a_h)
 \]</span></p>
@@ -573,7 +574,7 @@ J(\theta) = \mathbb{E}_{\tau \sim \rho_\theta} R(\tau)
 \]</span></p>
 <p>We will see later on what <span class="math inline">\(A\)</span> concretely corresponds to.</p>
 </div>
-<div id="4a11dc4a" class="cell" data-execution_count="5">
+<div id="18c9bed5" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estimate_gradient_reinforce_pseudocode(env: gym.Env, pi, theta: Float[Array, <span class="st">" D"</span>]):</span>
@@ -589,10 +590,8 @@ J(\theta) = \mathbb{E}_{\tau \sim \rho_\theta} R(\tau)
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>latex(estimate_gradient_reinforce_pseudocode, id_to_latex<span class="op">=</span>{<span class="st">"jax.grad"</span>: <span class="vs">r"\nabla"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
-$
-<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{estimate\_gradient\_reinforce\_pseudocode}(\mathrm{env}: \mathrm{gym}.\mathrm{Env}, \pi, \theta: \mathbb{R}^{D}) \\ \hspace{1em} \textrm{"Estimate the policy gradient using REINFORCE."} \\ \hspace{1em} \tau \gets \mathrm{sample\_trajectory} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right) \mathclose{}\right) \\ \hspace{1em} \widehat{\nabla} \gets \mathrm{jnp}.\mathrm{zeros\_like} \mathopen{}\left( \theta \mathclose{}\right) \\ \hspace{1em} \mathrm{total\_reward} \gets \sum_{\mathopen{}\left( \mathrm{\_s}, \mathrm{\_a}, r \mathclose{}\right) \in \tau}^{} \mathopen{}\left({r}\mathclose{}\right) \\ \hspace{1em} \mathbf{for} \ \mathopen{}\left( s, a, r \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{2em} \mathbf{function} \ \mathrm{policy\_log\_likelihood}(\theta: \mathbb{R}^{D}) \\ \hspace{3em} \mathbf{return} \ \log \pi \mathopen{}\left( \theta \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \widehat{\nabla} \gets \widehat{\nabla} + \nabla \mathopen{}\left( \mathrm{policy\_log\_likelihood} \mathclose{}\right) \mathopen{}\left( \theta \mathclose{}\right) \cdot \mathrm{total\_reward} \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \widehat{\nabla} \\ \mathbf{end \ function} \end{array}\]</span>
-<p>$</p>
+<div class="cell-output cell-output-display" data-execution_count="5">
+\begin{array}{l} \mathbf{function} \ \mathrm{estimate\_gradient\_reinforce\_pseudocode}(\mathrm{env}: \mathrm{gym}.\mathrm{Env}, \pi, \theta: \mathbb{R}^{D}) \\ \hspace{1em} \textrm{"Estimate the policy gradient using REINFORCE."} \\ \hspace{1em} \tau \gets \mathrm{sample\_trajectory} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right) \mathclose{}\right) \\ \hspace{1em} \widehat{\nabla} \gets \mathrm{jnp}.\mathrm{zeros\_like} \mathopen{}\left( \theta \mathclose{}\right) \\ \hspace{1em} \mathrm{total\_reward} \gets \sum_{\mathopen{}\left( \mathrm{\_s}, \mathrm{\_a}, r \mathclose{}\right) \in \tau}^{} \mathopen{}\left({r}\mathclose{}\right) \\ \hspace{1em} \mathbf{for} \ \mathopen{}\left( s, a, r \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{2em} \mathbf{function} \ \mathrm{policy\_log\_likelihood}(\theta: \mathbb{R}^{D}) \\ \hspace{3em} \mathbf{return} \ \log \pi \mathopen{}\left( \theta \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \widehat{\nabla} \gets \widehat{\nabla} + \nabla \mathopen{}\left(\mathrm{policy\_log\_likelihood}\mathclose{}\right) \mathopen{}\left( \theta \mathclose{}\right) \cdot \mathrm{total\_reward} \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \widehat{\nabla} \\ \mathbf{end \ function} \end{array}
 </div>
 </div>
 <p>For some intuition into how this method works, recall that we update our parameters according to</p>
@@ -666,7 +665,7 @@ A^\pi_h(s, a) = Q^\pi_h(s, a) - V^\pi_h(s)
 </div>
 <p>Note that to avoid correlations between the gradient estimator and the value estimator (i.e.&nbsp;baseline), we must estimate them with independently sampled trajectories:</p>
 <!-- TODO could use more explanation _why_ we want to avoid correlations -->
-<div id="792515e6" class="cell" data-execution_count="6">
+<div id="74d6e68f" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pg_with_learned_baseline(env: gym.Env, pi, eta: <span class="bu">float</span>, theta_init, K: <span class="bu">int</span>, N: <span class="bu">int</span>) <span class="op">-&gt;</span> Float[Array, <span class="st">" D"</span>]:</span>
@@ -687,10 +686,8 @@ A^\pi_h(s, a) = Q^\pi_h(s, a) - V^\pi_h(s)
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>latex(pg_with_learned_baseline)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
-$
-<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{pg\_with\_learned\_baseline}(\mathrm{env}: \mathrm{gym}.\mathrm{Env}, \pi, \eta: \mathrm{float}, \theta_{\mathrm{init}}, K: \mathrm{int}, N: \mathrm{int}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ k \in \mathrm{range} \mathopen{}\left( K \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), N \mathclose{}\right) \\ \hspace{2em} \widehat{V} \gets \mathrm{fit\_value} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{2em} \tau \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), 1 \mathclose{}\right) \\ \hspace{2em} \widehat{\nabla} \gets \mathrm{jnp}.\mathrm{zeros\_like} \mathopen{}\left( \theta \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ \mathopen{}\left( h, \mathopen{}\left( s, a \mathclose{}\right) \mathclose{}\right) \in \mathrm{enumerate} \mathopen{}\left( \tau \mathclose{}\right) \ \mathbf{do} \\ \hspace{3em} \mathbf{function} \ \mathrm{log\_likelihood}(\theta_{\mathrm{opt}}) \\ \hspace{4em} \mathbf{return} \ \log \pi \mathopen{}\left( \theta_{\mathrm{opt}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ function} \\ \hspace{3em} \widehat{\nabla} \gets \widehat{\nabla} + \mathrm{jax}.\mathrm{grad} \mathopen{}\left( \mathrm{log\_likelihood} \mathclose{}\right) \mathopen{}\left( \theta \mathclose{}\right) \cdot \mathopen{}\left( \mathrm{return\_to\_go} \mathopen{}\left( \tau, h \mathclose{}\right) - \widehat{V} \mathopen{}\left( s \mathclose{}\right) \mathclose{}\right) \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \theta \gets \theta + \eta \widehat{\nabla} \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}\]</span>
-<p>$</p>
+<div class="cell-output cell-output-display" data-execution_count="6">
+\begin{array}{l} \mathbf{function} \ \mathrm{pg\_with\_learned\_baseline}(\mathrm{env}: \mathrm{gym}.\mathrm{Env}, \pi, \eta: \mathrm{float}, \theta_{\mathrm{init}}, K: \mathrm{int}, N: \mathrm{int}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ k \in \mathrm{range} \mathopen{}\left( K \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), N \mathclose{}\right) \\ \hspace{2em} \widehat{V} \gets \mathrm{fit\_value} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{2em} \tau \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), 1 \mathclose{}\right) \\ \hspace{2em} \widehat{\nabla} \gets \mathrm{jnp}.\mathrm{zeros\_like} \mathopen{}\left( \theta \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ \mathopen{}\left( h, \mathopen{}\left( s, a \mathclose{}\right) \mathclose{}\right) \in \mathrm{enumerate} \mathopen{}\left( \tau \mathclose{}\right) \ \mathbf{do} \\ \hspace{3em} \mathbf{function} \ \mathrm{log\_likelihood}(\theta_{\mathrm{opt}}) \\ \hspace{4em} \mathbf{return} \ \log \pi \mathopen{}\left( \theta_{\mathrm{opt}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ function} \\ \hspace{3em} \widehat{\nabla} \gets \widehat{\nabla} + \nabla \mathopen{}\left(\mathrm{log\_likelihood}\mathclose{}\right) \mathopen{}\left( \theta \mathclose{}\right) \cdot \mathopen{}\left( \mathrm{return\_to\_go} \mathopen{}\left( \tau, h \mathclose{}\right) - \widehat{V} \mathopen{}\left( s \mathclose{}\right) \mathclose{}\right) \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \theta \gets \theta + \eta \widehat{\nabla} \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}
 </div>
 </div>
 <p>Note that you could also generalize this by allowing the learning rate <span class="math inline">\(\eta\)</span> to vary across steps, or take multiple trajectories <span class="math inline">\(\tau\)</span> and compute the sample average of the gradient estimates.</p>
@@ -699,7 +696,7 @@ $
 <section id="comparing-policy-gradient-algorithms-to-policy-iteration" class="level2" data-number="6.6">
 <h2 data-number="6.6" class="anchored" data-anchor-id="comparing-policy-gradient-algorithms-to-policy-iteration"><span class="header-section-number">6.6</span> Comparing policy gradient algorithms to policy iteration</h2>
 <!-- TODO maybe restructure this part -->
-<p>What advantages does the policy gradient algorithm have over the policy iteration algorithms covered in <a href="mdps.html#sec-policy-iteration" class="quarto-xref"><span>Section 1.5.3.2</span></a>?</p>
+<p>What advantages does the policy gradient algorithm have over the policy iteration algorithms covered in <a href="mdps.html#sec-policy-iteration" class="quarto-xref"><span>Section 1.3.7.2</span></a>?</p>
 <div id="rem-policy-iteration" class="proof remark">
 <p><span class="proof-title"><em>Remark 6.1</em> (Policy iteration review). </span>Recall that policy iteration is an algorithm for MDPs with unknown state transitions where we alternate between these two steps:</p>
 <ul>
@@ -772,7 +769,7 @@ there is now _distributional shift_ between the different iterations of the poli
 <p>This can be interpreted in many different ways, many stemming from information theory. One such interpretation is that <span class="math inline">\(\mathrm{KL}\left(p\parallel q\right)\)</span> describes my average “surprise” if I <em>think</em> data is being generated by <span class="math inline">\(q\)</span> but it’s actually generated by <span class="math inline">\(p\)</span>. (The <strong>surprise</strong> of an event with probability <span class="math inline">\(p\)</span> is <span class="math inline">\(- \log_2 p\)</span>.) Note that <span class="math inline">\(\mathrm{KL}\left(p\parallel q\right) = 0\)</span> if and only if <span class="math inline">\(p = q\)</span>. Also note that it is generally <em>not</em> symmetric.</p>
 </div>
 <p>Both the objective function and the KLD constraint involve a weighted average over the space of all trajectories. This is intractable in general, so we need to estimate the expectation. As before, we can do this by taking an empirical average over samples from the trajectory distribution. This gives us the following pseudocode:</p>
-<div id="2c9aab19" class="cell" data-execution_count="7">
+<div id="d33332f6" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> kl_div_trajectories(pi, theta_1, theta_2, trajectories):</span>
@@ -785,13 +782,11 @@ there is now _distributional shift_ between the different iterations of the poli
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>latex(kl_div_trajectories)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="7">
-$
-<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{kl\_div\_trajectories}(\pi, \theta_{\mathrm{1}}, \theta_{\mathrm{2}}, \mathrm{trajectories}) \\ \hspace{1em} \mathrm{kl\_div} \gets 0 \\ \hspace{1em} \mathbf{for} \ \tau \in \mathrm{trajectories} \ \mathbf{do} \\ \hspace{2em} \mathbf{for} \ \mathopen{}\left( s, a, \mathrm{\_r} \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{3em} \mathrm{kl\_div} \gets \mathrm{kl\_div} + \log \pi \mathopen{}\left( \theta_{\mathrm{1}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) - \log \pi \mathopen{}\left( \theta_{\mathrm{2}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \frac{\mathrm{kl\_div}}{\mathrm{len} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right)} \\ \mathbf{end \ function} \end{array}\]</span>
-<p>$</p>
+<div class="cell-output cell-output-display" data-execution_count="7">
+\begin{array}{l} \mathbf{function} \ \mathrm{kl\_div\_trajectories}(\pi, \theta_{\mathrm{1}}, \theta_{\mathrm{2}}, \mathrm{trajectories}) \\ \hspace{1em} \mathrm{kl\_div} \gets 0 \\ \hspace{1em} \mathbf{for} \ \tau \in \mathrm{trajectories} \ \mathbf{do} \\ \hspace{2em} \mathbf{for} \ \mathopen{}\left( s, a, \mathrm{\_r} \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{3em} \mathrm{kl\_div} \gets \mathrm{kl\_div} + \log \pi \mathopen{}\left( \theta_{\mathrm{1}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) - \log \pi \mathopen{}\left( \theta_{\mathrm{2}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \frac{\mathrm{kl\_div}}{\mathrm{len} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right)} \\ \mathbf{end \ function} \end{array}
 </div>
 </div>
-<div id="6f441253" class="cell" data-execution_count="8">
+<div id="b4009171" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> trpo(env, δ, theta_init, n_interactions):</span>
@@ -817,10 +812,8 @@ $
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>latex(trpo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
-$
-<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{trpo}(\mathrm{env}, δ, \theta_{\mathrm{init}}, n_{\mathrm{interactions}}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ k \in \mathrm{range} \mathopen{}\left( K \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), n_{\mathrm{interactions}} \mathclose{}\right) \\ \hspace{2em} \widehat{A} \gets \mathrm{fit\_advantage} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{2em} \mathbf{function} \ \mathrm{approximate\_gain}(\theta_{\mathrm{opt}}) \\ \hspace{3em} A_{\mathrm{total}} \gets 0 \\ \hspace{3em} \mathbf{for} \ \tau \in \mathrm{trajectories} \ \mathbf{do} \\ \hspace{4em} \mathbf{for} \ \mathopen{}\left( s, \mathrm{\_a}, \mathrm{\_r} \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{5em} \mathbf{for} \ a \in \mathrm{env}.\mathrm{action\_space} \ \mathbf{do} \\ \hspace{6em} A_{\mathrm{total}} \gets A_{\mathrm{total}} + \pi \mathopen{}\left( \theta \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \cdot \widehat{A} \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{5em} \mathbf{end \ for} \\ \hspace{4em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{return} \ A_{\mathrm{total}} \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \mathbf{function} \ \mathrm{constraint}(\theta_{\mathrm{opt}}) \\ \hspace{3em} \mathbf{return} \ \mathrm{kl\_div\_trajectories} \mathopen{}\left( \pi, \theta, \theta_{\mathrm{opt}}, \mathrm{trajectories} \mathclose{}\right) \le δ \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \theta \gets \mathrm{optimize} \mathopen{}\left( \mathrm{approximate\_gain}, \mathrm{constraint} \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}\]</span>
-<p>$</p>
+<div class="cell-output cell-output-display" data-execution_count="8">
+\begin{array}{l} \mathbf{function} \ \mathrm{trpo}(\mathrm{env}, δ, \theta_{\mathrm{init}}, n_{\mathrm{interactions}}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ k \in \mathrm{range} \mathopen{}\left( K \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), n_{\mathrm{interactions}} \mathclose{}\right) \\ \hspace{2em} \widehat{A} \gets \mathrm{fit\_advantage} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{2em} \mathbf{function} \ \mathrm{approximate\_gain}(\theta_{\mathrm{opt}}) \\ \hspace{3em} A_{\mathrm{total}} \gets 0 \\ \hspace{3em} \mathbf{for} \ \tau \in \mathrm{trajectories} \ \mathbf{do} \\ \hspace{4em} \mathbf{for} \ \mathopen{}\left( s, \mathrm{\_a}, \mathrm{\_r} \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{5em} \mathbf{for} \ a \in \mathrm{env}.\mathrm{action\_space} \ \mathbf{do} \\ \hspace{6em} A_{\mathrm{total}} \gets A_{\mathrm{total}} + \pi \mathopen{}\left( \theta \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \cdot \widehat{A} \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{5em} \mathbf{end \ for} \\ \hspace{4em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{return} \ A_{\mathrm{total}} \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \mathbf{function} \ \mathrm{constraint}(\theta_{\mathrm{opt}}) \\ \hspace{3em} \mathbf{return} \ \mathrm{kl\_div\_trajectories} \mathopen{}\left( \pi, \theta, \theta_{\mathrm{opt}}, \mathrm{trajectories} \mathclose{}\right) \le δ \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \theta \gets \mathrm{optimize} \mathopen{}\left( \mathrm{approximate\_gain}, \mathrm{constraint} \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}
 </div>
 </div>
 <!--
@@ -897,7 +890,7 @@ F_{\theta} = \mathbb{E}_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla 
 \end{aligned}
 \]</span></p>
 <p>We can think of the space of such distributions as the line between <span class="math inline">\((0, 1)\)</span> to <span class="math inline">\((1, 0)\)</span> on the Cartesian plane:</p>
-<div id="c8211e33" class="cell" data-execution_count="9">
+<div id="5496bc3b" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> jnp.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
@@ -979,7 +972,7 @@ F_{\theta} = \mathbb{E}_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla 
 \theta^{k+1} \gets \arg\max_{\theta} \ell^k(\theta).
 \]</span></p>
 <p>If <span class="math inline">\(\ell^k\)</span> is differentiable, we can optimize it by gradient ascent, completing a single iteration of PPO.</p>
-<div id="656aef44" class="cell" data-execution_count="10">
+<div id="dddcf874" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> TypeVar</span>
@@ -1016,10 +1009,8 @@ F_{\theta} = \mathbb{E}_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla 
 <span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>latex(ppo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
-$
-<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{ppo}(\mathrm{env}, \pi: \mathrm{Callable}_{\mathopen{}\left( \mathopen{}\left[ \mathbb{R}^{D} \mathclose{}\right], \mathrm{Callable}_{\mathopen{}\left( \mathopen{}\left[ \mathrm{State}, \mathrm{Action} \mathclose{}\right], \mathrm{float} \mathclose{}\right)} \mathclose{}\right)}, λ: \mathrm{float}, \theta_{\mathrm{init}}: \mathbb{R}^{D}, n_{\mathrm{iters}}: \mathrm{int}, \mathrm{n\_fit\_trajectories}: \mathrm{int}, \mathrm{n\_sample\_trajectories}: \mathrm{int}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ k \in \mathrm{range} \mathopen{}\left( n_{\mathrm{iters}} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{fit\_trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), \mathrm{n\_fit\_trajectories} \mathclose{}\right) \\ \hspace{2em} \widehat{A} \gets \mathrm{fit} \mathopen{}\left( \mathrm{fit\_trajectories} \mathclose{}\right) \\ \hspace{2em} \mathrm{sample\_trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), \mathrm{n\_sample\_trajectories} \mathclose{}\right) \\ \hspace{2em} \mathbf{function} \ \mathrm{objective}(\theta_{\mathrm{opt}}) \\ \hspace{3em} \mathrm{total\_objective} \gets 0 \\ \hspace{3em} \mathbf{for} \ \tau \in \mathrm{sample\_trajectories} \ \mathbf{do} \\ \hspace{4em} \mathbf{for} \ \mathopen{}\left( s, a, \mathrm{\_r} \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{5em} \mathrm{total\_objective} \gets \mathrm{total\_objective} + \frac{\pi \mathopen{}\left( \theta_{\mathrm{opt}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right)}{\pi \mathopen{}\left( \theta \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right)} \widehat{A} \mathopen{}\left( s, a \mathclose{}\right) + λ \cdot \log \pi \mathopen{}\left( \theta_{\mathrm{opt}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{4em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{return} \ \frac{\mathrm{total\_objective}}{\mathrm{n\_sample\_trajectories}} \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \theta \gets \mathrm{optimize} \mathopen{}\left( \mathrm{objective}, \theta \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}\]</span>
-<p>$</p>
+<div class="cell-output cell-output-display" data-execution_count="10">
+\begin{array}{l} \mathbf{function} \ \mathrm{ppo}(\mathrm{env}, \pi: \mathrm{Callable}_{\mathopen{}\left[ \mathbb{R}^{D} \mathclose{}\right], \mathrm{Callable}_{\mathopen{}\left[ \mathrm{State}, \mathrm{Action} \mathclose{}\right], \mathrm{float}}}, λ: \mathrm{float}, \theta_{\mathrm{init}}: \mathbb{R}^{D}, n_{\mathrm{iters}}: \mathrm{int}, \mathrm{n\_fit\_trajectories}: \mathrm{int}, \mathrm{n\_sample\_trajectories}: \mathrm{int}) \\ \hspace{1em} \theta \gets \theta_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ k \in \mathrm{range} \mathopen{}\left( n_{\mathrm{iters}} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{fit\_trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), \mathrm{n\_fit\_trajectories} \mathclose{}\right) \\ \hspace{2em} \widehat{A} \gets \mathrm{fit} \mathopen{}\left( \mathrm{fit\_trajectories} \mathclose{}\right) \\ \hspace{2em} \mathrm{sample\_trajectories} \gets \mathrm{sample\_trajectories} \mathopen{}\left( \mathrm{env}, \pi \mathopen{}\left( \theta \mathclose{}\right), \mathrm{n\_sample\_trajectories} \mathclose{}\right) \\ \hspace{2em} \mathbf{function} \ \mathrm{objective}(\theta_{\mathrm{opt}}) \\ \hspace{3em} \mathrm{total\_objective} \gets 0 \\ \hspace{3em} \mathbf{for} \ \tau \in \mathrm{sample\_trajectories} \ \mathbf{do} \\ \hspace{4em} \mathbf{for} \ \mathopen{}\left( s, a, \mathrm{\_r} \mathclose{}\right) \in \tau \ \mathbf{do} \\ \hspace{5em} \mathrm{total\_objective} \gets \mathrm{total\_objective} + \frac{\pi \mathopen{}\left( \theta_{\mathrm{opt}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right)}{\pi \mathopen{}\left( \theta \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right)} \widehat{A} \mathopen{}\left( s, a \mathclose{}\right) + λ \cdot \log \pi \mathopen{}\left( \theta_{\mathrm{opt}} \mathclose{}\right) \mathopen{}\left( s, a \mathclose{}\right) \\ \hspace{4em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{end \ for} \\ \hspace{3em} \mathbf{return} \ \frac{\mathrm{total\_objective}}{\mathrm{n\_sample\_trajectories}} \\ \hspace{2em} \mathbf{end \ function} \\ \hspace{2em} \theta \gets \mathrm{optimize} \mathopen{}\left( \mathrm{objective}, \theta \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \theta \\ \mathbf{end \ function} \end{array}
 </div>
 </div>
 </section>

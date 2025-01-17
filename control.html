@@ -266,9 +266,9 @@ window.Quarto = {
 </header>
 
 
-<hr>
-<p>math: ‘: ’x’ ‘’: ‘u’</p>
-<hr>
+<div class="hidden">
+
+</div>
 <div class="hidden">
 
 </div>
@@ -344,7 +344,7 @@ window.Quarto = {
 </div>
 <section id="a-first-attempt-discretization" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="a-first-attempt-discretization"><span class="header-section-number">2.2.1</span> A first attempt: Discretization</h3>
-<p>Can we solve this problem using tools from the finite MDP setting? If <span class="math inline">\(\mathcal{S}\)</span> and <span class="math inline">\(\mathcal{A}\)</span> were finite, then we’d be able to work backwards using the DP algorithm for computing the optimal policy in an MDP (<a href="mdps.html#def-pi-star-dp" class="quarto-xref">Definition&nbsp;<span>1.10</span></a>). This inspires us to try <em>discretizing</em> the problem.</p>
+<p>Can we solve this problem using tools from the finite MDP setting? If <span class="math inline">\(\mathcal{S}\)</span> and <span class="math inline">\(\mathcal{A}\)</span> were finite, then we’d be able to work backwards using the DP algorithm for computing the optimal policy in an MDP (<a href="mdps.html#def-pi-star-dp" class="quarto-xref">Definition&nbsp;<span>1.11</span></a>). This inspires us to try <em>discretizing</em> the problem.</p>
 <p>Suppose <span class="math inline">\(\mathcal{S}\)</span> and <span class="math inline">\(\mathcal{A}\)</span> are bounded, that is, <span class="math inline">\(\max_{s\in \mathcal{S}} \|s\| \le B_s\)</span> and <span class="math inline">\(\max_{a\in \mathcal{A}} \|a\| \le B_a\)</span>. To make <span class="math inline">\(\mathcal{S}\)</span> and <span class="math inline">\(\mathcal{A}\)</span> finite, let’s choose some small positive <span class="math inline">\(\epsilon\)</span>, and simply round each coordinate to the nearest multiple of <span class="math inline">\(\epsilon\)</span>. For example, if <span class="math inline">\(\epsilon = 0.01\)</span>, then we round each element of <span class="math inline">\(s\)</span> and <span class="math inline">\(a\)</span> to two decimal spaces.</p>
 <p>However, the discretized <span class="math inline">\(\widetilde{\mathcal{S}}\)</span> and <span class="math inline">\(\widetilde{\mathcal{A}}\)</span> may be finite, but they may be infeasibly large: we must divide <em>each dimension</em> into intervals of length <span class="math inline">\(\varepsilon\)</span>, resulting in <span class="math inline">\(|\widetilde{\mathcal{S}}| = (B_s/\varepsilon)^{n_s}\)</span> and <span class="math inline">\(|\widetilde{\mathcal{A}}| = (B_a/\varepsilon)^{n_a}\)</span>. To get a sense of how quickly this grows, consider <span class="math inline">\(\varepsilon = 0.01, n_s= n_a= 10\)</span>. Then the number of elements in the transition matrix would be <span class="math inline">\(|\widetilde{\mathcal{S}}|^2 |\widetilde{\mathcal{A}}| = (100^{10})^2 (100^{10}) = 10^{60}\)</span>! (That’s a trillion trillion trillion trillion trillion.)</p>
 <p>What properties of the problem could we instead make use of? Note that by discretizing the state and action spaces, we implicitly assumed that rounding each state or action vector by some tiny amount <span class="math inline">\(\varepsilon\)</span> wouldn’t change the behavior of the system by much; namely, that the cost and dynamics were relatively <em>continuous</em>. Can we use this continuous structure in other ways? This leads us to the <strong>linear quadratic regulator</strong>.</p>
@@ -386,7 +386,7 @@ c(s_h, a_h) = \begin{cases}
 <p><span class="theorem-title"><strong>Exercise 2.1 (Symmetric <span class="math inline">\(Q\)</span> and <span class="math inline">\(R\)</span>)</strong></span> Here we’ll show that we don’t lose generality by assuming that <span class="math inline">\(Q\)</span> and <span class="math inline">\(R\)</span> are symmetric. Show that replacing <span class="math inline">\(Q\)</span> and <span class="math inline">\(R\)</span> with <span class="math inline">\((Q + Q^\top) / 2\)</span> and <span class="math inline">\((R + R^\top) / 2\)</span> (which are symmetric) yields the same cost function.</p>
 </div>
 <p>We will henceforth abbreviate “symmetric positive definite” as s.p.d. and “positive definite” as p.d.</p>
-<p>It will be helpful to reintroduce the <em>value function</em> notation for a policy to denote the average cost it incurs. These will be instrumental in constructing the optimal policy via <strong>dynamic programming,</strong> as we did in <a href="mdps.html#sec-opt-dynamic-programming" class="quarto-xref"><span>Section 1.3.2</span></a> for MDPs.</p>
+<p>It will be helpful to reintroduce the <em>value function</em> notation for a policy to denote the average cost it incurs. These will be instrumental in constructing the optimal policy via <strong>dynamic programming,</strong> as we did in <a href="mdps.html#sec-opt-dynamic-programming" class="quarto-xref"><span>Section 1.2.7</span></a> for MDPs.</p>
 <div id="def-value-lqr" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 2.3 (Value functions for LQR)</strong></span> Given a policy <span class="math inline">\(\mathbf{\pi} = (\pi_0, \dots, \pi_{H-1})\)</span>, we can define its value function <span class="math inline">\(V^\pi_h: \mathcal{S} \to \mathbb{R}\)</span> at time <span class="math inline">\(h\in [H]\)</span> as the average <strong>cost-to-go</strong> incurred by that policy:</p>
 <p><span class="math display">\[
@@ -409,7 +409,7 @@ c(s_h, a_h) = \begin{cases}
 </section>
 <section id="sec-optimal-lqr" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="sec-optimal-lqr"><span class="header-section-number">2.4</span> Optimality and the Riccati Equation</h2>
-<p>In this section, we’ll compute the optimal value function <span class="math inline">\(V^\star_h\)</span>, Q-function <span class="math inline">\(Q^\star_h\)</span>, and policy <span class="math inline">\(\pi^\star_h\)</span> in <a href="#def-lqr-definition" class="quarto-xref">Definition&nbsp;<span>2.2</span></a> using <strong>dynamic programming</strong> in a very similar way to the DP algorithms in <a href="mdps.html#sec-eval-dp" class="quarto-xref"><span>Section 1.3.1</span></a>. Recall the definition of the optimal value function:</p>
+<p>In this section, we’ll compute the optimal value function <span class="math inline">\(V^\star_h\)</span>, Q-function <span class="math inline">\(Q^\star_h\)</span>, and policy <span class="math inline">\(\pi^\star_h\)</span> in <a href="#def-lqr-definition" class="quarto-xref">Definition&nbsp;<span>2.2</span></a> using <strong>dynamic programming</strong> in a very similar way to the DP algorithms in <a href="mdps.html#sec-eval-dp" class="quarto-xref"><span>Section 1.2.5</span></a>. Recall the definition of the optimal value function:</p>
 <div id="def-optimal-value-lqr" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 2.4 (Optimal value function in LQR)</strong></span> The <strong>optimal value function</strong> is the one that, at any time and in any state, achieves <em>minimum cost</em> across <em>all policies</em>:</p>
 <p><span class="math display">\[
@@ -444,7 +444,7 @@ V^\star_h(s) = s^\top P_hs+ p_h
 \]</span></p>
 <p>for some <span class="math inline">\(K_h\in \mathbb{R}^{n_a\times n_s}\)</span>. (The negative is due to convention.)</p>
 </div>
-<p>The construction (and inductive proof) proceeds similarly to the one in the MDP setting (<a href="mdps.html#sec-eval-dp" class="quarto-xref"><span>Section 1.3.1</span></a>).</p>
+<p>The construction (and inductive proof) proceeds similarly to the one in the MDP setting (<a href="mdps.html#sec-eval-dp" class="quarto-xref"><span>Section 1.2.5</span></a>).</p>
 <ol type="1">
 <li>We’ll compute <span class="math inline">\(V_H^\star\)</span> (at the end of the horizon) as our base case.</li>
 <li>Then we’ll work step-by-step backwards in time, using <span class="math inline">\(V_{h+1}^\star\)</span> to compute <span class="math inline">\(Q_h^\star\)</span>, <span class="math inline">\(\pi_{h}^\star\)</span>, and <span class="math inline">\(V_h^\star\)</span>.</li>
