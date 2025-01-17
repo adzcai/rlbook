@@ -1100,7 +1100,7 @@ wheels = [
 [[package]]
 name = "latexify-py"
 version = "0.0.0a0"
-source = { directory = "../latexify-py" }
+source = { editable = "../latexify-py" }
 dependencies = [
     { name = "dill" },
 ]
@@ -2028,6 +2028,7 @@ dependencies = [
     { name = "pandas" },
     { name = "quarto-cli" },
     { name = "statsmodels" },
+    { name = "tabulate" },
     { name = "torchvision" },
     { name = "tqdm" },
 ]
@@ -2039,11 +2040,12 @@ requires-dist = [
     { name = "jaxtyping", specifier = ">=0.2.36" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "jupyter-cache", specifier = ">=1.0.1" },
-    { name = "latexify-py", directory = "../latexify-py" },
+    { name = "latexify-py", editable = "../latexify-py" },
     { name = "matplotlib", specifier = ">=3.10.0" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "quarto-cli", specifier = ">=1.6.39" },
     { name = "statsmodels", specifier = ">=0.14.4" },
+    { name = "tabulate", specifier = ">=0.9.0" },
     { name = "torchvision", specifier = ">=0.20.1" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
