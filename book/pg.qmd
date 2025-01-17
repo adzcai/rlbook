@@ -113,7 +113,6 @@ Then, we can substitute a small value of $\varepsilon$ on the r.h.s. to approxim
 In real applications, computing the gradient of the target function is not so simple. As an example from supervised learning, $J(\theta)$ might be the sum of squared prediction errors across an entire training dataset. However, if our dataset is very large, it might not fit into our computer's memory! Typically in these cases, we compute some *estimate* of the gradient at each step, and walk in that direction instead. This is called **stochastic** gradient ascent. In the SL example above, we might randomly choose a *minibatch* of samples and use them to estimate the true prediction error. (This approach is known as ***minibatch*** **SGD**.)
 
 ```{python}
-
 def sgd(
     theta_init: Float[Array, " D"],
     estimate_gradient: Callable[[Float[Array, " D"]], Float[Array, " D"]],
@@ -172,7 +171,8 @@ $$
 \end{aligned}
 $$ {#eq-objective-fn}
 
-where $\rho^\pi$ is the distribution over trajectories induced by $\pi$ (see @def-autoregressive-trajectories).
+where $\rho^\pi$ is the distribution over trajectories induced by $\pi$
+(see @eq-autoregressive-trajectories).
 
 (Note that we'll continue to work in the *undiscounted, finite-horizon case.* Analogous results hold for the *discounted, infinite-horizon setup.*)
 
@@ -274,7 +274,7 @@ $$
 
 (The order of operations is $\nabla (\log \rho_\theta)(\tau)$.)
 
-Recall that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is time-homogeneous (i.e. $a_\hi \sim \pi_\theta (s_\hi)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$ autoregressively, as in @def-autoregressive-trajectories. Taking the log of the trajectory likelihood turns it into a sum of terms:
+Recall that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is time-homogeneous (i.e. $a_\hi \sim \pi_\theta (s_\hi)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$ autoregressively, as in @eq-autoregressive-trajectories. Taking the log of the trajectory likelihood turns it into a sum of terms:
 
 $$
 \log \rho_\theta(\tau) = \log \mu(s_0) + \sum_{\hi=0}^{\hor-1} \log \pi_\theta(a_\hi \mid s_\hi) + \log P(s_{\hi+1} \mid s_\hi, a_\hi)

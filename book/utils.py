@@ -32,6 +32,7 @@ from tqdm import tqdm
 import latexify
 from latexify.plugins.sum_prod import SumProdPlugin
 from latexify.plugins.jaxtyping import JaxTypingPlugin
+from latexify.plugins.numpy import NumpyPlugin
 
 
 latex = partial(
@@ -40,6 +41,7 @@ latex = partial(
     plugins=[
         SumProdPlugin(),
         JaxTypingPlugin(),
+        NumpyPlugin(),
     ]
 )
 

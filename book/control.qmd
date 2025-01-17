@@ -1,12 +1,9 @@
----
-
-
-math:
-  '\st': 'x'
-  '\act': 'u'
-
----
 {{< include macros.qmd >}}
+
+::: {.hidden}
+\providecommand{\st}{x}
+\providecommand{\act}{u}
+:::
 
 # Linear Quadratic Regulators {#sec-control}
 
@@ -37,7 +34,6 @@ continuous control problems: the **linear quadratic regulator**. We will
 then extend this basic method to more complex settings.
 
 :::: {#exm-cart-pole}
-
 #### CartPole
 
 Try to balance a pencil on its point on a flat surface. It's much more
