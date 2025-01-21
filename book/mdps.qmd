@@ -487,6 +487,8 @@ we have that $\pi_\hi(a \mid s) = \ind{a = \pi_\hi(s)}$;
 that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise.
 In this case, the only randomness in sampling trajectories comes from the initial state distribution $\mu$ and the state transitions $P$.
 
+### Policy evaluation {#sec-eval-dp-finite-horizon}
+
 Recall that the core goal of an RL algorithm
 is to find a policy that maximizes the expected total reward
 
@@ -511,7 +513,17 @@ when starting in a specific state:
 
 $$
 V_\hi^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s]
-$$ {#eq-value}
+$$ {#eq-v}
+
+Similarly,
+a state-dependent policy's **action-value function** (aka Q function)
+at time $\hi$ returns its expected remaining reward,
+starting in a specific state
+_and_ taking a specific action:
+
+$$
+Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a].
+$$ {#eq-q}
 :::
 
 ```{mermaid}
@@ -542,19 +554,32 @@ graph LR
     classDef reward fill: lightblue;
 ```
 
-::: {#def-action-value}
-#### Action-value function
+```{python}
+def q_to_v(
+    policy: Float[Array, "S A"],
+    q: Float[Array, "S A"],
+) -> Float[Array, " S"]:
+    """
+    Compute the value function for a given policy in a known finite MDP
+    at a single timestep from its action-value function.
+    """
+    return jnp.average(q, weights=policy, axis=1)
 
-Similarly,
-a state-dependent policy's **action-value function** (aka Q function)
-at time $\hi$ returns its expected remaining reward,
-starting in a specific state
-_and_ taking a specific action:
+def v_to_q(
+    mdp: MDP,
+    v_next: Float[Array, " S"],
+) -> Float[Array, "S A"]:
+    """
+    Compute the action-value function in a known finite MDP
+    at a single timestep from the corresponding value function.
+    """
+    # the discount factor is relevant later
+    return mdp.r + mdp.gamma * mdp.P @ v_next
 
-$$
-Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a]
-$$
-:::
+
+# convert a list of v functions to a list of q functions
+v_ary_to_q_ary = jax.vmap(v_to_q, in_axes=(None, 0))
+```
 
 ```{mermaid}
 %%| label: fig-action-value-trajectory
@@ -584,75 +609,38 @@ graph LR
     classDef reward fill: lightblue;
 ```
 
+These two functions can be thought of
+as describing the same information,
+in the sense that they define each other
+in the following way:
 
-### Policy evaluation {#sec-eval-dp-finite-horizon}
+::: {#thm-relating-v-q}
+#### Relating $V^\pi$ and $Q^\pi$
 
-How can we actually _evaluate_ a given policy,
-that is, compute its value function?
-
-#### Bellman consistency equations {#sec-bellman-consistency}
-
-Note that by simply considering the cumulative reward
-as the sum of the *immediate* reward and the *remaining* reward,
-we can describe the
-value function recursively,
-in terms of itself.
-The resulting system of equations (one equation per state)
-is named after **Richard Bellman** (1920--1984),
-who is credited with introducing dynamic programming in 1953.
-
-::: {#thm-bellman-consistency}
-#### Bellman consistency equations for the value function
-
-For a state-dependent policy $\pi$,
-
-$$
-V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')]
-$$ {#eq-bellman-consistency}
-:::
-
-```{python}
-def check_bellman_consistency_v(
-    mdp: MDP,
-    policy: Float[Array, "H S A"],
-    v_ary: Float[Array, "H S"],
-) -> bool:
-    """
-    Check that the given (time-dependent) "value function"
-    satisfies the Bellman consistency equation.
-    """
-    return all(
-        jnp.allclose(
-            # lhs
-            v_ary[h],
-            # rhs
-            jnp.sum(policy[h] * (mdp.r + mdp.gamma * mdp.P @ v_ary[h + 1]), axis=1),
-        )
-        for h in range(mdp.H - 1)
-    )
-```
-
-::: {#exr-prove-bellman-consistency}
-#### Proof by relating the value function and action-value function
-
-Use the law of iterated expectations
-to show that the value is the expected action-value over
-actions drawn from the policy:
+Let $\pi$ be a state-dependent policy.
+The value of a state is the expected action-value
+in that state
+over actions drawn from the policy:
 
 $$
 V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)].
-$$ {#eq-v-average-q}
+$$ {#eq-relating-v-q}
 
-Now apply linearity of expectation
-to show that the action-value is the sum of
-the immediate reward
+The value of a state-action pair
+is the sum of the immediate reward
 and the expected value of the following state:
 
 $$
 Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')].
-$$ {#eq-q-step-v}
+$$ {#eq-relating-q-v}
+:::
 
-Putting these together reveals the Bellman consistency equations (@eq-bellman-consistency).
+::: {#exr-proof-bellman-consistency}
+#### Proof of relationship between $V^\pi$ and $Q^\pi$
+
+Use the law of iterated expectations
+to show @eq-relating-v-q.
+Now apply linearity of expectation to show @eq-relating-q-v.
 Where did you use the assumption that $\pi$
 doesn't depend on the past states and actions?
 :::
@@ -684,6 +672,55 @@ def v_to_q(
 v_ary_to_q_ary = jax.vmap(v_to_q, in_axes=(None, 0))
 ```
 
+Putting @eq-relating-v-q and @eq-relating-q-v together
+reveals the _Bellman consistency equations_.
+By simply considering the cumulative reward
+as the sum of the *immediate* reward and the *remaining* reward,
+we can describe the
+value function in terms of itself.
+The resulting system of equations
+is named after **Richard Bellman** (1920--1984),
+who is credited with introducing dynamic programming in 1953.
+
+::: {#thm-bellman-consistency}
+#### Bellman consistency equations
+
+For a state-dependent policy $\pi$,
+
+$$
+V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')].
+$$ {#eq-bellman-consistency}
+
+The proof is left as @exr-proof-bellman-consistency.
+This is a system of $H |\mathcal{S}|$ equations
+(one equation per state per timestep)
+in $H |\mathcal{S}|$ unknowns
+(the values $V_\hi^\pi(s)$),
+so $V^\pi$ is the unique solution,
+as long as no two states are exactly identical to each other.
+:::
+
+```{python}
+def check_bellman_consistency_v(
+    mdp: MDP,
+    policy: Float[Array, "H S A"],
+    v_ary: Float[Array, "H S"],
+) -> bool:
+    """
+    Check that the given (time-dependent) "value function"
+    satisfies the Bellman consistency equation.
+    """
+    return all(
+        jnp.allclose(
+            # lhs
+            v_ary[h],
+            # rhs
+            jnp.sum(policy[h] * (mdp.r + mdp.gamma * mdp.P @ v_ary[h + 1]), axis=1),
+        )
+        for h in range(mdp.H - 1)
+    )
+```
+
 ::: {#rem-bellman-for-deterministic}
 #### The Bellman consistency equation for deterministic policies
 
@@ -694,6 +731,9 @@ $$
 V_\hi^\pi(s) = r(s, \pi_\hi(s)) + \E_{s' \sim P(s, \pi_\hi(s))} [V_{\hi+1}^\pi(s')].
 $$ {#eq-bellman-deterministic}
 :::
+
+How can we actually _evaluate_ a given policy,
+that is, compute its value function?
 
 Suppose we start with some guess $v_\hi : \mathcal{S} \to \R$
 for the state values at time $\hi = 0, \dots, \hor-1$.
@@ -717,8 +757,9 @@ $$ {#eq-updated-bellman}
 can be thought of as follows:
 we take one action according to $\pi$,
 observe the immediate reward,
-and evaluate the next state using $v$ (@fig-updated-bellman).
-This gives us an _updated_ estimate of the value of $V^\pi_\hi(s)$
+and evaluate the next state using $v$.
+This is illustrated in @fig-updated-bellman below.
+This operation gives us an _updated_ estimate of the value of $V^\pi_\hi(s)$
 that is at least as accurate as applying $v(s)$ directly.
 
 ```{mermaid}
@@ -820,9 +861,7 @@ $$
 V_\hi^\pi = \mathcal{J}^{\pi_\hi}(V_{\hi+1}^\pi)
 $$ {#eq-bellman-operator-consistency}
 
-#### Dynamic programming {#sec-finite-eval-dp}
-
-The Bellman consistency equations (@thm-bellman-consistency)
+The Bellman consistency equations (@eq-bellman-consistency)
 give us a convenient algorithm for evaluating stationary policies:
 it expresses the value function at timestep $\hi$
 as a function of the value function at timestep $\hi+1$.
@@ -905,82 +944,24 @@ Markdown(tabulate(
 We've just seen how to *evaluate* a given policy.
 But how can we find the _best_ policy for a given environment?
 We must first define what it means for a policy to be optimal.
-Intuitively speaking,
-acting according to an optimal policy should yield
-the highest possible expected remaining reward in any situation.
-In mathematical terms:
+We'll investigate optimality only for _state-dependent_ policies.
+In @thm-history-not-required,
+we'll see that this is actually sufficient:
+the best state-dependent policy performs
+at least as well as
+the best history-dependent policy,
+in all scenarios!
 
 ::: {#def-optimal-policy-finite}
 #### Optimal policies
 
-We call the policy $\pi^\star$ **optimal** at time $\hi$ if,
-given any partial trajectory
-$\tau_{\le \hi} = (s_0, a_0, r_0, \dots, s_{\hi-1}, a_{\hi-1}, r_{\hi-1}, s_{\hi})$,
-it does at least as well as any other policy $\pi^\text{any}$
-(which may depend on the history):
-
-$$
-\begin{gathered}
-\forall \pi,
-\quad
-\E_{\tau \sim \rho^{\pi^\star}} \left[
-    r_\hi + \cdots + r_{\hor-1} \mid \tau_{\le \hi}
-\right] \\
-\ge
-\E_{\tau \sim \rho^{\pi}} \left[
-    r_\hi + \cdots + r_{\hor-1} \mid \tau_{\le \hi}
-\right].
-\end{gathered}
-$$ {#eq-optimal-policy-finite}
-
-By conditioning on $\tau_{\le \hi}$,
-we mean the event that the state, action, and observed reward at timestep $\hi'$
-are $s_{\hi'}, a_{\hi'}, r_{\hi'}$ respectively for all $\hi' < \hi$
-and $s_\hi$ is the state observed at timestep $\hi$.
-
-If $\pi^\star$ is optimal at time $\hi = 0$,
-we simply call it optimal.
-(@exr-optimal-time asks you to show that optimality at time $\hi$
-implies optimality at all later times.)
-:::
-
-::: {#exr-optimal-time}
-#### Optimality at later times
-
-Show that if $\pi^\star$ is optimal at time $\hi$,
-then it is also optimal at time $\hi+1$.
-One way is to show the contrapositive:
-if $\pi^\star$ is _not_ optimal at time $\hi+1$,
-it _cannot_ be optimal at time $\hi$.
-That is,
-if there exists another policy $\pi'$
-and a partial trajectory $\tau_{\le \hi+1}$
-such that
-
-$$
-\E_{\tau \sim \rho^{\pi^\star}} \left[
-    r_{\hi+1} + \cdots + r_{\hor-1} \mid \tau_{\le \hi+1}
-\right]
-<
-\E_{\tau \sim \rho^{\pi'}} \left[
-    r_{\hi+1} + \cdots + r_{\hor-1} \mid \tau_{\le \hi+1}
-\right],
-$$ {#eq-optimal-time}
-
-there must then exist a policy $\pi$
-and a partial trajectory $\tau_{\hi}$
-such that
-
-$$
-\E_{\tau \sim \rho^{\pi^\star}} \left[
-    r_\hi + \cdots + r_{\hor-1} \mid \tau_{\le \hi}
-\right]
-<
-\E_{\tau \sim \rho^{\pi}} \left[
-    r_\hi + \cdots + r_{\hor-1} \mid \tau_{\le \hi}
-\right].
-$$ {#eq-optimal-time-now}
-
+Let $\pi^\star$ be a state-dependent policy.
+We say that $\pi^\star$ is **optimal**
+if $V_\hi^{\pi^\star}(s) \ge V_\hi^{\pi}(s)$
+for any state-dependent policy $\pi$ at any time $\hi \in [\hor]$.
+In other words,
+an optimal state-dependent policy achieves the highest possible
+expected remaining reward in every state at every time.
 :::
 
 ::: {#exm-optimal-tidy}
@@ -998,30 +979,7 @@ $$ {#eq-tidy-optimal}
 
 since this keeps the room in the "orderly" state
 in which reward can be obtained.
-Note that this policy is state-dependent and deterministic.
 :::
-
-In fact, _every_ finite-horizon MDP
-has an optimal policy that is **state-dependent** and **deterministic**.
-This is a striking result
-that greatly narrows down the space of policies
-that we have to search through.
-We will prove it by induction in @thm-optimal-greedy
-and construct such an optimal policy along the way using **dynamic programming**.
-
-::: {#rem-optimal-intuition}
-#### Intuition
-
-How is this possible?
-Recall the Markov property (@def-markov-property),
-which says that once we know the current state,
-the next state becomes independent from the past history.
-This means that history-dependent policies, intuitively speaking,
-don't benefit over simply state-dependent ones in MDPs.
-:::
-
-Now that we know (and will prove) that a _state-dependent_ optimal policy exists,
-it makes sense to define the _optimal value function_:
 
 ::: {#def-optimal-value}
 #### Optimal value function
@@ -1042,7 +1000,109 @@ Q^\star_\hi(s, a) := \max_{\pi} Q^{\pi}_\hi(s, a).
 $$ {#eq-optimal-action-value}
 :::
 
-We now construct a state-dependent, deterministic optimal policy
+These satisfy the following relationship (cf @thm-relating-v-q):
+
+::: {#thm-relating-optimal-v-q}
+#### Relating $V^\star$ and $Q^\star$
+
+The optimal value of a state
+is the maximum value across actions from that state:
+
+$$
+V_\hi^\star(s) = \max_{a \in \mathcal{A}} Q^\star_\hi(s, a).
+$$ {#eq-optimal-v-q}
+
+The optimal value of an action
+is the immediate reward
+plus the expected value from the next state:
+
+$$
+Q^\star_\hi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{\hi+1}(s')].
+$$ {#eq-optimal-q-v}
+:::
+
+::: {.proof}
+We first prove @eq-optimal-v-q.
+We begin by expanding the definition of the optimal value function
+using @eq-relating-v-q:
+
+$$
+\begin{aligned}
+V_\hi^\star(s)
+&= \max_\pi V^\pi_\hi(s) \\
+&= \max_\pi \E_{a \sim \pi_\hi(s)} [
+    Q^\pi_\hi(s, a)
+].
+\end{aligned}
+$$ {#eq-step-v-q}
+
+Now note that $Q^\pi_\hi$ doesn't depend on $\pi_\hi$,
+so we can split the maximization over $\pi = (\pi_0, \dots, \pi_{\hor-1})$
+into an _outer_ optimization over the immediate action $\pi_\hi$
+and an _inner_ optimization over the remaining actions
+$\pi_{\hi + 1}, \dots, \pi_{\hor-1}$:
+
+$$
+\max_\pi \E_{a \sim \pi_\hi(s)} \Big[
+    Q^\pi_\hi(s, a)
+]
+= \max_{\pi_\hi} \E_{a \sim \pi_\hi(s)} \Big[
+    \max_{\pi_{\hi+1}, \dots, \pi_{\hor-1}}
+    Q^\pi_\hi(s, a)
+\Big].
+$$ {#eq-step-split-optimization}
+
+But now the inner quantity is exactly $Q^\star_\hi(s, a)$
+as defined in @eq-optimal-action-value.
+Now note that maximizing over $\pi_\hi$
+reduces to just maximizing over the action taken:
+
+$$
+\max_{\pi_\hi} \E_{a \sim \pi_\hi(s)} [\cdots] = \max_{a \in \mathcal{A}} [\cdots].
+$$ {#eq-max-mean}
+
+This proves @eq-optimal-v-q.
+
+We now prove @eq-optimal-q-v.
+We begin by using @eq-relating-q-v:
+
+$$
+\begin{aligned}
+Q^\star_\hi(s, a) &= \max_\pi Q^\pi_\hi(s, a) \\
+&= \max_\pi \Big[ r(s, a) + \E_{s' \sim P(s, a)}[ V^\pi_{\hi+1}(s') ] \Big]
+\end{aligned}
+$$
+
+We can move the maximization over $\pi$ under the expectation
+since $s, a$, and $s'$ are all independent of $\pi$.
+Substituting the definition of $V^\star$ concludes the proof.
+:::
+
+As in the Bellman consistency equations (@thm-bellman-consistency),
+combining @eq-optimal-v-q and @eq-optimal-q-v gives the _Bellman optimality equations_.
+
+::: {#thm-bellman-optimality}
+#### Bellman optimality equations
+
+The optimal value function function (@def-optimal-value) satisfies,
+for all timesteps $\hi \in [\hor-1]$,
+
+$$
+V_\hi^\star(s) = \max_a r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\star(s')].
+$$ {#eq-bellman-optimality}
+
+Like the Bellman consistency equations (@eq-bellman-consistency),
+This is a system of $H |\mathcal{S}|$ equations
+in $H |\mathcal{S}|$ unknowns,
+so $V^\star$ is the unique solution
+(assuming all the states are distinguishable from each other).
+
+Note that the letter $\pi$ doesn't appear.
+This will prove useful when we discuss **off-policy algorithms**
+later in the course.
+:::
+
+We now construct a deterministic state-dependent optimal policy
 by acting *greedily*
 with respect to the optimal action-value function:
 
@@ -1058,6 +1118,11 @@ with the highest value according to $q$ at each state:
 $$
 \pi_h^q(s) := \arg\max_{a \in \mathcal{A}} q_h(s, a).
 $$ {#eq-def-greedy}
+
+Note that it is _not_ true in general that $Q^{\pi^q} = q$
+for a greedy policy!
+For one,
+$q$ might not even be a consistent Q function.
 :::
 
 ```{python}
@@ -1077,86 +1142,50 @@ def v_to_greedy(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, "S A"]:
 ```
 
 ::: {#thm-optimal-greedy}
-#### A deterministic optimal policy
+#### A greedy optimal policy
 
-The greedy policy $\pi_\hi^{Q^\star}(s)$, where $Q^\star$ is the optimal action-value function (@eq-optimal-action-value), is an optimal policy (@def-optimal-policy-finite). We will prove this in @def-pi-star-dp.
-:::
-
-$\pi^{Q^\star}$ is a policy just like any other.
-In particular,
-we can write down its value and action-value functions.
-
-::: {#exr-optimal-policy-value}
-#### Value functions of greedy optimal policy
-
-Show that the value and action-value function of $\pi^{Q^\star}$
-are $V^\star$ and $Q^\star$ respectively (@def-optimal-value).
-That is,
+The greedy policy $\pi^{Q^\star}$, where $Q^\star$ is the optimal action-value function (@eq-optimal-action-value),
+is an optimal policy (@def-optimal-policy-finite).
+Furthermore,
+$\pi^{Q^\star}$ is optimal across _all_ policies $\pi^\text{any}$,
+including history-dependent ones,
+in the sense that for any partial trajectory
 
 $$
-V^{\pi^{Q^\star}} = V^\star,
-\quad
-Q^{\pi^{Q^\star}} = Q^\star.
+\tau_\hi = (s_0, a_0, r_0, \dots, s_{\hi-1}, a_{\hi-1}, r_{\hi-1}, s_\hi),
 $$
 
-Note that it is _not_ true in general that $Q^{\pi^q} = q$
-for a greedy policy!
-:::
-
-::: {#thm-bellman-consistency-optimal}
-#### Bellman optimality equations
-
-The optimal value function and action-value function (@def-optimal-value) satisfy,
-for all timesteps $\hi \in [\hor]$,
+it achieves a higher expected remaining reward:
 
 $$
-\begin{aligned}
-    \forall s \in \mathcal{S},
-    \quad V_\hi^\star(s) &= \max_a Q_\hi^\star(s, a) \\
-    \forall s \in \mathcal{S},
-    a \in \mathcal{A},
-    \quad
-    Q_\hi^\star(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\star(s')].
-\end{aligned}
-$$ {#eq-bellman-consistency-optimal}
+\E_{\tau \sim \rho^{\pi^{Q^\star}}} [
+    r_\hi + \cdots + r_{\hor-1}
+    \mid \tau_\hi
+]
+\ge
+\E_{\tau \sim \rho^{\pi^\text{any}}} [
+    r_\hi + \cdots + r_{\hor-1}
+    \mid \tau_\hi
+].
+$$
 
-This can be derived by applying
-the Bellman consistency equations (@thm-bellman-consistency)
-to $\pi^{Q^\star}$.
-
-Furthermore, this system of equations uniquely identifies $V^\star$ and $Q^\star$:
-they are the _only_ functions that satisfy this system.
-That is, if a sequence of functions
-$v_h : \mathcal{S} \to \R$ and $q_h : \mathcal{S} \times \mathcal{A} \to \R$
-for $\hi \in [\hor]$
-satisfies @eq-bellman-consistency-optimal,
-then we know $v = V^\star$ and $q = Q^\star$.
-
-Note that these equations don't need the letter $\pi$ at all,
-although they can be thought of
-as the Bellman consistency equations for any optimal policy.
-This will prove useful when we discuss **off-policy algorithms**
-later in the course.
+By conditioning on $\tau_\hi$,
+we mean to condition on the event that
+$s_{\hi'}, a_{\hi'}$ are the state and action
+visited at time $\hi' < \hi$,
+and $s_\hi$ is the state at time $\hi$.
+(If the reward function were stochastic,
+we would condition on the observed rewards as well.)
 :::
 
-::: {#exr-prove-bellman-optimality}
-#### Proof of uniqueness
-
-Prove that $V^\star$ and $Q^\star$
-are the _unique_ solution to @eq-bellman-consistency-optimal.
-(Try a proof by contradiction.)
-:::
-
-How can we compute $\pi^{Q^\star}$?
-We can compute it using **dynamic programming** (DP).
-In doing so,
-we will also prove its optimality by induction.
+We will now prove by induction that $\pi^{Q^\star}$ is optimal.
+(See @sec-induction if you're unfamiliar with inductive proofs.)
 Essentially,
 we begin at the _end_ of the trajectory,
 where the optimal action is simply the one that yields highest immediate reward.
-Once the optimal values at timestep $\hor-1$ are known,
-we use these to compute the optimal values at $\hor-2$,
-and proceed backwards through the trajectory.
+Once the optimal values at time $\hor-1$ are known,
+we use these to compute the optimal values at time $\hor-2$ using the Bellman optimality equations (@eq-bellman-optimality),
+and proceed backward through the trajectory.
 
 ```{mermaid}
 %%| label: fig-dp-optimal-finite
@@ -1174,80 +1203,50 @@ graph RL
     Q2["..."]
 ```
 
-::: {#def-pi-star-dp}
-#### Dynamic programming to solve a finite-horizon MDP
-
-The inductive hypothesis is that $\pi^{Q^\star}$
-is optimal at time $\hi$.
-(See @sec-induction if you're unfamiliar with inductive proofs.)
-
-**Base case.**
+::: {.proof}
 At the end of the trajectory (time step $H-1$),
 we can't take any more actions,
-so the $Q$-function is simply the immediate reward:
+so the $Q$-function simply returns the immediate reward:
 
 $$
 Q^\star_{\hor-1}(s, a) = r(s, a).
 $$ {#eq-q-star-end}
 
-The best thing to do at the end of the horizon,
-therefore, is to act greedily and get as much reward as we can:
+$\pi^{Q^\star}$ is then optimal across _all_ policies at time $\hor-1$,
+since the policy only determines a single action,
+the one which maximizes (expected) remaining reward:
 
 $$
-\pi^{Q^\star}_{\hor-1}(s)
-=
-\arg\max_{a \in \mathcal{A}}
-Q^\star_{\hor-1}(s, a).
-$$ {#eq-pi-star-end}
+\E_{\tau \sim \rho^{\pi^{Q^\star}}}[ r_{\hor-1} \mid s_{\hor - 1} = s ]
+= \max_{a \in \mathcal{A}} r(s, a).
+$$ {#eq-end-optimal}
 
-This is optimal by definition:
-there is only one action to maximize over.
-
-Then
-$V^\star_{\hor-1}(s)$,
-the optimal value of state $s$ at the end of the
-trajectory, is simply whatever action gives the most reward
-
-$$
-V^\star_{\hor-1}(s) = \max_{a \in \mathcal{A}} Q^\star_{\hor-1}(s, a).
-$$ {#eq-v-star-end}
-
-**Recursion.**
-Then, we can work backwards in time,
-starting from the end,
-using the Bellman optimality equations (@thm-bellman-consistency-optimal).
-i.e. for each
-$\hi = \hor-2, \dots, 0$, we set
+For the inductive step,
+suppose $\pi^{Q^\star}$ is optimal across _all_ policies
+at time $\hi+1$.
+Note that this implies $V^{\pi^{Q^\star}} = V^\star$.
+Then for any other policy $\pi^\text{any}$
+(which could be history-dependent),
+and for any partial trajectory $\tau_{\hi}$,
 
 $$
 \begin{aligned}
-    Q^\star_{\hi}(s, a) &= r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{\hi+1}(s')] \\
-    \pi^\star_{\hi}(s) &= \arg\max_{a \in \mathcal{A}} Q^\star_{\hi}(s, a) \\
-    V^\star_{\hi}(s) &= \max_{a \in \mathcal{A}} Q^\star_{\hi}(s, a)
-\end{aligned}
-$$ {#eq-pi-star-dp}
-
-For the inductive step of the proof,
-suppose $\pi^\star$ is optimal at time $\hi+1$.
-Then for any other policy $\pi$,
-and for any partial trajectory $\tau_{\le \hi}$,
-
-$$
-\begin{aligned}
-&{} \E_{\tau \sim \rho^\pi} [
-    r_\hi + \cdots + r_{\hor-1} \mid \tau_{\le \hi}
+&{} \E_{\tau \sim \rho^{\pi^\text{any}}} [
+    r_\hi + \cdots + r_{\hor-1} \mid \tau_{\hi}
 ] \\
 ={}&
-\E_{\substack{a \sim \pi_\hi(s_\hi) \\ s_{\hi+1} \sim P(s_\hi, a)}} \left[
-    r_\hi + \E_{\tau \sim \rho^\pi} [
+\E_{\substack{a \sim \pi^\text{any}_\hi(\tau_\hi) \\ s' \sim P(s_\hi, a)}} \left[
+    r_\hi + \E_{\tau \sim \rho^{\pi^\text{any}}} [
         r_{\hi+1} + \cdots + r_{\hor-1}
         \mid
-        \tau_{\le \hi+1}
+        \tau_{\hi},
+        a_\hi = a,
+        s_{\hi+1} = s'
     ]
 \right] \\
 \le{}&
-\E_{\substack{a \sim \pi_\hi(s_\hi) \\ s_{\hi+1} \sim P(s_\hi, a)}} \left[
-    r_\hi + V^\star_{\hi+1}(s_{\hi+1})
+\E_{\substack{a \sim \pi^\text{any}_\hi(\tau_\hi) \\ s' \sim P(s_\hi, a)}} \left[
+    r_\hi + V^\star_{\hi+1}(s')
 \right] \\
 \le{}&
 \max_{a \in \mathcal{A}}
@@ -1256,11 +1255,13 @@ r(s_\hi, a)
 \E_{s' \sim P(s_\hi, a)} \left[
     V^\star_{\hi+1}(s')
 \right] \\
-={}& V^\star_\hi(s_\hi),
+={}& V^\star_\hi(s_\hi).
 \end{aligned}
 $$ {#eq-pi-star-proof}
 
-as desired.
+This completes the inductive step,
+which shows that $\pi^{Q^\star}$ is optimal across _all_ policies
+at every time $\hi \in [\hor]$.
 :::
 
 ```{python}
@@ -1598,7 +1599,7 @@ since there is no "final timestep" to start from.
 We'll need another approach to policy evaluation.
 
 The Bellman consistency equations (@thm-infinite-bellman-consistency)
-yield a system of equations we can solve
+yield a system of $|\mathcal{S}|$ equations we can solve
 to evaluate a deterministic policy *exactly*.
 For a faster approximate solution,
 we can iterate the policy's Bellman operator,

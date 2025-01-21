@@ -22,6 +22,15 @@ since they saw the desired characterization as the original definition.
 - Dominates all other policies
 - Dominates state-dependent, deterministic policies
 
+This textbook takes a slightly different pass.
+
+1. We first define what it means for a policy to be optimal:
+   It achieves higher expected remaining reward than all other policies.
+   This definition works for state-dependent as well as history-dependent policies.
+2. We give an example of an optimal policy in a simple MDP.
+3. We claim that every MDP has a state-dependent, deterministic optimal policy.
+4. Then it makes sense to define the optimal value function.
+
 We spend more time explaining contraction mappings,
 which serve as the cornerstone of proofs in the infinite-horizon setting.
 

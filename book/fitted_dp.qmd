@@ -109,7 +109,8 @@ trajectories[0][:5]  # show first five transitions from first trajectory
 ```
 
 Can we view the dataset of trajectories as a "labelled dataset" in order to apply supervised learning to approximate the optimal Q-function? Yes!
-Recall that we can characterize the optimal Q-function using the @thm-bellman-consistency-optimal,
+Recall that we can characterize the optimal Q-function
+using the Bellman optimality equations (@thm-bellman-optimality),
 which don't depend on an actual policy:
 
 $$
