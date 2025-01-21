@@ -43,3 +43,6 @@ We also clarify "Bellman _consistency_ equations" and "Bellman _optimality_ equa
 We also add some intuition for why policy iteration converges more quickly
 than value iteration.
 
+
+I also thought the motivation behind infinite-horizon setting could have been made more explicit,
+instead of treating it as simply another set of notation to work with.

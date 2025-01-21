@@ -93,7 +93,7 @@ an important tool for *continuous control*,
 in which the state and action spaces are no longer _finite_ but rather _continuous_.
 This has widespread applications in robotics.
 
-@sec-bandits introduces the **multi-armed bandit** (MAB) model for -stateless- sequential decision-making tasks.
+@sec-bandits introduces the **multi-armed bandit** (MAB) model for _stateless_ sequential decision-making tasks.
 In exploring a number of algorithms,
 we will see how each of them strikes a different balance between _exploring_ new options and _exploiting_ known options.
 This **exploration-exploitation tradeoff** is a core consideration in RL algorithm design.
@@ -109,7 +109,7 @@ We will also encounter the use of _deep neural networks_ to express more complic
 @sec-imitation-learning attempts to learn a good policy from expert demonstrations.
 At its most basic, this is an application of supervised learning to RL tasks.
 
-@sec-planning looks at ways to -explicitly- plan ahead when the environment's dynamics are known.
+@sec-planning looks at ways to _explicitly_ plan ahead when the environment's dynamics are known.
 We will study the _Monte Carlo Tree Search_ heuristic,
 which has been used to great success in the famous AlphaGo algorithm and its successors.
 

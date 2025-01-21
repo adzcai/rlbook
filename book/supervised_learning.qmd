@@ -60,7 +60,7 @@ There are many functions involved in the definition of an MDP (@def-finite-horiz
 such as the state transitions $P$ or the reward function $r$,
 any of which might be unknown.
 We can plug in an SL algorithm to **model** these functions,
-and then solve the modeled environment using dynamic programming (@sec-opt-dynamic-programming).
+and then solve the modeled environment using dynamic programming (@sec-finite-opt-dp).
 This approach is called **fitted DP** and will be covered in @sec-fitted-dp.
 In the rest of this chapter,
 we'll formalize the SL task and examine some basic algorithms.

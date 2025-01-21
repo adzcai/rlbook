@@ -82,7 +82,7 @@ We'll keep a set $\mathcal{D}$ of all the $(s, a, r, s')$ pairs we've observed.
 Each episode,
 we'll use $\mathcal{D}$ to construct a fully known MDP, $M_{\mathcal{D}}$,
 in which unseen state-action pairs are rewarded.
-We'll then use the planning algorithms from @sec-opt-dynamic-programming to reach the unknown states in $M-{\mathcal{D}}$.
+We'll then use the planning algorithms from @sec-finite-opt-dp to reach the unknown states in $M-{\mathcal{D}}$.
 
 We assume that every state can be reached from the initial state within a single episode,
 and that the action space $\mathcal{A}$ is fixed.
@@ -90,7 +90,7 @@ and that the action space $\mathcal{A}$ is fixed.
 1. $\mathcal{D} \gets \emptyset$
 2. For $T = 0, 1, 2, \dots$ (until the entire MDP has been explored):
    1. Construct $M_{\mathcal{D}}$ using $\mathcal{D}$. That is, the state transitions are set to those observed in $\mathcal{D}$, and the reward is set to $0$ for all state-action pairs in $\mathcal{D}$, and $1$ otherwise.
-   2. Execute @sec-opt-dynamic-programming on the known MDP $M-{\mathcal{D}}$ to compute policy $\pi^\star_{\mathcal{D}}$.
+   2. Execute @sec-finite-opt-dp on the known MDP $M-{\mathcal{D}}$ to compute policy $\pi^\star_{\mathcal{D}}$.
    3. Execute $\pi^\star_{\mathcal{D}}$. This will visit some $(s, a)$ not yet observed in $\mathcal{D}$.
    4. $\mathcal{D} \gets \mathcal{D} \cup \{ (s, a, r, s') \}$, where $s' = P(s, a), r = r(s, a)$ are the observed state transition and reward.
 ::::

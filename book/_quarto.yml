@@ -24,6 +24,14 @@ bibliography: references.bib
 resources:
   - CNAME
 
+crossref:
+  eq-prefix: "eq."
+  exm-prefix: "ex."
+  fig-prefix: "fig."
+  tbl-prefix: "tbl."
+  sec-prefix: "sec."
+  def-prefix: "def."
+
 format:
   html:
     theme: cosmo

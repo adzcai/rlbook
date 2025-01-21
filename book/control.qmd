@@ -213,7 +213,7 @@ and "positive definite" as p.d.
 
 It will be helpful to reintroduce the *value function* notation for a policy to denote the average cost it incurs.
 These will be instrumental in constructing the optimal policy via **dynamic programming,**
-as we did in @sec-opt-dynamic-programming for MDPs.
+as we did in @sec-finite-opt-dp for MDPs.
 
 ::: {#def-value-lqr}
 
@@ -249,7 +249,7 @@ In this section,
 we'll compute the optimal value function $V^\star_h$,
 Q-function $Q^\star_h$,
 and policy $\pi^\star_h$ in @def-lqr-definition using **dynamic programming**
-in a very similar way to the DP algorithms in @sec-eval-dp.
+in a very similar way to the DP algorithms in @sec-eval-dp-finite-horizon.
 Recall the definition of the optimal value function:
 
 ::: {#def-optimal-value-lqr}
@@ -314,7 +314,7 @@ for some $K_\hi \in \mathbb{R}^{n_\act \times n_\st}$.
 (The negative is due to convention.)
 :::
 
-The construction (and inductive proof) proceeds similarly to the one in the MDP setting (@sec-eval-dp).
+The construction (and inductive proof) proceeds similarly to the one in the MDP setting (@sec-eval-dp-finite-horizon).
 
 1. We'll compute $V_\hor^\star$ (at the end of the horizon) as our base case.
 2. Then we'll work step-by-step backwards in time, using $V_{\hi+1}^\star$ to compute $Q_\hi^\star$, $\pi_{\hi}^\star$, and $V_\hi^\star$.

@@ -37,3 +37,5 @@ $O(f(t)) + O(g(t)) = O(f(t) + g(t))$ to mean that the sum of two
 functions in $O(f(t))$ and $O(g(t))$ is in $O(f(t) + g(t))$.
 
 
+## Inductive proofs {#sec-induction}
+
