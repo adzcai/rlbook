@@ -18,7 +18,8 @@ without needing a programmer to implement handwritten "if statements".
 ![Robotic control, where a robot can move and interact with the real world to complete some task. [@gpa_photo_archive_robotic_2017]](shared/robot-arm.jpg)
 :::
 
-All of these tasks involve taking a sequence of **actions** in an interactive environment.
+All of these tasks involve taking a sequence of **actions**
+in order to achieve some goal.
 This **interaction loop** can be summarized in the following diagram:
 
 ```{mermaid}
@@ -26,7 +27,7 @@ This **interaction loop** can be summarized in the following diagram:
 %%| fig-cap: The RL interaction loop. The agent chooses an **action** that affects the environment.
 %%|          The environment updates according to the **state transitions**.
 %%|          Then the agent observes the updated environment
-%%|          and a **reward signal** that says how well the agent behaved.
+%%|          and a **reward signal** that describes progress made towards the goal.
 graph LR
     Agent --"takes *action*"--> Environment
     Environment --"observes *state*, *reward*"--> Agent
@@ -945,12 +946,23 @@ We've just seen how to *evaluate* a given policy.
 But how can we find the _best_ policy for a given environment?
 We must first define what it means for a policy to be optimal.
 We'll investigate optimality only for _state-dependent_ policies.
-In @thm-history-not-required,
+In @thm-optimal-greedy,
 we'll see that this is actually sufficient:
 the best state-dependent policy performs
 at least as well as
 the best history-dependent policy,
 in all scenarios!
+
+::: {#rem-optimal-intuition}
+#### Intuition
+
+How is this possible?
+Recall the Markov property (@def-markov-property),
+which says that once we know the current state,
+the next state becomes independent from the past history.
+This means that history-dependent policies, intuitively speaking,
+don't benefit over simply state-dependent ones in MDPs.
+:::
 
 ::: {#def-optimal-policy-finite}
 #### Optimal policies
@@ -1167,7 +1179,7 @@ $$
     r_\hi + \cdots + r_{\hor-1}
     \mid \tau_\hi
 ].
-$$
+$$ {#eq-optimal-all}
 
 By conditioning on $\tau_\hi$,
 we mean to condition on the event that
@@ -1312,6 +1324,28 @@ assert jnp.allclose(V_opt, V_messy)
 assert jnp.allclose(Q_opt[:-1], v_ary_to_q_ary(tidy_mdp, V_messy)[1:])
 "Assertions passed (the 'tidy when messy' policy is optimal)"
 ```
+
+Let us review some equivalent definitions of an optimal policy:
+
+::: {#rem-equivalent-optimal}
+#### Equivalent definitions of an optimal policy
+
+Let $\pi$ be a stationary policy.
+Then the following are all equivalent:
+
+1. $\pi$ is optimal across state-dependent policies (@def-optimal-policy-finite).
+2. $\pi$ is optimal across all policies (@eq-optimal-all).
+3. $V^\pi = V^\star$.
+4. $Q^\pi = Q^\star$.
+5. $V^\pi$ satisfies the Bellman optimality equations (@eq-bellman-optimality).
+
+1 and 3 are the same by definition.
+3 and 4 are the same since $V^\star$ and $Q^\star$
+uniquely define each other by @eq-optimal-v-q
+and $V^\pi$ and $Q^\pi$ uniquely define each other by @eq-relating-v-q and @eq-relating-q-v.
+3 and 5 are the same by the Bellman optimality equations (@thm-bellman-optimality).
+1 and 2 are the same as shown in the proof of @thm-optimal-greedy.
+:::
 
 ::: {#rem-why-stochastic}
 #### Why stochastic policies
@@ -1823,7 +1857,7 @@ Verify this by modifying the proof @thm-optimal-greedy from the finite-horizon c
 
 So how can we compute such an optimal policy?
 We can't use the backwards
-DP approach from the finite-horizon case @def-pi-star-dp
+DP approach from the finite-horizon case @fig-optimal-policy
 since there's no "final timestep" to start from.
 Instead, we'll exploit the fact that the Bellman consistency
 equation @eq-bellman-consistency-infinite for the optimal value

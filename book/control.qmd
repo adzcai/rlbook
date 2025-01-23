@@ -121,7 +121,7 @@ $$
 ### A first attempt: Discretization
 
 Can we solve this problem using tools from the finite MDP setting? If
-$\mathcal{S}$ and $\mathcal{A}$ were finite, then we'd be able to work backwards using the DP algorithm for computing the optimal policy in an MDP (@def-pi-star-dp).
+$\mathcal{S}$ and $\mathcal{A}$ were finite, then we'd be able to work backwards using the DP algorithm for computing the optimal policy in an MDP (@fig-optimal-policy).
 This inspires us to try *discretizing* the
 problem.
 

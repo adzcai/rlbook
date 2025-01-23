@@ -61,7 +61,7 @@ Let us apply ERM to the RL problem of computing the optimal policy / value funct
 
 How did we compute the optimal value function in MDPs with _finite_ state and action spaces?
 
-- In a @sec-finite-horizon-mdps, we can use @def-pi-star-dp, working backwards from the end of the time horizon, to compute the optimal value function exactly.
+- In a @sec-finite-horizon-mdps, we can use @fig-optimal-policy, working backwards from the end of the time horizon, to compute the optimal value function exactly.
 
 - In an @sec-infinite-horizon-mdps, we can use @sec-value-iteration, which iterates the Bellman optimality operator @eq-bellman-optimality-operator to approximately compute the optimal value function.
 
