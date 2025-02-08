@@ -216,7 +216,6 @@ These will be instrumental in constructing the optimal policy via **dynamic prog
 as we did in @sec-finite-opt-dp for MDPs.
 
 ::: {#def-value-lqr}
-
 #### Value functions for LQR
 
 Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})$,
@@ -253,7 +252,6 @@ in a very similar way to the DP algorithms in @sec-eval-dp-finite-horizon.
 Recall the definition of the optimal value function:
 
 ::: {#def-optimal-value-lqr}
-
 #### Optimal value function in LQR
 
 The **optimal value function** is the one that,
@@ -287,7 +285,6 @@ $V_h^\star$ and $Q^\star_h$ are *upward-curved quadratics*
 and $\pi_h^\star$ is *linear* and furthermore does not depend on the noise!
 
 ::: {#thm-optimal-value-lqr-quadratic}
-
 #### Optimal value function in LQR is an upward-curved quadratic
 
 At each timestep $\hi \in [\hor]$,
@@ -301,7 +298,6 @@ $p_\hi \in \mathbb{R}$.
 :::
 
 ::: {#thm-optimal-policy-lqr-linear}
-
 #### Optimal policy in LQR is linear
 
 At each timestep $\hi \in [\hor]$, 
@@ -349,7 +345,7 @@ $$
 V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \mathcal{S}.
 $$
 
-:::: {lem-q-upward-quadratic}
+:::: {#lem-q-upward-quadratic}
 #### $Q^\star_\hi(\st, \act)$ is an upward-curved quadratic
 
 Let us decompose $Q^\star_\hi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$
@@ -455,7 +451,6 @@ The proof of its upward curvature with respect to $\st$ is equivalent.
 ::::
 
 ::: {#lem-pi-linear}
-
 #### $\pi^\star_\hi$ is linear
 
 Since $Q^\star_\hi$ is an upward-curved quadratic,
@@ -492,7 +487,6 @@ $w_0, \dots, w_{\hor-1}$.
 ::::
 
 :::: {#lem-upward-curved}
-
 ## The value function is an upward-curved quadratic
 
 Using the identity $V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))$, we have:
@@ -521,7 +515,6 @@ the $(R+B^\top P_{\hi+1} B)$ term in the expression is cancelled out by its inve
 and the remaining terms combine to give the **Riccati equation**:
 
 ::: {#def-riccati}
-
 #### Riccati equation
 
 $$
@@ -543,7 +536,6 @@ There are several nice properties to note about the Riccati equation:
 It remains to prove that $V^\star_\hi$ _curves upwards,_ that is, that $P_\hi$ is s.p.d. We will use the following fact about **Schur complements:**
 
 ::: {#lem-lemma-schur}
-
 #### Positive definiteness of Schur complements
 
 Let
@@ -710,20 +702,23 @@ complex setups by taking *Taylor approximations* of the dynamics and
 cost functions.
 
 ### Time-dependent dynamics and cost function {#sec-time-dep-lqr}
-So far, we've considered the *time-homogeneous* case, where the dynamics
-and cost function stay the same at every timestep. However, this might
-not always be the case. As an example, in many sports, the rules and
-scoring system might change during an overtime period. To address these
-sorts of problems, we can loosen the time-homogeneous restriction, and
-consider the case where the dynamics and cost function are
-*time-dependent.* Our analysis remains almost identical; in fact, we can
-simply add a time index to the matrices $A$ and $B$ that determine the
-dynamics and the matrices $Q$ and $R$ that determine the cost.
+
+So far, we've considered the *time-homogeneous* case,
+where the dynamics and cost function stay the same at every timestep.
+However, this might not always be the case.
+As an example, in many sports,
+the rules and scoring system might change during an overtime period.
+To address such tasks,
+we can loosen the time-homogeneous restriction,
+and consider the case where the dynamics and cost function are *time-dependent.*
+Our analysis remains almost identical;
+in fact, we can simply add a time index to the matrices $A$ and $B$
+that determine the dynamics
+and the matrices $Q$ and $R$ that determine the cost.
 
 The modified problem is now defined as follows:
 
 ::: {#def-time-dependent-lqr}
-
 #### Time-dependent LQR
 
 $$
@@ -744,7 +739,6 @@ remains almost exactly the same, and we can modify the Riccati equation
 accordingly:
 
 ::: {#def-riccati-time-dependent}
-
 #### Time-dependent Riccati Equation
 
 $$
@@ -828,22 +822,21 @@ $$
 
 
 ## Approximating nonlinear dynamics {#sec-approx-nonlinear}
-The LQR algorithm solves for the optimal policy when the dynamics are
-*linear* and the cost function is an *upward-curved quadratic*. However,
-real settings are rarely this simple! Let's return to the CartPole
-example from the start of the chapter
-(@exm-cart-pole). The dynamics (physics) aren't linear. How
-can we approximate this by an LQR problem?
 
-Concretely, let's consider a *noise-free* problem since, as we saw, the
-noise doesn't factor into the optimal policy. Let's assume the dynamics
-and cost function are stationary, and ignore the terminal state for
-simplicity:
+The LQR algorithm solves for the optimal policy when the dynamics are
+*linear* and the cost function is an *upward-curved quadratic*.
+However, real settings are rarely this simple!
+Let's return to the CartPole example from the start of the chapter (@exm-cart-pole).
+The dynamics (physics) aren't linear.
+How can we approximate this by an LQR problem?
+
+Concretely, let's consider a *noise-free* problem since,
+as we saw, the noise doesn't factor into the optimal policy.
+Let's assume the dynamics and cost function are stationary,
+and ignore the terminal state for simplicity:
 
 ::: {#def-nonlinear-control}
-
 #### Nonlinear control problem
-
 
 
 $$
@@ -856,27 +849,27 @@ $$
 \end{aligned}
 $$
 
- Here, $d$ denotes a function that measures the
-"distance" between its two arguments.
+Here, $d$ denotes a function
+that measures the "distance" between its two arguments.
 :::
 
-This is now only slightly simplified from the general optimal control
-problem (see
-@def-optimal-control). Here, we don't know an analytical form
-for the dynamics $f$ or the cost function $c$, but we assume that we're
-able to *query/sample/simulate* them to get their values at a given
-state and action. To clarify, consider the case where the dynamics are
-given by real world physics. We can't (yet) write down an expression for
-the dynamics that we can differentiate or integrate analytically.
-However, we can still *simulate* the dynamics and cost function by
-running a real-world experiment and measuring the resulting states and
-costs. How can we adapt LQR to this more general nonlinear case?
+This is now only slightly simplified
+from the general optimal control problem
+(see @def-optimal-control).
+Here, we don't know an analytical form
+for the dynamics $f$ or the cost function $c$,
+but we assume that we're able to *query/sample/simulate* them
+to get their values at a given state and action.
+To clarify, consider the case where the dynamics are given by real world physics.
+We can't (yet) write down an expression for the dynamics that we can differentiate or integrate analytically.
+However, we can still *simulate* the dynamics and cost function
+by running a real-world experiment and measuring the resulting states and costs.
+How can we adapt LQR to this more general nonlinear case?
 
 ### Local linearization
 
-How can we apply LQR when the dynamics are nonlinear or the cost
-function is more complex? We'll exploit the useful fact that we can take
-a function that's *locally continuous* around $(s^\star, a^\star)$ and
+How can we apply LQR when the dynamics are nonlinear or the cost function is more complex?
+We'll exploit the useful fact that we can take a function that's *locally continuous* around $(s^\star, a^\star)$ and
 approximate it nearby with low-order polynomials (i.e. its Taylor
 approximation). In particular, as long as the dynamics $f$ are
 differentiable around $(\st^\star, \act^\star)$ and the cost function
@@ -886,7 +879,6 @@ bring us back to the regime of LQR.
 
 Linearizing the dynamics around $(\st^\star, \act^\star)$ gives:
 
-
 $$
 \begin{gathered}
     f(\st, \act) \approx f(\st^\star, \act^\star) + \nabla_\st f(\st^\star, \act^\star) (\st - \st^\star) + \nabla_\act f(\st^\star, \act^\star) (\act - \act^\star) \\
@@ -894,7 +886,7 @@ $$
 \end{gathered}
 $$
 
- and quadratizing the cost function around
+and quadratizing the cost function around
 $(\st^\star, \act^\star)$ gives: 
 
 $$
@@ -909,8 +901,7 @@ $$
 \end{aligned}
 $$
 
- where the gradients and Hessians are defined as
-
+where the gradients and Hessians are defined as
 
 $$
 \begin{aligned}
@@ -922,12 +913,11 @@ $$
 \end{aligned}
 $$
 
-
-
-**Exercise:** Note that this cost can be expressed in the general
-quadratic form seen in
-@eq-general-quadratic-cost. Derive the corresponding
-quantities $Q, R, M, q, r, c$.
+::: {#exr-quadratic}
+#### Expressing as quadratic
+Note that this cost can be expressed in the general quadratic form seen in @eq-general-quadratic-cost.
+Derive the corresponding quantities $Q, R, M, q, r, c$.
+:::
 
 ### Finite differencing
 
@@ -996,7 +986,6 @@ the resulting time-dependent LQR problem to obtain a better policy. This
 is known as **iterative LQR** or **iLQR**:
 
 ::: {#def-ilqr}
-
 #### Iterative LQR
 
 For each iteration of the algorithm:

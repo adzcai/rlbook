@@ -64,7 +64,7 @@ How does RL compare to the other two core machine learning paradigms,
 
 ## Core tasks of reinforcement learning
 
-What tasks, exactly, does RL comprise?
+What tasks, exactly, are important for RL?
 An RL algorithm must typically solve two main subtasks:
 
 - **Policy evaluation (prediction):**
@@ -117,17 +117,6 @@ which has been used to great success in the famous AlphaGo algorithm and its suc
 We will extend ideas from multi-armed bandits to the MDP setting.
 
 @sec-background contains an overview of selected background mathematical content and programming content.
-
-<!-- 
-| Chapter | States | Actions | Rewards (or costs) |
-|:-------:|:------:|:-------:|:-------:|
-| @bandits | N/A | Finite | Stochastic |
-| @mdps | Finite | Finite | Deterministic |
-| @fitted-dp | Large or continuous | Finite | Deterministic |
-| @lqr | Continuous | Continuous | Deterministic |
--->
-
-
 
 ## Notation
 

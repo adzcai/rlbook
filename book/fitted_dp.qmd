@@ -1,16 +1,40 @@
----
-
----
 {{< include macros.qmd >}}
 
 # Fitted Dynamic Programming Algorithms {#sec-fitted-dp}
 
-## Introduction
+In @sec-mdps,
+we discussed how to solve Markov decision processes
+where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite and small.
+This allowed us to use dynamic programming and the Bellman consistency equations (@thm-bellman-consistency)
+to evaluate policies (@sec-eval-dp-finite-horizon)
+and compute the optimal policy (@sec-finite-opt-dp).
+These "small" MDPs aren't usually considered "full RL problems" because,
+put simply, they're too easy!
+The assumption that we know the environment
+and can compute expected values over the state transitions
+ends up being too strict for most real-world tasks.
 
-We borrow these definitions from the @sec-mdps chapter:
+In this chapter,
+we will tackle the "full RL problem"
+by extending DP algorithms to account for unknown environments.
+We will also relax the assumption that the state space is small and finite:
+the methods we will cover support large or continuous state spaces.
+
+This will require _learning_ about the environment
+by collecting data through interaction
+and then applying supervised learning (see @sec-sl)
+to approximate relevant functions.
+
+| Chapter | State space | Action space | Policies | Knowledge of environment | Key algorithms |
+| --- | --- | --- | --- | --- |
+| @sec-mdps (MDPs) | $\{1, \dots, \vert \mathcal{S} \vert \}$ | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | known | dynamic programming, policy iteration |
+| @sec-control (Control) | $\R^{n_\st}$ | $\R^{n_\act}$ | deterministic | unknown | (iterative) linear quadratic regulator |
+| @sec-bandits (MABs) | none | $\{ 1, \dots, K \}$ | deterministic or stochastic | unknown | upper confidence bound, Thompson sampling |
+| This chapter (Fitted DP) | arbitrary | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | unknown | Q-learning, fitted policy iteration |
+
+: How this chapter extends to more general settings. {#tbl-fitted-overview}
 
 ```{python}
-
 from utils import gym, tqdm, rand, Float, Array, NamedTuple, Callable, Optional, np
 
 key = rand.PRNGKey(184)
@@ -50,20 +74,19 @@ def q_to_greedy(Q: QFunction) -> Policy:
     return lambda s, h: np.argmax(Q(s, h))
 ```
 
-The @sec-mdps chapter discussed the case of **finite** MDPs, where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite.
-This gave us a closed-form expression for computing the r.h.s. of @thm-bellman-consistency.
-In this chapter, we consider the case of **large** or **continuous** state spaces, where the state space is too large to be enumerated.
-In this case, we need to *approximate* the value function and Q-function using methods from **supervised learning**.
-
-## Fitted value iteration
+## Fitted value iteration {#sec-fitted-vi}
 
 Let us apply ERM to the RL problem of computing the optimal policy / value function.
 
 How did we compute the optimal value function in MDPs with _finite_ state and action spaces?
 
-- In a @sec-finite-horizon-mdps, we can use @fig-optimal-policy, working backwards from the end of the time horizon, to compute the optimal value function exactly.
-
-- In an @sec-infinite-horizon-mdps, we can use @sec-value-iteration, which iterates the Bellman optimality operator @eq-bellman-optimality-operator to approximately compute the optimal value function.
+- In a finite-horizon MDP (@sec-finite-horizon-mdps),
+  we can apply dynamic programming,
+  working backwards from the end of the time horizon, to compute the optimal value function exactly.
+- In an infinite-horizon MDP (@sec-infinite-horizon-mdps),
+  we can use @sec-value-iteration,
+  which iterates the Bellman optimality operator @eq-bellman-optimality-operator
+  to approximately compute the optimal value function.
 
 Our existing approaches represent the value function, and the MDP itself,
 in matrix notation.
@@ -188,7 +211,6 @@ We can apply the same strategy here, using the $\hat f$ from the previous iterat
 and then using this new dataset to fit the next iterate.
 
 ::: {#def-fitted-q-iteration}
-
 #### Fitted Q-function iteration
 
 1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
@@ -221,10 +243,10 @@ def fitted_q_iteration(
 ```
 
 ## Fitted policy evaluation {#sec-fitted-pi-eval}
+
 We can also use this fixed-point interation to *evaluate* a policy using the dataset (not necessarily the one used to generate the trajectories):
 
 ::: {#def-fitted-evaluation}
-
 #### Fitted policy evaluation
 
 **Input:** Policy $\pi : \mathcal{S} \times [H] \to \Delta(\mathcal{A})$ to be evaluated.
@@ -261,7 +283,9 @@ def fitted_evaluation(
     return Q_hat
 ```
 
-::: {attention}
+::: {#exr-spot-difference}
+#### Spot the difference
+
 Spot the difference between `fitted_evaluation` and `fitted_q_iteration`. (See the definition of `get_y`.)
 How would you modify this algorithm to evaluate the data collection policy?
 :::
@@ -287,5 +311,6 @@ def fitted_policy_iteration(
 ```
 
 ## Summary
+
 
 

@@ -33,6 +33,7 @@ import latexify
 from latexify.plugins.sum_prod import SumProdPlugin
 from latexify.plugins.jaxtyping import JaxTypingPlugin
 from latexify.plugins.numpy import NumpyPlugin
+from latexify.plugins.callable import CallablePlugin
 
 
 latex = partial(
@@ -42,6 +43,7 @@ latex = partial(
         SumProdPlugin(),
         JaxTypingPlugin(),
         NumpyPlugin(),
+        CallablePlugin(),
     ]
 )
 

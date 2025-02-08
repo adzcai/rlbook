@@ -6,7 +6,7 @@
 \providecommand{\ind}[1]{\mathbf{1}\left\{#1\right\}}
 \providecommand{\st}{s}
 \providecommand{\act}{a}
-\providecommand{\E}{\mathbb{E}}
+\providecommand{\E}{\mathop{\mathbb{E}}}
 \providecommand{\R}{\mathbb{R}}
 \providecommand{\pr}{\mathbb{P}}
 

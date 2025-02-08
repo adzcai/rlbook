@@ -4,6 +4,14 @@ This is the course textbook for the Harvard undergraduate course **CS 1840: Intr
 
 This project is rendered using [Quarto](https://quarto.org).
 Run `quarto render` to build the project and `quarto publish` to deploy it to GitHub pages.
+Run `quarto preview` to preview the project in a web browser.
+You may need to first set the environment variable
+
+```bash
+QUARTO_CHROMIUM_HEADLESS_MODE=new
+```
+
+(See https://github.com/quarto-dev/quarto-cli/issues/10532)
 
 Please leave an issue on GitHub if you have any suggestions or improvements!
 
@@ -55,3 +63,15 @@ than value iteration.
 
 I also thought the motivation behind infinite-horizon setting could have been made more explicit,
 instead of treating it as simply another set of notation to work with.
+
+### Learning
+
+In the supervised learning chapter,
+I provide a bit more detailed of an example of a supervised learning task
+(image classification of handwritten digits).
+
+I add an example illustrating parameterized function classes.
+Students without prior experience in machine learning might not be familiar with the concept of parameters.
+They are often introduced in terms of "knobs that you can turn to improve the model",
+but this doesn't really accurately describe them at all.
+
