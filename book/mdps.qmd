@@ -43,10 +43,10 @@ This chapter will introduce the most popular formalization for such tasks:
 We will study **dynamic programming (DP)** algorithms
 for solving *fully specified* tasks
 in which we completely understand the environment.
-We’ll describe how to _evaluate_ different policies
+We'll describe how to _evaluate_ different policies
 and how to compute (or approximate)
 the **optimal policy** for a given MDP.
-We’ll introduce the **Bellman consistency condition**, which allows us to analyze the whole sequence of interactions in terms of individual timesteps.
+We'll introduce the **Bellman consistency condition**, which allows us to analyze the whole sequence of interactions in terms of individual timesteps.
 
 ::: {#rem-complications}
 #### Further generalizations
@@ -122,7 +122,7 @@ are the most common formalization of decision problems.
 MDPs can be classified as **finite-horizon**,
 where the interactions end after some finite number of time steps,
 or **infinite-horizon**, where the interactions are allowed to continue indefinitely.
-We’ll begin with the finite-horizon case and discuss the infinite-horizon case in @sec-infinite-horizon-mdps.
+We'll begin with the finite-horizon case and discuss the infinite-horizon case in @sec-infinite-horizon-mdps.
 
 
 ::: {#def-finite-horizon-mdp}
@@ -141,7 +141,7 @@ The components of a finite-horizon Markov decision process are:
     $\mathcal{A}$ denotes set of possible actions,
     called the **action space**.
 
-3.  An **initial state distribution** $\mu \in \triangle(\mathcal{S})$.
+3.  An **initial state distribution** $d_0 \in \triangle(\mathcal{S})$.
 
 4.  The **state transitions** (a.k.a. **dynamics**)
     $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$
@@ -174,7 +174,7 @@ Combined together, these objects specify a finite-horizon Markov
 decision process:
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, \mu, P, r, \hor).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, P, r, \hor).
 $$
 :::
 
@@ -186,7 +186,7 @@ values):
 
 $$
 \begin{aligned}
-    \mu &\in [0, 1]^{|\mathcal{S}|} &
+    d_0 &\in [0, 1]^{|\mathcal{S}|} &
     P &\in [0, 1]^{(|\mathcal{S} \times \mathcal{A}|) \times |\mathcal{S}|} &
     r &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}
 \end{aligned}
@@ -244,7 +244,7 @@ Your room has the possible states
 $\mathcal{S} = \{ \text{orderly}, \text{messy} \}.$
 You can take either of the actions $\mathcal{A} = \{ \text{ignore}, \text{tidy} \}.$
 The room starts off orderly,
-that is, $\mu(\text{orderly}) = 1$.
+that is, $d_0(\text{orderly}) = 1$.
 
 The **state transitions** are as follows:
 if you tidy the room, it becomes (or remains) orderly;
@@ -331,10 +331,10 @@ their outputs, inputs, and time-dependence.
 ![A stochastic policy, which produces a distribution over possible actions](shared/stochastic_policy.png)
 :::
 
-2.  Inputs: **State-dependent or history-dependent.** A state-dependent (a.k.a.
+2.  Inputs: **history-independent or history-dependent.** A history-independent (a.k.a.
     "Markovian") policy only depends on the current state, while a
     history-dependent policy depends on the sequence of past states,
-    actions, and rewards. We'll only consider state-dependent policies
+    actions, and rewards. We'll only consider history-independent policies
     in this course.
 
 3.  **Stationary or time-dependent.**
@@ -391,7 +391,7 @@ immutability makes code easier to reason about.
 ::: {#exr-markov-future}
 #### Conditional independence for future states
 
-Suppose actions are chosen according to a state-dependent policy.
+Suppose actions are chosen according to a history-independent policy.
 Use the chain rule of probability to show that,
 conditioned on the current state and action $s_\hi, a_\hi$,
 _all_ future states $s_{\hi'}$ where $\hi' > \hi$
@@ -403,11 +403,16 @@ $$
 $$
 :::
 
+
+::: {#def-trajectory-distribution}
+#### Trajectory distribution
+
 Once we've chosen a policy,
 we can sample trajectories by repeatedly choosing actions according to the policy
 and observing the rewards and updated states returned by the environment.
 This generative process induces a distribution $\rho^{\pi}$ over trajectories.
-(We assume that $\mu$ and $P$ are clear from context.)
+(We assume that $d_0$ and $P$ are clear from context.)
+:::
 
 :::: {#exm-tidy-traj}
 #### Trajectories in the tidying environment
@@ -425,16 +430,24 @@ Here is a possible trajectory for the tidying example:
 Could any of the policies in @exm-tidy-policy have generated this trajectory?
 ::::
 
-Note that for a state-dependent policy, using the Markov property (@def-markov-property),
+Note that for a history-independent policy, using the Markov property (@def-markov-property),
 we can write down the likelihood function of this probability distribution in an **autoregressive** way (i.e. one timestep at a time):
 
+::: {#thm-autoregressive-trajectories}
+#### Trajectory distributions of history-independent policies
+
+Let $\pi$ be a history-independent policy.
+Then its trajectory distribution $\rho^\pi$ (@def-trajectory-distribution)
+can be written as
+
 $$
-\rho^{\pi}(\tau) := \mu(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})
+\rho^{\pi}(\tau) := d_0(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})
 $$ {#eq-autoregressive-trajectories}
+:::
 
 ```{mermaid}
 %%| label: fig-trajectory-diagram
-%%| fig-cap: A trajectory is generated by taking a sequence of actions according to the state-dependent policy.
+%%| fig-cap: A trajectory is generated by taking a sequence of actions according to the history-independent policy.
 
 graph LR
     S0($$s_0$$) -- $$\pi_0$$ --> A0{{$$a_0$$}}
@@ -486,7 +499,7 @@ that is, $r : \mathcal{S} \times \mathcal{A} \to \triangle(\R)$.
 For a deterministic policy $\pi$,
 we have that $\pi_\hi(a \mid s) = \ind{a = \pi_\hi(s)}$;
 that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise.
-In this case, the only randomness in sampling trajectories comes from the initial state distribution $\mu$ and the state transitions $P$.
+In this case, the only randomness in sampling trajectories comes from the initial state distribution $d_0$ and the state transitions $P$.
 
 ### Policy evaluation {#sec-eval-dp-finite-horizon}
 
@@ -499,7 +512,7 @@ $$ {#eq-expected-total-reward}
 
 where $r_\hi = r(s_\hi, a_\hi)$.
 Note that the quantity $r_0 + \cdots + r_{\hor-1}$ is a random variable
-whose distribution depends on the policy's trajectory distribution $\rho^\pi$ (@eq-autoregressive-trajectories).
+whose distribution depends on the policy's trajectory distribution $\rho^\pi$ (@def-trajectory-distribution).
 We need tools for describing the expected total reward achieved by a given policy,
 starting in specific states and actions.
 This will allow us to compare the quality of different policies
@@ -508,7 +521,7 @@ and compute the optimal policy.
 ::: {#def-value}
 #### Value function
 
-Let $\pi$ be a state-dependent policy.
+Let $\pi$ be a history-independent policy.
 Its **value function** at time $\hi$ returns the expected remaining reward
 when starting in a specific state:
 
@@ -517,7 +530,7 @@ V_\hi^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s
 $$ {#eq-v}
 
 Similarly,
-a state-dependent policy's **action-value function** (aka Q function)
+a history-independent policy's **action-value function** (aka Q function)
 at time $\hi$ returns its expected remaining reward,
 starting in a specific state
 _and_ taking a specific action:
@@ -618,7 +631,7 @@ in the following way:
 ::: {#thm-relating-v-q}
 #### Relating $V^\pi$ and $Q^\pi$
 
-Let $\pi$ be a state-dependent policy.
+Let $\pi$ be a history-independent policy.
 The value of a state is the expected action-value
 in that state
 over actions drawn from the policy:
@@ -686,7 +699,7 @@ who is credited with introducing dynamic programming in 1953.
 ::: {#thm-bellman-consistency}
 #### Bellman consistency equations
 
-For a state-dependent policy $\pi$,
+For a history-independent policy $\pi$,
 
 $$
 V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')].
@@ -725,7 +738,7 @@ def check_bellman_consistency_v(
 ::: {#rem-bellman-for-deterministic}
 #### The Bellman consistency equation for deterministic policies
 
-Note that for state-dependent deterministic policies,
+Note that for history-independent deterministic policies,
 the Bellman consistency equations simplify to
 
 $$
@@ -743,7 +756,7 @@ that it might not be an actual value function of a policy.
 How might we improve this guess?
 
 Recall that the Bellman consistency equations (@eq-bellman-consistency)
-hold for the value functions of state-dependent policies.
+hold for the value functions of history-independent policies.
 So if $v$ is close to the target $V^\pi$,
 it should nearly satisfy the system of equations
 associated with $\pi$.
@@ -945,10 +958,11 @@ Markdown(tabulate(
 We've just seen how to *evaluate* a given policy.
 But how can we find the _best_ policy for a given environment?
 We must first define what it means for a policy to be optimal.
-We'll investigate optimality only for _state-dependent_ policies.
+We'll investigate optimality for _history-independent_ policies.
 In @thm-optimal-greedy,
-we'll see that this is actually sufficient:
-the best state-dependent policy performs
+we'll see that constraining ourselves to history-independent policies
+isn't actually a constraint:
+the best history-independent policy performs
 at least as well as
 the best history-dependent policy,
 in all scenarios!
@@ -961,18 +975,18 @@ Recall the Markov property (@def-markov-property),
 which says that once we know the current state,
 the next state becomes independent from the past history.
 This means that history-dependent policies, intuitively speaking,
-don't benefit over simply state-dependent ones in MDPs.
+don't benefit over simply history-independent ones in MDPs.
 :::
 
 ::: {#def-optimal-policy-finite}
 #### Optimal policies
 
-Let $\pi^\star$ be a state-dependent policy.
+Let $\pi^\star$ be a history-independent policy.
 We say that $\pi^\star$ is **optimal**
 if $V_\hi^{\pi^\star}(s) \ge V_\hi^{\pi}(s)$
-for any state-dependent policy $\pi$ at any time $\hi \in [\hor]$.
+for any history-independent policy $\pi$ at any time $\hi \in [\hor]$.
 In other words,
-an optimal state-dependent policy achieves the highest possible
+an optimal history-independent policy achieves the highest possible
 expected remaining reward in every state at every time.
 :::
 
@@ -999,7 +1013,7 @@ in which reward can be obtained.
 Given a state $s$ at time $\hi$,
 the optimal value $V^\star_\hi(s)$
 is the _maximum_ expected remaining reward
-achievable by any state-dependent policy $\pi$:
+achievable by any history-independent policy $\pi$:
 
 $$
 V^\star_\hi(s) := \max_{\pi} V^{\pi}_\hi(s).
@@ -1114,7 +1128,7 @@ This will prove useful when we discuss **off-policy algorithms**
 later in the course.
 :::
 
-We now construct a deterministic state-dependent optimal policy
+We now construct a deterministic history-independent optimal policy
 by acting *greedily*
 with respect to the optimal action-value function:
 
@@ -1333,7 +1347,7 @@ Let us review some equivalent definitions of an optimal policy:
 Let $\pi$ be a stationary policy.
 Then the following are all equivalent:
 
-1. $\pi$ is optimal across state-dependent policies (@def-optimal-policy-finite).
+1. $\pi$ is optimal across history-independent policies (@def-optimal-policy-finite).
 2. $\pi$ is optimal across all policies (@eq-optimal-all).
 3. $V^\pi = V^\star$.
 4. $Q^\pi = Q^\star$.
@@ -1419,7 +1433,7 @@ the trajectory will likely continue for a long time.
 The other components of the MDP remain from the finite-horizon setting (@def-finite-horizon-mdp):
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, \mu, P, r, \gamma).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, P, r, \gamma).
 $$
 
 ```{python}
@@ -1649,7 +1663,7 @@ for the rewards and state transitions:
 
 $$
 \begin{aligned}
-    r^{\pi} &\in \mathbb{R}^{|\mathcal{S}|} & P^{\pi} &\in [0, 1]^{|\mathcal{S}| \times |\mathcal{S}|} & \mu &\in [0, 1]^{|\mathcal{S}|} \\
+    r^{\pi} &\in \mathbb{R}^{|\mathcal{S}|} & P^{\pi} &\in [0, 1]^{|\mathcal{S}| \times |\mathcal{S}|} & d_0 &\in [0, 1]^{|\mathcal{S}|} \\
     \pi &\in \mathcal{A}^{|\mathcal{S}|} & V^\pi &\in \mathbb{R}^{|\mathcal{S}|} & Q^\pi &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}.
 \end{aligned}
 $$
@@ -1672,7 +1686,7 @@ r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix},
 \quad
 P^{\pi} = \begin{bmatrix} 0.7 & 0.3 \\ 1 & 0 \end{bmatrix},
 \quad
-\mu = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
+d_0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
 $$
         
 We'll see how to
@@ -2154,14 +2168,14 @@ $$
 -   Markov decision processes (MDPs) are a framework for sequential
     decision making under uncertainty. They consist of a state space
     $\mathcal{S}$, an action space $\mathcal{A}$, an initial state distribution
-    $\mu \in \Delta(\mathcal{S})$, a transition function $P(s' \mid s, a)$, and a
+    $d_0 \in \Delta(\mathcal{S})$, a transition function $P(s' \mid s, a)$, and a
     reward function $r(s, a)$. They can be finite-horizon (ends after
     $H$ timesteps) or infinite-horizon (where rewards scale by
     $\gamma \in (0, 1)$ at each timestep).
 
 -   Our goal is to find a policy $\pi$ that maximizes expected total
     reward. Policies can be **deterministic** or **stochastic**,
-    **state-dependent** or **history-dependent**, **stationary** or
+    **history-dependent** or **history-independent**, **stationary** or
     **time-dependent**.
 
 -   A policy induces a distribution over **trajectories**.
