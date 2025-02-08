@@ -4,15 +4,83 @@
 
 ## Introduction
 
-The core task of RL is finding the **optimal policy** in a given environment. This is essentially an *optimization problem:* out of some space of policies, we want to find the one that achieves the maximum total reward (in expectation).
+The core task of RL is finding the **optimal policy** in a given environment.
+This is essentially an *optimization problem*
+(i.e. computing a minimum or maximum):
+out of some class of policies $\Pi$,
+we want to find the one that achieves the maximum expected total reward:
 
-It's typically intractable to compute the optimal policy exactly in some finite number of steps. Instead, **policy optimization algorithms** start from some randomly initialized policy, and then *improve* it step by step. We've already seen some examples of these, namely @sec-policy-iteration for finite MDPs and @sec-iterative-lqr in continuous control.
+$$
+\hat \pi = \arg\max_{\pi \in \Pi} \E_{\tau \sim \rho^\pi} [R(\tau)] \quad \text{where} \quad R(\tau) := \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi).
+$$ {#eq-policy-optimization-goal}
 
-In particular, we often use policies that can be described by some finite set of **parameters.** We will see some examples in @sec-parameterizations. For such parameterized policies, we can approximate the **policy gradient:** the gradient of the expected total reward with respect to the parameters. This tells us the direction the parameters should be updated to achieve a higher expected total reward. Policy gradient methods are responsible for groundbreaking applications including AlphaGo, OpenAI Five, and large language models, many of which use policies parameterized as deep neural networks.
+In a known environment with a finite set of states and actions,
+we can compute the optimal policy
+using dynamic programming in $O( H \cdot |\mathcal{S}|^2 \cdot |\mathcal{A}|)$ steps (@sec-finite-opt-dp).
+In more general settings, though,
+such as when the environment is _unknown_,
+it is typically intractable to compute the optimal policy exactly.
+Instead, we start from some random policy,
+and then iteratively *improve* it by interacting with the environment.
+Policy iteration (@sec-policy-iteration) and iterative LQR (@sec-iterative-lqr)
+are two algorithms we've seen that do this.
 
-1.  We begin the chapter with a short review of gradient ascent, a general **optimization method.**
-2.  We'll then see how to estimate the **policy gradient,** enabling us to apply (stochastic) gradient ascent in the RL setting.
-3.  Then we'll explore some *proximal optimization* techniques that ensure the steps taken are "not too large". This is helpful to stabilize training and widely used in practice.
+In this chapter,
+we will explore _policy gradient algorithms,_
+which also iteratively improve a policy.
+The _gradient_ of a function at a specific input point
+is the direction that increases the output value most rapidly.
+If we think of the expected total reward as a function of the policy,
+we can repeatedly shift the policy by the gradient of that function
+to obtain policies that achieve higher expected total rewards.
+
+| Chapter | State space | Action space | Policies | Knowledge of environment | Key algorithms |
+| --- | --- | --- | --- | --- |
+| @sec-mdps (MDPs) | $\{1, \dots, \vert \mathcal{S} \vert \}$ | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | known | dynamic programming, policy iteration |
+| @sec-control (Control) | $\R^{n_\st}$ | $\R^{n_\act}$ | deterministic | unknown | (iterative) linear quadratic regulator |
+| @sec-bandits (MABs) | none | $\{ 1, \dots, K \}$ | deterministic or stochastic | unknown | upper confidence bound, Thompson sampling |
+| @sec-fitted-dp (Fitted DP) | arbitrary | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | unknown | Q-learning, fitted policy iteration |
+| This chapter (PG) | arbitrary | arbitrary | stochastic (or deterministic) | unknown | natural policy gradient, proximal policy optimization |
+
+: An overview of problem settings discussed so far. {#tbl-overview-chapters-pg}
+
+Policy gradient methods are responsible for groundbreaking applications including AlphaGo,
+OpenAI Five,
+and large language models.
+This chapter will explore:
+
+1. Examples of _parameterized policies_
+   that can be expressed in terms of a finite set of _parameters._
+1. _Gradient ascent,_
+   a general optimization algorithm for differentiable functions.
+1. Different estimators of the _policy gradient,_
+   enabling us to apply (stochastic) gradient ascent to RL.
+1. *Proximal (policy) optimization* techniques
+   that ensure the steps taken are "not too large".
+   These are some of the most popular and widely used RL algorithms at the time of writing.
+
+::: {#rem-conventions}
+#### Conventions
+
+Policy gradient algorithms typically optimize over _stochastic policies_ (@def-policy).
+In this chapter,
+we will only discuss the case of stochastic policies,
+though there exist policy gradient algorithms
+for deterministic policies as well [@silver_deterministic_2014].
+
+To ease notation,
+we will treat the horizon $H$ as finite
+and avoid adding a discount factor $\gamma$.
+We make the policy's dependence on the timestep $h$ implicit
+by assuming that the state space conveys information about the timestep.
+We also use
+
+$$
+R(\tau) := \sum_{\hi=0}^{\hor-1} r_\hi
+$$ {#eq-total-reward}
+
+to denote the total reward in a trajectory.
+:::
 
 ```{python}
 %load_ext autoreload
@@ -20,16 +88,166 @@ In particular, we often use policies that can be described by some finite set of
 ```
 
 ```{python}
-from utils import plt, Array, Float, Callable, jax, jnp, latex, gym
+from utils import plt, Array, Float, Callable, jax, jnp, rng, latex, gym
+from jaxtyping import UInt
+import jax.random as jr
+import functools as ft
+
+rng = rng(184)
 ```
 
-## Gradient Ascent
+## Parameterized policies {#sec-parameterizations}
 
-::: {note}
-You may have previously heard of *gradient descent* for minimizing functions. Optimization problems are usually posed as *minimization* problems by convention. However, in RL, we usually talk about *maximizing* the expected total reward, and so we perform gradient *ascent* instead.
+Optimizing over the entire space of policies is usually intractable.
+If we want to support continuous state spaces,
+then the space of all policies becomes infinite-dimensional,
+and infinite-dimensional spaces are typically intractable to optimize over.
+Instead, we choose a _parameterized policy class_ with a finite number of adjustable parameters.
+The following examples seek to make this more concrete.
+(We also discussed the notion of a parameterized function class in @sec-sl-parameterized).
+
+::: {#exm-tabular-repr}
+#### Tabular representation
+
+If both the state and action spaces are finite,
+perhaps we could simply learn a preference value $\theta_{s,a}$ for each state-action pair,
+resulting in a table of values.
+These are the $|\mathcal{S}| |\mathcal{A}|$ _parameters_ of the policy.
+Then, for each state,
+to compute the distribution over actions,
+we perform a **softmax** operation:
+we exponentiate each of the values,
+and then normalize to form a valid distribution.
+
+$$
+\pi^\text{softmax}_\theta(a \mid s) = \frac{\exp(\theta_{s,a})}{\sum_{s,a'} \exp (\theta_{s,a'})}.
+$$ {#eq-parameterized-tabular}
+
+However, this doesn't make use of any structure in the states or actions,
+so while this is flexible, it is also prone to overfitting.
+For small state and action spaces,
+it makes more sense to use a dynamic programming algorithm from @sec-mdps.
 :::
 
-**Gradient ascent** is a general optimization algorithm for any differentiable function. A suitable analogy for this algorithm is hiking up a mountain, where you keep taking steps in the steepest direction upwards. Here, your vertical position $y$ is the function being optimized, and your horizontal position $(x, z)$ is the input to the function. The *slope* of the mountain at your current position is given by the *gradient*, written $\nabla y(x, z) \in \mathbb{R}^2$.
+For a given _parameterization,_ such as the one above,
+we call the set of resulting policies the **parameterized policy class,**
+that is,
+
+$$
+\{ \pi_\theta \mid \theta \in \R^D \},
+$$ {#eq-parameterized-class}
+
+where $D$ is the fixed number of parameters.
+Let us explore some more examples of parameterized policy classes.
+
+::: {#exm-linear-in-features}
+#### Linear in features
+
+Another approach is to map each state-action pair into some **feature space** $\phi(s, a) \in \mathbb{R}^D$.
+Then, to map a feature vector to a probability,
+we take a linear combination of the features and take a softmax.
+The parameters $\theta$ are the coefficients of the linear combination:
+
+$$
+\pi^\text{linear}_{\theta}(a \mid s) = \frac{\exp(\theta^\top \phi(s, a))}{\sum_{a'} \exp(\theta^\top \phi(s, a'))}.
+$$ {#eq-parameterized-linear}
+
+Another interpretation is that $\theta$ represents the feature vector of the "desired" state-action pair,
+as state-action pairs whose features align closely with $\theta$ are given higher probability.
+:::
+
+::: {#exm-neural-policy}
+#### Neural policies
+
+More generally,
+we could map states and actions to unnormalized scores
+via some parameterized function $f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$,
+such as a neural network, and choose actions according to a softmax:
+
+$$
+\pi^\text{neural}_\theta(a \mid s) = \frac{\exp(f_{\theta}(s, a))}{\sum_{a'} \exp(f_{\theta}(s, a'))}.
+$$ {#eq-parameterized-neural}
+:::
+
+::: {#rem-why-softmax}
+#### Why softmax
+
+The three parameterized policy classes above all use the _softmax_ operation.
+Of course, this isn't the only way to turn a list of values
+into a probability distribution:
+for example, you could also subtract by the minimum value
+and divide by the range.
+Why is softmax preferred in practice?
+One reason is that it is a _smooth, differentiable_ function of the input values.
+It is also nice to work with analytically,
+and has other interpretations from physics,
+where it is known as the _Gibbs_ or _Boltzmann_ distribution,
+and economics,
+where it is known as the _Bradley-Terry model_ for ranking different choices.
+:::
+
+::: {#exm-gaussian-policy}
+#### Diagonal Gaussian policies for continuous action spaces
+
+Consider an $n$-dimensional action space $\mathcal{A} = \mathbb{R}^{n_a}$.
+Then for a stochastic policy,
+we could predict the *mean* action
+and then add some random noise about it.
+For example,
+we could use a neural network $\mu_\theta$ to predict the mean action
+and then add some noise $\epsilon \sim \mathcal{N}(0, \sigma^2 I)$ to it:
+
+$$
+\pi_\theta(\cdot \mid s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).
+$$
+:::
+
+Now we've seen some examples of _parameterized policies._
+Optimizing over a parameterized policy class
+makes the policy optimization problem
+finite-dimensional:
+
+$$
+\begin{aligned}
+\hat \theta &= \arg\max_{\theta \in \R^D} J(\theta) \\
+\text{where}\quad J(\theta) &:= \E_{\tau \sim \rho^{\pi_\theta}} \sum_{h=0}^{\hor-1} r(s_\hi, a_\hi).
+\end{aligned}
+$$ {#eq-policy-optimization-parameters}
+
+This enables us to apply one of the most popular and general optimization algorithms:
+_gradient ascent_.
+
+## Gradient ascent {#sec-gd}
+
+::: {#rem-ascent-vs-descent}
+#### Gradient "ascent" vs "descent"
+
+You may have previously heard of *gradient descent* for minimizing functions.
+Optimization problems are usually posed as *minimization* problems by convention.
+However, in RL, we usually talk about *maximizing* the expected total reward,
+and so we perform gradient *ascent* instead.
+:::
+
+**Gradient ascent** is an optimization algorithm
+that can be applied to any differentiable function.
+For two-dimensional inputs,
+a suitable analogy for this algorithm is hiking up a hill,
+where you keep taking steps in the steepest direction upwards.
+Here,
+your vertical position $y$ is the function being optimized,
+and your horizontal position $(x, z)$ is the input to the function.
+The *slope* of the mountain at your current position
+can be expressed using the *gradient*,
+written $\nabla y(x, z) \in \mathbb{R}^2$.
+For differentiable functions,
+this can be computed as the vector of partial derivatives,
+
+$$
+\nabla y(x, z) = \begin{pmatrix}
+\frac{\partial y}{\partial x} \\
+\frac{\partial y}{\partial z}
+\end{pmatrix}.
+$$ {#eq-grad-partial}
 
 ```{python}
 def f(x, y):
@@ -56,94 +274,307 @@ ax.set_title("Gradient ascent example")
 plt.show()
 ```
 
-For differentiable functions, this can be thought of as the vector of partial derivatives,
+To calculate the *slope* (aka "directional derivative") of the mountain in a given direction $(\Delta x, \Delta z)$,
+you take the dot product of the difference vector with the gradient:
 
 $$
-\nabla y(x, z) = \begin{pmatrix}
-\frac{\partial y}{\partial x} \\
-\frac{\partial y}{\partial z}
-\end{pmatrix}.
-$$
+\Delta y = \begin{pmatrix}
+\Delta x \\ \Delta z
+\end{pmatrix}
+\cdot
+\nabla y(x, z),
+$$ {#eq-grad-dot}
 
-To calculate the *slope* (aka "directional derivative") of the mountain in a given direction $(\Delta x, \Delta z)$, you take the dot product of the difference vector with the gradient. This means that the direction with the highest slope is exactly the gradient itself, so we can describe the gradient ascent algorithm as follows:
-
-::: {#def-gradient-ascent}
-#### Gradient ascent
+where $x, z$ is your current position.
+This shows that the direction with the highest slope is exactly the gradient itself.
+Walking in that direction
+corresponds to adding a positive multiple of the gradient to your current position:
 
 $$
 \begin{pmatrix}
-x^{k+1} \\ z^{k+1}
+x^{t+1} \\ z^{t+1}
 \end{pmatrix}
 = 
 \begin{pmatrix}
-x^{k} \\ z^{k}
+x^{t} \\ z^{t}
 \end{pmatrix}
 +
-\eta \nabla y(x^{k}, z^{k})
+\eta \nabla y(x^{t}, z^{t})
 $$
+
+where $t$ denotes the iteration of the algorithm
+and $\eta > 0$ is a "step size" hyperparameter that controls the size of the steps we take.
+(Note that we could also vary the step size across iterations,
+that is, $\eta^0, \dots, \eta^T$.)
+
+The case of a two-dimensional input is easy to visualize.
+The analogy to climbing a hill
+is why gradient descent is sometimes called "hill climbing"
+and the graph of the objective function is called the "loss landscape".
+(The term "loss" comes from supervised learning,
+which you can read about in @sec-sl.)
+But this idea can be straightforwardly extended to higher-dimensional inputs.
+From now on,
+we'll use $J$ to denote the function we're trying to maximize,
+and $\theta$ to denote the parameters being optimized over.
+(In the above example, $\theta = \begin{pmatrix} x & z \end{pmatrix}^\top$).
+
+::: {#def-grad-ascent}
+#### Gradient ascent
+
+Suppose we are trying to solve the optimization problem
+
+$$
+\theta^\star = \arg\max_{\theta \in \R^D} J(\theta),
+$$ {#eq-opt}
+
+where $J(\theta) \in \R$ is the differentiable function to be maximized.
+Gradient ascent starts with an initial guess $\theta^0$
+and then takes steps in the direction of $\nabla J(\theta^t)$,
+where $\theta^t$ is the current iterate:
+
+$$
+\theta^{t+1} = \theta^t + \eta \nabla J(\theta^t).
+$$ {#eq-grad-ascent}
+
+Note that we scale $\nabla J(\theta^t)$ by the **step size** $\eta > 0$,
+also known as the learning rate.
 :::
 
-where $k$ denotes the iteration of the algorithm and $\eta > 0$ is a "step size" hyperparameter that controls the size of the steps we take. (Note that we could also vary the step size across iterations, that is, $\eta^0, \dots, \eta^K$.)
+Our use of the notation $J(\theta)$ in the earlier equation @eq-policy-optimization-parameters
+is intended to clarify the application of gradient ascent to RL.
+In RL, $\theta$ denotes the policy parameters,
+and $J(\theta)$ expresses the expected total reward obtained by the resulting policy.
+Now, all that remains is to compute,
+or at least approximate, the **policy gradient** $\nabla J(\theta)$.
+This will be our focus in the following sections.
 
-The case of a two-dimensional input is easy to visualize. But this idea can be straightforwardly extended to higher-dimensional inputs.
+```{python}
+#| label: fig-grad-ascent
+#| fig-cap: Pseudocode for gradient ascent.
 
-From now on, we'll use $J$ to denote the function we're trying to maximize, and $\theta$ to denote the parameters being optimized over. (In the above example, $\theta = \begin{pmatrix} x & z \end{pmatrix}^\top$).
+def gradient_ascent(
+    theta_init: Float[Array, " D"],
+    objective: Callable[[Float[Array, " D"]], float],
+    eta: float,
+    n_steps: UInt,
+):
+    # `estimate_gradient` eats the current parameters and returns an estimate of the objective function's gradient at those parameters.
+    theta = theta_init
+    history = [theta]
+    for step in range(n_steps):
+        theta = theta + eta * jax.grad(objective)(theta)
+        history.append(theta)
+    return theta, jnp.array(history)
 
-Notice that our parameters will stop changing once $\nabla J(\theta) = 0.$ Once we reach this **stationary point,** our current parameters are 'locally optimal' in some sense; it's impossible to increase the function by moving in any direction. If $J$ is *convex*, then the only point where this happens is at the *global optimum.* Otherwise, if $J$ is nonconvex, the best we can hope for is a *local optimum.*
+latex(gradient_ascent, id_to_latex={"objective": "J"})
+```
+
+Notice that the parameters will stop changing once $\nabla J(\theta) = 0$.
+Once we reach this **stationary point,**
+our current parameters are 'locally optimal'
+(assuming we're at a local maximum):
+it's impossible to increase the function by moving in any direction.
+If $J$ is *concave*
+(the opposite of *convex*,
+since we're solving a maximization problem),
+then the only point where this happens is at the *global optimum.*
+Otherwise, if $J$ is nonconcave
+(or for minimization problems, nonconvex),
+the best we can hope for is a *local optimum.*
+We won't go deeper into the theory of convex functions here.
+For more details, refer to the textbook of @boyd_convex_2004.
+
+::: {#rem-sga-limitations}
+#### Limitations of gradient ascent
+
+Gradient ascent and its variants are responsible for most of the major achievements in modern machine learning.
+It is important to note,
+however, that for many problems,
+gradient descent is _not_ a good optimization algorithm to reach for!
+If you have more information about the problem,
+such as access to _second_ derivatives,
+you can apply more powerful optimization algorithms
+that converge much more rapidly.
+Read @nocedal_numerical_2006
+if you're curious about the field of numerical optimization.
+:::
 
 ### Computing derivatives {#sec-computing-derivatives}
 
 How does a computer compute the gradient of a function?
 
-One way is *symbolic differentiation,* which is similar to the way you might compute it by hand: the computer applies a list of rules to transform the *symbols* involved. Python's `sympy` package supports symbolic differentiation. However, functions implemented in code may not always have a straightforward symbolic representation.
+One way is **symbolic differentiation,**
+which is similar to the way you might compute it by hand:
+the computer applies a list of rules to transform the *symbols* involved.
+Python's `sympy` package [@meurer_sympy_2017] supports symbolic differentiation.
+However, functions implemented as algorithms in code
+may not always have a straightforward symbolic representation.
 
-Another way is *numerical differentiation,* which is based on the limit definition of a (directional) derivative:
+Another way is **numerical differentiation,**
+which is based on the limit definition of a (directional) derivative:
 
 $$
 \nabla_{\boldsymbol{u}} J(\boldsymbol{x}) = \lim_{\varepsilon \to 0}
 \frac{J(\boldsymbol{x} + \varepsilon \boldsymbol{u}) - J(\boldsymbol{x})}{\varepsilon}
+$$ {#eq-numerical-differentiation}
+
+Then, we can substitute a small value of $\varepsilon$ on the r.h.s. to approximate the directional derivative.
+How small, though?
+Depending on how smooth the function is and how accurate our estimate needs to be,
+we may need such a small value of $\varepsilon$
+that typical computers will run into _rounding errors_.
+Also, to compute the full gradient,
+we would need to compute the r.h.s. once for each input dimension.
+This is an issue if computing $J$ is expensive.
+
+**Automatic differentiation** achieves the best of both worlds.
+Like symbolic differentiation,
+we manually implement the derivative rules for a few basic operations.
+However, instead of executing these on the *symbols*,
+we execute them on the *values* when the function gets called,
+like in numerical differentiation.
+This allows us to differentiate through programming constructs such as branches or loops,
+and doesn't involve any arbitrarily small values.
+@baydin_automatic_2018 provides an accessible survey of automatic differentiation.
+At the time of writing,
+all of the popular Python libraries for machine learning,
+such as PyTorch [@ansel_pytorch_2024] and Jax [@bradbury_jax_2018],
+use automatic differentiation.
+
+### Stochastic gradient ascent {#sec-sga}
+
+In real applications,
+computing the gradient of the target function is not so simple.
+As an example from supervised learning,
+$J(\theta)$ might be the sum of squared prediction errors across an entire training dataset.
+If our dataset is very large,
+it might not fit into our computer's memory,
+making it impossible to evaluate $\nabla J(\theta)$ at once.
+We will see that computing the exact gradient in RL faces a similar challenge
+where computing the gradient would require computing a complicated integral.
+
+In these cases,
+we can compute some *gradient estimate*
+
 $$
+g_x(\theta) \approx \nabla J(\theta)
+$$ {#eq-grad-estimator-notation}
 
-Then, we can substitute a small value of $\varepsilon$ on the r.h.s. to approximate the directional derivative. How small, though? If we need an accurate estimate, we may need such a small value of $\varepsilon$ that typical computers will run into rounding errors. Also, to compute the full gradient, we would need to compute the r.h.s. once for each input dimension. This is an issue if computing $J$ is expensive.
-
-**Automatic differentiation** achieves the best of both worlds. Like symbolic differentiation, we manually implement the derivative rules for a few basic operations. However, instead of executing these on the *symbols*, we execute them on the *values* when the function gets called, like in numerical differentiation. This allows us to differentiate through programming constructs such as branches or loops, and doesn't involve any arbitrarily small values. @baydin_automatic_2018 provides an accessible survey of automatic differentiation.
-
-### Stochastic gradient ascent
-
-In real applications, computing the gradient of the target function is not so simple. As an example from supervised learning, $J(\theta)$ might be the sum of squared prediction errors across an entire training dataset. However, if our dataset is very large, it might not fit into our computer's memory! Typically in these cases, we compute some *estimate* of the gradient at each step, and walk in that direction instead. This is called **stochastic** gradient ascent. In the SL example above, we might randomly choose a *minibatch* of samples and use them to estimate the true prediction error. (This approach is known as ***minibatch*** **SGD**.)
+of the gradient at each step,
+using some observed data $x$,
+and walk in that direction instead.
+This is called **stochastic** gradient ascent.
+In the SL example above,
+we might randomly choose a *minibatch* of samples
+and use them to estimate the true prediction error.
 
 ```{python}
-def sgd(
+#| label: fig-sga
+#| fig-cap: Pseudocode for stochastic gradient descent.
+
+def sga(
+    rng: jr.PRNGKey,
     theta_init: Float[Array, " D"],
-    estimate_gradient: Callable[[Float[Array, " D"]], Float[Array, " D"]],
+    estimate_gradient: Callable[[jr.PRNGKey, Float[Array, " D"]], Float[Array, " D"]],
     eta: float,
     n_steps: int,
 ):
-    # Perform `n_steps` steps of SGD.
+    # Perform `n_steps` steps of SGA.
 
     # `estimate_gradient` eats the current parameters and returns an estimate of the objective function's gradient at those parameters.
     theta = theta_init
+    rngs = jr.split(rng, n_steps)
+    history = [theta]
     for step in range(n_steps):
-        theta += eta * estimate_gradient(theta)
-    return theta
+        theta = theta + eta * estimate_gradient(rngs[step], theta)
+        history.append(theta)
+    return theta, jnp.array(history)
 
-latex(sgd)
+
+latex(sga, id_to_latex={"estimate_gradient": "g"})
 ```
 
-What makes one gradient estimator better than another? Ideally, we want this estimator to be **unbiased;** that is, on average, it matches a single true gradient step:
+```{python}
+#| label: fig-sga-demo
+#| layout-ncol: 2
+#| fig-cap: GA and SGA on a two-dimensional convex optimization task. Note that a larger batch size reduces the variance in the step direction.
+#| fig-subcap:
+#|   - Full-batch GA.
+#|   - SGA with a batch size of 1.
+#|   - SGA with a batch size of 5.
+#|   - SGA with a batch size of 10.
+
+X = 2 * jr.normal(next(rng), (100, 2))
+w_true = jnp.ones(2)
+y = X @ w_true
+w_init = jnp.zeros(2)
+lr = 0.1
+n_steps = 10
+
+def estimate_gradient(rng, theta, batch_size):
+    batch_idx = jr.randint(rng, batch_size, 0, X.shape[0])
+    X_batch = X[batch_idx]
+    y_batch = y[batch_idx]
+    return - (1 / batch_size) * X_batch.T @ (X_batch @ theta - y_batch)
+
+def loss(theta):
+    return - jnp.mean((X @ theta - y) ** 2)
+
+# loss contour
+w_lim = slice(-0.2, 1.2, 20j)
+w0, w1 = jnp.mgrid[w_lim, w_lim]
+thetas = jnp.stack([w0, w1], axis=2)
+z = jax.vmap(jax.vmap(loss))(thetas)
+
+def plot_history(history):
+    plt.contourf(w0, w1, z, levels=10, alpha=0.3)
+    for i in range(len(history) - 1):
+        plt.arrow(history[i, 0], history[i, 1], history[i+1, 0] - history[i, 0], history[i+1, 1] - history[i, 1],
+                width=0.02, fc='red', ec='red')
+    plt.xlabel(r"$w_0$")
+    plt.ylabel(r"$w_1$")
+    plt.gcf().set_size_inches((3, 2))
+    plt.show()
+
+# also plot full gradient
+_, history_gd = gradient_ascent(w_init, loss, lr, n_steps)
+_, history_sga_1 = sga(next(rng), w_init, ft.partial(estimate_gradient, batch_size=1), lr, n_steps)
+_, history_sga_5 = sga(next(rng), w_init, ft.partial(estimate_gradient, batch_size=5), lr, n_steps)
+_, history_sga_10 = sga(next(rng), w_init, ft.partial(estimate_gradient, batch_size=10), lr, n_steps)
+
+plot_history(history_gd)
+plot_history(history_sga_1)
+plot_history(history_sga_5)
+plot_history(history_sga_10)
+```
+
+What makes one gradient estimator better than another?
+Ideally, we want this estimator to be _unbiased;_
+that is, on average,
+it matches a single true gradient step.
+
+::: {#def-unbiased-estimator}
+#### Unbiased gradient estimator
+
+We call the gradient estimator $g$ **unbiased** if,
+for all $\theta \in \R^D$,
 
 $$
-\E [\tilde \nabla J(\theta)] = \nabla J(\theta).
-$$
+\E_{x \sim p_\theta} [g_x(\theta)] = \nabla J(\theta),
+$$ {#eq-gd-unbiased}
+
+where $p_\theta$ denotes the distribution of the observed data $x$.
+:::
 
 We also want the *variance* of the estimator to be low so that its performance doesn't change drastically at each step.
 
-We can actually show that, for many "nice" functions, in a finite number of steps, SGD will find a $\theta$ that is "close" to a stationary point. In another perspective, for such functions, the local "landscape" of $J$ around $\theta$ becomes flatter and flatter the longer we run SGD.
+We can actually show that, for many "nice" functions, in a finite number of steps, SGA will find a $\theta$ that is "close" to a stationary point. In another perspective, for such functions, the local "landscape" of $J$ around $\theta$ becomes flatter and flatter the longer we run SGA.
 
-::: {rem-sgd-convergence}
-#### SGD convergence
+::: {#thm-sga-convergence}
+#### SGA convergence
 
-More formally, suppose we run SGD for $K$ steps, using an unbiased gradient estimator.
+More formally, suppose we run SGA for $K$ steps, using an unbiased gradient estimator.
 Let the step size $\eta^k$ scale as $O(1/\sqrt{k}).$
 Then if $J$ is bounded and $\beta$-smooth (see below),
 and the *norm* of the gradient estimator has a bounded second moment $\sigma^2,$
@@ -159,282 +590,693 @@ $$
 $$
 :::
 
-We'll now see a concrete application of gradient ascent in the context of policy optimization.
+We'll now see a concrete application of stochastic gradient ascent in the context of policy optimization.
 
-## Policy (stochastic) gradient ascent
+## Policy (stochastic) gradient ascent {#sec-pg-intro}
 
-Remember that in RL, the primary goal is to find the *optimal policy* that achieves the maximimum total reward, which we can express using @def-value:
+Remember that in RL,
+the primary goal is to find the *optimal policy* that achieves the highest total reward.
+Put simply,
+we want policies that _take better actions more often._
+Breaking that down, we need
+
+1. a way to shift the policy to make certain actions more likely, and
+2. a way to measure how good an action is in a given state.
+
+In this section,
+we'll intuitively construct an iterative algorithm for improving the parameters.
+We'll build up to true policy gradient estimators
+by considering a series of update rules.
+
+Let's approach the first task.
+Suppose we want to shift the policy
+to encourage action $a$ in state $s$.
+The key insight is that we can frame this as an optimization problem.
+The objective function is the likelihood of taking action $a$ in state $s$:
+
+$$
+\hat \theta = \arg\max_{\theta} \pi_{\theta}(a \mid s).
+$$ {#eq-max-action-likelihood}
+
+Assuming the output of the policy is differentiable with respect to its parameters,
+we can apply gradient ascent:
 
 $$
 \begin{aligned}
-    J(\pi) := \E_{s_0 \sim \mu_0} V^{\pi} (s_0) = & \E_{\tau \sim \rho^\pi} \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi)
+\theta^{t+1} &= \theta^t + \eta g_{s, a}(\theta^t) \\
+\text{where} \quad g_{s, a}(\theta) &:= \nabla \pi_{\theta}(a \mid s).
 \end{aligned}
-$$ {#eq-objective-fn}
+$$ {#eq-gd-max-action-likelihood}
 
-where $\rho^\pi$ is the distribution over trajectories induced by $\pi$
-(see @eq-autoregressive-trajectories).
+The notation $g$ is chosen to remind you of a gradient estimator @eq-grad-estimator-notation.
+We will draw the relationship between our intuitive approach and SGA more concretely later on.
 
-(Note that we'll continue to work in the *undiscounted, finite-horizon case.* Analogous results hold for the *discounted, infinite-horizon setup.*)
-
-As shown by the notation, this is exactly the function $J$ that we want to maximize using gradient ascent. What variables are we optimizing over in this problem? Well, the objective function $J$ is a function of the policy $\pi$, but in general, $\pi$ is a function, and optimizing over the entire space of arbitrary input-output mappings would be intractable. Instead, we need to describe $\pi$ in terms of some finite set of *parameters* $\theta$.
-
-### Example policy parameterizations {#sec-parameterizations}
-
-What are some ways we could parameterize our policy?
-
-::: {#exm-tabular-repr}
-#### Tabular representation
-
-If both the state and action spaces are finite, perhaps we could simply learn a preference value $\theta_{s,a}$ for each state-action pair. Then to turn this into a valid distribution, we perform a **softmax** operation: we exponentiate each of them, and then normalize to form a valid distribution.
-
-$$
-\pi^\text{softmax}_\theta(a | s) = \frac{\exp(\theta_{s,a})}{\sum_{s,a'} \exp (\theta_{s,a'})}.
-$$
-
-However, this doesn't make use of any structure in the states or actions, so while this is flexible, it is also prone to overfitting.
-:::
-
-::: {#exm-linear-in-features}
-#### Linear in features
-
-Another approach is to map each state-action pair into some **feature space** $\phi(s, a) \in \mathbb{R}^p$. Then, to map a feature vector to a probability, we take a linear combination of the features and take a softmax:
+Now let's approach the second task:
+how do we choose which actions to take more often?
+Suppose we have some random variable $\psi$
+(that's the Greek letter "psi")
+that is correlated with how "good" action $a$ is in state $s$.
+Later in the chapter,
+we'll explore concrete choices for $\psi$,
+but for now,
+we'll leave its identity a mystery.
+Then, to update the policy,
+we could sample an action $a \sim \pi_{\theta^t}(\cdot \mid s)$,
+and weight the corresponding gradient by $\psi$.
+We will therefore call $\psi$ the **gradient coefficient**.
 
 $$
-\pi^\text{linear in features}_{\theta}(a|s) = \frac{\exp(\theta^\top \phi(s, a))}{\sum_{a'} \exp(\theta^\top \phi(s, a'))}.
-$$
-
-Another interpretation is that $\theta$ represents the feature vector of the "desired" state-action pair, as state-action pairs whose features align closely with $\theta$ are given higher probability.
-:::
-
-::: {#exm-neural-policy}
-#### Neural policies
-
-More generally, we could map states and actions to unnormalized scores via some parameterized function $f_\theta : \mathcal{S} \times \mathcal{A} \to \mathbb{R},$ such as a neural network, and choose actions according to a softmax:
-
-$$
-\pi^\text{general}_\theta(a|s) = \frac{\exp(f_{\theta}(s,a))}{\sum_{a'} \exp(f_{\theta}(s,a'))}.
-$$
-:::
-
-::: {#exm-gaussian-policy}
-#### Diagonal Gaussian policies for continuous action spaces
-
-Consider a continuous $n$-dimensional action space $\mathcal{A} = \mathbb{R}^n$. Then for a stochastic policy, we could use a function to predict the *mean* action and then add some random noise about it. For example, we could use a neural network to predict the mean action $\mu_\theta(s)$ and then add some noise $\epsilon \sim \mathcal{N}(0, \sigma^2 I)$ to it:
-
-$$
-\pi_\theta(a|s) = \mathcal{N}(\mu_\theta(s), \sigma^2 I).
-$$
-:::
-
-<!-- **Exercise:** Can you extend the "linear in features" policy to continuous action spaces in a similar way? -->
-
-Now that we have seen some examples of parameterized policies, we will write the total reward in terms of the parameters, overloading notation and letting $\rho_\theta := \rho^{\pi_\theta}$:
-
-$$
-J(\theta) = \E_{\tau \sim \rho_\theta} R(\tau)
-$$
-
-where $R(\tau) = \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi)$ denotes the total reward in the trajectory.
-
-Now how do we maximize this function (the expected total reward) over the parameters? One simple idea would be to directly apply gradient ascent:
-
-$$
-\theta^{k+1} = \theta^k + \eta \nabla J(\theta^k).
-$$
-
-In order to apply this technique, we need to be able to evaluate the gradient $\nabla J(\theta).$ But $J(\theta)$ is very difficult, or even intractable, to compute exactly, since it involves taking an expectation over all possible trajectories $\tau.$ Can we rewrite it in a form that's more convenient to implement?
-
-### Importance Sampling {#sec-importance-sampling}
-
-There is a general trick called **importance sampling** for evaluating difficult expectations. Suppose we want to estimate $\E_{x \sim p}[f(x)]$ where $p$ is hard or expensive to sample from, but easy to evaluate the likelihood $p(x)$ of. Suppose that we *can* easily sample from a different distribution $q$. Since an expectation is just a weighted average, we can sample $x$ from $q$, compute $f(x)$, and then reweight the results: if $x$ is very likely under $p$ but unlikely under $q$, we should boost its weighting, and if it is common under $q$ but uncommon under $p$, we should lower its weighting. The reweighting factor is exactly the **likelihood ratio** between the target distribution $p$ and the sampling distribution $q$:
-
-$$
-\E_{x \sim p}[f(x)] = \sum_{x \in \mathcal{X}} f(x) p(x) = \sum_{x \in \mathcal{X}} f(x) \frac{p(x)}{q(x)} q(x) = \E_{x \sim q} \left[ \frac{p(x)}{q(x)} f(x) \right].
-$$
-
-Doesn't this seem too good to be true? If there were no drawbacks, we could use this to estimate *any* expectation of any function on any arbitrary distribution! The drawback is that the variance may be very large due to the likelihood ratio term. If there are values of $x$ that are very rare in the sampling distribution $q$, but common under $p$, then the likelihood ratio $p(x)/q(x)$ will cause the variance to blow up.
-
-## The REINFORCE policy gradient
-
-Returning to RL, suppose there is some trajectory distribution $\rho(\tau)$ that is **easy to sample from,** such as a database of existing trajectories. We can then rewrite $\nabla J(\theta)$, a.k.a. the *policy gradient*, as follows. All gradients are being taken with respect to $\theta$.
-
-$$
-\begin{aligned}
-    \nabla J(\theta) & = \nabla \E_{\tau \sim \rho_\theta} [ R(\tau) ]                                                                                         \\
-                     & = \nabla \E_{\tau \sim \rho} \left[ \frac{\rho_\theta(\tau)}{\rho(\tau)} R(\tau) \right] &  & \text{likelihood ratio trick}             \\
-                     & = \E_{\tau \sim \rho} \left[ \frac{\nabla \rho_\theta(\tau)}{\rho(\tau)} R(\tau) \right] &  & \text{switching gradient and expectation}
-\end{aligned}
-$$
-
-Note that for $\rho = \rho_\theta$, the inside term becomes
-
-$$
-\nabla J(\theta) = \E_{\tau \sim \rho_\theta} [ \nabla \log \rho_\theta(\tau) \cdot R(\tau)].
-$$
-
-(The order of operations is $\nabla (\log \rho_\theta)(\tau)$.)
-
-Recall that when the state transitions are Markov (i.e. $s_{t}$ only depends on $s_{t-1}, a_{t-1}$) and the policy is time-homogeneous (i.e. $a_\hi \sim \pi_\theta (s_\hi)$), we can write out the *likelihood of a trajectory* under the policy $\pi_\theta$ autoregressively, as in @eq-autoregressive-trajectories. Taking the log of the trajectory likelihood turns it into a sum of terms:
-
-$$
-\log \rho_\theta(\tau) = \log \mu(s_0) + \sum_{\hi=0}^{\hor-1} \log \pi_\theta(a_\hi \mid s_\hi) + \log P(s_{\hi+1} \mid s_\hi, a_\hi)
-$$
-
-When we take the gradient with respect to the parameters $\theta$, only the $\pi_\theta(a_\hi | s_\hi)$ terms depend on $\theta$. This gives the following expression for the policy gradient, known as the "REINFORCE" policy gradient @williams_simple_1992:
-
-$$
-\begin{aligned}
-    \nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{\hi=0}^{\hor-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) R(\tau) \right]
-\end{aligned}
-$$ {#eq-reinforce-pg}
-
-This expression allows us to estimate the gradient by sampling a few sample trajectories from $\pi_\theta,$ calculating the likelihoods of the chosen actions, and substituting these into the expression inside the brackets of @eq-reinforce-pg. Then we can update the parameters $\theta$ in this direction to perform stochastic gradient ascent.
-
-The rest of this chapter investigates ways to *reduce the variance* of this estimator by subtracting off certain correlated quantities.
-
-::: {#lem-intuitive-remark}
-## Intuition behind REINFORCE
-
-Intuitively speaking, we want to update the policy parameters to maximize the probability of taking *optimal actions*. That is, suppose we are in state $s$, and $a^\star$ is an optimal action to take. Then we want to solve $\theta = \arg\max_{\theta'} \pi_{\theta'}(a^\star \mid s)$, which would lead to the gradient ascent expression
-
-$$
-\theta \gets \theta + \nabla \pi_{\theta}(a^\star \mid s).
-$$
-
-However, we don't know the optimal action $a^\star$ in practice. So instead, we must try many actions, and *increase* the probability of the "good" ones and *decrease* the probability of the "bad" ones. Suppose $A(s, a)$ is a measure of how good action $a$ is in state $s$. Then we could write
-
-$$
-\theta \gets \theta + \sum_a \pi_{\theta}(a \mid s) A(s, a) \nabla \pi_{\theta}(a \mid s).
-$$
-
-But this has an issue: the size of each step doesn't just depend on how good it is, but also how *often* the policy takes it already. This could lead to a positive feedback loop where likely actions become more and more likely, without respect to the quality of the action. So we divide by the likelihood to cancel out this factor:
-
-$$
-\theta \gets \theta + \sum_a \pi_{\theta}(a \mid s) A(s, a) \frac{\nabla \pi_{\theta}(a \mid s)}{\pi_{\theta}(a \mid s)}.
-$$
-
-But once we simplify, and sum across timesteps, this becomes *almost* exactly the gradient written above!
-
-$$
-\theta \gets \theta + \mathbb{E}_{a \sim \pi_{\theta}(\cdot \mid s)} [\sum_{\hi=0}^{\hor-1} A(s_\hi, a_\hi) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi) ].
-$$
-
-We will see later on what $A$ concretely corresponds to.
-:::
+g_{s, a}(\theta) := \psi \nabla \pi_{\theta}(a \mid s).
+$$ {#eq-gd-weighted}
 
 ```{python}
-def estimate_gradient_reinforce_pseudocode(env: gym.Env, pi, theta: Float[Array, " D"]):
-    """Estimate the policy gradient using REINFORCE."""
-    tau = sample_trajectory(env, pi(theta))
-    nabla_hat = jnp.zeros_like(theta)
-    total_reward = sum(r for _s, _a, r in tau)
-    for s, a, r in tau:
-        def policy_log_likelihood(theta: Float[Array, " D"]) -> float:
-            return log(pi(theta)(s, a))
-        nabla_hat += jax.grad(policy_log_likelihood)(theta) * total_reward
-    return nabla_hat
+#| label: fig-exm-grad-coefficient
+#| fig-cap: Taking two updates according to @eq-gd-weighted. The first action has $\Psi_0 = 2$, so $\theta$ moves to prefer that action. The second action has $\Psi_1 = -1$, so $\theta$ moves in the opposite direction to avoid that action.
 
-latex(estimate_gradient_reinforce_pseudocode, id_to_latex={"jax.grad": r"\nabla"})
+x1 = jnp.array([0.2, 0.3])
+x2 = jnp.array([0.8, 0.5])
+plt.arrow(
+    0,
+    0,
+    *x1,
+    width=0.02,
+    fc="red",
+    ec="red",
+    linestyle="dashed",
+    label=r"$\nabla \pi_\theta(a_0 \mid s_0)$",
+)
+plt.arrow(
+    0,
+    0,
+    *(2 * x1),
+    width=0.02,
+    fc="darkred",
+    ec="darkred",
+    label=r"$\Psi_0 \nabla \pi_\theta(a_0 \mid s)$",
+    zorder=-1,
+)
+dx = x2 - 2 * x1
+plt.arrow(
+    *(2 * x1),
+    *(dx),
+    width=0.02,
+    fc="blue",
+    ec="blue",
+    label=r"$\nabla \pi_\theta(a_1 \mid s_1)$",
+)
+plt.arrow(
+    *(2 * x1),
+    *(-0.5 * dx),
+    width=0.02,
+    fc="darkblue",
+    ec="darkblue",
+    label=r"$\Psi_1 \nabla \pi_\theta(a_1 \mid s_1)$",
+    zorder=-1,
+)
+
+plt.xlabel(r"$\theta_0$")
+plt.ylabel(r"$\theta_1$")
+plt.xlim(-0.2, 1.2)
+plt.ylim(-0.2, 1.2)
+plt.legend()
+plt.gcf().set_size_inches((6, 4))
+plt.show()
 ```
 
-For some intuition into how this method works, recall that we update our parameters according to
+::: {#exr-solve-directly}
+#### An alternative approach
+
+Compare this with the policy iteration update (@sec-policy-iteration),
+where we updated the deterministic policy according to
+$\pi(s) = \arg\max_{a \in \mathcal{A}} Q^\pi(s, a)$.
+In our current setting,
+why not just solve for $\theta^{t+1} = \arg\max_{\theta} \pi_{\theta}(a^\star \mid s)$,
+where $a^\star = \arg\max_{a \in \mathcal{A}} Q^{\pi_{\theta^t}}(a \mid s)$,
+instead of sampling an action from our policy?
+What type of action space does this approach assume?
+What does the added stochasticity grant you?
+:::
+
+But @eq-gd-weighted has an issue:
+the amount that we encourage action $a$ depends on how *often* the policy takes it.
+This could lead to a positive feedback loop where the most common action becomes more and more likely,
+regardless of its quality.
+To cancel out this factor,
+we could divide by the action's likelihood:
+
+$$
+\begin{aligned}
+g_{s, a}(\theta) &:= \psi \frac{\nabla \pi_{\theta}(a \mid s)}{\pi_{\theta}(a \mid s)} \\
+&= \psi \nabla \log \pi_{\theta}(a \mid s).
+\end{aligned}
+$$ {#eq-gd-log-step}
+
+Now we can extend this across the entire time horizon.
+Suppose we use $\pi_{\theta^t}$ to roll out a trajectory $\tau = (s_0, a_0, \dots, s_{\hor-1}, a_{\hor-1})$
+and compute @eq-gd-log-step at each step of the trajectory.
+We compute a gradient coefficient at each timestep,
+so we denote each instance by $\psi_\hi(\tau)$.
+
+$$
+g_\tau(\theta)
+:=
+\sum_{\hi=0}^{\hor-1}
+\psi_\hi(\tau) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+$$ {#eq-general-pg-single}
+
+To reduce the variance,
+we could roll out multiple trajectories,
+and average the gradient steps across them.
+This gives us the general form of the **policy gradient algorithm**:
+
+::: {#def-policy-gradient}
+#### General policy gradient algorithm
+
+Suppose we are given an expression for the gradient coefficients $\psi_\hi(\tau)$.
+Then we can perform policy gradient optimization as follows.
+
+At each iteration $t = 0, \dots, T-1$ of the algorithm,
+we sample $N$ trajectories
+$\tau^n = (s^n_0, a^n_0, r^n_0, \dots, s^n_{\hor-1}, a^n_{\hor-1}, r^n_{\hor-1})$,
+and compute the update rule
+
+$$
+\begin{aligned}
+\theta^{t+1} &= \theta^t + \eta \frac{1}{N} \sum_{n=1}^N g_{\tau^n}(\theta^t) \\
+\text{where} \quad g_{\tau}(\theta) &= \sum_{\hi=0}^{\hor-1}
+\psi_\hi(\tau) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\end{aligned}
+$$ {#eq-general-pg}
+:::
+
+This algorithm allows us to optimize a policy
+by sampling trajectories from it
+and computing the gradient-log-likelihoods (sometimes called the **scores**) of the chosen actions.
+Then we can update the parameters $\theta$ in the direction given by @eq-general-pg
+to obtain a new policy that chooses better actions more often.
+
+```{python}
+#| label: fig-policy-grad-general
+#| fig-cap: Pseudocode for the general policy gradient algorithm.
+
+def policy_gradient(env: gym.Env, pi, theta: Float[Array, " D"], get_psi: Callable[[list["Transition"]], Float[Array, " H"]]):
+    """Estimate the policy gradient using REINFORCE."""
+    g = jnp.zeros_like(theta)
+    tau = sample_trajectory(env, pi(theta))
+    psis = get_psi(pi(theta), tau)
+    for (s, a, r), psi in zip(tau, psis):
+        def policy_log_likelihood(theta: Float[Array, " D"]) -> float:
+            return log(pi(theta)(s, a))
+        g += psi * jax.grad(policy_log_likelihood)(theta)
+    return g
+
+latex(policy_gradient, id_to_latex={"jax.grad": r"\nabla"})
+```
+
+::: {#rem-policy-grad-summary}
+#### Summary of intuitive derivation
+
+Let us review how we arrived at this expression:
+
+1. We take the gradient of the policy to encourage certain actions (@eq-gd-max-action-likelihood).
+2. We encourage actions proportionally to their advantage (@eq-gd-weighted).
+3. We correct for the policy's sampling distribution (@eq-gd-log-step).
+4. We extend this to each step of the trajectory (@eq-general-pg-single).
+5. We sample multiple trajectories to reduce variance (@eq-general-pg).
+
+The last piece is to figure out what $\psi$ stands for.
+:::
+
+::: {#exr-grad-coefficient}
+#### Brainstorming
+
+Can you think of any possibilities?
+$\psi_\hi(\tau)$ should correlate with the quality of the action taken at time $\hi$.
+It may depend on the current policy $\pi_{\theta^t}$
+or any component of the trajectory $(s_0, a_0, r_0, \dots, s_{\hor-1}, a_{\hor-1}, r_{\hor-1})$.
+:::
+
+We won't keep you waiting:
+it turns out that if we set $\psi_\hi(\tau)$ to
+
+1. $R(\tau)$ (the total reward of the trajectory) (@eq-estimator-reinforce),
+1. $\sum_{\hi'=\hi}^{\hor-1} r(s_{\hi'}, a_{\hi'})$ (the remaining reward in the trajectory),
+1. $Q^{\pi_{\theta^t}}(s_\hi, a_\hi)$ (the current policy's Q-function), or
+1. $A^{\pi_{\theta^t}}(s_\hi, a_\hi)$ (the current policy's advantage function),
+
+among other possibilities,
+the gradient term of @eq-general-pg is actually
+an _unbiased_ estimator (@def-unbiased-estimator) of the true "policy gradient" $\nabla J(\theta)$
+(see @eq-policy-optimization-parameters).
+That is, for any of the $\psi$ above,
+updating the parameters according to the general policy gradient algorithm @eq-general-pg
+_is_ (minibatch) stochastic gradient ascent on the expected total reward $J(\theta)$,
+with the gradient estimator
+
+$$
+\begin{aligned}
+g_{\tau}(\theta)
+&=
+\sum_{\hi=0}^{\hor-1}
+\psi_\hi(\tau) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi) \\
+\text{where} \quad
+\E_{\tau \sim \rho^{\pi_\theta}}[ g_{\tau}(\theta) ]
+&=
+\nabla J(\theta).
+\end{aligned}
+$$ {#eq-sga-pg-estimator}
+
+### The REINFORCE policy gradient {#sec-pg-reinforce}
+
+We begin by showing that setting $\psi_\hi = \sum_{\hi'=0}^{\hor-1} r_{\hi'}$,
+i.e. the total reward of the trajectory,
+provides an unbiased gradient estimator.
+
+::: {#thm-unbiased-reinforce}
+#### Using the total reward is unbiased
+
+Substituting
+
+$$
+\psi_\hi(\tau) := R(\tau) := \sum_{\hi'=0}^{\hor-1} r_{\hi'}
+$$ {#eq-estimator-reinforce}
+
+into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
+That is,
+
+$$
+\begin{aligned}
+\nabla J(\theta) &= \E_{\tau \sim \rho^{\pi_\theta}} [ g^\text{R}_\tau(\theta) ] \\
+\text{where} \quad
+g^\text{R}_{\tau} (\theta)
+&:=
+\sum_{\hi=0}^{\hor-1}
+R(\tau)
+\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\end{aligned}
+$$ {#eq-estimator-reinforce-unbiased}
+:::
+
+The "R" stands for REINFORCE,
+which stands for "REward Increment $=$ Nonnegative Factor $\times$ Offset Reinforcement $\times$ Characteristic Eligibility" [@williams_simple_1992, p. 234].
+(We will not elaborate further on this etymology.)
+
+::: {.proof}
+#### Proof via calculus
+
+As our first step towards constructing an unbiased policy gradient estimator,
+let us simplify the expression
+
+$$
+\nabla J(\theta) = \nabla \E_{\tau \sim \rho^{\pi_\theta}} [R(\tau)].
+$$ {#eq-objective-def}
+
+In supervised learning,
+we were able to swap the gradient and expectation.
+That was because the _function_ being averaged depended on the parameters,
+not the distribution itself:
+
+$$
+\nabla \E_{(x, y) \sim p}[ \ell(f_\theta(x), y) ] = \E_{(x, y) \sim p} [\nabla \ell(f_\theta(x), y) ].
+$$ {#eq-sl-example-swap}
+
+Here, though, the distribution depends on the parameters,
+and the function being averaged does not.
+One way to compute this type of derivative is to use the identity
+
+$$
+\nabla \rho^{\pi_\theta}(\tau)
+=
+\rho^{\pi_\theta}(\tau) \nabla \log \rho^{\pi_\theta}(\tau).
+$$ {#eq-grad-log-prob}
+
+By expanding the definition of expected value,
+we can compute the correct value to be
+
+$$
+\begin{aligned}
+\nabla J(\theta) & = \nabla \E_{\tau \sim \rho^{\pi_\theta}} [R(\tau)] \\
+& = \int \nabla \rho^{\pi_\theta}(\tau) R(\tau) \\
+& = \int \rho^{\pi_\theta}(\tau) \nabla \log \rho^{\pi_\theta}(\tau) R(\tau) \\
+& = \E_{\tau \sim \rho^{\pi_\theta}} [ \nabla \log \rho^{\pi_\theta}(\tau) R(\tau) ].
+\end{aligned}
+$$ {#eq-reinforce-grad-log-prob}
+
+Now we deal with the $\nabla \log \rho^{\pi_\theta}(\tau)$ term,
+that is, the gradient-log-likelihood (aka **score**)
+of the trajectory.
+Recall @thm-autoregressive-trajectories,
+in which we showed that when the state transitions are Markov
+(i.e. $s_{\hi}$ only depends on $s_{\hi-1}, a_{\hi-1}$)
+and the policy is history-independent
+(i.e. $a_\hi \sim \pi_\theta (\cdot \mid s_\hi)$),
+we can autoregressively write out the likelihood of a trajectory under the policy $\pi_\theta$.
+Taking the log of the trajectory likelihood turns the products into sums:
+
+$$
+\log \rho^{\pi_\theta}(\tau) = \log d_0(s_0) + \sum_{\hi=0}^{\hor-1} \Big(
+    \log \pi_\theta(a_\hi \mid s_\hi) + \log P(s_{\hi+1} \mid s_\hi, a_\hi)
+\Big)
+$$ {#eq-log-autoregressive}
+
+When we take the gradient with respect to the parameters $\theta$,
+only the $\log \pi_\theta(a_\hi \mid s_\hi)$ terms depend on $\theta$:
+
+$$
+\nabla \log \rho^{\pi_\theta}(\tau)
+=
+\sum_{\hi=0}^{\hor-1} \nabla \log \pi_\theta(a_\hi \mid s_\hi).
+$$ {#eq-grad-log-autoregressive}
+
+Substituting this into @eq-reinforce-grad-log-prob gives
+
+$$
+\begin{aligned}
+\nabla J(\theta) &= \E_{\tau \sim \rho^{\pi_\theta}}
+\left[
+    \sum_{\hi=0}^{\hor-1} R(\tau) \nabla \log \pi_\theta(a_\hi \mid s_\hi)
+\right] \\
+&= \E_{\tau \sim \rho^{\pi_\theta}} [g^\text{R}_\theta(\tau)],
+\end{aligned}
+$$
+
+showing that the REINFORCE policy gradient (@eq-estimator-reinforce) is unbiased.
+:::
+
+:::: {.proof}
+#### Proof via importance sampling.
+
+Another way of deriving @thm-unbiased-reinforce
+involves a technique known as **importance sampling**.
+We'll demonstrate this approach here since it will come in handy later on.
+Importance sampling is useful when we want to estimate an expectation
+over a distribution that is hard to sample from.
+Instead, we can sample from a different distribution that supports the same values,
+and then reweight the samples according to the likelihood ratio between the two distributions.
+
+::: {#thm-importance-sampling}
+#### Importance sampling
+
+Consider some random variable $x \in \mathcal{X}$ with density function $p$.
+Let $q$ be the density function of another distribution on $\mathcal{X}$
+that supports all of $p$,
+that is, $q(x) = 0$ only if $p(x) = 0$.
+Then
+
+$$
+\E_{x \sim p}[f(x)] = \E_{x \sim q} \left[ \frac{p(x)}{q(x)} f(x) \right].
+$$ {#eq-importance-sampling}
+:::
+
+::: {.proof}
+We expand the definition of expected value:
+
+$$
+\begin{aligned}
+\E_{x \sim p}[f(x)] &= \sum_{x \in \mathcal{X}} f(x) p(x) \\
+&= \sum_{x \in \mathcal{X}} f(x) \frac{p(x)}{q(x)} q(x) \\
+&= \E_{x \sim q} \left[ \frac{p(x)}{q(x)} f(x) \right].
+\end{aligned}
+$$ {#eq-importance-sampling-derivation}
+:::
+
+::: {#exr-importance-sampling}
+#### Importance sampling for a biased coin
+
+Suppose you are a student and you determine your study routine by flipping a biased coin.
+Let $x \in \{ \text{heads}, \text{tails} \}$ be the result of the coin flip.
+The coin shows heads twice as often as it shows tails:
+
+$$
+p(x) = \begin{cases}
+2/3 & x = \text{heads} \\
+1/3 & x = \text{tails}.
+\end{cases}
+$$ {#eq-importance-sampling-biased-coin}
+
+Suppose you study for $f(x)$ hours, where
+
+$$
+f(x) = \begin{cases}
+1 & x = \text{heads} \\
+2 & x = \text{tails}.
+\end{cases}
+$$ {#eq-importance-sampling-f}
+
+One day, you lose your coin,
+and have to replace it with a fair one, i.e.
+
+$$
+q(x) = 1/2,
+$$ {#eq-importance-sampling-fair-coin}
+
+but you want to study for the same amount on average.
+Suppose you decide to do this by importance sampling with the new coin.
+Now, upon flipping heads or tails, you study for
+
+$$
+\begin{aligned}
+\frac{p(\text{heads})}{q(\text{heads})} f(\text{heads}) = \frac{4}{3} \\
+\frac{p(\text{tails})}{q(\text{tails})} f(\text{tails}) = \frac{2}{3}
+\end{aligned}
+$$ {#eq-importance-sampling-study}
+
+hours respectively.
+Verify that your expected time spent studying
+is the same as before.
+Now compute the _variance_ in the time you spend studying.
+Does it change?
+:::
+
+Returning to the RL setting,
+we can compute the policy gradient by importance sampling from any trajectory distribution $\rho$.
+(All gradients are being taken with respect to $\theta$.)
+
+$$
+\begin{aligned}
+    \nabla J(\theta) & = \nabla \E_{\tau \sim \rho^{\pi_\theta}} [ R(\tau) ] \\
+                     & = \nabla \E_{\tau \sim \rho} \left[ \frac{\rho^{\pi_\theta}(\tau)}{\rho(\tau)} R(\tau) \right] \\
+                     & = \E_{\tau \sim \rho} \left[ \frac{\nabla \rho^{\pi_\theta}(\tau)}{\rho(\tau)} R(\tau) \right].
+\end{aligned}
+$$
+
+Setting $\rho = \rho^{\pi_\theta}$ reveals @eq-reinforce-grad-log-prob,
+and we can then proceed as we did in the previous proof.
+::::
+
+Let us reiterate some intuition into how this method works.
+Recall that we update our parameters according to
 
 $$
 \begin{aligned}
     \theta_{t+1} &= \theta_t + \eta \nabla J(\theta_t) \\
-    &= \theta_t + \eta \E_{\tau \sim \rho_{\theta_t}} [\nabla \log \rho_{\theta_t}(\tau) \cdot R(\tau)].
+    &= \theta^t + \eta \E_{\tau \sim \rho^{\theta_t}} [\nabla \log \rho^{\theta^t}(\tau) R(\tau)].
 \end{aligned}
+$$ {#eq-update-reinforce}
+
+Consider the "good" trajectories where $R(\tau)$ is large.
+Then $\theta$ gets updated so that these trajectories become more likely.
+To see why,
+recall that $\log \rho_{\theta}(\tau)$ is the log-likelihood of the trajectory $\tau$ under the policy $\pi_\theta$,
+so the gradient points in the direction that makes $\tau$ more likely.
+
+However,
+the REINFORCE gradient estimator $g^\text{R}_\tau(\theta)$ has large variance.
+Intuitively,
+this is because it uses the total reward from the entire trajectory,
+which depends on the entire sequence of interactions with the environment,
+each step of which introducesrandomness.
+The rest of this chapter investigates ways to find *lower-variance* policy gradient estimators.
+
+### Baselines and advantages {#sec-baselines}
+
+A central idea from statistical learning is the **bias-variance decomposition**,
+which shows that the mean squared error of an estimator is the sum of its squared bias and its variance.
+All of the policy gradient estimators we will see in this chapter are already unbiased,
+i.e.,
+their mean over trajectories equals the true policy gradient (@def-unbiased-estimator).
+Can we construct estimators with lower *variance* as well?
+
+As a first step,
+note that the action taken at step $\hi$
+does not causally affect the reward from previous timesteps,
+since they're already in the past.
+So we should only use the reward from the current timestep onwards
+to estimate the policy gradient.
+
+::: {#thm-unbiased-remaining}
+#### Using the remaining reward is unbiased
+
+Substituting the reamining reward $\sum_{\hi'=\hi}^{\hor-1} r_{\hi'}$
+for $\psi_\hi(\tau)$
+into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
+That is,
+
 $$
+\begin{aligned}
+\nabla J(\theta) &= \E_{\tau \sim \rho^{\pi_\theta}} [ g^\text{rem}_\tau(\theta) ] \\
+\text{where} \quad
+g^\text{rem}_{\tau} (\theta)
+&:=
+\sum_{\hi=0}^{\hor-1}
+\left( \sum_{\hi'=\hi}^{\hor-1} r_{\hi'} \right)
+\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\end{aligned}
+$$ {#eq-unbiased-remaining}
+:::
 
-Consider the "good" trajectories where $R(\tau)$ is large. Then $\theta$ gets updated so that these trajectories become more likely. To see why, recall that $\rho_{\theta}(\tau)$ is the likelihood of the trajectory $\tau$ under the policy $\pi_\theta,$ so the gradient points in the direction that makes $\tau$ more likely.
+::: {#exr-future-rewards}
+#### Unbiasedness of remaining reward estimator
 
-## Baselines and advantages
+We leave the proof of @thm-unbiased-remaining as an exercise.
+:::
 
-A central idea from supervised learning is the **bias-variance decomposition**, which shows that the mean squared error of an estimator is the sum of its squared bias and its variance. The REINFORCE gradient estimator @eq-reinforce-pg is already *unbiased,* meaning that its expectation over trajectories is the true policy gradient. Can we find ways to reduce its *variance* as well?
+By a conditioning argument,
+we can replace the remaining reward with the policy's Q-function,
+evaluated at the current state.
+By the same reasoning as above,
+this also reduces the variance,
+since the only stochasticity in the expression $Q^{\pi_\theta}(s_\hi, a_\hi)$
+comes from the current state and action.
 
-As a first step, consider that the action taken at step $t$ does not affect the reward from previous timesteps, since they're already in the past. You can also show rigorously that this is the case, and that we only need to consider the present and future rewards to calculate the policy gradient:
+::: {#thm-unbiased-q}
+#### Using the Q function is unbiased
+
+Substituting $Q^{\pi_\theta}(s_\hi, a_\hi)$
+for $\psi_\hi(\tau)$
+into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
+That is,
 
 $$
-\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{\hi=0}^{\hor-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) \sum_{\hi' = \hi}^{\hor-1} r(s_{\hi'}, a_{\hi'}) \right]
+\begin{aligned}
+\nabla J(\theta) &= \E_{\tau \sim \rho^{\pi_\theta}} [ g^\text{Q}_\tau(\theta) ] \\
+\text{where} \quad
+g^\text{Q}_{\tau} (\theta)
+&:=
+\sum_{\hi=0}^{\hor-1}
+Q^{\pi_\theta}(s_\hi, a_\hi)
+\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\end{aligned}
+$$ {#eq-estimator-q}
+:::
+
+::: {#exr-prove-q-unbiased}
+#### Unbiasedness of remaining reward estimator
+
+We also leave the proof of @thm-unbiased-q as an exercise.
+:::
+
+We can further reduce variance by subtracting a **baseline function**
+$b_\theta : \mathcal{S} \to \mathbb{R}$.
+Note that this function could also depend on the current policy parameters.
+
+::: {#thm-unbiased-baseline}
+#### Subtracting a baseline function preserves unbiasedness
+
+Let $b_\theta : \mathcal{S} \to \mathbb{R}$ be some baseline function,
+and let $\psi$ be a gradient coefficient function
+that yields an unbiased policy gradient estimator
+(e.g. @eq-estimator-reinforce or @eq-estimator-q).
+Substituting
+
 $$
+\psi^{\text{bl}}_\hi(\tau) := \psi_\hi(\tau) - b_\theta(s_\hi)
+$$ {#eq-estimator-baseline}
 
-Furthermore, by a conditioning argument, we can replace the inner sum over remaining rewards with the policy's Q-function, evaluated at the current state:
-
-$$
-\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[ \sum_{\hi=0}^{\hor-1} \nabla_\theta \log \pi_{\theta}(a_\hi | s_\hi) Q^{\pi_\theta}(s_{\hi}, a_{\hi}) \right]
-$$ {#eq-pg-with-q}
-
-**Exercise:** Prove that this is equivalent to the previous definitions. What modification to the expression must be made for the discounted, infinite-horizon setting?
-
-We can further reduce variance by subtracting a **baseline function** $b_\hi : \mathcal{S} \to \mathbb{R}$ at each timestep $\hi$. This modifies the policy gradient as follows:
+into the general policy gradient estimator @eq-general-pg
+gives an unbiased policy gradient estimator.
+That is,
 
 $$
-\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
-    \sum_{\hi=0}^{H-1} \nabla \log \pi_\theta (a_\hi | s_\hi) \left(
-    Q^{\pi_\theta}(s_\hi, a_\hi)
-    - b_\hi(s_\hi)
-    \right)
-    \right].
-$$ {#eq-pg-baseline}
+\begin{aligned}
+\nabla J(\theta) &= \E_{\tau \sim \rho^{\pi_\theta}} [ g^\text{bl}_\tau(\theta) ] \\
+\text{where} \quad
+g^\text{bl}_{\tau} (\theta)
+&:=
+\sum_{\hi=0}^{\hor-1}
+(\psi_\hi(\tau) - b_\theta(s_\hi))
+\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\end{aligned}
+$$ {#eq-estimator-q}
+:::
 
-(Again, you should try to prove that this equality still holds.) For example, we might want $b_\hi$ to estimate the average reward-to-go at a given timestep:
+::: {#exr-prove-baseline-unbiased}
+#### Unbiasedness of baseline estimator
+
+We leave the proof of @thm-unbiased-baseline as an exercise as well.
+:::
+
+For example, we might want $b_\hi$ to estimate the average remaining reward at a given timestep:
 
 $$
-b_\hi^\theta = \E_{\tau \sim \rho_\theta} R_\hi(\tau).
-$$
+b_\theta(s_\hi) = \E_{\tau \sim \rho^{\pi_\theta}} \left[
+    \sum_{\hi'=\hi}^{\hor-1} r_{\hi'}
+\right].
+$$ {#eq-exm-remaining}
 
-As a better baseline, we could instead choose the *value function.* Note that the random variable $Q^\pi_\hi(s, a) - V^\pi_\hi(s),$ where the randomness is taken over the actions, is centered around zero. (Recall $V^\pi_\hi(s) = \E_{a \sim \pi} Q^\pi_\hi(s, a).$) This quantity matches the intuition given in @lem-intuitive-remark: it is *positive* for actions that are better than average (in state $s$), and *negative* for actions that are worse than average. In fact, this quantity has a particular name: the **advantage function.**
+As a better baseline, we could instead choose the *value function* of $\pi_{\theta}$.
+For any policy $\pi$,
+note that the random variable $Q^\pi_\hi(s, a) - V^\pi_\hi(s)$,
+where the randomness is taken over the action $a$,
+is centered around zero.
+(Recall $V^\pi_\hi(s) = \E_{a \sim \pi} Q^\pi_\hi(s, a).$)
+This quantity matches the intuition given in @sec-pg-intro:
+it is *positive* for actions that are better than average (in state $s$),
+and *negative* for actions that are worse than average.
+In fact, it has a particular name:
+the **advantage function.**
 
 ::: {#def-advantage}
 #### Advantage function
 
+For a policy $\pi$,
+its advantage function $A^\pi$ at time $\hi$ is given by
+
 $$
-A^\pi_\hi(s, a) = Q^\pi_\hi(s, a) - V^\pi_\hi(s)
-$$
+A^\pi_\hi(s, a) := Q^\pi_\hi(s, a) - V^\pi_\hi(s).
+$$ {#eq-advantage}
 :::
 
-This measures how much better this action does than the average for that policy. (Note that for an optimal policy $\pi^\star,$ the advantage of a given state-action pair is always zero or negative.)
+Note that for an optimal policy $\pi^\star$,
+the advantage of a given state-action pair is always zero or negative.
 
-We can now express the policy gradient as follows. Note that the advantage function effectively replaces the $Q$-function from @eq-pg-with-q:
+We can now use $A^{\pi_{\theta}}(s_\hi, a_\hi)$
+for the gradient coefficients
+to obtain the ultimate unbiased policy gradient estimator.
+
+::: {#thm-unbiased-adv}
+#### Using the advnatage function is unbiased
+
+Substituting
 
 $$
-\nabla J(\theta) = \E_{\tau \sim \rho_\theta} \left[
-        \sum_{\hi=0}^{\hor-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A^{\pi_\theta}_\hi (s_\hi, a_\hi)
-\right].
-$$ {#eq-pg-advantage}
+\psi_\hi(\tau) := A^{\pi_\theta}(s_\hi, a_\hi)
+$$ {#eq-estimator-adv}
 
-::: {#exm-linear-policy-grad}
-#### Policy gradient for the linear-in-features parameterization
-
-The gradient-log-likelihood for the linear-in-features parameterization @exm-linear-in-features is also quite elegant:
+into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
+That is,
 
 $$
 \begin{aligned}
-        \nabla \log \pi_\theta(a|s) &= \nabla \left( \theta^\top \phi(s, a) - \log \left( \sum_{a'} \exp(\theta^\top \phi(s, a')) \right) \right) \\
-        &= \phi(s, a) - \E_{a' \sim \pi_\theta(s)} \phi(s, a')
+\nabla J(\theta) &= \E_{\tau \sim \rho^{\pi_\theta}} [ g^\text{adv}_\tau(\theta) ] \\
+\text{where} \quad
+g^\text{adv}_{\tau} (\theta)
+&:=
+\sum_{\hi=0}^{\hor-1}
+A^{\pi_\theta}(s_\hi, a_\hi)
+\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
 \end{aligned}
-$$
-
-Plugging this into our policy gradient expression, we get
-
-$$
-\begin{aligned}
-    \nabla J(\theta) & = \E_{\tau \sim \rho_\theta} \left[
-    \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A_\hi^{\pi_\theta}
-    \right]                                                                                                                    \\
-                     & = \E_{\tau \sim \rho_\theta} \left[
-    \sum_{t=0}^{T-1} \left( \phi(s_\hi, a_\hi) - \E_{a' \sim \pi(s_\hi)} \phi(s_\hi, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi)
-    \right]                                                                                                                    \\
-                     & = \E_{\tau \sim \rho_\theta} \left[ \sum_{t=0}^{T-1} \phi(s_\hi, a_\hi) A_\hi^{\pi_\theta} (s_\hi, a_\hi) \right]
-\end{aligned}
-$$
-
-Why can we drop the $\E \phi(s_\hi, a')$ term? By linearity of expectation, consider the dropped term at a single timestep: $\E_{\tau \sim \rho_\theta} \left[ \left( \E_{a' \sim \pi(s_\hi)} \phi(s, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi) \right].$ By Adam's Law, we can wrap the advantage term in a conditional expectation on the state $s_\hi.$ Then we already know that $\E_{a \sim \pi(s)} A_\hi^{\pi}(s, a) = 0,$ and so this entire term vanishes.
+$$ {#eq-estimator-adv}
 :::
 
-Note that to avoid correlations between the gradient estimator and the value estimator (i.e. baseline), we must estimate them with independently sampled trajectories:
+::: {.proof}
+This follows directly from @thm-unbiased-q and @thm-unbiased-baseline.
+:::
 
-<!-- TODO could use more explanation _why_ we want to avoid correlations -->
+Note that to avoid correlations between the gradient estimator and the value estimator (i.e. baseline),
+we must estimate them with independently sampled trajectories:
+
+<!-- TODO explain _why_ we want to avoid correlations -->
 
 ```{python}
 def pg_with_learned_baseline(env: gym.Env, pi, eta: float, theta_init, K: int, N: int) -> Float[Array, " D"]:
@@ -562,7 +1404,7 @@ For two PDFs $p, q$,
 
 $$
 \kl{p}{q} := \E_{x \sim p} \left[ \log \frac{p(x)}{q(x)} \right]
-$$
+$$ {#eq-kld}
 
 This can be interpreted in many different ways, many stemming from information theory. One such interpretation is that $\kl{p}{q}$ describes my average "surprise" if I *think* data is being generated by $q$ but it's actually generated by $p$. (The **surprise** of an event with probability $p$ is $- \log_2 p$.) Note that $\kl{p}{q} = 0$ if and only if $p = q$. Also note that it is generally *not* symmetric.
 :::
@@ -635,7 +1477,7 @@ $$
 
 The above isn't entirely complete: we still need to solve the actual optimization problem at each step. Unless we know additional properties of the problem, this might be an intractable optimization. Do we need to solve it exactly, though? Instead, if we assume that both the objective function and the constraint are somewhat smooth in terms of the policy parameters, we can use their *Taylor expansions* to give us a simpler optimization problem with a closed-form solution. This brings us to the **natural policy gradient** algorithm.
 
-## Natural policy gradient
+## Natural policy gradient {#sec-npg}
 
 We take a *linear* (first-order) approximation to the objective function and a *quadratic* (second-order) approximation to the KL divergence constraint about the current estimate $\theta^k$. This results in the optimization problem
 
@@ -665,7 +1507,7 @@ Recall that the Hessian of a function describes its curvature: for a vector $\de
 In particular, when $p_\theta = \rho_{\theta}$ denotes a trajectory distribution, we can further simplify the expression:
 
 $$
-F_{\theta} = \E_{\tau \sim \rho_\theta} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]
+F_{\theta} = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{h=0}^{H-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right]
 $$ {#eq-fisher-trajectory}
 
 Note that we've used the Markov property to cancel out the cross terms corresponding to two different time steps.
@@ -784,7 +1626,7 @@ $$
 
 Once again, this takes an expectation over trajectories. But here we cannot directly sample trajectories from $\pi^k$, since in the first term, the actions actually come from $\pi_\theta$. To make this term line up with the other expectation, we would need the actions to also come from $\pi^k$.
 
-This should sound familiar: we want to estimate an expectation over one distribution by sampling from another. We can once again use @sec-importance-sampling to rewrite the inner expectation:
+This should sound familiar: we want to estimate an expectation over one distribution by sampling from another. We can once again use importance sampling (@thm-importance-sampling) to rewrite the inner expectation:
 
 $$
 \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\pi^{k}}(s_\hi, a_\hi)
@@ -845,7 +1687,13 @@ latex(ppo)
 
 ## Summary
 
-Policy gradient methods are a powerful family of algorithms that directly optimize the expected total reward by iteratively updating the policy parameters. Precisely, we estimate the gradient of the expected total reward (with respect to the parameters), and update the parameters in that direction. But estimating the gradient is a tricky task! We saw many ways to reduce the variance of the gradient estimator, culminating in the advantage-based expression @eq-pg-advantage.
+Policy gradient methods are a powerful family of algorithms that directly optimize the expected total reward by iteratively updating the policy parameters.
+Precisely,
+we estimate the gradient of the expected total reward (with respect to the parameters),
+and update the parameters in that direction.
+But estimating the gradient is a tricky task!
+We saw many ways to reduce the variance of the gradient estimator,
+culminating in the advantage-based expression @eq-estimator-adv.
 
 But updating the parameters doesn't entirely solve the problem: Sometimes, a small step in the parameters might lead to a big step in the policy. To avoid changing the policy too much at each step, we must account for the curvature in the parameter space. We first did this explicitly with @sec-trpo, and then saw ways to relax the constraint in @def-npg and @sec-ppo.
 
