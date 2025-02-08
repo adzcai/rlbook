@@ -1,12 +1,8 @@
----
-
----
-# Supervised learning {#sec-sl}
-
 {{< include macros.qmd >}}
 
-## Introduction
+# Supervised learning {#sec-sl}
 
+## Introduction {#sec-sl-intro}
 
 ```{python}
 from utils import Float, Array, Callable, plt, np, latex
@@ -16,8 +12,8 @@ from config import MNIST_PATH
 
 **Supervised learning** (SL) is a core subfield of machine learning
 alongside RL and unsupervised learning.
-The typical SL task is to approximate an unknown function
-given a dataset of input-output pairs from that function.
+The typical SL task is to approximate an _unknown function_
+given a dataset of input-output examples from that function.
 
 ::: {#exm-image-classification}
 #### Image classification
@@ -35,64 +31,82 @@ SL algorithms can learn to solve this task as well.
 
 ```{python}
 #| label: fig-mnist
-#| fig-cap: "The MNIST image classification dataset of handwritten digits."
+#| fig-cap: "The MNIST image classification dataset of $28 \times 28$ handwritten digits."
 #| fig-subcap:
-#| - A handwritten digit.
-#| - Another handwritten digit.
+#| - The handwritten digit $5$.
+#| - The handwritten digit $0$.
 #| layout-ncol: 2
 data = MNIST(MNIST_PATH, train=True, download=True)
 
 plt.axis('off')
 plt.imshow(data.data[0], cmap='gray')
-plt.title(f"Label: {data.targets[0]}")
+# plt.title(f"Label: {data.targets[0]}")
 plt.gcf().set_size_inches(2, 2)
 plt.show()
 
 plt.axis('off')
 plt.imshow(data.data[1], cmap='gray')
-plt.title(f"Label: {data.targets[1]}")
+# plt.title(f"Label: {data.targets[1]}")
 plt.gcf().set_size_inches(2, 2)
 plt.show()
 ```
 
-Where might function approximation be useful in RL?
-There are many functions involved in the definition of an MDP (@def-finite-horizon-mdp),
-such as the state transitions $P$ or the reward function $r$,
-any of which might be unknown.
-We can plug in an SL algorithm to **model** these functions,
-and then solve the modeled environment using dynamic programming (@sec-finite-opt-dp).
+When might function approximation be useful in RL?
+Recall that the definition of an MDP
+includes the state transitions
+$P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$
+and a reward function $r : \mathcal{S} \times \mathcal{A} \to \R$ (@def-finite-horizon-mdp).
+If we _know_ both of these functions,
+in the sense that we are able to query them on arbitrary inputs,
+we can use powerful planning algorithms
+to solve for the optimal policy exactly
+(see @sec-finite-opt-dp).
+Thus, if either (or both) of these is not known,
+we can use an SL algorithm to **model** the environment
+and then solve the modeled environment using dynamic programming.
 This approach is called **fitted DP** and will be covered in @sec-fitted-dp.
-In the rest of this chapter,
-we'll formalize the SL task and examine some basic algorithms.
 
-## The supervised learning task
+We do not seek to comprehensively discuss supervised learning;
+see the bibiographic notes at the end of the chapter (@sec-sl-bib)
+for further resources.
+We hope to to leave you with an understanding
+of what types of problems SL can solve
+and how SL algorithms can be applied to RL.
+
+## The supervised learning task {#sec-sl-task}
 
 In SL,
 we are given a dataset of labelled samples $(x_1, y_1), \dots, (x_N, y_N)$
-that are independently sampled from some joint distribution $p \in \triangle(X \times Y)$
-known as the **data generating process**.
+that are independently sampled from some **data generating process**.
+Mathematically, we describe this data generating process
+as a joint distribution
+$p \in \triangle(\mathcal{X} \times \mathcal{Y})$,
+where $\mathcal{X}$ is the space of possible inputs
+and $\mathcal{Y}$ is the space of possible outputs.
 Note that, by the chain rule of probability,
 this can be factored as $p(x, y) = p(y \mid x) p(x)$.
 
 ::: {#exm-sl-distributions}
+#### Joint distributions for image classification
+
 For example, in @exm-image-classification,
 the marginal distribution over $x$ is assumed to be the distribution of handwritten digits by humans,
-scanned as $28 \times 28$ grayscale images,
-and the conditional distribution $y \mid x$ is assumed to be
+scanned as $28 \times 28$ grayscale images.
+The conditional distribution $y \mid x$ is assumed to be
 the distribution over $\{ 0, \dots, 9 \}$ that a human would assign to the image $x$.
 :::
 
-Our task is to compute a "good" **predictor** $\hat f : X \to Y$ that,
-as its name suggests, takes an input and tries to predict the corresponding output.
+Our task is to compute a "good" **prediction rule** $\hat f : \mathcal{X} \to \mathcal{Y}$
+that takes an input and tries to predict the corresponding output.
 
-### Loss functions
+### Loss functions {#sec-loss}
 
-How can we measure how "good" a predictor is?
+How can we measure how "good" a prediction rule is?
 The most common way is to use a **loss function**
-$\ell : Y \times Y \to \R$
+$\ell : \mathcal{Y} \times \mathcal{Y} \to \R$
 that compares the guess $\hat y := \hat f(x)$
 with the true output $y$.
-$\ell(\hat y, y)$ should be low if the predictor accurately guessed the output,
+$\ell(\hat y, y)$ should be low if the prediction rule accurately guessed the output,
 and high if the prediction was incorrect.
 
 ::: {#exm-zero-one-loss}
@@ -110,32 +124,32 @@ $$
 \end{cases}
 $$
 
-to measure the accuracy of the predictor.
+to measure the accuracy of the prediction rule.
 That is,
-if the predictor assigns the wrong label to an image,
-it incurs a loss of one for that sample.
+if the prediction rule assigns the wrong label to an image,
+it incurs a _loss_ of one for that sample.
 :::
 
 ::: {#exm-square-loss}
 #### Square loss
 
-For a continuous output (i.e. $Y \subseteq \R$),
+For a continuous output (i.e. $\mathcal{Y} \subseteq \R$),
 we typically use the **squared difference** as the loss function:
 
 $$
 \ell(\hat y, y) = (\hat y - y)^2
 $$
 
-The squared loss is nice to work with analytically
+The square loss is nice to work with analytically
 since its derivative with respect to $\hat y$ is simply $2 (\hat y - y)$.
-(Sometimes authors define the square loss as *half* of the above value to cancel the factor of $2$ in the derivative;
-generally speaking,
+(Sometimes authors define the square loss as *half* of the above value to cancel the factor of $2$ in the derivative.
+Generally speaking,
 scaling the loss by some constant scalar has no practical effect.)
 :::
 
 ```{python}
 #| label: fig-squared-loss
-#| fig-cap: Squared loss.
+#| fig-cap: Square loss.
 #| fig-align: center
 x = np.linspace(-1, 1, 20)
 y = x ** 2
@@ -148,26 +162,41 @@ plt.show()
 ### Model selection
 
 Ultimately,
-we want a predictor that does well on new, unseen samples from the data generating process.
+we want a prediction rule that does well on new, unseen samples from the data generating process.
 We can thus ask,
-how much loss does the predictor incur *in expectation*?
-This is called the prediction's **generalization error** or **test error**:
+how much loss does the prediction rule incur *in expectation*?
+This is called the prediction rule's **generalization error** or **test error**.
+
+::: {#def-test-err}
+#### Generalization error
+
+Given a loss function $\ell$ and a prediction rule $\hat f$,
+the _generalization error_ of the prediction rule
+is defined as the expected loss over the data generating process.
 
 $$
-\text{test error}(\hat f) := \E_{(x, y) \sim p} [ \ell(\hat f(x), y) ]
-$$
+\text{error}_{\text{g}}(\hat f) := \E_{(x, y) \sim p} [ \ell(\hat f(x), y) ]
+$$ {#eq-test-err}
 
-Our goal is then to find the function $\hat f$ that minimizes the test error.
+Suppose we sample a new input and output
+from the data generating process,
+make a guess according to our prediction rule,
+and use the loss function to compare our guess to the true output.
+If we repeat this many times,
+the average loss would approach the generalization error.
+:::
+
+The goal of SL is then to find the prediction rule
+that minimizes the test error.
 For certain loss functions,
-this can be analytically computed,
+the theoretical optimum can be analytically computed,
 such as for squared error.
 
 ::: {#thm-conditional-expectation-minimizes-mse}
-
 #### The conditional expectation minimizes mean squared error
 
-An important result is that, under the squared loss,
-the optimal predictor is the **conditional expectation**:
+An important result is that, under the square loss,
+the optimal prediction rule is the **conditional expectation**:
 
 $$
 \arg\min_{f} \E[(y - f(x))^2] = (x \mapsto \E[y \mid x])
@@ -193,26 +222,39 @@ which is minimized at $0$ when $f(x) = \E[y \mid x]$.
 :::
 
 In most applications, such as in @exm-sl-distributions,
-the joint distribution of $x, y$ is intractable to compute,
+we can't integrate over the joint distribution of $x, y$,
 and so we can't evaluate $\E [y \mid x]$ analytically.
-Instead, all we have are $N$ samples from the joint distribution of $x$ and $y$.
+Instead, all we get are $N$ samples from the joint distribution of $x$ and $y$.
 How might we use these to _approximate_ the generalization error?
 
 ## Empirical risk minimization {#sec-erm}
 
 To estimate the generalization error,
-we can simply take the _sample average_ of the loss over the training data.
+we could simply take the _sample average_ of the loss over the training data.
 This is called the **training loss** or **empirical risk**:
+
+::: {#def-empirical-risk}
+#### Empirical risk
+
+Given a dataset $(x_1, y_1), \dots, (x_N, y_N)$,
+and a loss function $\ell$,
+the empirical risk of the prediction rule $\hat f$
+is the average loss across the dataset:
 
 $$
 \text{training loss}(\hat f) := \frac 1 N \sum_{n=1}^N \ell(\hat f(x_n), y_n).
-$$
+$$ {#eq-training-loss}
+:::
 
 By the law of large numbers,
 as $N$ grows to infinity,
 the training loss converges to the generalization error.
 
-The **empirical risk minimization** (ERM) approach is to find a predictor that minimizes the empirical risk.
+The **empirical risk minimization** (ERM) approach is to find a prediction rule that minimizes the empirical risk.
+
+::: {#def-erm}
+#### Empirical risk minimization
+
 An ERM algorithm requires two ingredients
 to be chosen based on our **domain knowledge** about the DGP:
 
@@ -227,6 +269,7 @@ $$
 &= \arg\min_{f \in \mathcal{F}}\frac 1 N \sum_{n=1}^N \ell(f(x_n), y_n).
 \end{aligned}
 $$ {#eq-erm}
+:::
 
 ### Function classes
 
@@ -234,15 +277,16 @@ How should we choose the correct function class?
 In fact,
 why do we need to constrain our search at all?
 
-::: {#exr-function-space}
-
+::: {#exr-overfitting}
 #### Overfitting
 
 Suppose we are trying to approximate a relationship between real-valued inputs and outputs
-using squared loss as our loss function.
-Consider the predictor (visualized in @fig-pathological-predictor)
+using square loss as our loss function.
+Consider the prediction rule (visualized in @fig-pathological-predictor)
 
-$$\hat f(x) = \sum_{n=1}^N y_n \ind{x = x_n}.$$
+$$
+\hat f(x) = \sum_{n=1}^N y_n \ind{x = x_n}.
+$$ {#eq-overfitting}
 
 What is the empirical risk of this function?
 How well does it perform on newly generated samples?
@@ -251,7 +295,7 @@ How well does it perform on newly generated samples?
 ```{python}
 #| label: fig-pathological-predictor
 #| fig-align: center
-#| fig-cap: A pathological predictor.
+#| fig-cap: A pathological prediction rule.
 #| fig-subcap:
 #| - One training dataset.
 #| - Another training dataset.
@@ -269,7 +313,6 @@ for _ in range(2):
     plt.legend()
     plt.gcf().set_size_inches(3, 2)
     plt.show()
-
 ```
 
 The choice of $\mathcal{F}$ depends on our **domain knowledge** about the task.
@@ -278,8 +321,11 @@ but on the other, it shouldn't be _too_ expressive;
 otherwise, it will **overfit** to random noise in the labels.
 The larger and more complex the function class,
 the more accurately we will be able to approximate any particular training dataset (i.e. smaller **bias**),
-but the more drastically the function will vary for different training datasets (i.e. larger **variance**).
-The mathematical details of the so-called **bias-variance tradeoff**
+but the more drastically the function will vary for _different_ training datasets (i.e. larger **variance**).
+For most loss functions, including the square loss,
+it is possible to express the generalization error (@def-test-err)
+as a sum of a bias term and a variance term.
+The mathematical details of this so-called **bias-variance tradeoff**
 can be found, for example, in @hastie_elements_2013 [chap. 2.9].
 
 ```{python}
@@ -291,6 +337,7 @@ can be found, for example, in @hastie_elements_2013 [chap. 2.9].
 #| - Degree $5$ polynomials
 #| - Degree $50$ polynomials
 n_samples = 10
+degrees = [2, 5, 50]
 x_axis = np.linspace(-1, +1, 50)
 
 
@@ -307,7 +354,7 @@ def transform(x: Float[Array, " N"], d: int):
     ])
 
 
-for d in [2, 5, 50]:
+for d in degrees:
     for _ in range(2):
         x_train, y_train = generate_data()
 
@@ -328,49 +375,58 @@ We must also consider *practical* constraints on the function class.
 We need an efficient algorithm to actually compute the function in the class that minimizes the training error.
 This point should not be underestimated!
 The success of modern deep learning, for example,
-is in large part due to hardware developments that make certain parallelizable operations more efficient.
-
-
-
+is in large part due to hardware developments
+that have made certain parallelizable operations more efficient.
 
 ### Parameterized function classes {#sec-sl-parameterized}
 
 Both of the function classes we will consider, linear maps and neural networks, are **finite-dimensional**,
 a.k.a. **parameterized**.
-This means each function can be identified using some finite set of **parameters**,
-which we denote $\theta \in \R^D$.
-
+The notion of a parameterized function class is best illustrated by example:
 
 ::: {#exm-quadratics}
-
 #### Quadratic functions
 
-As a third example of a parameterized function class,
-consider the class of **quadratic functions**, i.e. polynomials of degree $2$.
-This is a three-dimensional function space,
+consider the class of **quadratic functions**,
+i.e. polynomials of degree $2$.
+This is a three-dimensional function space ($D = 3$),
 since we can describe any quadratic $p$ as
 
 $$
 p(x) = a x^2 + b x + c,
-$$
+$$ {#eq-quadratic-1}
 
 where $a, b, c$ are the three parameters.
 We could also use a different parameterization:
 
 $$
 p(x) = a' (x - b')^2 + c'.
-$$
+$$ {#eq-quadratic-2}
+:::
+
+
+::: {#def-parameter}
+#### Parameters
+
+Let $\mathcal{F}$ be a class of functions mapping from
+$\mathcal{X}$ to $\mathcal{Y}$.
+We say that $\mathcal{F}$ is a **parameterized** function class
+if each $f \in \mathcal{F}$ can be identified using $D$ **parameters**.
+:::
+
+::: {#exr-parameterization-matters}
+#### Parameterization matters
 
 Note that the choice of parameterization
 can impact the performance of the chosen fitting method.
-What is the derivative of the first expression with respect to $a, b, c$?
-Compare this to the derivative of the second expression with respect to $a', b', c'$.
+What is the derivative of @eq-quadratic-1 with respect to $a, b, c$?
+Compare this to the derivative of @eq-quadratic-2 with respect to $a', b', c'$.
 This shows that gradient-based fitting methods
 may change their behavior depending on the parameterization.
 :::
 
 Using a parameterized function class allows us
-to reframe the ERM problem @eq-erm
+to reframe the ERM problem @def-erm
 in terms of optimizing over the *parameters*
 instead of over the functions they represent:
 
@@ -385,7 +441,7 @@ In general,
 optimizing over a *finite-dimensional* space
 is much, much easier than optimizing over an *infinite-dimensional* space.
 
-### Gradient descent
+### Gradient descent {#sec-sl-gd}
 
 One widely applicable fitting method for parameterized function classes
 is **gradient descent**.
@@ -407,7 +463,9 @@ So by taking small steps in the oppposite direction,
 we obtain a solution that achieves a slightly lower loss than the current one.
 
 ```{python}
-#| lst-label: lst-gd
+#| label: fig-gd
+#| fig-cap: Pseudocode for gradient descent.
+
 Params = Float[Array, " D"]
 
 
@@ -499,6 +557,8 @@ we typically choose the one with the *smallest norm*.
 
 
 ::: {#exr-smallest-norm}
+#### Gradient descent finds the minimum norm solution
+
 Gradient descent on the ERM problem (@eq-erm-linear-regression),
 initialized at the origin and using a small enough step size,
 eventually finds the parameters with the smallest norm.
@@ -570,18 +630,18 @@ allows us to use the chain rule to compute the gradient of the output with respe
 We have now gotten a glimpse into **supervised learning**,
 which seeks to learn about some input-output relationship
 using a dataset of example points.
-In particular, we typically seek to compute a **predictor**
+In particular, we typically seek to compute a **prediction rule**
 that takes in an input value and returns a good guess for the corresponding output.
-We score predictors using a **loss function**
+We score prediction rules using a **loss function**
 that measures how incorrectly it guesses.
-We want to find a predictor that achieves low loss
+We want to find a prediction rule that achieves low loss
 on unseen data points.
 We do this by searching over a class of functions
 to find one that minimizes the **empirical risk** over the training dataset.
 We finally saw two popular examples of **parameterized** function classes:
 linear regression and neural networks.
 
-## References
+## Bibliographic notes {#sec-sl-bib}
 
 @james_introduction_2023 provides an accessible introduction to supervised learning.
 @hastie_elements_2013 examines the subject in even further depth
