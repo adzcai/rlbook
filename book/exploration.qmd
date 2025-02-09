@@ -9,7 +9,7 @@
 
 ## Introduction
 
-One of the key challenges of reinforcement learning is the *exploration-exploitation tradeoff*. Should we *exploit* actions we know will give high reward, or should we *explore* different actions to discover potentially better strategies? An algorithm that doesn't explore effectively might easily *overfit* to certain areas of the state space, and fail to generalize once they enter a region they haven't yet seen. The algorithms we saw in the chapter on fitted DP @sec-fitted-dp suffer from this issue.
+One of the key challenges of reinforcement learning is the *exploration-exploitation tradeoff*. Should we *exploit* actions we know will give high reward, or should we *explore* different actions to discover potentially better strategies? An algorithm that doesn't explore effectively might easily *overfit* to certain areas of the state space, and fail to generalize once they enter a region they haven't yet seen. The algorithms we saw in the chapter on fitted DP @sec-fit suffer from this issue.
 
 In @sec-bandits, where the state never changes so all we care about are the actions, we saw algorithms like @sec-ucb and @sec-thompson-sampling that incentivize the learner to explore arms that it is uncertain about. In this chapter, we will see how to generalize these ideas to the MDP setting.
 
@@ -49,7 +49,7 @@ There are $|\mathcal{S}|$ states. The agent starts in the leftmost state. In eve
 How well would the algorithms we've covered so far do on this problem?
 For example, @sec-pg require the gradient to be nonzero in order to learn.
 If we never observe any reward, the gradient will always be zero, and the policy will never change or improve.
-@sec-fitted-dp will run into a similar issue:
+@sec-fit will run into a similar issue:
 as we randomly interact with the environment,
 we will never observe any reward,
 and so the reward model simply gives zero for every state-action pair.

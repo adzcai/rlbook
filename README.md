@@ -75,3 +75,9 @@ Students without prior experience in machine learning might not be familiar with
 They are often introduced in terms of "knobs that you can turn to improve the model",
 but this doesn't really accurately describe them at all.
 
+
+
+### PG
+
+
+Many students found this unit the most complex.

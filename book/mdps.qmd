@@ -651,7 +651,7 @@ Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')].
 $$ {#eq-relating-q-v}
 :::
 
-::: {#exr-proof-bellman-consistency}
+::: {#exr-proof-consistency}
 #### Proof of relationship between $V^\pi$ and $Q^\pi$
 
 Use the law of iterated expectations
@@ -698,16 +698,16 @@ The resulting system of equations
 is named after **Richard Bellman** (1920--1984),
 who is credited with introducing dynamic programming in 1953.
 
-::: {#thm-bellman-consistency}
+::: {#thm-consistency}
 #### Bellman consistency equations
 
 For a history-independent policy $\pi$,
 
 $$
 V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')].
-$$ {#eq-bellman-consistency}
+$$ {#eq-consistency}
 
-The proof is left as @exr-proof-bellman-consistency.
+The proof is left as @exr-proof-consistency.
 This is a system of $H |\mathcal{S}|$ equations
 (one equation per state per timestep)
 in $H |\mathcal{S}|$ unknowns
@@ -757,7 +757,7 @@ We write $v$ in lowercase to indicate
 that it might not be an actual value function of a policy.
 How might we improve this guess?
 
-Recall that the Bellman consistency equations (@eq-bellman-consistency)
+Recall that the Bellman consistency equations (@eq-consistency)
 hold for the value functions of history-independent policies.
 So if $v$ is close to the target $V^\pi$,
 it should nearly satisfy the system of equations
@@ -871,13 +871,13 @@ latex(
 )
 ```
 
-The Bellman operator also gives us a concise way to express the Bellman consistency equations (@eq-bellman-consistency) for the value function:
+The Bellman operator also gives us a concise way to express the Bellman consistency equations (@eq-consistency) for the value function:
 
 $$
 V_\hi^\pi = \mathcal{J}^{\pi_\hi}(V_{\hi+1}^\pi)
 $$ {#eq-bellman-operator-consistency}
 
-The Bellman consistency equations (@eq-bellman-consistency)
+The Bellman consistency equations (@eq-consistency)
 give us a convenient algorithm for evaluating stationary policies:
 it expresses the value function at timestep $\hi$
 as a function of the value function at timestep $\hi+1$.
@@ -1106,7 +1106,7 @@ since $s, a$, and $s'$ are all independent of $\pi$.
 Substituting the definition of $V^\star$ concludes the proof.
 :::
 
-As in the Bellman consistency equations (@thm-bellman-consistency),
+As in the Bellman consistency equations (@thm-consistency),
 combining @eq-optimal-v-q and @eq-optimal-q-v gives the _Bellman optimality equations_.
 
 ::: {#thm-bellman-opt}
@@ -1119,7 +1119,7 @@ $$
 V_\hi^\star(s) = \max_a r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\star(s')].
 $$ {#eq-bellman-opt}
 
-Like the Bellman consistency equations (@eq-bellman-consistency),
+Like the Bellman consistency equations (@eq-consistency),
 This is a system of $H |\mathcal{S}|$ equations
 in $H |\mathcal{S}|$ unknowns,
 so $V^\star$ is the unique solution
@@ -1388,8 +1388,8 @@ and can serve as good approximations to finite-horizon tasks.
 A crucial result is that Bellman operators (@def-bellman-operator)
 in this setting are **contraction mappings** (@thm-bellman-contraction),
 which yield simple fixed-point iteration algorithms for policy evaluation (@sec-iterative-pe)
-and computing the optimal value function (@sec-value-iteration).
-Finally, we'll present the policy iteration algorithm (@sec-policy-iteration).
+and computing the optimal value function (@sec-vi).
+Finally, we'll present the policy iteration algorithm (@sec-pi).
 In addition to being an effective tool in its own right,
 we will find that policy iteration serves as a useful _framework_
 for designing and analyzing later algorithms.
@@ -1478,7 +1478,7 @@ $$
     V^\pi(s) &= \E_{\tau \sim \rho^\pi} [r_0 + \gamma r_{1} + \gamma^2 r_{2} + \cdots \mid s_0 = s] \\
     Q^\pi(s, a) &= \E_{\tau \sim \rho^\pi} [r_0 + \gamma r_{1} + \gamma^2 r_{2} + \cdots \mid s_0 = s, a_0 = a] \\
 \end{aligned}
-$$ {#eq-bellman-consistency-infinite}
+$$ {#eq-consistency-infinite}
 :::
 
 ::: {#exr-infinite-no-time-step}
@@ -1493,19 +1493,19 @@ when defining the value function?
 Refer back to the Markov property (@def-markov-property).
 :::
 
-::: {#thm-infinite-bellman-consistency}
+::: {#thm-infinite-consistency}
 #### Bellman consistency equations
 
 The Bellman consistency equations play the same role
 they did in the finite-horizon setting
-(@thm-bellman-consistency).
+(@thm-consistency).
 We need to insert a factor of $\gamma$
 to account for the discounting,
 and the $\hi$ subscript is gone since $V^\pi$ is stationary:
 
 $$
 V^\pi(s) = \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma V^\pi(s')].
-$$ {#eq-infinite-bellman-consistency}
+$$ {#eq-infinite-consistency}
 
 The value function and action-value function are still related in the same way:
 
@@ -1600,7 +1600,7 @@ $$
 
 i.e. we compare the functions
 on the state that causes the biggest gap between them.
-The Bellman consistency equations (@thm-infinite-bellman-consistency)
+The Bellman consistency equations (@thm-infinite-consistency)
 state that $V^\pi$ is the fixed point of $\mathcal{J}^\pi$.
 Then @eq-contraction-convergence implies that
 if we repeatedly apply $\mathcal{J}^\pi$ to any starting guess,
@@ -1648,7 +1648,7 @@ no longer works
 since there is no "final timestep" to start from.
 We'll need another approach to policy evaluation.
 
-The Bellman consistency equations (@thm-infinite-bellman-consistency)
+The Bellman consistency equations (@thm-infinite-consistency)
 yield a system of $|\mathcal{S}|$ equations we can solve
 to evaluate a deterministic policy *exactly*.
 For a faster approximate solution,
@@ -1876,7 +1876,7 @@ We can't use the backwards
 DP approach from the finite-horizon case @fig-optimal-policy
 since there's no "final timestep" to start from.
 Instead, we'll exploit the fact that the Bellman consistency
-equation @eq-bellman-consistency-infinite for the optimal value
+equation @eq-consistency-infinite for the optimal value
 function doesn't depend on any policy:
 
 $$
@@ -1900,7 +1900,7 @@ def check_optimal(v: Float[Array, " S"], mdp: MDP):
     return jnp.allclose(v, bellman_optimality_operator(v, mdp))
 ```
 
-#### Value iteration {#sec-value-iteration}
+#### Value iteration {#sec-vi}
 
 Since the optimal policy is still a policy,
 our result that the Bellman
@@ -2025,7 +2025,7 @@ $$
 iterations to achieve an $\epsilon$-accurate estimate of the optimal value function.
 
 
-#### Policy iteration {#sec-policy-iteration}
+#### Policy iteration {#sec-pi}
 
 Can we mitigate this "greedy worsening"? What if instead of approximating the optimal value function and then acting greedily by it at the very end, we iteratively improve the policy and value function *together*? This is the idea behind **policy iteration**. In each step, we simply set the policy to act greedily with respect to its own value function.
 

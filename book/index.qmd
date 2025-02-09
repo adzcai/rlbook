@@ -11,6 +11,8 @@ Welcome to the study of reinforcement learning!
 This textbook accompanies the undergraduate course [CS 1840/STAT 184](http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html) taught at Harvard.
 It is intended to be a friendly yet rigorous introduction to this active subfield of machine learning.
 
+We hope to make reinforcement learning
+approachable and digestible for new students.
 
 
 ## Prerequisites
@@ -100,7 +102,7 @@ This **exploration-exploitation tradeoff** is a core consideration in RL algorit
 
 @sec-sl is a standalone crash course on some tools from supervised learning that we will use in later chapters.
 
-@sec-fitted-dp introduces **fitted dynamic programming** (fitted DP) algorithms for solving MDPs.
+@sec-fit introduces **fitted dynamic programming** (fitted DP) algorithms for solving MDPs.
 These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.
 
 @sec-pg explores an important class of algorithms based on iteratively improving a policy.

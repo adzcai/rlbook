@@ -22,7 +22,7 @@ such as when the environment is _unknown_,
 it is typically intractable to compute the optimal policy exactly.
 Instead, we start from some random policy,
 and then iteratively *improve* it by interacting with the environment.
-Policy iteration (@sec-policy-iteration) and iterative LQR (@sec-iterative-lqr)
+Policy iteration (@sec-pi) and iterative LQR (@sec-iterative-lqr)
 are two algorithms we've seen that do this.
 
 In this chapter,
@@ -39,7 +39,7 @@ to obtain policies that achieve higher expected total rewards.
 | @sec-mdps (MDPs) | $\{1, \dots, \vert \mathcal{S} \vert \}$ | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | known | dynamic programming, policy iteration |
 | @sec-control (Control) | $\R^{n_\st}$ | $\R^{n_\act}$ | deterministic | unknown | (iterative) linear quadratic regulator |
 | @sec-bandits (MABs) | none | $\{ 1, \dots, K \}$ | deterministic or stochastic | unknown | upper confidence bound, Thompson sampling |
-| @sec-fitted-dp (Fitted DP) | arbitrary | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | unknown | Q-learning, fitted policy iteration |
+| @sec-fit (Fitted DP) | arbitrary | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | unknown | Q-learning, fitted policy iteration |
 | This chapter (PG) | arbitrary | arbitrary | stochastic (or deterministic) | unknown | natural policy gradient, proximal policy optimization |
 
 : An overview of problem settings discussed so far. {#tbl-overview-chapters-pg}
@@ -706,7 +706,7 @@ plt.show()
 ::: {#exr-solve-directly}
 #### An alternative approach
 
-Compare this with the policy iteration update (@sec-policy-iteration),
+Compare this with the policy iteration update (@sec-pi),
 where we updated the deterministic policy according to
 $\pi(s) = \arg\max_{a \in \mathcal{A}} Q^\pi(s, a)$.
 In our current setting,
@@ -1302,11 +1302,40 @@ Note that you could also generalize this by allowing the learning rate $\eta$ to
 
 The baseline estimation step `fit_value` can be done using any appropriate supervised learning algorithm. Note that the gradient estimator will be unbiased regardless of the baseline.
 
+::: {#exm-linear-policy-grad}
+#### Policy gradient for the linear-in-features parameterization
+
+The gradient-log-likelihood for the linear parameterization @exm-linear-in-features is also quite elegant:
+
+$$
+\begin{aligned}
+        \nabla \log \pi_\theta(a|s) &= \nabla \left( \theta^\top \phi(s, a) - \log \left( \sum_{a'} \exp(\theta^\top \phi(s, a')) \right) \right) \\
+        &= \phi(s, a) - \E_{a' \sim \pi_\theta(s)} \phi(s, a')
+\end{aligned}
+$$
+
+Plugging this into our policy gradient expression, we get
+
+$$
+\begin{aligned}
+    \nabla J(\theta) & = \E_{\tau \sim \rho^{\pi_\theta}} \left[
+    \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A_\hi^{\pi_\theta}
+    \right]                                                                                                                    \\
+                     & = \E_{\tau \sim \rho^{\pi_\theta}} \left[
+    \sum_{t=0}^{T-1} \left( \phi(s_\hi, a_\hi) - \E_{a' \sim \pi(s_\hi)} \phi(s_\hi, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi)
+    \right]                                                                                                                    \\
+                     & = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{t=0}^{T-1} \phi(s_\hi, a_\hi) A_\hi^{\pi_\theta} (s_\hi, a_\hi) \right]
+\end{aligned}
+$$
+
+Why can we drop the $\E \phi(s_\hi, a')$ term? By linearity of expectation, consider the dropped term at a single timestep: $\E_{\tau \sim \rho^{\pi_\theta}} \left[ \left( \E_{a' \sim \pi(s_\hi)} \phi(s, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi) \right].$ By Adam's Law, we can wrap the advantage term in a conditional expectation on the state $s_\hi.$ Then we already know that $\E_{a \sim \pi(s)} A_\hi^{\pi}(s, a) = 0,$ and so this entire term vanishes.
+:::
+
 ## Comparing policy gradient algorithms to policy iteration
 
 <!-- TODO maybe restructure this part -->
 
-What advantages does the policy gradient algorithm have over the policy iteration algorithms covered in @sec-policy-iteration?
+What advantages does the policy gradient algorithm have over the policy iteration algorithms covered in @sec-pi?
 
 ::: {#rem-policy-iteration}
 #### Policy iteration review

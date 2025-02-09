@@ -692,7 +692,7 @@ we could iterate this process via **self-play**.
 
 ### Self-play
 
-Recall the policy iteration algorithm for solving an MDP (@sec-policy-iteration).
+Recall the policy iteration algorithm for solving an MDP (@sec-pi).
 Policy iteration alternates between **policy evaluation**
 (taking $\pi$ and computing $V^\pi$)
 and **policy improvement**

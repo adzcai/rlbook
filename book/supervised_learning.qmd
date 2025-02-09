@@ -64,7 +64,7 @@ to solve for the optimal policy exactly
 Thus, if either (or both) of these is not known,
 we can use an SL algorithm to **model** the environment
 and then solve the modeled environment using dynamic programming.
-This approach is called **fitted DP** and will be covered in @sec-fitted-dp.
+This approach is called **fitted DP** and will be covered in @sec-fit.
 
 We do not seek to comprehensively discuss supervised learning;
 see the bibiographic notes at the end of the chapter (@sec-sl-bib)
