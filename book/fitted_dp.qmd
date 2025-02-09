@@ -1,28 +1,24 @@
 {{< include macros.qmd >}}
 
-# Fitted Dynamic Programming Algorithms {#sec-fitted-dp}
+# Fitted Dynamic Programming Algorithms {#sec-fit}
 
 In @sec-mdps,
 we discussed how to solve Markov decision processes
 where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite and small.
-This allowed us to use dynamic programming and the Bellman consistency equations (@thm-bellman-consistency)
-to evaluate policies (@sec-eval-dp-finite-horizon)
-and compute the optimal policy (@sec-finite-opt-dp).
-These "small" MDPs aren't usually considered "full RL problems" because,
-put simply, they're too easy!
+Solving these sorts of MDPs isn't usually considered an "RL problem" because,
+put simply, it's too easy!
 The assumption that we know the environment
 and can compute expected values over the state transitions
 ends up being too strict for most real-world tasks.
 
-In this chapter,
-we will tackle the "full RL problem"
+In this short chapter,
+we will tackle the full "RL problem"
 by extending DP algorithms to account for unknown environments.
 We will also relax the assumption that the state space is small and finite:
 the methods we will cover support large or continuous state spaces.
-
 This will require _learning_ about the environment
 by collecting data through interaction
-and then applying supervised learning (see @sec-sl)
+and then applying _supervised learning_ (see @sec-sl)
 to approximate relevant functions.
 
 | Chapter | State space | Action space | Policies | Knowledge of environment | Key algorithms |
@@ -32,10 +28,40 @@ to approximate relevant functions.
 | @sec-bandits (MABs) | none | $\{ 1, \dots, K \}$ | deterministic or stochastic | unknown | upper confidence bound, Thompson sampling |
 | This chapter (Fitted DP) | arbitrary | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | unknown | Q-learning, fitted policy iteration |
 
-: How this chapter extends to more general settings. {#tbl-fitted-overview}
+: How this chapter extends to more general settings. {#tbl-fit-ctx}
+
+Here's an outline for the rest of the chapter.
+Each of the algorithms we'll cover
+is analogous to one of the algorithms from @sec-mdps:
+
+| Algorithm | Description | Fitted version |
+| --- | ----- | --- |
+| Policy evaluation (@sec-infinite-policy-evaluation) | Given a policy $\pi$, compute its value function $V^\pi$ by iterating the Bellman consistency equations. | Fitted policy evaluation (@sec-fit-pe) |
+| Value iteration (@sec-vi) | Compute the optimal value function $V^\star$ by iterating the Bellman optimality equations. | Fitted value iteration (@sec-fit-vi) |
+| Policy iteration (@sec-pi) | Repeatedly make the policy $\pi$ greedy with respect to its own Q function. | Fitted policy iteration (@sec-fit-pi) |
+
+: Fitted algorithms for general environments. {#tbl-fit-overview}
+
+The term "fitted" means that,
+since we can no longer compute the Bellman consistency equations or Bellman optimality equations exactly,
+we plug data from the environment into a supervised learning algorithm
+to _approximately_ solve these equations.
+
+::: {#rem-state-time}
+#### Notation
+
+To simplify our notation,
+we will assume that each state $s$ includes the current timestep $\hi$.
+That is,
+if the original state space was $\mathcal{S}$,
+the augmented state space is $\mathcal{S} \times [\hor]$.
+This allows us to treat all state-dependent quantities
+as possibly time-dependent
+without explicitly carrying around a subscript $\hi$.
+:::
 
 ```{python}
-from utils import gym, tqdm, rand, Float, Array, NamedTuple, Callable, Optional, np
+from utils import gym, tqdm, rand, Float, Array, NamedTuple, Callable, Optional, np, latex
 
 key = rand.PRNGKey(184)
 
@@ -72,57 +98,70 @@ Policy = Callable[[State, int], int]
 def q_to_greedy(Q: QFunction) -> Policy:
     """Get the greedy policy for the given state-action value function."""
     return lambda s, h: np.argmax(Q(s, h))
+
+# We will see some examples of fitting methods in the next section
+FittingMethod = Callable[[Float[Array, "N D"], Float[Array, " N"]], QFunction]
 ```
 
-## Fitted value iteration {#sec-fitted-vi}
+## Fitted policy evaluation {#sec-fit-pe}
 
-In this section,
-we'll see one method to compute the optimal value function
-when the environment is unknown.
-This method is analogous to value iteration (@sec-value-iteration),
-except instead of solving the Bellman optimality equations (@eq-bellman-opt) exactly,
-which is no longer assumed to be possible,
-we will collect a dataset of trajectories and apply _supervised learning_
-to learn the .
+Recall the task of _policy evaluation:_
+given a policy $\pi : \mathcal{S} \to \triangle(\mathcal{A})$,
+compute its _Q function_ $Q^\pi$,
+which expresses the expected total reward in a given starting state-action pair.
 
-::: {#rem-review-vi}
-#### Value iteration
+::: {#rem-v-vs-q}
+#### Value function vs Q function
 
-It will be helpful to first review value iteration (@sec-value-iteration).
-This was an algorithm we used
-to compute the optimal value function $V^\star : \mathcal{S} \to \R$
-in an infinite-horizon MDP.
-Here, we will present the equivalent algorithm
-for the optimal action-value function $Q^\star : \mathcal{S} \times \mathcal{A} \to \R$.
-The optimal action-value function satisfies the Bellman optimality equations
-
-$$
-Q^\star(s, a, h) = r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[
-    \max_{a' \in \mathcal{A}} Q^\star(s', a', h+1)
-].
-$$ {#eq-review-bellman-opt}
-
-Now let us treat @eq-review-bellman-opt as an "operator" instead of an equation,
-that is,
-
-$$
-q(s, a) \gets r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[
-    \max_{a' \in \mathcal{A}} q(s', a')
-].
-$$ {#eq-review-bellman-opt-operator}
-
-If we start with some guess $q : \mathcal{S} \times \mathcal{A} \to \R$,
-and repeatedly apply the update step @eq-review-bellman-opt-operator,
-the iterates will eventually converge to $Q^\star$
-since @eq-review-bellman-opt-operator is a contraction mapping.
+In @sec-mdps,
+we sought to compute the _value function_ $V^\pi$.
+Here,
+we'll switch to the action-value function $Q^\pi$.
+This will make it more convenient
+to take the action with the maximum expected remaining reward.
 :::
 
-Note that the r.h.s. of the value iteration update step (@eq-review-bellman-opt-operator)
-requires computing an expectation over the state transitions.
+::: {#rem-review-pe}
+#### Fixed-point policy evaluation review
+
+The fixed-point policy evaluation algorithm in @sec-iterative-pe
+makes use of the Bellman consistency equations (@thm-consistency):
+
+$$
+Q^\pi(s, a) = r(s, a) + \E_{\substack{
+    s' \sim P(\cdot \mid s, a)\\
+    a' \sim \pi(\cdot \mid s')
+}} [Q^\pi(s', a')].
+$$ {#eq-consistency-q}
+
+In fixed-point iteration,
+we treat @eq-consistency-q not as an _equation,_
+but as an "operator" that takes in a function $q : \mathcal{S} \times \mathcal{A} \to \R$
+and returns an updated function by substituting $q$ in place of $Q^\pi$.
+
+$$
+q(s, a) \gets r(s, a) + \E_{\substack{
+    s' \sim P(\cdot \mid s, a)\\
+    a' \sim \pi(\cdot \mid s')
+}} [q(s', a')].
+$$ {#eq-consistency-q-op}
+
+Roughly speaking,
+this improves the estimate $q \approx Q^\pi$ by incorporating a single step of reward.
+Since this operator is a contraction mapping (@thm-bellman-contraction),
+by iterating this process,
+$q$ will eventually converge to the true policy $Q^\pi$.
+:::
+
+However, computing the update step in @eq-consistency-q-op
+requires computing an expectation over the state transitions $s' \sim P(\cdot \mid s, a)$.
 As mentioned in the introduction,
 this is intractable for most real-world tasks.
-Instead, we will need to use *function approximation* methods from supervised learning
-to solve for the value function in an alternative way.
+Either the state space is too large,
+or we simply _don't know_ what $P$ is.
+Instead, we will apply _supervised learning_ methods
+to approximately solve the Bellman consistency equations
+using data.
 
 Recall that supervised learning is good at learning _conditional expectations_
 of the form
@@ -131,33 +170,162 @@ $$
 f(x) = \E[ y \mid x ].
 $$ {#eq-exm-cond-mean}
 
-We collect a dataset of $(x, y)$ pairs,
-sampled from their joint distribution,
-and minimize the squared error $(f(x) - y)^2$.
-
-Let us now rewrite @eq-review-bellman-opt-operator in this notation
-to make the connection more clear.
-We explicitly notate $s'$ as a random variable
+Can we rewrite the r.h.s. of the Bellman consistency equations (@eq-consistency-q)
+as a conditional expectation?
+In fact, it already is;
+let us use notation that makes this more clear.
+We explicitly write $s', a'$ as random variables
 and move the conditioning on $s, a$ into the brackets:
 
 $$
-q(s, a, h) \gets \E[ r(s, a) + \max_{a' \in \mathcal{A}} q(s', a', h+1) \mid s, a, h ].
+Q^\pi(s, a) = \E[ r(s, a) + Q^\pi(s', a') \mid s, a ].
 $$ {#eq-q-cond-mean}
 
-You can see that the input $x$ corresponds to $s, a, h$
-and the output $y$ corresponds to $r(s, a) + \max_{a' \in \mathcal{A}} q(s', a', h+1)$.
-Now we just need to sample a dataset of input-output pairs.
-This is where _interaction with the environment_ comes in.
-
+We can see that the input $x$ corresponds to $s, a$
+and the output $y$ corresponds to $r(s, a) + q(s', a')$.
+Now we just need to _interact with the environment_
+to obtain a dataset of input-output pairs
+and run empirical risk minimization.
 In particular,
-given a policy $\pi$ (called the **data collection policy**),
-we can act in the environment
+we use $\pi$,
+the policy we're trying to evaluate,
 to obtain a dataset of $N$ trajectories $\tau^1, \dots, \tau^N \sim \rho^{\pi}$.
 Let us indicate the trajectory index in the superscript, so that
 
 $$
 \tau^n = \{ s_0^n, a_0^n, r_0^n, s_1^n, a_1^n, r_1^n, \dots, s_{\hor-1}^n, a_{\hor-1}^n, r_{\hor-1}^n \}.
+$$ {#eq-exm-trajectory}
+
+This would give us $N (\hor - 1)$ samples in the dataset.
+We subtract one from the horizon
+since each $(x, y)$ sample requires a _pair_
+of consecutive timesteps:
+
 $$
+x^n_{\hi} = (s_\hi^n, a_\hi^n) \qquad y^n_{\hi} = r(s_\hi^n, a_\hi^n) + q(s^n_{\hi + 1}, a^n_{\hi+1})
+$$ {#eq-def-x-y}
+
+Notice that $y_{n, \hi}$
+depends on the current guess $q \approx Q^\pi$.
+This makes our new algorithm a fixed-point algorithm as well.
+
+Now we can use empirical risk minimization
+to find a function $\hat f$ that approximates the optimal Q-function.
+
+```{mermaid}
+%%| label: fig-fit-pe
+%%| fig-cap: Fitted policy evaluation.
+
+graph LR
+    A["$$\text{Use } \pi \text{ to collect data } \tau^1, \dots, \tau^N$$"] --> B
+    B["$$\text{Compute labels } y^n_h \text{ using Bellman consistency equations for } q$$"] --> C
+    C["$$\text{Update } q \text{ by fitting to data}$$"] --> B
+```
+
+::: {#def-fit-evaluation}
+#### Fitted policy evaluation
+
+**Input:** Policy $\pi : \mathcal{S} \to \triangle(\mathcal{A})$ to be evaluated.
+
+**Output:** An approximation of the value function $Q^\pi$ of the policy.
+
+1. Collect a dataset $\tau^1, \dots, \tau^N \sim \rho^\pi$.
+1. Initialize some function $q^0 : \mathcal{S} \times \mathcal{A} \in \mathbb{R}$.
+1. For $t = 0, \dots, T-1$:
+   1. Generate labels $y$ from the trajectories and the current estimate $q^t$, where the labels come from the r.h.s. of the @thm-consistency for the given policy.
+   2. Set $q^{t+1}$ to the function that minimizes the empirical risk:
+
+$$
+q \gets \arg\min_{q} \frac{1}{N \hor} \sum_{n=1}^N \sum_{\hi=1}^{\hor-2} (y^n_\hi - q(x^n_\hi))^2.
+$$
+:::
+
+```{python}
+def fitted_evaluation(
+    trajectories: list[Trajectory],
+    fit: FittingMethod,
+    π: Policy,
+    epochs: int,
+    Q_init: QFunction,
+) -> QFunction:
+    """
+    Run fitted policy evaluation using the given dataset.
+    Returns an estimate of the Q-function of the given policy.
+    """
+    Q_hat = Q_init
+    X = get_X(trajectories)
+    for epoch in tqdm(range(epochs)):
+        y = get_y(trajectories, Q_hat, π)
+        Q_hat = fit(X, y)
+    return Q_hat
+
+latex(fitted_evaluation)
+```
+
+<!-- Q_zero(get_num_actions(trajectories)) -->
+
+We call fitted policy evaluation an _offline algorithm_
+since the "interaction phase" and the "learning phase" are disjoint.
+That is,
+another perspective on fitted policy evaluation is:
+given a dataset of trajectories collected by some unknown policy $\pi_\text{data}$,
+evaluate the Q function of $\pi_\text{data}$.
+
+::: {#def-offline-online}
+#### Offline and online algorithms
+
+We say that a learning algorithm is _offline_
+if the learning is performed as a function of a static dataset,
+without requiring further interaction with the environment.
+In contrast,
+_online_ learning algorithms
+require interaction with the environment during learning.
+:::
+
+We could also call fitted policy evaluation
+an _on-policy algorithm_
+because the update rule uses trajectories sampled from $\pi$.
+Where do we need this assumption?
+Pay close attention to the target,
+and compare it to the true r.h.s. of the Bellman equation:
+
+$$
+\begin{aligned}
+y_\hi &= r(s_\hi, a_\hi) + q(s_{\hi+1}, a_{\hi+1}) \\
+Q^\pi(s, a) &= r(s, a) + \E_{\substack{
+    s' \sim P(\cdot \mid s, a) \\
+    a' \sim \pi(\cdot \mid s')
+}} Q^\pi(s', a').
+\end{aligned}
+$$ {#eq-compare}
+
+Notice that $(s_{\hi+1}, a_{\hi+1})$
+is a single sample from the joint distribution
+$s' \sim P(\cdot \mid s, a)$ and $a' \sim \pi(\cdot \mid s')$.
+If the trajectories were collected from a _different policy,_
+then $a_{\hi+1}$ would _not_ be a sample from $\pi(\cdot \mid s')$,
+making the target a biased sample for evaluating $\pi$.
+
+::: {#def-on-off-policy}
+#### On-policy and off-policy algorithms
+
+We say that a learning algorithm is _on-policy_
+if the update rule must use data collected by the current policy.
+On the other hand,
+we call a learning algorithm _off-policy_
+if its update rule doesn't care about how the data was collected.
+:::
+
+::: {#exr-off-policy}
+#### Off-policy fitted policy evaluation
+
+Now suppose you are given a dataset of trajectories
+sampled from a policy $\pi_\text{data}$,
+and you want to evaluate a _different_ policy $\pi$.
+You are _not_ given access to the environment.
+How could you use the dataset to evaluate $\pi$?
+Explain what makes this an _off-policy_ algorithm.
+:::
 
 ```{python}
 def collect_data(
@@ -179,21 +347,8 @@ def collect_data(
             s = s_next
         trajectories.append(τ)
     return trajectories
-```
 
-```{python}
-env = gym.make("LunarLander-v3")
-trajectories = collect_data(env, 100, 300, key)
-trajectories[0][:5]  # show first five transitions from first trajectory
-```
 
-Our above dataset would give us $N \cdot \hor$ samples in the dataset:
-
-$$
-x_{i \hi} = (s_\hi^i, a_\hi^i, \hi) \qquad y_{i \hi} = r(s_\hi^i, a_\hi^i) + \max_{a'} Q^\star_{\hi + 1}(s_{\hi + 1}^i, a')
-$$
-
-```{python}
 def get_X(trajectories: list[Trajectory]):
     """
     We pass the state and timestep as input to the Q-function
@@ -224,51 +379,173 @@ def get_y(
     return np.array(y)
 ```
 
-```{python}
-s, a, h = get_X(trajectories[:1])
-print("states:", s[:5])
-print("actions:", a[:5])
-print("timesteps:", h[:5])
-```
+### Bootstrapping and target networks
 
-```{python}
-get_y(trajectories[:1])[:5]
-```
+Using the current guess $q$
+to compute the labels
+is known as **bootstrapping.**
 
-Then we can use empirical risk minimization to find a function $\hat f$ that approximates the optimal Q-function.
+(This has nothing to do
+with bootstrapping in statistical inference.)
 
-```{python}
-# We will see some examples of fitting methods in the next section
-FittingMethod = Callable[[Float[Array, "N D"], Float[Array, " N"]], QFunction]
-```
+This term comes from the following metaphor:
+if you are trying to get on a horse,
+and there's nobody to help you up,
+you need to "pull yourself up by your bootstraps,"
+or in other words,
+start from your existing resources
+to build up to something more effective.
 
-::: {#rem-bootstrap}
-#### Circularity
-
-But notice that the definition of $y_{i \hi}$ depends on the current guess of Q-function!
-How can we resolve this circular dependency?
-Recall that we faced the same issue when evaluating a policy in an infinite-horizon MDP (@sec-iterative-pe).
-There, we iterated the @def-bellman-operator
-since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
-We can apply the same strategy here,
-using the $\hat f$ from the previous iteration to compute the labels $y_{i \hi}$,
-and then using this new dataset to fit the next iterate.
-:::
-
-::: {#def-fitted-q-iteration}
-#### Fitted Q-function iteration
-
-1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
-2. Iterate the following:
-   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the Bellman optimality operator @eq-bellman-opt-operator
-   2. Set $\hat f$ to the function that minimizes the empirical risk:
+Using a bootstrapped estimate
+makes the optimization more complicated.
+Since we are constantly updating our Q function estimate,
+the labels are also constantly changing,
+destabilizing learning.
+@sutton_reinforcement_2018
+calls bootstrapping one prong of the **deadly triad**
+of deep reinforcement learning
+(alongside function approximation and off-policy learning).
+One way to get around this in practice is to use a _target network._
+That is,
+when computing $y$,
+instead of using $q$,
+which is constantly changing,
+we maintain another _target network_ $q_\text{target}$
+that "updates more slowly."
+Concretely,
+$q_\text{target}$ is an exponential moving average
+of the iterates of $q$.
+Whenever we update $q$,
+we update $q_\text{target}$ accordingly:
 
 $$
-\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.
+q_\text{target} \gets (1-\lambda_{\text{target}}) q_\text{target} + \lambda_\text{target} q,
+$$ {#eq-target-update}
+
+where $\lambda_\text{target} \in (0, 1)$ is some mixing parameter:
+the larger it is,
+the more we update towards the current estimate $q$.
+
+## Fitted value iteration {#sec-fit-vi}
+
+We'll now explore an algorithm for computing the _optimal_ value function $V^\star$
+when the environment is unknown.
+This method is analogous to value iteration (@sec-vi),
+except instead of solving the Bellman optimality equations (@eq-bellman-opt) exactly,
+which is no longer assumed to be possible,
+we will collect a dataset of trajectories and apply _supervised learning_
+to solve the Bellman optimality equations _approximately._
+This is exactly analogous to fitted policy evaluation (@sec-fit-pe),
+except we use the Bellman _optimality_ equations
+instead of the Bellman _consistency_ equations for a given policy.
+
+| | Known environment | Unknown environment |
+| --- | --- | --- |
+| Bellman _consistency_ equations (evaluation) | Policy evaluation | Fitted policy evaluation |
+| Bellman _optimality_ equations (optimization) | Value iteration | Fitted value iteration |
+
+: How fitted value iteration relates to existing algorithms. {#tbl-ctx-fit-vi}
+
+::: {#rem-review-vi}
+#### Value iteration review
+
+Value iteration was an algorithm we used
+to compute the optimal value function $V^\star : \mathcal{S} \to \R$
+in an infinite-horizon MDP (@sec-vi).
+Here, we will present the equivalent algorithm
+for the optimal action-value function $Q^\star : \mathcal{S} \times \mathcal{A} \to \R$.
+The optimal action-value function satisfies the Bellman optimality equations
+
 $$
+Q^\star(s, a) = r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[
+    \max_{a' \in \mathcal{A}} Q^\star(s', a')
+].
+$$ {#eq-review-bellman-opt}
+
+Now let us treat @eq-review-bellman-opt as an "operator" instead of an equation,
+that is,
+
+$$
+q(s, a) \gets r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[
+    \max_{a' \in \mathcal{A}} q(s', a')
+].
+$$ {#eq-review-bellman-opt-operator}
+
+If we start with some guess $q : \mathcal{S} \times \mathcal{A} \to \R$,
+and repeatedly apply the update step @eq-review-bellman-opt-operator,
+the iterates will eventually converge to $Q^\star$
+since @eq-review-bellman-opt-operator is a contraction mapping.
+:::
+
+When we can't compute expectations over $s' \sim P(\cdot \mid s, a)$,
+we can instead apply supervised learning
+to _approximately_ solve the Bellman optimality equations.
+As before,
+we can write $Q^\star$ explicitly as a conditional expectation
+
+$$
+Q^\star(s, a) = \E\left[
+    r(s, a) + \max_{a' \in \mathcal{A}}Q^\star(s', a') \mid s, a
+\right].
+$$ {#eq-q-cond}
+
+From this expression,
+we can read off the inputs $x$
+and the targets $y$
+for supervised learning.
+As before,
+since we don't know $Q^\star$,
+we replace it with our current guess
+$q \approx Q^\star$:
+
+$$
+\begin{aligned}
+x &:= (s, a) \\
+y &:= r(s, a) + \max_{a' \in \mathcal{A}} q(s', a').
+\end{aligned}
+$$ {#eq-fit-vi-inputs-targets}
+
+The only difference from fitted policy evaluation (@sec-fit-pe) is how we compute the targets $y$.
+Instead of using the next action from the trajectory,
+we use the action with the _maximum_ value.
+Notice that these equations don't reference a policy anywhere!
+In other words,
+fitted value iteration is an _off-policy_ algorithm.
+
+```{mermaid}
+%%| label: fig-fit-vi
+%%| fig-cap: Fitted policy evaluation.
+
+graph LR
+    A["$$\text{Use } \pi \text{ to collect data } \tau^1, \dots, \tau^N$$"] --> B
+    B["$$\text{Compute labels } y^n_h \text{ using Bellman optimality equations for } q$$"] --> C
+    C["$$\text{Update } q \text{ by fitting to data}$$"] --> B
+```
+
+::: {#def-fit-vi}
+#### Fitted value iteration
+
+Suppose we have some dataset of trajectories $\tau^1, \dots, \tau^N$
+collected by interacting with the environment.
+
+1. Initialize some function $q^0(s, a, h) \in \mathbb{R}$.
+1. Compute $x^n_\hi = (s^n_\hi, a^n_\hi)$.
+1. For $t = 0, \dots, T-1$:
+   1. Use $q^t$ to generate the targets
+      $$
+      y^n_\hi = r^n_\hi + \max_{a'} q^t(s^n_\hi, a').
+      $$ {#eq-fit-vi-targets}
+   2. Set $q^{t+1}$ to the function that minimizes the empirical risk:
+
+$$
+f^{t+1} \gets \arg\min_f \frac{1}{N (\hor-1)} \sum_{n=1}^N  \sum_{\hi=0}^{\hor-2} (y^n_\hi - f(x^n_\hi))^2,
+$$ {#eq-fit-vi}
 :::
 
 ```{python}
+#| label: fig-code-fit-vi
+#| fig-cap: Pseudocode for fitted value iteration.
+
 def fitted_q_iteration(
     trajectories: list[Trajectory],
     fit: FittingMethod,
@@ -285,61 +562,109 @@ def fitted_q_iteration(
         y = get_y(trajectories, Q_hat)
         Q_hat = fit(X, y)
     return Q_hat
+
+latex(fitted_q_iteration)
 ```
 
-## Fitted policy evaluation {#sec-fitted-pi-eval}
+### Q-learning {#sec-q-learning}
 
-We can also use this fixed-point interation to *evaluate* a policy using the dataset (not necessarily the one used to generate the trajectories):
+In the fitted value iteration algorithm above,
+we collect the whole dataset beforehand,
+from some unknown policy (or policies).
+What could go wrong with this?
+Since the environment is unknown,
+the dataset only contains information
+about some portion of the environment.
+When we update $q$,
+it may therefore only learn to approximate $Q^\star$ well
+for states that are in the initial dataset.
+It would be much better
+if $q$ was accurate
+in states that the policy will actually find itself in.
+This leads to the following simple shift:
+collect trajectories _inside_ the iteration loop!
+This turns fitted value interation
+into an _online_ algorithm
+known as **Q-learning.**
 
-::: {#def-fitted-evaluation}
-#### Fitted policy evaluation
-
-**Input:** Policy $\pi : \mathcal{S} \times [H] \to \Delta(\mathcal{A})$ to be evaluated.
-
-**Output:** An approximation of the value function $Q^\pi$ of the policy.
-
-1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
-2. Iterate the following:
-   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the @thm-bellman-consistency for the given policy.
-   2. Set $\hat f$ to the function that minimizes the empirical risk:
-   
-$$
-\hat f \gets \arg\min_f \frac{1}{N} \sum_{i=1}^N (y_i - f(x_i))^2.
-$$
-:::
-
-```{python}
-def fitted_evaluation(
-    trajectories: list[Trajectory],
-    fit: FittingMethod,
-    π: Policy,
-    epochs: int,
-    Q_init: Optional[QFunction] = None,
-) -> QFunction:
-    """
-    Run fitted policy evaluation using the given dataset.
-    Returns an estimate of the Q-function of the given policy.
-    """
-    Q_hat = Q_init or Q_zero(get_num_actions(trajectories))
-    X = get_X(trajectories)
-    for _ in tqdm(range(epochs)):
-        y = get_y(trajectories, Q_hat, π)
-        Q_hat = fit(X, y)
-    return Q_hat
+```{mermaid}
+%%| label: fig-fit-q-viz
+%%| fig-cap: Fitted value iteration
+graph LR
+    A[Collect trajectories from data collection policy] --> B
+    B[Compute targets by bootstrapping with q] --> C
+    C[Update q by empirical risk minimization] --> B
 ```
 
-::: {#exr-spot-difference}
-#### Spot the difference
-
-Spot the difference between `fitted_evaluation` and `fitted_q_iteration`. (See the definition of `get_y`.)
-How would you modify this algorithm to evaluate the data collection policy?
-:::
-
-## Fitted policy iteration
-
-We can use this policy evaluation algorithm to adapt @sec-policy-iteration to this new setting. The algorithm remains exactly the same -- repeatedly make the policy greedy w.r.t. its own value function -- except now we must evaluate the policy (i.e. compute its value function) using the iterative `fitted-evaluation` algorithm.
+```{mermaid}
+%%| label: fig-q-learning-viz
+%%| fig-cap: Q learning
+graph LR
+    A[Collect trajectories from epsilon-greedy policy for current guess for Q] --> B
+    B[Compute targets by bootstrapping with q] --> C
+    C[Update q by empirical risk minimization] --> A
+```
 
 ```{python}
+def q_learning(env, Q_init, epochs: int):
+    q = Q_init
+    for _ in range(epochs):
+        trajectories = collect_trajectories(env, EpsilonGreedyPolicy(theta))
+        X = get_X(trajectories)
+        y = get_y(trajectories, q)
+        q = fit(X, y)
+    return q
+
+latex(q_learning, id_to_latex={"q_learning": r"\text{Q-learning}"})
+```
+
+Note that it doesn't actually matter how the trajectories are collected,
+making Q-learning an **off-policy** algorithm.
+One common choice is to collect trajectories using an _epsilon-greedy_ policy
+with respect to the current guess $q$.
+
+Another common trick used in practice
+is to _grow_ the dataset, called a **replay buffer,**
+at each iteration.
+Then, in the improvement step,
+we randomly sample a batch of $(x, y)$ samples
+from the replay buffer
+and use these for empirical risk minimization.
+
+```{python}
+import random
+
+def q_learning_with_buffer(env, Q_init, epochs: int, batch_size):
+    q = Q_init
+    buffer = []
+    for _ in range(epochs):
+        trajectories = collect_trajectories(env, EpsilonGreedyPolicy(theta))
+        buffer.extend(trajectories)
+
+        batch = random.sample(trajectories, batch_size)
+        X = get_X(batch)
+        y = get_y(batch, q)
+        q = fit(X, y)
+    return q
+
+latex(q_learning, id_to_latex={"q_learning_with_buffer": r"\text{Q-learning-buffer}"})
+```
+
+## Fitted policy iteration {#sec-fit-pi}
+
+We can use fitted policy evaluation
+to extend _policy iteration_ (@sec-pi)
+to this new, more general setting.
+The algorithm remains exactly the same --
+repeatedly make the policy greedy with respect to its own value function --
+except now we evaluate the policy $\pi$
+(i.e. estimate $Q^\pi$)
+using fitted policy evaluation.
+
+```{python}
+#| label: fig-fit-pi
+#| fig-cap: Pseudocode for fitted policy iteration.
+
 def fitted_policy_iteration(
     trajectories: list[Trajectory],
     fit: FittingMethod,
@@ -353,9 +678,20 @@ def fitted_policy_iteration(
         Q_hat = fitted_evaluation(trajectories, fit, π, evaluation_epochs)
         π = q_to_greedy(Q_hat)
     return π
+
+latex(fitted_policy_iteration, id_to_latex={"fitted_policy_iteration": r"\text{fitted-policy-iteration}"})
 ```
 
 ## Summary
 
-
+In most real-world settings,
+we don't know the state transitions $P$.
+This means we can't _exactly_ compute
+the Bellman consistency or optimality equations,
+which require taking an expectation
+over the next state.
+The best we can do
+in terms of DP algorithms
+is to _approximately_ solve the system
+with supervised learning.
 
