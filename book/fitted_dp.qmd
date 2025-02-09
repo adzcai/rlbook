@@ -46,6 +46,8 @@ The term "fitted" means that,
 since we can no longer compute the Bellman consistency equations or Bellman optimality equations exactly,
 we plug data from the environment into a supervised learning algorithm
 to _approximately_ solve these equations.
+We will also introduce some useful language
+for classifying RL algorithms.
 
 ::: {#rem-state-time}
 #### Notation
@@ -183,9 +185,27 @@ $$ {#eq-q-cond-mean}
 
 We can see that the input $x$ corresponds to $s, a$
 and the output $y$ corresponds to $r(s, a) + q(s', a')$.
-Now we just need to _interact with the environment_
-to obtain a dataset of input-output pairs
+Now we just need to obtain a dataset of input-output pairs
 and run empirical risk minimization.
+We can classify data collection strategies
+as either _offline_ or _online_.
+
+::: {#def-offline-online}
+#### Offline and online algorithms
+
+We say that a learning algorithm is _offline_
+if the learning is performed as a function of a static dataset,
+without requiring further interaction with the environment.
+In contrast,
+_online_ learning algorithms
+require interaction with the environment during learning.
+:::
+
+We'll begin with an offline version of fitted policy evaluation
+and then see an online version.
+
+### Offline fitted policy evaluation
+
 In particular,
 we use $\pi$,
 the policy we're trying to evaluate,
@@ -270,17 +290,6 @@ That is,
 another perspective on fitted policy evaluation is:
 given a dataset of trajectories collected by some unknown policy $\pi_\text{data}$,
 evaluate the Q function of $\pi_\text{data}$.
-
-::: {#def-offline-online}
-#### Offline and online algorithms
-
-We say that a learning algorithm is _offline_
-if the learning is performed as a function of a static dataset,
-without requiring further interaction with the environment.
-In contrast,
-_online_ learning algorithms
-require interaction with the environment during learning.
-:::
 
 We could also call fitted policy evaluation
 an _on-policy algorithm_
@@ -426,6 +435,53 @@ where $\lambda_\text{target} \in (0, 1)$ is some mixing parameter:
 the larger it is,
 the more we update towards the current estimate $q$.
 
+### Online fitted policy evaluation
+
+In the offline algorithm above,
+we collect the whole dataset
+before starting the learning process.
+What could go wrong with this?
+Since the environment is unknown,
+the dataset only contains information
+about some portion of the environment.
+When we update $q$,
+it may only learn to approximate $Q^\pi$ well
+for states that are in the initial dataset.
+It would be much better
+if $q$ were accurate
+in states that the policy will actually find itself in.
+This leads to the following simple shift:
+collect trajectories _inside_ the iteration loop!
+This results in an _online_ algorithm for fitted policy evaluation,
+also known as $\text{TD}(0)$.
+
+```{python}
+#| label: fig-fit-pe-online
+#| fig-cap: Pseudocode for online policy evaluation (TD(0))
+
+def fitted_policy_evaluation_online(
+    env,
+    pi: Policy,
+    epochs: int,
+    learning_rate: float,
+    q_init,
+    *,
+    key
+):
+    q = q_init
+    for epoch in range(epochs):
+        trajectory = collect_data(env, N=1, H=20, key=key, pi=pi)
+        for (s, a, r), (s_next, a_next, _) in zip(trajectory[:-1], trajectory[1:]):
+            target = r + q[s_next, a_next]
+            q[s, a] = q[s, a] - learning_rate * (q[s, a] - target)
+    return q
+
+latex(fitted_policy_evaluation_online)
+```
+
+Note that we explicitly write out one step of gradient descent
+on the squared "temporal difference error".
+
 ## Fitted value iteration {#sec-fit-vi}
 
 We'll now explore an algorithm for computing the _optimal_ value function $V^\star$
@@ -521,6 +577,13 @@ graph LR
     B["$$\text{Compute labels } y^n_h \text{ using Bellman optimality equations for } q$$"] --> C
     C["$$\text{Update } q \text{ by fitting to data}$$"] --> B
 ```
+
+### Offline fitted value iteration
+
+To construct an offline algorithm,
+we take some dataset of trajectories,
+and then do all of the learning
+without ever interacting with the environment.
 
 ::: {#def-fit-vi}
 #### Fitted value iteration
@@ -682,6 +745,13 @@ def fitted_policy_iteration(
 latex(fitted_policy_iteration, id_to_latex={"fitted_policy_iteration": r"\text{fitted-policy-iteration}"})
 ```
 
+::: {#exr-pi-categorization}
+#### Classification
+
+Is fitted policy iteration online or offline?
+On-policy or off-policy?
+:::
+
 ## Summary
 
 In most real-world settings,
@@ -695,3 +765,8 @@ in terms of DP algorithms
 is to _approximately_ solve the system
 with supervised learning.
 
+We began by considering _offline_ algorithms
+that used a dataset of interactions
+to learn some quantity of interest.
+We then saw the _online_ equivalents
+that observe data by interacting with the environment.
