@@ -76,31 +76,87 @@ def q_to_greedy(Q: QFunction) -> Policy:
 
 ## Fitted value iteration {#sec-fitted-vi}
 
-Let us apply ERM to the RL problem of computing the optimal policy / value function.
+In this section,
+we'll see one method to compute the optimal value function
+when the environment is unknown.
+This method is analogous to value iteration (@sec-value-iteration),
+except instead of solving the Bellman optimality equations (@eq-bellman-opt) exactly,
+which is no longer assumed to be possible,
+we will collect a dataset of trajectories and apply _supervised learning_
+to learn the .
 
-How did we compute the optimal value function in MDPs with _finite_ state and action spaces?
+::: {#rem-review-vi}
+#### Value iteration
 
-- In a finite-horizon MDP (@sec-finite-horizon-mdps),
-  we can apply dynamic programming,
-  working backwards from the end of the time horizon, to compute the optimal value function exactly.
-- In an infinite-horizon MDP (@sec-infinite-horizon-mdps),
-  we can use @sec-value-iteration,
-  which iterates the Bellman optimality operator @eq-bellman-optimality-operator
-  to approximately compute the optimal value function.
+It will be helpful to first review value iteration (@sec-value-iteration).
+This was an algorithm we used
+to compute the optimal value function $V^\star : \mathcal{S} \to \R$
+in an infinite-horizon MDP.
+Here, we will present the equivalent algorithm
+for the optimal action-value function $Q^\star : \mathcal{S} \times \mathcal{A} \to \R$.
+The optimal action-value function satisfies the Bellman optimality equations
 
-Our existing approaches represent the value function, and the MDP itself,
-in matrix notation.
-But what happens if the state space is extremely large, or even infinite (e.g. real-valued)?
-Then computing a weighted sum over all possible next states, which is required to compute the Bellman operator,
-becomes intractable.
+$$
+Q^\star(s, a, h) = r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[
+    \max_{a' \in \mathcal{A}} Q^\star(s', a', h+1)
+].
+$$ {#eq-review-bellman-opt}
 
-Instead, we will need to use *function approximation* methods from supervised learning to solve for the value function in an alternative way.
+Now let us treat @eq-review-bellman-opt as an "operator" instead of an equation,
+that is,
 
-In particular, suppose we have a dataset of $N$ trajectories $\tau_1, \dots, \tau_N \sim \rho_{\pi}$ from some policy $\pi$ (called the **data collection policy**) acting in the MDP of interest.
+$$
+q(s, a) \gets r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[
+    \max_{a' \in \mathcal{A}} q(s', a')
+].
+$$ {#eq-review-bellman-opt-operator}
+
+If we start with some guess $q : \mathcal{S} \times \mathcal{A} \to \R$,
+and repeatedly apply the update step @eq-review-bellman-opt-operator,
+the iterates will eventually converge to $Q^\star$
+since @eq-review-bellman-opt-operator is a contraction mapping.
+:::
+
+Note that the r.h.s. of the value iteration update step (@eq-review-bellman-opt-operator)
+requires computing an expectation over the state transitions.
+As mentioned in the introduction,
+this is intractable for most real-world tasks.
+Instead, we will need to use *function approximation* methods from supervised learning
+to solve for the value function in an alternative way.
+
+Recall that supervised learning is good at learning _conditional expectations_
+of the form
+
+$$
+f(x) = \E[ y \mid x ].
+$$ {#eq-exm-cond-mean}
+
+We collect a dataset of $(x, y)$ pairs,
+sampled from their joint distribution,
+and minimize the squared error $(f(x) - y)^2$.
+
+Let us now rewrite @eq-review-bellman-opt-operator in this notation
+to make the connection more clear.
+We explicitly notate $s'$ as a random variable
+and move the conditioning on $s, a$ into the brackets:
+
+$$
+q(s, a, h) \gets \E[ r(s, a) + \max_{a' \in \mathcal{A}} q(s', a', h+1) \mid s, a, h ].
+$$ {#eq-q-cond-mean}
+
+You can see that the input $x$ corresponds to $s, a, h$
+and the output $y$ corresponds to $r(s, a) + \max_{a' \in \mathcal{A}} q(s', a', h+1)$.
+Now we just need to sample a dataset of input-output pairs.
+This is where _interaction with the environment_ comes in.
+
+In particular,
+given a policy $\pi$ (called the **data collection policy**),
+we can act in the environment
+to obtain a dataset of $N$ trajectories $\tau^1, \dots, \tau^N \sim \rho^{\pi}$.
 Let us indicate the trajectory index in the superscript, so that
 
 $$
-\tau_i = \{ s_0^i, a_0^i, r_0^i, s_1^i, a_1^i, r_1^i, \dots, s_{\hor-1}^i, a_{\hor-1}^i, r_{\hor-1}^i \}.
+\tau^n = \{ s_0^n, a_0^n, r_0^n, s_1^n, a_1^n, r_1^n, \dots, s_{\hor-1}^n, a_{\hor-1}^n, r_{\hor-1}^n \}.
 $$
 
 ```{python}
@@ -130,24 +186,6 @@ env = gym.make("LunarLander-v3")
 trajectories = collect_data(env, 100, 300, key)
 trajectories[0][:5]  # show first five transitions from first trajectory
 ```
-
-Can we view the dataset of trajectories as a "labelled dataset" in order to apply supervised learning to approximate the optimal Q-function? Yes!
-Recall that we can characterize the optimal Q-function
-using the Bellman optimality equations (@thm-bellman-optimality),
-which don't depend on an actual policy:
-
-$$
-Q_\hi^\star(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [\max_{a'} Q_{\hi+1}^\star(s', a')]
-$$
-
-We can think of the arguments to the Q-function -- i.e. the current state, action, and timestep $\hi$ --
-as the inputs $x$, and the r.h.s. of the above equation as the label $f(x)$. Note that the r.h.s. can also be expressed as a **conditional expectation**:
-
-$$
-f(x) = \E [y \mid x] \quad \text{where} \quad y = r(s_\hi, a_\hi) + \max_{a'} Q^\star_{\hi + 1}(s', a').
-$$
-
-Approximating the conditional expectation is precisely the task that @sec-erm is suited for!
 
 Our above dataset would give us $N \cdot \hor$ samples in the dataset:
 
@@ -204,18 +242,25 @@ Then we can use empirical risk minimization to find a function $\hat f$ that app
 FittingMethod = Callable[[Float[Array, "N D"], Float[Array, " N"]], QFunction]
 ```
 
-But notice that the definition of $y_{i \hi}$ depends on the Q-function itself!
+::: {#rem-bootstrap}
+#### Circularity
+
+But notice that the definition of $y_{i \hi}$ depends on the current guess of Q-function!
 How can we resolve this circular dependency?
-Recall that we faced the same issue when evaluating a policy in an infinite-horizon MDP (@sec-iterative-pe). There, we iterated the @def-bellman-operator since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
-We can apply the same strategy here, using the $\hat f$ from the previous iteration to compute the labels $y_{i \hi}$,
+Recall that we faced the same issue when evaluating a policy in an infinite-horizon MDP (@sec-iterative-pe).
+There, we iterated the @def-bellman-operator
+since we knew that the policy's value function was a fixed point of the policy's Bellman operator.
+We can apply the same strategy here,
+using the $\hat f$ from the previous iteration to compute the labels $y_{i \hi}$,
 and then using this new dataset to fit the next iterate.
+:::
 
 ::: {#def-fitted-q-iteration}
 #### Fitted Q-function iteration
 
 1. Initialize some function $\hat f(s, a, h) \in \mathbb{R}$.
 2. Iterate the following:
-   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the Bellman optimality operator @eq-bellman-optimality-operator
+   1. Generate a supervised learning dataset $X, y$ from the trajectories and the current estimate $f$, where the labels come from the r.h.s. of the Bellman optimality operator @eq-bellman-opt-operator
    2. Set $\hat f$ to the function that minimizes the empirical risk:
 
 $$

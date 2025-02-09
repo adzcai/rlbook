@@ -110,6 +110,8 @@ We say that such state transitions satisfy the **Markov property**,
 which we will formally define in @def-markov-property after introducing some notation.
 
 ::: {#exr-understanding-mdps}
+#### Checking for the Markov property
+
 Look back at the state transitions you described in @exr-decision-problems.
 Do they satisfy the Markov property?
 (For chess, consider the threefold repetition rule:
@@ -1107,7 +1109,7 @@ Substituting the definition of $V^\star$ concludes the proof.
 As in the Bellman consistency equations (@thm-bellman-consistency),
 combining @eq-optimal-v-q and @eq-optimal-q-v gives the _Bellman optimality equations_.
 
-::: {#thm-bellman-optimality}
+::: {#thm-bellman-opt}
 #### Bellman optimality equations
 
 The optimal value function function (@def-optimal-value) satisfies,
@@ -1115,7 +1117,7 @@ for all timesteps $\hi \in [\hor-1]$,
 
 $$
 V_\hi^\star(s) = \max_a r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\star(s')].
-$$ {#eq-bellman-optimality}
+$$ {#eq-bellman-opt}
 
 Like the Bellman consistency equations (@eq-bellman-consistency),
 This is a system of $H |\mathcal{S}|$ equations
@@ -1210,7 +1212,7 @@ Essentially,
 we begin at the _end_ of the trajectory,
 where the optimal action is simply the one that yields highest immediate reward.
 Once the optimal values at time $\hor-1$ are known,
-we use these to compute the optimal values at time $\hor-2$ using the Bellman optimality equations (@eq-bellman-optimality),
+we use these to compute the optimal values at time $\hor-2$ using the Bellman optimality equations (@eq-bellman-opt),
 and proceed backward through the trajectory.
 
 ```{mermaid}
@@ -1351,13 +1353,13 @@ Then the following are all equivalent:
 2. $\pi$ is optimal across all policies (@eq-optimal-all).
 3. $V^\pi = V^\star$.
 4. $Q^\pi = Q^\star$.
-5. $V^\pi$ satisfies the Bellman optimality equations (@eq-bellman-optimality).
+5. $V^\pi$ satisfies the Bellman optimality equations (@eq-bellman-opt).
 
 1 and 3 are the same by definition.
 3 and 4 are the same since $V^\star$ and $Q^\star$
 uniquely define each other by @eq-optimal-v-q
 and $V^\pi$ and $Q^\pi$ uniquely define each other by @eq-relating-v-q and @eq-relating-q-v.
-3 and 5 are the same by the Bellman optimality equations (@thm-bellman-optimality).
+3 and 5 are the same by the Bellman optimality equations (@thm-bellman-opt).
 1 and 2 are the same as shown in the proof of @thm-optimal-greedy.
 :::
 
@@ -1838,7 +1840,7 @@ $\|v^{(0)} - V^\pi\|_{\infty} \le 1/(1-\gamma)$ and
 $\log (1/x) \ge 1-x$.
 ::::
 
-### Optimality {#sec-infinite-optimality}
+### Optimality {#sec-infinite-opt}
 
 Now let's move on to solving for an optimal policy in the infinite-horizon case.
 As in @def-optimal-policy-finite, an **optimal policy** $\pi^\star$
@@ -1879,15 +1881,15 @@ function doesn't depend on any policy:
 
 $$
 V^\star(s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} V^\star(s'). \right]
-$$ {#eq-bellman-optimality}
+$$ {#eq-bellman-opt}
 
 As before,
-thinking of the r.h.s. of @eq-bellman-optimality as an operator on value functions
+thinking of the r.h.s. of @eq-bellman-opt as an operator on value functions
 gives the **Bellman optimality operator**
 
 $$
 [\mathcal{J}^{\star}(v)](s) = \max_a \left[ r(s, a) + \gamma \E_{s' \sim P(s, a)} v(s') \right]
-$$ {#eq-bellman-optimality-operator}
+$$ {#eq-bellman-opt-operator}
 
 ```{python}
 def bellman_optimality_operator(mdp: MDP, v: Float[Array, " S"]) -> Float[Array, " S"]:
