@@ -149,9 +149,11 @@ The components of a finite-horizon Markov decision process are:
     $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$
     that describe what state the agent
     transitions to after taking an action.
-    (We write $P(s_{\hi + 1} \mid s_\hi, a_\hi)$
+    We write $P(s_{\hi + 1} \mid s_\hi, a_\hi)$
     for the probability of transitioning to state $s_{\hi+1}$
-    when starting in state $s_\hi$ and taking action $a_\hi$.)
+    when starting in state $s_\hi$ and taking action $a_\hi$.
+    Note that we use the letter $P$ for the state transition function
+    and the symbol $\pr$ more generally to indicate probabilities of events.
 
 5.  The **reward function**. In this course,
     we'll take it to be a deterministic function on state-action pairs,
@@ -177,7 +179,7 @@ decision process:
 
 $$
 \mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, P, r, \hor).
-$$
+$$ {#eq-finite-horizon-mdp}
 :::
 
 

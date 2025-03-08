@@ -4,8 +4,8 @@
 \providecommand{\hor}{H}
 \providecommand{\kl}[2]{\mathrm{KL}\left(#1\parallel#2\right)}
 \providecommand{\ind}[1]{\mathbf{1}\left\{#1\right\}}
-\providecommand{\st}{s}
-\providecommand{\act}{a}
+\providecommand{\st}{x}
+\providecommand{\act}{u}
 \providecommand{\E}{\mathop{\mathbb{E}}}
 \providecommand{\R}{\mathbb{R}}
 \providecommand{\pr}{\mathbb{P}}

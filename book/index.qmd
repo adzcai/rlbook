@@ -1,8 +1,3 @@
----
-
-
----
-
 {{< include macros.qmd >}}
 
 # Introduction {.unnumbered}
@@ -20,7 +15,7 @@ approachable and digestible for new students.
 This book assumes the same prerequisites as the course: You should be familiar with multivariable calculus, linear algebra, and probability.
 For Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents.
 Stat 111 is strongly recommended but not required.
-Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text or in the @sec-background:
+Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text or in @sec-background:
 
 -   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
     inversion, eigenvalues and eigenvectors.

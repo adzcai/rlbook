@@ -16,7 +16,9 @@ book:
     - imitation_learning.qmd
     - planning.qmd
     - exploration.qmd
+  appendices:
     - background.qmd
+    - proofs.qmd
     - references.qmd
 
 bibliography: references.bib

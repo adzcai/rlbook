@@ -1,21 +1,19 @@
 {{< include macros.qmd >}}
 
-::: {.hidden}
-\providecommand{\st}{x}
-\providecommand{\act}{u}
-:::
-
 # Linear Quadratic Regulators {#sec-control}
 
 ## Introduction
 
-Up to this point, we have considered decision problems with finitely
-many states and actions. However, in many applications, states and
-actions may take on continuous values. For example, consider autonomous
-driving, controlling a robot's joints, and automated manufacturing. How
-can we teach computers to solve these kinds of problems? This is the
-task of **continuous control**.
-
+In @sec-mdps,
+we considered decision problems with finitely many states and actions.
+However, in many applications,
+states and actions may take on _continuous_ values.
+For example,
+consider autonomous driving,
+controlling a robot's joints,
+and automated manufacturing.
+How can we teach computers to solve these kinds of problems?
+This is the task of **continuous control**.
 
 ::: {layout-ncol="2"}
 ![Solving a Rubik’s Cube with a robot hand](shared/rubiks_cube.jpg)
@@ -23,15 +21,68 @@ task of **continuous control**.
 ![Boston Dynamics’s Spot robot](shared/boston_dynamics.jpg)
 :::
 
-Aside from the change in the state and action spaces, the general
-problem setup remains the same: we seek to construct an *optimal policy*
-that outputs actions to solve the desired task. We will see that many
-key ideas and algorithms, in particular dynamic programming algorithms,
+Aside from the change in the state and action spaces,
+the general problem setup remains the same:
+we seek to construct an *optimal policy* that outputs actions to solve the desired task.
+We will see that many key ideas and algorithms,
+in particular dynamic programming algorithms (@sec-finite-opt-dp),
 carry over to this new setting.
 
-This chapter introduces a fundamental tool to solve a simple class of
-continuous control problems: the **linear quadratic regulator**. We will
-then extend this basic method to more complex settings.
+
+| Chapter | State space | Action space | Policies | Knowledge of environment | Key algorithms |
+| --- | --- | --- | --- | --- |
+| @sec-mdps (MDPs) | $\{1, \dots, \vert \mathcal{S} \vert \}$ | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | known | dynamic programming, policy iteration |
+| @sec-control (Control) | $\R^{n_\st}$ | $\R^{n_\act}$ | deterministic | unknown | (iterative) linear quadratic regulator |
+
+: A comparison of the control setting with the MDP setting. {#tbl-overview-chapters-control}
+
+This chapter introduces a fundamental tool to solve a simple class of continuous control problems:
+the **linear quadratic regulator** (LQR).
+We can use the LQR model as a building block for solving more complex problems.
+
+::: {#rem-differences-rl}
+#### Control vs RL
+
+Control theory is often considered a distinct, though related, field from RL.
+In both fields,
+the central aim is to solve sequential decision problems,
+i.e. find a strategy for taking actions in the environment
+in order to achieve some goal
+that is measured by a scalar signal.
+The two fields arose rather independently
+and with rather different problem settings,
+and use different mathematical terminology as a result.
+
+Control theory has close ties to electrical and mechanical engineering.
+Humans have been designing control systems since antiquity.
+The first attempt to formalize control theory as a field is attributed to @maxwell_governors_1867.
+Maxwell (well known for Maxwell's equations) demonstrated the utility
+of analyzing mathematical models to design stable systems.
+Control theorists typically work in a _continuous-time_ setting
+in which the dynamics can be described by systems of differential equations.
+The goal is typically to ensure _stability_ of the system
+and minimize some notion of "cost"
+(e.g. wasted energy in controlling the system).
+Rather than learning the system from data,
+one typically supposes a particular structure of the environment
+and solves for the optimal controller using analytical or numerical methods.
+As such, control theory algorithms are more accurately referred to as _planning methods_
+that do not depend on _data_;
+that is, there is no "learning" patterns from data involved.
+:::
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from utils import latex
+import numpy as np
+import matplotlib.pyplot as plt
+import control
+```
+
+## Optimal control
+
+Let's first look at a simple example of a continuous control problem:
 
 :::: {#exm-cart-pole}
 #### CartPole
@@ -42,16 +93,13 @@ continuously, and the state transitions governing the system, i.e. the
 laws of physics, are highly complex. This task is equivalent to the
 classic control problem known as *CartPole*:
 
-![Cart pole](shared/cart_pole.png){width=200}
+![A snapshot of the cart pole environment](shared/cart_pole.png){width=200}
 
-The state $\st \in \mathbb{R}^4$ can be described by:
+The state $\st \in \mathbb{R}^4$ can be described by four real variables:
 
 1.  the position of the cart;
-
 2.  the velocity of the cart;
-
 3.  the angle of the pole;
-
 4.  the angular velocity of the pole.
 
 We can *control* the cart by applying a horizontal force $\act \in \mathbb{R}$.
@@ -60,195 +108,356 @@ We can *control* the cart by applying a horizontal force $\act \in \mathbb{R}$.
 $(\st^\star, \act^\star)$.
 ::::
 
-## Optimal control
+A continuous control environment is a special case of an MDP (@def-finite-horizon-mdp).
+Recall that a finite-horizon MDP
 
-Recall that an MDP is defined by its state space $\mathcal{S}$, action space
-$\mathcal{A}$, state transitions $P$, reward function $r$, and discount factor
-$\gamma$ or time horizon $\hor$. These have equivalents in the control
-setting:
+$$
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, P, r, \hor).
+$$ {#eq-recall-finite-mdp}
 
--   The state and action spaces are *continuous* rather than finite.
+is defined by its state space $\mathcal{S}$,
+action space $\mathcal{A}$,
+initial state distribution $d_0$,
+state transitions $P$,
+reward function $r$,
+and time horizon $\hor$.
+These each have equivalents in the control setting.
+
+::: {#def-continuous-control}
+#### Continuous control environment
+
+A continuous control environment is defined by the following components:
+
+-   The state and action spaces $\mathcal{S}, \mathcal{A}$ are *continuous* rather than finite.
     That is, $\mathcal{S} \subseteq \mathbb{R}^{n_\st}$ and $\mathcal{A} \subseteq \mathbb{R}^{n_\act}$,
-    where $n_\st$ and $n_\act$ are the corresponding dimensions of these
-    spaces, i.e. the number of coordinates to specify a single state or
-    action respectively.
+    where $n_\st$ and $n_\act$ are the number of coordinates required to specify a single state or action respectively.
+    For example, in robotic control,
+    $n_\st$ might be the number of sensors
+    and $n_\act$ might be the number of actuators on the robot.
+-   $d_0 \in \triangle(\mathcal{S})$ denotes the initial state distribution.
+-   We call the state transitions the **dynamics** of the system and denote them by $f$:
+    $$
+    \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi),
+    $$ {#eq-lqr-dynamics}
+    where $w_\hi$ denotes noise drawn from the distribution $\nu_\hi \in \triangle(\mathbb{R}^{n_w})$.
+    Note that the dynamics may vary at each timestep $\hi$.
+-   Instead of maximizing the reward function, we seek to minimize the **cost function** $c_\hi: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$.
+    Often, the cost function describes *how far away* we are from a **target state-action pair** $(\st^\star, \act^\star)$.
+-   The agent acts over a *finite time horizon* $\hor \in \mathbb{N}$.
 
--   We call the state transitions the **dynamics** of the system. In the
-    most general case, these might change across timesteps and also
-    include some stochastic **noise** $w_\hi$ at each timestep. We
-    denote these dynamics as the function $f_\hi$ such that
-    $\st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi)$. Of course, we can
-    simplify to cases where the dynamics are *deterministic/noise-free*
-    (no $w_\hi$ term) and/or *time-homogeneous* (the same function $f$
-    across timesteps).
+Together, these constitute a description of the environment
 
--   Instead of maximizing the reward function, we seek to minimize the
-    **cost function** $c_\hi: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$. Often, the cost
-    function describes *how far away* we are from a **target
-    state-action pair** $(\st^\star, \act^\star)$. An important special
-    case is when the cost is *time-homogeneous*; that is, it remains the
-    same function $c$ at each timestep $h$.
-
--   We seek to minimize the *undiscounted* cost within a *finite time
-    horizon* $\hor$. Note that we end an episode at the final state
-    $\st_\hor$ -- there is no $\act_\hor$, and so we denote the cost for
-    the final state as $c_\hor(\st_\hor)$.
-
-With all of these components, we can now formulate the **optimal control
-problem:** *compute a policy to minimize the expected undiscounted cost
-over $\hor$ timesteps.* In this chapter, we will only consider
-*deterministic, time-dependent* policies
-$\pi = (\pi_0, \dots, \pi_{H-1})$ where $\pi_h : \mathcal{S} \to \mathcal{A}$ for each
-$\hi \in [\hor]$.
+$$
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, f, \nu, c, \hor).
+$$ {#eq-continuous-control}
+:::
 
 ::: {#def-optimal-control}
+#### Optimal control
 
-#### General optimal control problem
+For a continuous control environment $\mathcal{M}$,
+the optimal control problem
+is to compute a policy $\pi$
+that minimizes the total cost
 
 $$
-\begin{split}
+\begin{aligned}
     \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad & \E \left[
-        \left( \sum_{\hi=0}^{\hor-1} c_\hi(\st_\hi, \act_\hi) \right) + c_\hor(\st_\hor)
-        \right] \\
+        \sum_{\hi=0}^{\hor-1} c_\hi(\st_\hi, \act_\hi)
+    \right] \\
     \text{where} \quad & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi), \\
     & \act_\hi = \pi_\hi(\st_\hi) \\
-    & \st_0 \sim \mu_0 \\
-    & w_\hi \sim \text{noise}
-\end{split}
-$$
+    & \st_0 \sim d_0 \\
+    & w_\hi \sim \nu_\hi.
+\end{aligned}
+$$ {#eq-optimal-control}
 :::
+
+In this chapter, we will only consider *deterministic, time-dependent* policies
+
+$$
+\pi = (\pi_0, \dots, \pi_{\hor-1})
+\quad \text{where} \quad
+\pi_h : \mathcal{S} \to \mathcal{A}
+\text{ for each }
+\hi \in [\hor].
+$$ {#eq-det-h-policy}
+
+To make the explicit conditioning more concise,
+we let $\rho^\pi$ denote the trajectory distribution
+induced by the policy $\pi$.
+That is, if we sample initial states from $d_0$,
+act according to $\pi$,
+and transition according to the dynamics $f$,
+the resulting distribution over trajectories is $\rho^\pi$.
+Put another way,
+the procedure for sampling from $\rho^\pi$
+is to take rollouts in the environment using $\pi$.
+
+::: {#thm-continuous-control-trajectories}
+#### Trajectory distributions
+
+Let $\pi = \{ \pi_0, \dots, \pi_{\hor-1} \}$ be a deterministic, time-dependent policy.
+We include states $\st_\hi$, actions $\act_\hi$, and noise terms $w_\hi$ in the trajectory.
+Then the density of a trajectory $\tau = (\st_0, \act_0, w_0, \dots, w_{\hor-2}, \st_{\hor-1}, \act_{\hor-1})$
+can be expressed as follows:
+
+$$
+\begin{aligned}
+\rho^{\pi}(\tau)
+&:= d_0(\st_0) \times \ind{\act_0 = \pi_0(\st_0)} \\
+&\quad {} \times \nu(w_0) \times \ind{\st_1 = f(\st_0, \act_0, w_0)} \\
+&\quad {} \times \cdots \\
+&\quad {} \times \nu(w_{\hor-2})
+    \times \ind{\st_{\hor-1} = f(\st_{\hor-2}, \act_{\hor-2}, w_{\hor-2})}
+    \times \ind{\act_{\hor-1} = \pi_{\hor-1}(\st_{\hor-1})} \\
+&= d_0(\st_0) \ind{\act_0 = \pi_0(\st_0)}
+    \prod_{\hi=1}^{\hor-1} \nu(w_{\hi-1})
+    \ind{\st_{\hi} = f(\st_{\hi-1}, \act_{\hi-1}, w_{\hi-1})}
+    \ind{\act_{\hi} = \pi_{\hi}(\st_{\hi})}
+\end{aligned}
+$$ {#eq-continuous-autoregressive-trajectories}
+:::
+
+This expression may seem intimidating,
+but on closer examination,
+it simply uses indicator variables to enforce
+that only valid trajectories have nonzero probability.
+Henceforth, we will write $\tau \sim \rho^\pi$
+instead of the explicit conditioning in @eq-optimal-control.
+
+As in @sec-mdps,
+_value functions_ will be crucial for constructing the optimal policy via **dynamic programming.**
+
+::: {#def-value-lqr}
+#### Value functions in LQR
+
+Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})$,
+we can define its value function $V^\pi_\hi : \mathcal{S} \to \mathbb{R}$ at time $\hi \in [\hor]$
+as the **cost-to-go** incurred by that policy in expectation:
+
+$$
+V^\pi_\hi (\st) = \E_{\tau \sim \rho^\pi} \left[
+    \sum_{\hi'=\hi}^{\hor-1} c(\st_{\hi'}, \act_{\hi'})
+    \mid \st_\hi = \st
+\right]
+$$ {#eq-value-control}
+:::
+
+::: {#def-q-lqr}
+#### Q function in LQR
+
+The Q-function additionally conditions on the first action we take:
+
+$$
+Q^\pi_\hi (\st, \act) = \E_{\tau \sim \rho^\pi} \left[
+    \sum_{\hi'=\hi}^{\hor-1} c(\st_{\hi'}, \act_{\hi'})
+    \mid (\st_\hi, \act_\hi) = (\st, \act)
+\right]
+$$ {#eq-q-lqr}
+:::
+
+Note that since we use a _cost function_ $c$ instead of a _reward function_ $r$,
+the best policies in a given state (or state-action pair) are the ones with _smaller_ $V^\pi$ and $Q^\pi$.
 
 ### A first attempt: Discretization
 
-Can we solve this problem using tools from the finite MDP setting? If
-$\mathcal{S}$ and $\mathcal{A}$ were finite, then we'd be able to work backwards using the DP algorithm for computing the optimal policy in an MDP (@fig-optimal-policy).
-This inspires us to try *discretizing* the
-problem.
+Can we solve this problem using tools from the finite MDP setting?
+If $\mathcal{S}$ and $\mathcal{A}$ were finite,
+then we could use dynamic programming (@fig-optimal-policy) to compute the optimal policy exactly.
+This inspires us to try *discretizing* the problem.
 
-Suppose $\mathcal{S}$ and $\mathcal{A}$ are bounded, that is,
-$\max_{\st \in \mathcal{S}} \|\st\| \le B_\st$ and
-$\max_{\act \in \mathcal{A}} \|\act\| \le B_\act$. To make $\mathcal{S}$ and $\mathcal{A}$ finite,
-let's choose some small positive $\epsilon$, and simply round each
-coordinate to the nearest multiple of $\epsilon$. For example, if
-$\epsilon = 0.01$, then we round each element of $\st$ and $\act$ to two
-decimal spaces.
+Suppose $\mathcal{S}$ and $\mathcal{A}$ are bounded,
+that is, $\max_{\st \in \mathcal{S}} \|\st\| \le B_\st$
+and $\max_{\act \in \mathcal{A}} \|\act\| \le B_\act$.
+To make $\mathcal{S}$ and $\mathcal{A}$ finite,
+let's choose some small positive $\epsilon$,
+and simply round each coordinate to the nearest multiple of $\epsilon$.
+For example, if $\epsilon = 0.01$,
+then we round each element of $\st$ and $\act$ to two decimal spaces.
 
-However, the discretized $\widetilde{\mathcal{S}}$ and $\widetilde{\mathcal{A}}$ may be finite, but
-they may be infeasibly large: we must divide *each dimension* into
-intervals of length $\varepsilon$, resulting in
-$|\widetilde{\mathcal{S}}| = (B_\st/\varepsilon)^{n_\st}$ and
-$|\widetilde{\mathcal{A}}| = (B_\act/\varepsilon)^{n_\act}$. To get a sense of how
-quickly this grows, consider $\varepsilon = 0.01, n_\st = n_\act = 10$.
+What goes wrong?
+The discretized $\widetilde{\mathcal{S}}$ and $\widetilde{\mathcal{A}}$ may be finite,
+but for all practical purposes,
+they are far too large:
+we must divide *each dimension* into intervals of length $\varepsilon$,
+resulting in the state and action spaces
+
+$$
+|\widetilde{\mathcal{S}}| = (B_\st/\varepsilon)^{n_\st}
+\text{ and }
+|\widetilde{\mathcal{A}}| = (B_\act/\varepsilon)^{n_\act}.
+$$ {#eq-epsilon-size}
+
+To get a sense of how quickly this grows,
+consider $\varepsilon = 0.01, n_\st = n_\act = 4$, and $B_\st = B_\act = 1$.
 Then the number of elements in the transition matrix would be
-$|\widetilde{\mathcal{S}}|^2 |\widetilde{\mathcal{A}}| = (100^{10})^2 (100^{10}) = 10^{60}$! (That's
-a trillion trillion trillion trillion trillion.)
+$|\widetilde{\mathcal{S}}|^2 |\widetilde{\mathcal{A}}| = (100^{4})^2 (100^{4}) = 10^{24}$!
+(That's a million million million million.)
 
-What properties of the problem could we instead make use of? Note that
-by discretizing the state and action spaces, we implicitly assumed that
-rounding each state or action vector by some tiny amount $\varepsilon$
-wouldn't change the behavior of the system by much; namely, that the
-cost and dynamics were relatively *continuous*. Can we use this
-continuous structure in other ways? This leads us to the **linear
-quadratic regulator**.
+What properties of the problem could we instead make use of?
+Note that by discretizing the state and action spaces,
+we implicitly assumed that rounding each state or action vector by some tiny amount $\varepsilon$
+wouldn't change the behavior of the system by much;
+namely, that the cost and dynamics were relatively *continuous*.
+Can we use this continuous structure in other ways?
+Yes! We will see that the **linear quadratic regulator** makes better use of this assumption.
 
 ## The Linear Quadratic Regulator {#sec-lqr}
-The optimal control problem @def-optimal-control seems highly complex in general. Is there a relevant simplification that we can analyze?
-The **linear quadratic regulator** (LQR) is a solvable case and a fundamental tool in control theory.
 
-::: {#def-lqr-definition}
+The optimal control problem @def-optimal-control is quite general.
+Is there a relevant simplification that we can solve,
+where the dynamics $f$ and cost function $c$ have some special structure?
+The **linear quadratic regulator** (LQR) is a special case of a continuous control environment (@def-continuous-control)
+where the dynamics $f$ are _linear_
+and the cost function $c$ is an _upward-curved quadratic_.
+We also assume that the environment is _time-invariant_.
+This is an important environment class
+in which the optimal policy and value function can be solved for exactly.
 
-#### The linear quadratic regulator
+::: {#def-lqr}
+#### Linear quadratic regulator
 
-The LQR problem is a special case of the @def-optimal-control with *linear dynamics* and an *upward-curved quadratic cost function*.
-Solving the LQR problem will additionally enable us to *locally approximate* more complex setups using *Taylor approximations*.
-
-**Linear, time-homogeneous dynamics**: for each timestep $\hi \in [\hor]$,
+The dynamics $f$ are specified by the matrices
+$A \in \mathbb{R}^{n_\st \times n_\st}$ and $B \in \mathbb{R}^{n_\st \times n_\act}$:
 
 $$
-\begin{aligned}
-    \st_{\hi+1} &= f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi \\
-    \text{where } w_\hi &\sim \mathcal{N}(0, \sigma^2 I).
-\end{aligned}
-$$
+x_{\hi+1} = f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi
+$$ {#eq-lqr-linear-dynamics}
 
-Here, $w_\hi$ is a spherical Gaussian **noise term** that makes the dynamics random.
+for all $\hi \in [\hor-1]$,
+where $w_\hi \sim \mathcal{N}(0, \sigma^2) I$.
+
+The cost function is specified by the symmetric positive definite matrices
+$Q \in \mathbb{R}^{n_\st \times n_\st}$ and $R \in \mathbb{R}^{n_\act \times n_\act}$:
+
+$$
+c(\st_\hi, \act_\hi) = \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi
+$$ {#eq-lqr-cost-quadratic}
+
+for all $\hi \in [\hor]$.
+(See @sec-bg-linear-algebra if you're unfamiliar with symmetric positive definite matrices.)
+We use the same letter as the Q-function (@def-q-lqr);
+the context should make it clear which is intended.
+:::
+
+::: {#rem-lqr-properties}
+#### Properties of LQR
+
+Recall that $w_\hi$ is a noise term that makes the dynamics random.
+By setting its covariance matrix to $\sigma^2 I$,
+we mean that there is Gaussian noise of standard deviation $\sigma$
+added independently to each coordinate of the state.
 Setting $\sigma = 0$ gives us **deterministic** state transitions.
-We will find that the optimal policy actually *does not depend on the noise*, although the optimal value function and Q-function do.
+Surprisingly, the optimal policy doesn't depend on the amount of noise,
+although the optimal value function and Q-function do.
+(We will show this in a later derivation.)
 
-**Upward-curved quadratic, time-homogeneous cost function**:
-
-$$
-c(\st_\hi, \act_\hi) = \begin{cases}
-    \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi & \hi < \hor \\
-    \st_\hi^\top Q \st_\hi                            & \hi = \hor
-\end{cases}.
-$$
-
-This cost function attempts to stabilize the state and action about $(s^\star, a^\star) = (0, 0)$.
-We require $Q \in \R^{n_\st \times n_\st}$ and $R \in \R^{n_\act \times n_\act}$ to both be _positive definite_ matrices so that $c$ has a well-defined unique minimum.
+The LQR cost function attempts to stabilize the state and action
+to $(s^\star, a^\star) = (0, 0)$.
+We require $Q$ and $R$ to both be _positive definite_ matrices
+so that $c$ has a unique minimum.
 We can furthermore assume without loss of generality that they are both _symmetric_ (see exercise below).
-
-This results in the LQR optimization problem: 
-
-$$
-\begin{aligned}
-        \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad & \E \left[ \left( \sum_{\hi=0}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \right] \\
-        \textrm{where} \quad                                & \st_{\hi+1} = A \st_\hi + B \act_\hi + w_\hi                                                                                        \\
-                                                            & \act_\hi = \pi_\hi (\st_\hi)                                                                                                        \\
-                                                            & w_\hi \sim \mathcal{N}(0, \sigma^2 I)                                                                                               \\
-                                                            & \st_0 \sim \mu_0.
-\end{aligned}
-$$
+This greatly simplifies later computations.
 :::
 
 ::: {#exr-symmetric-q-r}
 #### Symmetric $Q$ and $R$
 
-Here we'll show that we don't lose generality by assuming that $Q$ and $R$ are symmetric.
 Show that replacing $Q$ and $R$ with $(Q + Q^\top) / 2$ and $(R + R^\top) / 2$ (which are symmetric) yields the same cost function.
 :::
 
-We will henceforth abbreviate "symmetric positive definite" as s.p.d.
-and "positive definite" as p.d.
+::: {#exm-lqr-system}
 
-It will be helpful to reintroduce the *value function* notation for a policy to denote the average cost it incurs.
-These will be instrumental in constructing the optimal policy via **dynamic programming,**
-as we did in @sec-finite-opt-dp for MDPs.
-
-::: {#def-value-lqr}
-#### Value functions for LQR
-
-Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})$,
-we can define its value function $V^\pi_\hi : \mathcal{S} \to \mathbb{R}$ at time $\hi \in [\hor]$ as the average **cost-to-go** incurred by that policy:
-
-$$
-\begin{split}
-    V^\pi_\hi (\st) &= \E \left[ \left( \sum_{i=\hi}^{\hor-1} c(\st_i, \act_i) \right) + c(\st_\hor) \mid \st_\hi = \st,  \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \right] \\
-    &= \E \left[ \left( \sum_{i=\hi}^{\hor-1} \st_i^\top Q \st_i + \act_i^\top R \act_i \right) + \st_\hor^\top Q \st_\hor \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \right] \\
-\end{split}
-$$
-
-The Q-function additionally conditions on the first action we take:
-
-$$
-\begin{split}
-    Q^\pi_\hi (\st, \act) &= \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} c(\st_i, \act_i) \right) + c(\st_\hor) \\
-        &\qquad\qquad \mid  (\st_\hi, \act_\hi) = (\st, \act), \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \bigg] \\
-    &= \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_i^\top Q \st_i + \act_i^\top R \act_i \right) + \st_\hor^\top Q \st_\hor \\
-        &\qquad\qquad \mid (\st_\hi, \act_\hi) = (\st, \act), \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \bigg] \\
-\end{split}
-$$
-
-Note that since we use _cost_ instead of _reward,_
-the best policies are the ones with _smaller_ values of the value function.
 :::
 
+```{python}
+#| label: fig-lqr-accelerate
+#| fig-cap: Visualization of an LQR system.
+
+# 1. Continuous-time double integrator
+A_c = np.array([[0, 1],
+                [0, 0]])
+B_c = np.array([[0],
+                [1]])
+
+# 2. Discretize the system
+dt = 0.1
+sys_c = control.ss(A_c, B_c, np.eye(2), 0)
+sys_d = control.c2d(sys_c, dt)
+A_d, B_d, C_d, D_d = control.ssdata(sys_d)
+
+# 3. Define LQR cost (discrete-time) and compute gain
+Q = np.eye(2)
+R = np.array([[0.1]])
+K, S, E = control.dlqr(A_d, B_d, Q, R)
+
+# 4. Simulate discrete-time closed-loop system
+N = 50                 # number of discrete steps
+x = np.zeros((2, N+1)) # state array: 2 rows (pos & vel), N+1 columns (time steps)
+x[:, 0] = [1.0, 0.0]   # initial condition: position=1, velocity=0
+u = np.zeros((N, 1))   # control input array with correct shape (N, 1)
+
+for k in range(N):
+    # u[k] = -K x[k]
+    u[k] = -K @ x[:, k].reshape(2, 1)  # Reshape state to column vector
+    # x[k+1] = A_d x[k] + B_d u[k]
+    x[:, k+1] = A_d @ x[:, k] + B_d @ u[k].flatten()  # Flatten u[k] to make dimensions compatible
+
+# 5. Plot states over time and control input
+time = np.arange(N+1) * dt
+
+plt.figure(figsize=(10,6))
+
+# (A) Position and velocity vs. time
+plt.subplot(2,1,1)
+plt.plot(time, x[0, :], 'b-o', label='Position')
+plt.plot(time, x[1, :], 'g-o', label='Velocity')
+plt.title('Discrete-Time LQR: State Evolution Over Time')
+plt.xlabel('Time [s]')
+plt.ylabel('State Values')
+plt.grid(True)
+plt.legend()
+
+# (B) Control input vs. time
+# We only have N control values for the N intervals
+plt.subplot(2,1,2)
+plt.step(time[:-1], u.flatten(), where='post', color='r', label='Control Input')
+plt.title('Control Input Over Time')
+plt.xlabel('Time [s]')
+plt.ylabel('u(k)')
+plt.grid(True)
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+# 6. Phase-plane plot (position vs. velocity) to visualize discrete steps
+plt.figure(figsize=(6,6))
+plt.plot(x[0, :], x[1, :], 'o-', label='State Trajectory')
+for k in range(N):
+    # Draw an arrow from x[k] to x[k+1]
+    dx = x[0, k+1] - x[0, k]
+    dy = x[1, k+1] - x[1, k]
+    plt.arrow(x[0, k], x[1, k], dx, dy, 
+              head_width=0.02, length_includes_head=True, color='gray', alpha=0.6)
+
+plt.grid(True)
+plt.xlabel('Position')
+plt.ylabel('Velocity')
+plt.title('Phase-Plane Trajectory (Discrete Steps)')
+plt.legend()
+plt.show()
+```
+
 ## Optimality and the Riccati Equation {#sec-optimal-lqr}
+
 In this section,
 we'll compute the optimal value function $V^\star_h$,
 Q-function $Q^\star_h$,
-and policy $\pi^\star_h$ in @def-lqr-definition using **dynamic programming**
-in a very similar way to the DP algorithms in @sec-eval-dp-finite-horizon.
+and policy $\pi^\star_h$ for an LQR problem (@def-lqr) using **dynamic programming**.
+The algorithm is identical to the one in @sec-eval-dp-finite-horizon,
+except here states and actions are vector-valued.
 Recall the definition of the optimal value function:
 
 ::: {#def-optimal-value-lqr}
@@ -256,33 +465,51 @@ Recall the definition of the optimal value function:
 
 The **optimal value function** is the one that,
 at any time and in any state,
-achieves *minimum cost* across *all policies*: 
+achieves *minimum cost* across all policies $\pi$ that are *history-independent, time-dependent, and deterministic*.
 
 $$
-\begin{split}
-    V^\star_\hi(\st) &= \min_{\pi_\hi, \dots, \pi_{\hor-1}} V^\pi_\hi(\st) \\
-    &= \min_{\pi_{\hi}, \dots, \pi_{\hor-1}} \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \\
-        &\hspace{8em} \mid \st_\hi = \st, \act_i = \pi_i(\st_i) \quad \forall \hi \le i < H \bigg] \\
-\end{split}
-$$
-
-The optimal Q-function is defined similarly,
-conditioned on the starting action as well:
-
-$$
-\begin{split}
-    Q^\star_\hi(\st, \act) &= \min_{\pi_\hi, \dots, \pi_{\hor-1}} Q^\pi_\hi(\st, \act) \\
-    &= \min_{\pi_{\hi}, \dots, \pi_{\hor-1}} \E \bigg[ \left( \sum_{i=\hi}^{\hor-1} \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi \right) + \st_\hor^\top Q \st_\hor \\
-        &\hspace{8em} \mid \st_\hi = \st, \act_\hi = \act, \act_i = \pi_i(\st_i) \quad \forall \hi < i < H \bigg] \\
-\end{split}
-$$
-
-Both of the definitions above assume _deterministic_ policies. Otherwise we would have to take an _expectation_ over actions drawn from the policy, i.e. $\act_\hi \sim \pi_\hi (\st_\hi)$.
+\begin{aligned}
+    V^\star_\hi(\st) &= \min_{\pi} V^\pi_\hi(\st) \\
+    &= \min_{\pi} \E_{\tau \sim \rho^\pi} \left[
+            \sum_{\hi'=\hi}^{\hor-1} \left( \st_{\hi'}^\top Q \st_{\hi'} + \act_{\hi'}^\top R \act_{\hi'} \right)
+            \mid \st_\hi = \st
+        \right] \\
+\end{aligned}
+$$ {#eq-optimal-value-lqr}
 :::
 
-We will prove the striking fact that the solution has very simple structure:
+::: {#def-optimal-q-lqr}
+#### Optimal Q function in LQR
+
+The optimal Q-function is defined in the same way,
+conditioned on the starting state-action pair:
+
+$$
+\begin{aligned}
+    Q^\star_\hi(\st, \act) &= \min_{\pi} Q^\pi_\hi(\st, \act) \\
+    &= \min_{\pi} \E \left[
+        \sum_{\hi'=\hi}^{\hor-1}\left(  \st_{\hi'}^\top Q \st_{\hi'} + \act_{\hi'}^\top R \act_{\hi'} \right)
+        \mid \st_\hi = \st, \act_\hi = \act
+    \right] \\
+\end{aligned}
+$$ {#eq-optimal-q-lqr}
+:::
+
+::: {#rem-lqr-restriction-generality}
+#### Minimum over all policies
+
+By @thm-optimal-greedy,
+we do not lose any generality
+by only considering policies that are history-independent, time-dependent, and deterministic.
+That is, the optimal policy within this class
+is also globally optimal across all policies,
+in the sense that it achieves lower cost
+for any given trajectory prefix.
+:::
+
+The solution has very simple structure:
 $V_h^\star$ and $Q^\star_h$ are *upward-curved quadratics*
-and $\pi_h^\star$ is *linear* and furthermore does not depend on the noise!
+and $\pi_h^\star$ is *linear* and furthermore does not depend on the amount of noise!
 
 ::: {#thm-optimal-value-lqr-quadratic}
 #### Optimal value function in LQR is an upward-curved quadratic
@@ -291,9 +518,9 @@ At each timestep $\hi \in [\hor]$,
 
 $$
 V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi
-$$
+$$ {#eq-optimal-value-lqr-quadratic}
 
-for some s.p.d. matrix $P_\hi \in \mathbb{R}^{n_\st \times n_\st}$ and scalar
+for some symmetric, positive-definite $n_\st \times n_\st$ matrix $P_\hi$ and scalar
 $p_\hi \in \mathbb{R}$.
 :::
 
@@ -304,325 +531,91 @@ At each timestep $\hi \in [\hor]$,
 
 $$
 \pi^\star_\hi (\st) = - K_\hi \st
-$$
+$$ {#eq-optimal-policy-lqr-linear}
 
 for some $K_\hi \in \mathbb{R}^{n_\act \times n_\st}$.
 (The negative is due to convention.)
 :::
 
-The construction (and inductive proof) proceeds similarly to the one in the MDP setting (@sec-eval-dp-finite-horizon).
+The construction (and inductive proof)
+proceeds similarly to the one in the MDP setting (@sec-eval-dp-finite-horizon).
+We leave the full proof,
+which involves a significant amount of linear algebra,
+to @sec-proof-lqr.
 
-1. We'll compute $V_\hor^\star$ (at the end of the horizon) as our base case.
-2. Then we'll work step-by-step backwards in time, using $V_{\hi+1}^\star$ to compute $Q_\hi^\star$, $\pi_{\hi}^\star$, and $V_\hi^\star$.
+```{mermaid}
+%%| label: fig-lqr-dp-optimal-finite
+%%| fig-cap: Illustrating a dynamic programming algorithm for computing the optimal policy
+%%|          in an LQR environment.
+graph RL
+    Q0["$$Q^\star_{H-1} = r$$"] -- "$$\max_{a \in \mathcal{A}}$$" --> V0
+    Q0 -- "$$\arg\max_{a \in \mathcal{A}}$$" --> P0["$$\pi^\star_{H-1}$$"]
+    V0["$$V^\star_{H-1}$$"] -- "Bellman equations" --> Q1
+    
+    Q1["$$Q^\star_{H-2}$$"] -- "$$\max_{a \in \mathcal{A}}$$" --> V1
+    Q1 -- "$$\arg\max_{a \in \mathcal{A}}$$" --> P1["$$\pi^\star_{H-2}$$"]
+    V1["$$V^\star_{H-2}$$"] -- "Bellman equations" --> Q2
 
-<!-- TODO insert reference for proof by induction -->
+    Q2["..."]
+```
 
-**Base case:**
-At the final timestep,
-there are no possible actions to take,
-and so $V^\star_\hor(\st) = c(\st) = \st^\top Q \st$.
-Thus $V_\hor^\star(\st) = \st^\top P_\hor \st + p_\hor$
-where $P_\hor = Q$ and $p_\hor = 0$.
+Here we provide the concrete $P_\hi, p_\hi$, and $K_\hi$
+used to compute the quantities above.
 
-**Inductive hypothesis:**
-We seek to show that the inductive step holds for both theorems:
-If $V^\star_{\hi+1}(\st)$ is an upward-curved quadratic,
-then $V^\star_\hi(\st)$ must also be an upward-curved quadratic,
-and $\pi^\star_\hi(\st)$ must be linear.
-We'll break this down into the following steps:
+::: {#def-riccati}
+#### Riccati equation
 
-1. Show that $Q^\star_\hi(\st, \act)$ is an upward-curved quadratic (in both
-$\st$ and $\act$).
-2. Derive the optimal policy
-$\pi^\star_\hi(\st) = \arg \min_\act Q^\star_\hi(\st, \act)$ and show
-that it's linear.
-3. Show that $V^\star_\hi(\st)$ is an upward-curved quadratic.
-
-We first assume the inductive hypothesis that our theorems are true at
-time $\hi+1$. That is,
-
-$$
-V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \mathcal{S}.
-$$
-
-:::: {#lem-q-upward-quadratic}
-#### $Q^\star_\hi(\st, \act)$ is an upward-curved quadratic
-
-Let us decompose $Q^\star_\hi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$
-into the immediate reward plus the expected cost-to-go:
+It turns out that the matrices $P_0, \dots, P_{\hor-1}$ used to define $V^\star$
+obey a recurrence relation known as the **Riccati equation**:
 
 $$
-Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} [V^\star_{\hi+1}(\st')].
-$$
+P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A,
+$$ {#eq-riccati}
 
-Recall $c(\st, \act) := \st^\top Q \st + \act^\top R \act$.
-Let's consider the expectation over the next timestep.
-The only randomness in the dynamics comes from the noise
-$w_{\hi+1} \sim \mathcal{N}(0, \sigma^2 I)$,
-so we can expand the expectation as: 
-
-$$
-\begin{aligned}
-            & \E_{\st'} [V^\star_{\hi+1}(\st')]                                                                                                         \\
-    {} = {} & \E_{w_{\hi+1}} [V^\star_{\hi+1}(A \st + B \act + w_{\hi+1})]                                             &  & \text{definition of } f     \\
-    {} = {} & \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. &  & \text{inductive hypothesis}
-\end{aligned}
-$$
-
-Summing and combining like terms, we get
-
-$$
-\begin{aligned}
-    Q^\star_\hi(\st, \act) & = \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
-                           & = \st^\top (Q + A^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act                       \\
-                           & \qquad + \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] + p_{\hi+1}.
-\end{aligned}
-$$
-
-Note that the terms that are linear in $w_\hi$ have mean
-zero and vanish. Now consider the remaining expectation over the noise.
-By expanding out the product and using linearity of expectation, we can
-write this out as 
-
-$$
-\begin{aligned}
-    \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] & = \sum_{i=1}^d \sum_{j=1}^d (P_{\hi+1})_{ij} \E_{w_{\hi+1}} [(w_{\hi+1})_i (w_{\hi+1})_j] \\
-    & = \sigma^2 \mathrm{Tr}(P_{\hi + 1})
-\end{aligned}
-$$
-
-::: {rem-quadratic-forms}
-#### Quadratic forms
-
-When solving *quadratic forms*, i.e. expressions of the form $x^\top A x$,
-it's often helpful to consider the terms on the diagonal ($i = j$) separately from those off the diagonal.
-
-In this case, the expectation of each diagonal term becomes
-
-
-$$
-(P_{\hi+1})_{ii} \E (w_{\hi+1})_i^2 = \sigma^2 (P_{\hi+1})_{ii}.
-$$
-
-Off the diagonal, since the elements of $w_{\hi+1}$ are independent, the
-expectation factors, and since each element has mean zero, the term
-vanishes:
-
-$$
-(P_{\hi+1})_{ij} \E [(w_{\hi+1})_i] \E [(w_{\hi+1})_j] = 0.
-$$
-
-Thus,
-the only terms left are the ones on the diagonal,
-so the sum of these can be expressed as the trace of $\sigma^2 P_{\hi+1}$:
-
-$$
-\E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] = \sigma^2 \mathrm{Tr}(P_{\hi+1}).
-$$
+where $A \in \mathbb{R}^{n_\st \times n_\st}$ and $B \in \mathbb{R}^{n_\st \times n_\act}$
+are the matrices used to define the dynamics $f$
+and $Q \in \mathbb{R}^{n_\st \times n_\st}$ and $R \in \mathbb{R}^{n_\act \times n_\act}$
+are the matrices used to define the cost function $c$ (@def-lqr).
 :::
 
-Substituting this back into the expression for $Q^\star_\hi$, we have:
+The scalars $p_\hi$ obey the recurrence relation
 
 $$
-\begin{aligned}
-    Q^\star_\hi(\st, \act) & = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
-    + 2\st^\top A^\top P_{\hi+1} B \act                                                                        \\
-                            & \qquad + \sigma^2 \mathrm{Tr}(P_{\hi+1}) + p_{\hi+1}.
-\end{aligned}
-$$
+p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}
+$$ {#eq-lqr-proof-scalar}
 
-As we hoped, this expression is quadratic in $\st$ and $\act$.
-Furthermore,
-we'd like to show that it also _curves upwards_
-with respect to $\act$
-so that its minimum with respect to $\act$ is well-defined.
-We can do this by noting that the **Hessian matrix** of second derivatives is positive definite:
-
-$$
-\nabla_{\act \act} Q_\hi^\star(\st, \act) = R + B^\top P_{\hi+1} B
-$$
-
-Since $R$ is s.p.d. (@def-lqr-definition),
-and $P_{\hi+1}$ is s.p.d. (by the inductive hypothesis),
-this sum must also be s.p.d.,
-and so $Q^\star_\hi$ is indeed an upward-curved quadratic with respect to $\act$.
-(If this isn't clear, try proving it as an exercise.)
-The proof of its upward curvature with respect to $\st$ is equivalent.
-::::
-
-::: {#lem-pi-linear}
-#### $\pi^\star_\hi$ is linear
-
-Since $Q^\star_\hi$ is an upward-curved quadratic,
-finding its minimum over $\act$ is easy:
-we simply set the gradient with respect to $\act$ equal to zero and solve for $\act$.
-First, we calculate the gradient:
-
-$$
-\begin{aligned}
-    \nabla_\act Q^\star_\hi(\st, \act) & = \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
-                                       & = 2 (R + B^\top P_{\hi+1} B) \act + 2 (\st^\top A^\top P_{\hi+1} B)^\top
-\end{aligned}
-$$
-
-Setting this to zero, we get 
-
-$$
-\begin{aligned}
-    0                  & = (R + B^\top P_{\hi+1} B) \pi^\star_\hi(\st) + B^\top P_{\hi+1} A \st \nonumber \\
-    \pi^\star_\hi(\st) & = (R + B^\top P_{\hi+1} B)^{-1} (-B^\top P_{\hi+1} A \st) \nonumber              \\
-                       & = - K_\hi \st,
-\end{aligned}
-$$
-
-where
+and the matrices $K_0, \dots, K_{\hor-1}$ for defining the policy satisfy
 
 $$
 K_\hi = (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
 $$ {#eq-k-pi}
 
-Note that this optimal policy doesn't depend on the starting distribution $\mu_0$.
-It's also fully **deterministic** and isn't affected by the noise terms
-$w_0, \dots, w_{\hor-1}$.
-::::
+By setting $P_\hor = 0$ and $p_\hor = 0$,
 
-:::: {#lem-upward-curved}
-## The value function is an upward-curved quadratic
+```{python}
+def dp_lqr(A, B, Q, R, sigma, H):
+    n_x, n_u = B.shape
+    P = jnp.zeros(n_x, n_x)
+    p = 0
+    P_ary, p_ary = [], []
+    for h in range(H):
+        P = Q + A.T @ P @ A - A.T @ P @ B @ np.inv(R + B.T @ P @ B) @ B.T @ P @ A
+        p = sigma ** 2 * np.trace(P) + p
+        P_ary.append(P)
+        p_ary.append(p)
+    return reversed(P_ary), reversed(p)
 
-Using the identity $V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))$, we have:
-
-$$
-\begin{aligned}
-    V^\star_\hi(\st) & = Q^\star_\hi(\st, \pi^\star(\st))                                                                \\
-                     & = \st^\top (Q + A^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
-    + 2\st^\top A^\top P_{\hi+1} B (-K_\hi \st)                                                                          \\
-                     & \qquad + \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}
-\end{aligned}
-$$
-
-Note that with respect to $\st$,
-this is the sum of a quadratic term and a constant,
-which is exactly what we were aiming for!
-The scalar term is clearly
-
-$$
-p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
-$$
-
-We can simplify the quadratic term by substituting in $K_\hi$ from @eq-k-pi.
-Notice that when we do this,
-the $(R+B^\top P_{\hi+1} B)$ term in the expression is cancelled out by its inverse,
-and the remaining terms combine to give the **Riccati equation**:
-
-::: {#def-riccati}
-#### Riccati equation
-
-$$
-P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
-$$
-:::
-
-There are several nice properties to note about the Riccati equation:
-
-1. It's defined **recursively.**
-   Given the dynamics defined by $A$ and $B$, and the state cost matrix $Q$,
-   we can recursively calculate $P_\hi$ across all timesteps starting from $P_\hor = Q$.
-2. $P_\hi$ often appears in calculations surrounding optimality,
-   such as $V^\star_\hi, Q^\star_\hi$, and $\pi^\star_\hi$.
-3. Together with the dynamics given by $A$ and $B$,
-   and the action coefficients $R$ in the lost function,
-   it fully defines the optimal policy @lem-pi-linear.
-
-It remains to prove that $V^\star_\hi$ _curves upwards,_ that is, that $P_\hi$ is s.p.d. We will use the following fact about **Schur complements:**
-
-::: {#lem-lemma-schur}
-#### Positive definiteness of Schur complements
-
-Let
-
-$$
-D = \begin{pmatrix}
-A & B \\
-B^\top & C
-\end{pmatrix}
-$$
-
-be a symmetric $(m+n) \times (m+n)$ block matrix,
-where $A \in \R^{m \times m}, B \in \R^{m \times n}, C \in \R^{n \times n}$.
-The **Schur complement** of $A$ is denoted
-
-$$
-D/A = C - B^\top A^{-1} B.
-$$
-
-Schur complements have various uses in linear algebra and numerical computation.
-
-A useful fact for us is that
-if $A$ is positive _definite,_
-then $D$ is positive _semidefinite_
-if and only if $D/A$ is positive _semidefinite_.
-:::
-
-Let $P$ denote $P_{\hi + 1}$ for brevity.
-We already know $Q$ is p.d.,
-so it suffices to show that
-
-$$
-S = P - P B (R + B^\top P B)^{-1} B^\top P
-$$
-
-is p.s.d. (positive semidefinite),
-since left- and right- multiplying by $A^\top$ and $A$ respectively
-preserves p.s.d.
-We note that $S$ is the Schur complement $D/(R + B^\top P B)$, where
-
-$$
-D = \begin{pmatrix}
-R + B^\top P B & B^\top P \\
-P B & P
-\end{pmatrix}.
-$$
-
-Thus we must show that $D$ is p.s.d..
-This can be seen by computing
-
-$$
-\begin{aligned}
-\begin{pmatrix}
-y^\top & z^\top
-\end{pmatrix}
-D
-\begin{pmatrix}
-y \\ z
-\end{pmatrix}
-&= y^\top R y + y^\top B^\top P B y + 2 y^\top B^\top P z + z^\top P z \\
-&= y^\top R y + (By + z)^\top P (By + z) \\
-&> 0.
-\end{aligned}
-$$
-
-Since $R + B^\top P B$ is p.d. and $D$ is p.s.d.,
-then $S = D / (R + B^\top P B)$ must be p.s.d.,
-and $P_\hi = Q + A S A^\top$ must be p.d.
-::::
-
-Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$,
-where $P_\hi$ is s.p.d.,
-proving the inductive hypothesis and completing the proof of @thm-optimal-policy-lqr-linear and @thm-optimal-value-lqr-quadratic.
-
-In summary, we just demonstrated that at each timestep $\hi \in [\hor]$,
-the optimal value function $V^\star_\hi$
-and optimal Q-function $Q^\star_\hi$ are both upward-curved quadratics
-and the optimal policy $\pi^\star_\hi$ is linear.
-We also showed that all of these quantities can be calculated
-using a sequence of s.p.d. matrices $P_0, \dots, P_H$
-that can be defined recursively using @def-riccati.
-
-Before we move on to some extensions of LQR, let's consider how the
-state at time $\hi$ behaves when we act according to this optimal
-policy.
+latex(dp_lqr)
+```
 
 ### Expected state at time $\hi$
+
+Let's consider how the
+state at time $\hi$ behaves when we act according to this optimal policy.
+In the field of control theory,
+which is often used in high-stakes circumstances such as aviation or architecture,
+it is important to understand the way the state evolves
+under the proposed controls.
 
 How can we compute the expected state at time $\hi$ when acting
 according to the optimal policy? Let's first express $\st_\hi$ in a
@@ -636,15 +629,12 @@ $$
             & = \cdots                                                                     \\
             & = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i (B \act_{\hi-i-1} + w_{\hi-i-1}).
 \end{aligned}
-$$
-
-
+$$ {#eq-expected-state-derive}
 
 Let's consider the *average state* at this time, given all the past
 states and actions. Since we assume that $\E [w_\hi] = 0$ (this is the
 zero vector in $d$ dimensions), when we take an expectation, the $w_\hi$
 term vanishes due to linearity, and so we're left with
-
 
 $$
 \E [\st_\hi \mid \st_{0:(\hi-1)}, \act_{0:(\hi-1)}] = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i B \act_{\hi-i-1}.
@@ -682,10 +672,10 @@ Otherwise, if $|\lambda_{\max}| < 1$, then it's impossible for your original sta
 ## Extensions
 
 We've now formulated an optimal solution for the time-homogeneous LQR
-and computed the expected state under the optimal policy. However, real
-world tasks rarely have such simple dynamics, and we may wish to design
-more complex cost functions. In this section, we'll consider more
-general extensions of LQR where some of the assumptions we made above
+and computed the expected state under the optimal policy.
+However, real world tasks rarely have such simple dynamics,
+and we may wish to design more complex cost functions.
+In this section, we'll consider more general extensions of LQR where some of the assumptions we made above
 are relaxed. Specifically, we'll consider:
 
 1.  **Time-dependency**, where the dynamics and cost function might

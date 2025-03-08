@@ -1,0 +1,288 @@
+{{< include macros.qmd >}}
+
+# Proofs {#sec-app-proofs}
+
+## LQR proof {#sec-proof-lqr}
+
+1. We'll compute $V_\hor^\star$ (at the end of the horizon) as our base case.
+2. Then we'll work step-by-step backwards in time, using $V_{\hi+1}^\star$ to compute $Q_\hi^\star$, $\pi_{\hi}^\star$, and $V_\hi^\star$.
+
+**Base case:**
+
+At the final timestep,
+there are no possible actions to take,
+and so $V^\star_\hor(\st) = c(\st) = \st^\top Q \st$.
+Thus $V_\hor^\star(\st) = \st^\top P_\hor \st + p_\hor$
+where $P_\hor = Q$ and $p_\hor = 0$.
+
+**Inductive hypothesis:**
+
+We seek to show that the inductive step holds for both theorems:
+If $V^\star_{\hi+1}(\st)$ is an upward-curved quadratic,
+then $V^\star_\hi(\st)$ must also be an upward-curved quadratic,
+and $\pi^\star_\hi(\st)$ must be linear.
+We'll break this down into the following steps:
+
+1. Show that $Q^\star_\hi(\st, \act)$ is an upward-curved quadratic (in both
+$\st$ and $\act$).
+2. Derive the optimal policy
+$\pi^\star_\hi(\st) = \arg \min_\act Q^\star_\hi(\st, \act)$ and show
+that it's linear.
+3. Show that $V^\star_\hi(\st)$ is an upward-curved quadratic.
+
+We first assume the inductive hypothesis that our theorems are true at
+time $\hi+1$. That is,
+
+$$
+V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \mathcal{S}.
+$$
+
+:::: {#lem-q-upward-quadratic}
+#### $Q^\star_\hi(\st, \act)$ is an upward-curved quadratic
+
+Let us decompose $Q^\star_\hi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$
+into the immediate reward plus the expected cost-to-go:
+
+$$
+Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} [V^\star_{\hi+1}(\st')].
+$$
+
+Recall $c(\st, \act) := \st^\top Q \st + \act^\top R \act$.
+Let's consider the expectation over the next timestep.
+The only randomness in the dynamics comes from the noise
+$w_{\hi+1} \sim \mathcal{N}(0, \sigma^2 I)$,
+so we can expand the expectation as: 
+
+$$
+\begin{aligned}
+            & \E_{\st'} [V^\star_{\hi+1}(\st')]                                                                                                         \\
+    {} = {} & \E_{w_{\hi+1}} [V^\star_{\hi+1}(A \st + B \act + w_{\hi+1})]                                             &  & \text{definition of } f     \\
+    {} = {} & \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. &  & \text{inductive hypothesis}
+\end{aligned}
+$$
+
+Summing and combining like terms, we get
+
+$$
+\begin{aligned}
+    Q^\star_\hi(\st, \act) & = \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
+                           & = \st^\top (Q + A^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act                       \\
+                           & \qquad + \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] + p_{\hi+1}.
+\end{aligned}
+$$
+
+Note that the terms that are linear in $w_\hi$ have mean
+zero and vanish. Now consider the remaining expectation over the noise.
+By expanding out the product and using linearity of expectation, we can
+write this out as 
+
+$$
+\begin{aligned}
+    \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] & = \sum_{i=1}^d \sum_{j=1}^d (P_{\hi+1})_{ij} \E_{w_{\hi+1}} [(w_{\hi+1})_i (w_{\hi+1})_j] \\
+    & = \sigma^2 \mathrm{Tr}(P_{\hi + 1})
+\end{aligned}
+$$
+
+::: {rem-quadratic-forms}
+#### Quadratic forms
+
+When solving *quadratic forms*, i.e. expressions of the form $x^\top A x$,
+it's often helpful to consider the terms on the diagonal ($i = j$) separately from those off the diagonal.
+
+In this case, the expectation of each diagonal term becomes
+
+$$
+(P_{\hi+1})_{ii} \E (w_{\hi+1})_i^2 = \sigma^2 (P_{\hi+1})_{ii}.
+$$ {#eq-qf-mean-diagonal}
+
+Off the diagonal, since the elements of $w_{\hi+1}$ are independent, the
+expectation factors, and since each element has mean zero, the term
+vanishes:
+
+$$
+(P_{\hi+1})_{ij} \E [(w_{\hi+1})_i] \E [(w_{\hi+1})_j] = 0.
+$$ {#eq-qf-mean-off-diagonal}
+
+Thus,
+the only terms left are the ones on the diagonal,
+so the sum of these can be expressed as the trace of $\sigma^2 P_{\hi+1}$:
+
+$$
+\E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] = \sigma^2 \mathrm{Tr}(P_{\hi+1}).
+$$ {#eq-qf-mean-trace}
+:::
+
+Substituting this back into the expression for $Q^\star_\hi$, we have:
+
+$$
+\begin{aligned}
+    Q^\star_\hi(\st, \act) & = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
+    + 2\st^\top A^\top P_{\hi+1} B \act                                                                        \\
+                            & \qquad + \sigma^2 \mathrm{Tr}(P_{\hi+1}) + p_{\hi+1}.
+\end{aligned}
+$$ {#eq-lqr-q-opt}
+
+As we hoped, this expression is quadratic in $\st$ and $\act$.
+Furthermore,
+we'd like to show that it also _curves upwards_
+with respect to $\act$
+so that its minimum with respect to $\act$ is well-defined.
+We can do this by noting that the **Hessian matrix** of second derivatives is positive definite:
+
+$$
+\nabla_{\act \act} Q_\hi^\star(\st, \act) = R + B^\top P_{\hi+1} B
+$$
+
+Since $R$ is sym. p.d. (@def-lqr),
+and $P_{\hi+1}$ is sym. p.d. (by the inductive hypothesis),
+this sum must also be sym. p.d.,
+and so $Q^\star_\hi$ is indeed an upward-curved quadratic with respect to $\act$.
+(If this isn't clear, try proving it as an exercise.)
+The proof of its upward curvature with respect to $\st$ is equivalent.
+::::
+
+::: {#lem-pi-linear}
+#### $\pi^\star_\hi$ is linear
+
+Since $Q^\star_\hi$ is an upward-curved quadratic,
+finding its minimum over $\act$ is easy:
+we simply set the gradient with respect to $\act$ equal to zero and solve for $\act$.
+First, we calculate the gradient:
+
+$$
+\begin{aligned}
+    \nabla_\act Q^\star_\hi(\st, \act) & = \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
+                                       & = 2 (R + B^\top P_{\hi+1} B) \act + 2 (\st^\top A^\top P_{\hi+1} B)^\top
+\end{aligned}
+$$
+
+Setting this to zero, we get 
+
+$$
+\begin{aligned}
+    0                  & = (R + B^\top P_{\hi+1} B) \pi^\star_\hi(\st) + B^\top P_{\hi+1} A \st \nonumber \\
+    \pi^\star_\hi(\st) & = (R + B^\top P_{\hi+1} B)^{-1} (-B^\top P_{\hi+1} A \st) \nonumber              \\
+                       & = - K_\hi \st,
+\end{aligned}
+$$
+
+where
+
+$$
+K_\hi = (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
+$$ {#eq-k-pi}
+
+Note that this optimal policy doesn't depend on the starting distribution $\mu_0$.
+It's also fully **deterministic** and isn't affected by the noise terms
+$w_0, \dots, w_{\hor-1}$.
+::::
+
+:::: {#lem-upward-curved}
+#### The value function is an upward-curved quadratic
+
+Using the identity $V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))$, we have:
+
+$$
+\begin{aligned}
+    V^\star_\hi(\st) & = Q^\star_\hi(\st, \pi^\star(\st))                                                                \\
+                     & = \st^\top (Q + A^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
+    + 2\st^\top A^\top P_{\hi+1} B (-K_\hi \st)                                                                          \\
+                     & \qquad + \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}
+\end{aligned}
+$$
+
+Note that with respect to $\st$,
+this is the sum of a quadratic term and a constant,
+which is exactly what we were aiming for!
+The scalar term is clearly
+
+$$
+p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
+$$ {#eq-lqr-proof-scalar}
+
+We can simplify the quadratic term by substituting in $K_\hi$ from @eq-k-pi.
+Notice that when we do this,
+the $(R+B^\top P_{\hi+1} B)$ term in the expression is cancelled out by its inverse,
+and the remaining terms combine to give the **Riccati equation**:
+
+$$
+P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
+$$ {#eq-lqr-proof-riccati}
+
+It remains to prove that $V^\star_\hi$ _curves upwards,_ that is, that $P_\hi$ is sym. p.d. We will use the following fact about **Schur complements:**
+
+::: {#lem-lemma-schur}
+#### Positive definiteness of Schur complements
+
+Let
+
+$$
+D = \begin{pmatrix}
+A & B \\
+B^\top & C
+\end{pmatrix}
+$$ {#eq-def-schur-part}
+
+be a symmetric $(m+n) \times (m+n)$ block matrix,
+where $A \in \R^{m \times m}, B \in \R^{m \times n}, C \in \R^{n \times n}$.
+The **Schur complement** of $A$ is denoted
+
+$$
+D/A = C - B^\top A^{-1} B.
+$$ {#eq-def-schur}
+
+Schur complements have various uses in linear algebra and numerical computation.
+
+A useful fact for us is that
+if $A$ is positive _definite,_
+then $D$ is positive _semidefinite_
+if and only if $D/A$ is positive _semidefinite_.
+:::
+
+Let $P$ denote $P_{\hi + 1}$ for brevity.
+We already know $Q$ is sym. p.d.,
+so it suffices to show that
+
+$$
+S = P - P B (R + B^\top P B)^{-1} B^\top P
+$$ {#eq-def-schur-psd}
+
+is p.s.d. (positive semidefinite),
+since left- and right- multiplying by $A^\top$ and $A$ respectively
+preserves p.s.d.
+We note that $S$ is the Schur complement $D/(R + B^\top P B)$, where
+
+$$
+D = \begin{pmatrix}
+R + B^\top P B & B^\top P \\
+P B & P
+\end{pmatrix}.
+$$
+
+Thus we must show that $D$ is p.s.d..
+This can be seen by computing
+
+$$
+\begin{aligned}
+\begin{pmatrix}
+y^\top & z^\top
+\end{pmatrix}
+D
+\begin{pmatrix}
+y \\ z
+\end{pmatrix}
+&= y^\top R y + y^\top B^\top P B y + 2 y^\top B^\top P z + z^\top P z \\
+&= y^\top R y + (By + z)^\top P (By + z) \\
+&> 0.
+\end{aligned}
+$$
+
+Since $R + B^\top P B$ is sym. p.d. and $D$ is p.s.d.,
+then $S = D / (R + B^\top P B)$ must be p.s.d.,
+and $P_\hi = Q + A S A^\top$ must be sym. p.d.
+::::
+
+Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$,
+where $P_\hi$ is sym. p.d.,
+proving the inductive hypothesis and completing the proof of @thm-optimal-policy-lqr-linear and @thm-optimal-value-lqr-quadratic.
+

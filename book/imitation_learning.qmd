@@ -100,7 +100,7 @@ That is, for trajectories drawn from the expert policy,
 the learned policy chooses a different action at most $\varepsilon$ of the time:
 
 $$
-\mathbb{E}_{\tau \sim \rho_{\pi_{\text{expert}}}} \left[ \frac 1 \hor \sum_{\hi=0}^{\hor-1} \ind{ \widetilde{\pi}(s_\hi) \ne \pi_{\text{expert}} (s_\hi) } \right] \le \varepsilon
+\mathbb{E}_{\tau \sim \rho^{\pi_{\text{expert}}}} \left[ \frac 1 \hor \sum_{\hi=0}^{\hor-1} \ind{ \widetilde{\pi}(s_\hi) \ne \pi_{\text{expert}} (s_\hi) } \right] \le \varepsilon
 $$
 
 Then, their value functions differ by
