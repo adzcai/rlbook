@@ -442,11 +442,23 @@ we can write down the likelihood function of this probability distribution in an
 
 Let $\pi$ be a history-independent policy.
 Then its trajectory distribution $\rho^\pi$ (@def-trajectory-distribution)
+over sequences of actions and states $(s_0, a_0, \dots, s_{\hor-1}, a_{\hor-1})$
 can be written as
 
 $$
-\rho^{\pi}(\tau) := d_0(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1})
+\rho^{\pi}(\tau) := d_0(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots
+P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1}).
 $$ {#eq-autoregressive-trajectories}
+
+Note that we use a deterministic reward function,
+so we only consider randomness over the states and actions.
+:::
+
+::: {#exr-stochastic-reward-trajectory-likelihood}
+#### Trajectory distribution for stochastic reward
+
+Modify @eq-autoregressive-trajectories for the case when the reward function is stochastic,
+that is, $r : \mathcal{S} \times \mathcal{A} \to \triangle(\R)$.
 :::
 
 ```{mermaid}
@@ -492,13 +504,6 @@ def trajectory_log_likelihood(
 
     return total
 ```
-
-::: {#exr-stochastic-reward-trajectory-likelihood}
-#### Trajectory distribution for stochastic reward
-
-Modify @eq-autoregressive-trajectories for the case when the reward function is stochastic,
-that is, $r : \mathcal{S} \times \mathcal{A} \to \triangle(\R)$.
-:::
 
 For a deterministic policy $\pi$,
 we have that $\pi_\hi(a \mid s) = \ind{a = \pi_\hi(s)}$;
