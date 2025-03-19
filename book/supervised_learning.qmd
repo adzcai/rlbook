@@ -649,3 +649,16 @@ and covers many relevant supervised learning methods.
 @nielsen_neural_2015 provides a comprehensive introduction to neural networks and backpropagation.
 
 
+::: {.content-visible when-profile="thesis"}
+## Differences from course
+
+
+In the supervised learning chapter,
+I provide a bit more detailed of an example of a supervised learning task
+(image classification of handwritten digits).
+
+I add an example illustrating parameterized function classes.
+Students without prior experience in machine learning might not be familiar with the concept of parameters.
+They are often introduced in terms of "knobs that you can turn to improve the model",
+but this doesn't really accurately describe them at all.
+:::
