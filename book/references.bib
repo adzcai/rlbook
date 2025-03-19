@@ -45,7 +45,8 @@
   title = {The {{DeepMind JAX Ecosystem}}},
   author = {Babuschkin, Igor and Baumli, Kate and Bell, Alison and Bhupatiraju, Surya and Bruce, Jake and Buchlovsky, Peter and Budden, David and Cai, Trevor and Clark, Aidan and Danihelka, Ivo and Dedieu, Antoine and Fantacci, Claudio and Godwin, Jonathan and Jones, Chris and Hemsley, Ross and Hennigan, Tom and Hessel, Matteo and Hou, Shaobo and Kapturowski, Steven and Keck, Thomas and Kemaev, Iurii and King, Michael and Kunesch, Markus and Martens, Lena and Merzic, Hamza and Mikulik, Vladimir and Norman, Tamara and Papamakarios, George and Quan, John and Ring, Roman and Ruiz, Francisco and Sanchez, Alvaro and Schneider, Rosalia and Sezener, Eren and Spencer, Stephen and Srinivasan, Srivatsan and Stokowiec, Wojciech and Wang, Luyu and Zhou, Guangyao and Viola, Fabio},
   date = {2020},
-  url = {http://github.com/deepmind}
+  url = {http://github.com/deepmind},
+  keywords = {nosource}
 }
 
 @book{boyd_convex_2004,
@@ -99,6 +100,7 @@
   urldate = {2022-09-05},
   abstract = {We propose a new family of policy gradient methods for reinforcement learning, which alternate between sampling data through interaction with the environment, and optimizing a "surrogate" objective function using stochastic gradient ascent. Whereas standard policy gradient methods perform one gradient update per data sample, we propose a novel objective function that enables multiple epochs of minibatch updates. The new methods, which we call proximal policy optimization (PPO), have some of the benefits of trust region policy optimization (TRPO), but they are much simpler to implement, more general, and have better sample complexity (empirically). Our experiments test PPO on a collection of benchmark tasks, including simulated robotic locomotion and Atari game playing, and we show that PPO outperforms other online policy gradient methods, and overall strikes a favorable balance between sample complexity, simplicity, and wall-time.},
   pubstate = {prepublished},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Proximal Policy Optimization Algorithms (2017) - Schulman et al.pdf;/Users/adzcai/Zotero/storage/NCI3EDQS/1707.html}
 }
 
@@ -120,6 +122,21 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1992/Simple statistical gradient-following algorithms for connectionist reinforcement learning (1992) - Williams.pdf}
 }
 
+@online{islam_reproducibility_2017,
+  title = {Reproducibility of {{Benchmarked Deep Reinforcement Learning Tasks}} for {{Continuous Control}}},
+  author = {Islam, Riashat and Henderson, Peter and Gomrokchi, Maziar and Precup, Doina},
+  date = {2017-08-10},
+  eprint = {1708.04133},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  url = {http://arxiv.org/abs/1708.04133},
+  urldate = {2022-09-01},
+  abstract = {Policy gradient methods in reinforcement learning have become increasingly prevalent for state-of-the-art performance in continuous control tasks. Novel methods typically benchmark against a few key algorithms such as deep deterministic policy gradients and trust region policy optimization. As such, it is important to present and use consistent baselines experiments. However, this can be difficult due to general variance in the algorithms, hyper-parameter tuning, and environment stochasticity. We investigate and discuss: the significance of hyper-parameters in policy gradients for continuous control, general variance in the algorithms, and reproducibility of reported results. We provide guidelines on reporting novel results as comparisons against baseline methods such that future researchers can make informed decisions when investigating novel methods.},
+  pubstate = {prepublished},
+  keywords = {broken},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Reproducibility of Benchmarked Deep Reinforcement Learning Tasks for Continuous Control (2017) - Islam, Henderson, Gomrokchi, Precup.pdf;/Users/adzcai/Zotero/storage/DESTVEZK/1708.html}
+}
+
 @article{schrittwieser_mastering_2020,
   title = {Mastering {{Atari}}, {{Go}}, Chess and Shogi by Planning with a Learned Model},
   author = {Schrittwieser, Julian and Antonoglou, Ioannis and Hubert, Thomas and Simonyan, Karen and Sifre, Laurent and Schmitt, Simon and Guez, Arthur and Lockhart, Edward and Hassabis, Demis and Graepel, Thore and Lillicrap, Timothy and Silver, David},
@@ -136,6 +153,7 @@
   abstract = {Constructing agents with planning capabilities has long been one of the main challenges in the pursuit of artificial intelligence. Tree-based planning methods have enjoyed huge success in challenging domains, such as chess1 and Go2, where a perfect simulator is available. However, in real-world problems, the dynamics governing the environment are often complex and unknown. Here we present the MuZero algorithm, which, by combining a tree-based search with a learned model, achieves superhuman performance in a range of challenging and visually complex domains, without any knowledge of their underlying dynamics. The MuZero algorithm learns an iterable model that produces predictions relevant to planning: the action-selection policy, the value function and the reward. When evaluated on 57 different Atari games3—the canonical video game environment for testing artificial intelligence techniques, in which model-based planning approaches have historically struggled4—the MuZero algorithm achieved state-of-the-art performance. When evaluated on Go, chess and shogi—canonical environments for high-performance planning—the MuZero algorithm matched, without any knowledge of the game dynamics, the superhuman performance of the AlphaZero algorithm5 that was supplied with the rules of the game.},
   issue = {7839},
   langid = {english},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2020/Mastering Atari, Go, chess and shogi by planning with a learned model (2020) - Schrittwieser et al.pdf;/Users/adzcai/Zotero/storage/KLW59Z2L/s41586-020-03051-4.html}
 }
 
@@ -170,6 +188,7 @@
   abstract = {A long-standing goal of artificial intelligence is an algorithm that learns, tabula rasa, superhuman proficiency in challenging domains. Recently, AlphaGo became the first program to defeat a world champion in the game of Go. The tree search in AlphaGo evaluated positions and selected moves using deep neural networks. These neural networks were trained by supervised learning from human expert moves, and by reinforcement learning from self-play. Here we introduce an algorithm based solely on reinforcement learning, without human data, guidance or domain knowledge beyond game rules. AlphaGo becomes its own teacher: a neural network is trained to predict AlphaGo’s own move selections and also the winner of AlphaGo’s games. This neural network improves the strength of the tree search, resulting in higher quality move selection and stronger self-play in the next iteration. Starting tabula rasa, our new program AlphaGo Zero achieved superhuman performance, winning 100–0 against the previously published, champion-defeating AlphaGo.},
   issue = {7676},
   langid = {english},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Mastering the game of Go without human knowledge (2017) - Silver et al.pdf;/Users/adzcai/Zotero/storage/6KP4UDZN/nature24270.html}
 }
 
@@ -189,6 +208,7 @@
   abstract = {The game of Go has long been viewed as the most challenging of classic games for artificial intelligence owing to its enormous search space and the difficulty of evaluating board positions and moves. Here we introduce a new approach to computer Go that uses ‘value networks’ to evaluate board positions and ‘policy networks’ to select moves. These deep neural networks are trained by a novel combination of supervised learning from human expert games, and reinforcement learning from games of self-play. Without any lookahead search, the neural networks play Go at the level of state-of-the-art Monte Carlo tree search programs that simulate thousands of random games of self-play. We also introduce a new search algorithm that combines Monte Carlo simulation with value and policy networks. Using this search algorithm, our program AlphaGo achieved a 99.8\% winning rate against other Go programs, and defeated the human European Go champion by 5 games to 0. This is the first time that a computer program has defeated a human professional player in the full-sized game of Go, a feat previously thought to be at least a decade away.},
   issue = {7587},
   langid = {english},
+  keywords = {broken},
   annotation = {9998 citations (Semantic Scholar/DOI) [2022-05-18]},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Mastering the game of Go with deep neural networks and tree search (2016) - Silver et al.pdf;/Users/adzcai/Zotero/storage/STY6YT82/nature16961.html}
 }
@@ -308,8 +328,22 @@
   urldate = {2023-06-21},
   abstract = {Policy gradient methods are an appealing approach in reinforcement learning because they directly optimize the cumulative reward and can straightforwardly be used with nonlinear function approximators such as neural networks. The two main challenges are the large number of samples typically required, and the difficulty of obtaining stable and steady improvement despite the nonstationarity of the incoming data. We address the first challenge by using value functions to substantially reduce the variance of policy gradient estimates at the cost of some bias, with an exponentially-weighted estimator of the advantage function that is analogous to TD(lambda). We address the second challenge by using trust region optimization procedure for both the policy and the value function, which are represented by neural networks. Our approach yields strong empirical results on highly challenging 3D locomotion tasks, learning running gaits for bipedal and quadrupedal simulated robots, and learning a policy for getting the biped to stand up from starting out lying on the ground. In contrast to a body of prior work that uses hand-crafted policy representations, our neural network policies map directly from raw kinematics to joint torques. Our algorithm is fully model-free, and the amount of simulated experience required for the learning tasks on 3D bipeds corresponds to 1-2 weeks of real time.},
   pubstate = {preprint},
+  keywords = {broken},
   annotation = {2253 citations (Semantic Scholar/arXiv) [2023-07-22]},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/High-Dimensional Continuous Control Using Generalized Advantage Estimation (2018) - Schulman et al2.pdf}
+}
+
+@inproceedings{kakade_approximately_2002,
+  title = {Approximately {{Optimal Approximate Reinforcement Learning}}},
+  booktitle = {Proceedings of the {{Nineteenth International Conference}} on {{Machine Learning}}},
+  author = {Kakade, Sham and Langford, John},
+  date = {2002-07-08},
+  series = {{{ICML}} '02},
+  pages = {267--274},
+  publisher = {Morgan Kaufmann Publishers Inc.},
+  location = {San Francisco, CA, USA},
+  isbn = {978-1-55860-873-3},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2002/Approximately Optimal Approximate Reinforcement Learning (2002) - Kakade, Langford 3.pdf}
 }
 
 @software{bradbury_jax_2018,
@@ -317,7 +351,8 @@
   author = {Bradbury, James and Frostig, Roy and Hawkins, Peter and Johnson, Matthew James and Leary, Chris and Maclaurin, Dougal and Necula, George and Paszke, Adam and VanderPlas, Jake and Wanderman-Milne, Skye and Zhang, Qiao},
   date = {2018},
   url = {http://github.com/google/jax},
-  version = {0.3.13}
+  version = {0.3.13},
+  keywords = {nosource}
 }
 
 @inproceedings{freeman_brax_2021,
@@ -360,7 +395,8 @@
   date = {2015},
   publisher = {Determination Press},
   url = {http://neuralnetworksanddeeplearning.com/},
-  urldate = {2024-03-10}
+  urldate = {2024-03-10},
+  keywords = {nosource}
 }
 
 @book{james_introduction_2023,
@@ -405,7 +441,7 @@
   location = {Philadelphia},
   isbn = {978-1-61197-557-4},
   pagetotal = {567},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 10.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 11.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 12.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 2.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 4.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 6.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 7.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 8.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 9.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath.pdf}
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 2.pdf}
 }
 
 @inproceedings{ross_reduction_2010,
@@ -433,6 +469,7 @@
   urldate = {2024-07-01},
   abstract = {It is shown how a system consisting of two neuronlike adaptive elements can solve a difficult learning control problem. The task is to balance a pole that is hinged to a movable cart by applying forces to the cart's base. It is argued that the learning problems faced by adaptive elements that are components of adaptive networks are at least as difficult as this version of the pole-balancing problem. The learning system consists of a single associative search element (ASE) and a single adaptive critic element (ACE). In the course of learning to balance the pole, the ASE constructs associations between input and output by searching under the influence of reinforcement feedback, and the ACE constructs a more informative evaluation function than reinforcement feedback alone can provide. The differences between this approach and other attempts to solve problems using neurolike elements are discussed, as is the relation of this work to classical and instrumental conditioning in animal learning studies and its possible implications for research in the neurosciences.},
   eventtitle = {{{IEEE Transactions}} on {{Systems}}, {{Man}}, and {{Cybernetics}}},
+  keywords = {broken},
   file = {/Users/adzcai/Zotero/storage/GHD9WZXL/6313077.html}
 }
 
@@ -448,6 +485,7 @@
   urldate = {2024-07-01},
   abstract = {We study the problem of stochastic optimization for deep learning in the parallel computing environment under communication constraints. A new algorithm is proposed in this setting where the communication and coordination of work among concurrent processes (local workers), is based on an elastic force which links the parameters they compute with a center variable stored by the parameter server (master). The algorithm enables the local workers to perform more exploration, i.e. the algorithm allows the local variables to fluctuate further from the center variable by reducing the amount of communication between local workers and the master. We empirically demonstrate that in the deep learning setting, due to the existence of many local optima, allowing more exploration can lead to the improved performance. We propose synchronous and asynchronous variants of the new algorithm. We provide the stability analysis of the asynchronous variant in the round-robin scheme and compare it with the more common parallelized method ADMM. We show that the stability of EASGD is guaranteed when a simple stability condition is satisfied, which is not the case for ADMM. We additionally propose the momentum-based version of our algorithm that can be applied in both synchronous and asynchronous settings. Asynchronous variant of the algorithm is applied to train convolutional neural networks for image classification on the CIFAR and ImageNet datasets. Experiments demonstrate that the new algorithm accelerates the training of deep architectures compared to DOWNPOUR and other common baseline approaches and furthermore is very communication efficient.},
   pubstate = {prepublished},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Deep learning with Elastic Averaging SGD (2015) - Zhang, Choromanska, LeCun.pdf;/Users/adzcai/Zotero/storage/M4LFKVWK/1412.html}
 }
 
@@ -457,6 +495,7 @@
   date = {2018},
   url = {https://spinningup.openai.com/en/latest/index.html},
   urldate = {2024-07-01},
+  keywords = {broken},
   file = {/Users/adzcai/Zotero/storage/UPUMW6XV/index.html}
 }
 
@@ -472,6 +511,7 @@
   urldate = {2024-07-01},
   abstract = {Despite the success of Large Language Models (LLMs) on various tasks following human instructions, controlling model generation at inference time poses a persistent challenge. In this paper, we introduce Ctrl-G, an adaptable framework that facilitates tractable and flexible control of LLM generation to reliably follow logical constraints. Ctrl-G combines any production-ready LLM with a Hidden Markov Model, enabling LLM outputs to adhere to logical constraints represented as deterministic finite automata. We show that Ctrl-G, when applied to a TULU2-7B model, outperforms GPT3.5 and GPT4 on the task of interactive text editing: specifically, for the task of generating text insertions/continuations following logical constraints, Ctrl-G achieves over 30\% higher satisfaction rate in human evaluation compared to GPT4. When applied to medium-size language models (e.g., GPT2-large), Ctrl-G also beats its counterparts for constrained generation by large margins on standard benchmarks. Additionally, as a proof-of-concept study, we experiment Ctrl-G on the Grade School Math benchmark to assist LLM reasoning, foreshadowing the application of Ctrl-G, as well as other constrained generation approaches, beyond traditional language generation tasks.},
   pubstate = {prepublished},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Adaptable Logical Control for Large Language Models (2024) - Zhang et al.pdf;/Users/adzcai/Zotero/storage/38W8T74Y/2406.html}
 }
 
@@ -487,6 +527,7 @@
   urldate = {2024-07-01},
   abstract = {Large vision-language models (VLMs) fine-tuned on specialized visual instruction-following data have exhibited impressive language reasoning capabilities across various scenarios. However, this fine-tuning paradigm may not be able to efficiently learn optimal decision-making agents in multi-step goal-directed tasks from interactive environments. To address this challenge, we propose an algorithmic framework that fine-tunes VLMs with reinforcement learning (RL). Specifically, our framework provides a task description and then prompts the VLM to generate chain-of-thought (CoT) reasoning, enabling the VLM to efficiently explore intermediate reasoning steps that lead to the final text-based action. Next, the open-ended text output is parsed into an executable action to interact with the environment to obtain goal-directed task rewards. Finally, our framework uses these task rewards to fine-tune the entire VLM with RL. Empirically, we demonstrate that our proposed framework enhances the decision-making capabilities of VLM agents across various tasks, enabling 7b models to outperform commercial models such as GPT4-V or Gemini. Furthermore, we find that CoT reasoning is a crucial component for performance improvement, as removing the CoT reasoning results in a significant decrease in the overall performance of our method.},
   pubstate = {prepublished},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Fine-Tuning Large Vision-Language Models as Decision-Making Agents via Reinforcement Learning (2024) - Zhai et al.pdf;/Users/adzcai/Zotero/storage/2X2WJU4D/2405.html}
 }
 
@@ -503,6 +544,7 @@
   urldate = {2024-07-01},
   abstract = {One of the most striking findings in modern research on large language models (LLMs) is that scaling up compute during training leads to better results. However, less attention has been given to the benefits of scaling compute during inference. This survey focuses on these inference-time approaches. We explore three areas under a unified mathematical formalism: token-level generation algorithms, meta-generation algorithms, and efficient generation. Token-level generation algorithms, often called decoding algorithms, operate by sampling a single token at a time or constructing a token-level search space and then selecting an output. These methods typically assume access to a language model's logits, next-token distributions, or probability scores. Meta-generation algorithms work on partial or full sequences, incorporating domain knowledge, enabling backtracking, and integrating external information. Efficient generation methods aim to reduce token costs and improve the speed of generation. Our survey unifies perspectives from three research communities: traditional natural language processing, modern LLMs, and machine learning systems.},
   pubstate = {prepublished},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/From Decoding to Meta-Generation (2024) - Welleck et al.pdf;/Users/adzcai/Zotero/storage/S4Y984R4/2406.html}
 }
 
@@ -519,6 +561,7 @@
   urldate = {2024-07-01},
   abstract = {Current AI alignment methodologies rely on human-provided demonstrations or judgments, and the learned capabilities of AI systems would be upper-bounded by human capabilities as a result. This raises a challenging research question: How can we keep improving the systems when their capabilities have surpassed the levels of humans? This paper answers this question in the context of tackling hard reasoning tasks (e.g., level 4-5 MATH problems) via learning from human annotations on easier tasks (e.g., level 1-3 MATH problems), which we term as \textbackslash textit\{easy-to-hard generalization\}. Our key insight is that an evaluator (reward model) trained on supervisions for easier tasks can be effectively used for scoring candidate solutions of harder tasks and hence facilitating easy-to-hard generalization over different levels of tasks. Based on this insight, we propose a novel approach to scalable alignment, which firstly trains the process-supervised reward models on easy problems (e.g., level 1-3), and then uses them to evaluate the performance of policy models on hard problems. We show that such \textbackslash textit\{easy-to-hard generalization from evaluators\} can enable \textbackslash textit\{easy-to-hard generalizations in generators\} either through re-ranking or reinforcement learning (RL). Notably, our process-supervised 7b RL model achieves an accuracy of 34.0\textbackslash\% on MATH500, despite only using human supervision on easy problems. Our approach suggests a promising path toward AI systems that advance beyond the frontier of human supervision.},
   pubstate = {prepublished},
+  keywords = {broken},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Easy-to-Hard Generalization (2024) - Sun et al.pdf;/Users/adzcai/Zotero/storage/J52D59AK/2403.html}
 }
 
@@ -532,6 +575,7 @@
   eprinttype = {arXiv},
   url = {http://arxiv.org/abs/1312.5602},
   urldate = {2024-06-21},
+  keywords = {⛔ No DOI found},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2013/Playing Atari with Deep Reinforcement Learning (2013) - Mnih et al.pdf}
 }
 
@@ -561,6 +605,20 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Minimax Regret Bounds for Reinforcement Learning (2017) - Azar, Osband, Munos.pdf}
 }
 
+@inproceedings{kakade_natural_2001,
+  title = {A {{Natural Policy Gradient}}},
+  booktitle = {Advances in {{Neural Information Processing Systems}}},
+  author = {Kakade, Sham M},
+  date = {2001},
+  volume = {14},
+  publisher = {MIT Press},
+  url = {https://proceedings.neurips.cc/paper_files/paper/2001/hash/4b86abe48d358ecf194c56c69108433e-Abstract.html},
+  urldate = {2024-06-20},
+  abstract = {We provide a  natural gradient method that represents the steepest  descent  direction based on the underlying structure of the param(cid:173) eter space.  Although gradient methods cannot make large changes  in  the  values  of the  parameters,  we  show  that  the  natural  gradi(cid:173) ent is moving toward choosing a greedy optimal action rather than  just a  better action.  These greedy optimal  actions  are those  that  would  be  chosen  under  one  improvement  step  of  policy  iteration  with  approximate,  compatible  value  functions,  as  defined  by  Sut(cid:173) ton  et al.  [9].  We  then show drastic performance improvements in  simple MDPs and in the more challenging MDP of Tetris.},
+  keywords = {⛔ No DOI found},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2001/A Natural Policy Gradient (2001) - Kakade.pdf}
+}
+
 @article{deng_mnist_2012,
   title = {The {{MNIST Database}} of {{Handwritten Digit Images}} for {{Machine Learning Research}} [{{Best}} of the {{Web}}]},
   author = {Deng, Li},
@@ -575,7 +633,6 @@
   urldate = {2025-01-02},
   abstract = {In this issue, “Best of the Web” presents the modified National Institute of Standards and Technology (MNIST) resources, consisting of a collection of handwritten digit images used extensively in optical character recognition and machine learning research.},
   eventtitle = {{{IEEE Signal Processing Magazine}}},
-  keywords = {Machine learning},
   file = {/Users/adzcai/Zotero/storage/394GTFDU/6296535.html}
 }
 
@@ -585,7 +642,8 @@
   date = {2024-02},
   doi = {10.5281/zenodo.5960048},
   url = {https://github.com/quarto-dev/quarto-cli},
-  version = {1.4}
+  version = {1.4},
+  keywords = {nosource}
 }
 
 @artwork{gpa_photo_archive_robotic_2017,
@@ -605,7 +663,6 @@
   url = {https://www.flickr.com/photos/28169156@N03/52957948820/},
   urldate = {2025-01-05},
   abstract = {OLYMPUS DIGITAL CAMERA},
-  keywords = {cargoship,containerschip,mscdavos,navires,nederland,nl,schepen,schiffe,schip,ships,unlimitedphotos,vaartuig,vessels,zaamslag,zeeland},
   file = {/Users/adzcai/Zotero/storage/VLKCH5QJ/Container ship MSC Davos - Westerschelde - Zeeland (2009) - Frans Berkelaar.jpg}
 }
 
@@ -616,7 +673,6 @@
   url = {https://www.flickr.com/photos/romainguy/230416692/},
   urldate = {2025-01-05},
   abstract = {We played some chess while waiting for our room to be ready when we got at our hotel in Hangzhou.},
-  keywords = {chess,china,city,game,hangzhou},
   file = {/Users/adzcai/Zotero/storage/WEYSCFYL/Chess (2006) - Guy.jpg}
 }
 
@@ -635,7 +691,8 @@
   doi = {10.2307/2583870},
   url = {https://www.jstor.org/stable/2583870},
   urldate = {2025-01-05},
-  abstract = {A collection of papers on the application of Markov decision processes is surveyed and classified according to the use of real life data, structural results and special computational schemes. Observations are made about various features of the applications.}
+  abstract = {A collection of papers on the application of Markov decision processes is surveyed and classified according to the use of real life data, structural results and special computational schemes. Observations are made about various features of the applications.},
+  keywords = {nosource}
 }
 
 @article{meurer_sympy_2017,
@@ -664,7 +721,8 @@
   date = {2024-04},
   publisher = {ACM},
   doi = {10.1145/3620665.3640366},
-  url = {https://pytorch.org/assets/pytorch2-2.pdf}
+  url = {https://pytorch.org/assets/pytorch2-2.pdf},
+  keywords = {nosource}
 }
 
 @article{carvalho_predictive_2024,
@@ -698,7 +756,6 @@
   urldate = {2025-02-07},
   abstract = {We introduce our first-generation reasoning models, DeepSeek-R1-Zero and DeepSeek-R1. DeepSeek-R1-Zero, a model trained via large-scale reinforcement learning (RL) without supervised fine-tuning (SFT) as a preliminary step, demonstrates remarkable reasoning capabilities. Through RL, DeepSeek-R1-Zero naturally emerges with numerous powerful and intriguing reasoning behaviors. However, it encounters challenges such as poor readability, and language mixing. To address these issues and further enhance reasoning performance, we introduce DeepSeek-R1, which incorporates multi-stage training and cold-start data before RL. DeepSeek-R1 achieves performance comparable to OpenAI-o1-1217 on reasoning tasks. To support the research community, we open-source DeepSeek-R1-Zero, DeepSeek-R1, and six dense models (1.5B, 7B, 8B, 14B, 32B, 70B) distilled from DeepSeek-R1 based on Qwen and Llama.},
   pubstate = {prepublished},
-  keywords = {Computer Science - Artificial Intelligence,Computer Science - Computation and Language,Computer Science - Machine Learning},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2025/DeepSeek-R1 (2025) - DeepSeek-AI et al.pdf;/Users/adzcai/Zotero/storage/3MYSD8TV/2501.html}
 }
 
@@ -715,7 +772,6 @@
   urldate = {2025-02-07},
   abstract = {Value functions are a central component of deep reinforcement learning (RL). These functions, parameterized by neural networks, are trained using a mean squared error regression objective to match bootstrapped target values. However, scaling value-based RL methods that use regression to large networks, such as high-capacity Transformers, has proven challenging. This difficulty is in stark contrast to supervised learning: by leveraging a cross-entropy classification loss, supervised methods have scaled reliably to massive networks. Observing this discrepancy, in this paper, we investigate whether the scalability of deep RL can also be improved simply by using classification in place of regression for training value functions. We demonstrate that value functions trained with categorical cross-entropy significantly improves performance and scalability in a variety of domains. These include: single-task RL on Atari 2600 games with SoftMoEs, multi-task RL on Atari with large-scale ResNets, robotic manipulation with Q-transformers, playing Chess without search, and a language-agent Wordle task with high-capacity Transformers, achieving state-of-the-art results on these domains. Through careful analysis, we show that the benefits of categorical cross-entropy primarily stem from its ability to mitigate issues inherent to value-based RL, such as noisy targets and non-stationarity. Overall, we argue that a simple shift to training value functions with categorical cross-entropy can yield substantial improvements in the scalability of deep RL at little-to-no cost.},
   pubstate = {prepublished},
-  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning,Statistics - Machine Learning},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Stop Regressing (2024) - Farebrother et al.pdf;/Users/adzcai/Zotero/storage/ZLQNN42D/2403.html}
 }
 
@@ -732,5 +788,22 @@
   issn = {0370-1662},
   url = {https://www.jstor.org/stable/112510},
   urldate = {2025-03-08},
+  keywords = {⛔ No DOI found},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1867/On Governors (1867) - Maxwell.pdf}
+}
+
+@inproceedings{schulman_trust_2015,
+  title = {Trust {{Region Policy Optimization}}},
+  booktitle = {Proceedings of the 32nd {{International Conference}} on {{Machine Learning}}},
+  author = {Schulman, John and Levine, Sergey and Abbeel, Pieter and Jordan, Michael and Moritz, Philipp},
+  date = {2015-06-01},
+  pages = {1889--1897},
+  publisher = {PMLR},
+  issn = {1938-7228},
+  url = {https://proceedings.mlr.press/v37/schulman15.html},
+  urldate = {2025-03-09},
+  abstract = {In this article, we describe a method for optimizing control policies, with guaranteed monotonic improvement. By making several approximations to the theoretically-justified scheme, we develop a practical algorithm, called Trust Region Policy Optimization (TRPO). This algorithm is effective for optimizing large nonlinear policies such as neural networks. Our experiments demonstrate its robust performance on a wide variety of tasks: learning simulated robotic swimming, hopping, and walking gaits; and playing Atari games using images of the screen as input. Despite its approximations that deviate from the theory, TRPO tends to give monotonic improvement, with little tuning of hyperparameters.},
+  eventtitle = {International {{Conference}} on {{Machine Learning}}},
+  langid = {english},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization (2015) - Schulman et al_Supplementary.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization (2015) - Schulman et al.pdf}
 }

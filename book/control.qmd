@@ -831,7 +831,10 @@ and ignore the terminal state for simplicity:
 
 $$
 \begin{aligned}
-        \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad & \E_{\st_0} \left[ \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi) \right] \\
+        \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad
+        & \E_{\st_0 \sim d_0} \left[
+            \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi)
+        \right] \\
         \text{where} \quad                                  & \st_{\hi+1} = f(\st_\hi, \act_\hi)                                   \\
                                                             & \act_\hi = \pi_\hi(\st_\hi)                                          \\
                                                             & \st_0 \sim \mu_0                                                     \\
@@ -1077,7 +1080,7 @@ somewhat complex, one can show that for many nonlinear control problems,
 this solution converges to a locally optimal solution (in the policy
 space).
 
-## Summary
+## Key takeaways
 
 This chapter introduced some approaches to solving different variants of
 the optimal control problem

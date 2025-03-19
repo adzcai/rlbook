@@ -24,8 +24,8 @@ asymptotically. That is, $f(t) \le O(g(t))$ and $g(t) \le O(f(t))$.
 Finally, we use $f(t) \ge \Omega(g(t))$ to mean that $g(t) \le O(f(t))$,
 and $f(t) > \omega(g(t))$ to mean that $g(t) < o(f(t))$.
 
-We also use the notation $\tilde O(g(t))$ to hide logarithmic factors.
-That is, $f(t) = \tilde O(g(t))$ if there exists some constant $C$ such
+We also use the notation $\widetilde O(g(t))$ to hide logarithmic factors.
+That is, $f(t) = \widetilde O(g(t))$ if there exists some constant $C$ such
 that $f(t) \le C \cdot g(t) \cdot \log^k(t)$ for some $k$ and all $t$.
 
 Occasionally, we will also use $O(f(t))$ (or one of the other symbols)
@@ -38,4 +38,18 @@ functions in $O(f(t))$ and $O(g(t))$ is in $O(f(t) + g(t))$.
 
 
 ## Linear algebra {#sec-bg-linear-algebra}
+
+
+
+### Review of Hessians and interpretation of the Fisher information matrix {#sec-hessians}
+
+Recall that the Hessian of a function describes its _curvature_.
+Concretely, suppose we have some parameter vector $\theta \in \R^D$
+and we seek to measure how much $p_\theta$ changes
+if we shift $\theta$ by $\delta \in \R^D$.
+That is, we seek to measure
+
+
+the quantity $\delta^\top F_\theta \delta$ describes how rapidly the negative log-likelihood changes if we move by $\delta$.
+The Fisher information matrix is precisely the Hessian of the KL divergence (with respect to either one of the parameters).
 

@@ -2,6 +2,7 @@
 
 \providecommand{\hi}{h}
 \providecommand{\hor}{H}
+\providecommand{\ki}{k}
 \providecommand{\kl}[2]{\mathrm{KL}\left(#1\parallel#2\right)}
 \providecommand{\ind}[1]{\mathbf{1}\left\{#1\right\}}
 \providecommand{\st}{x}
@@ -9,5 +10,9 @@
 \providecommand{\E}{\mathop{\mathbb{E}}}
 \providecommand{\R}{\mathbb{R}}
 \providecommand{\pr}{\mathbb{P}}
+\providecommand{\thetacurr}{{\theta^\ki}}
+\providecommand{\thetanext}{{\theta'}}
+\providecommand{\picurr}{\pi_\thetacurr}
+\providecommand{\pinext}{\pi_\thetanext}
 
 :::

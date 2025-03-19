@@ -194,7 +194,7 @@ $$
 
 where $\varepsilon$ is the "classification error" guaranteed by the supervised learning algorithm.
 
-## Summary
+## Key takeaways
 
 For tasks where it is too difficult or expensive to learn from scratch,
 we can instead start off with a collection of **expert demonstrations**.

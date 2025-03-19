@@ -448,7 +448,7 @@ have (still with probability $1-\delta'$)
 $$
 \begin{aligned}
     \text{Regret}_T &\le 3 T^{2/3} \sqrt[3]{K \ln(2K/\delta') / 2} \\
-    &= \tilde{O}(T^{2/3} K^{1/3}).
+    &= \widetilde{O}(T^{2/3} K^{1/3}).
 \end{aligned}
 $$
 
@@ -494,7 +494,7 @@ Note that we let $\epsilon$ vary over time. In particular, we might want to grad
 What is the expected regret of the algorithm if we set $\epsilon$ to be a constant?
 :::
 
-It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\tilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors). (We will not prove this here; a proof can be found in [@agarwal_reinforcement_2022].)
+It turns out that setting $\epsilon_t = \sqrt[3]{K \ln(t)/t}$ also achieves a regret of $\widetilde O(t^{2/3} K^{1/3})$ (ignoring the logarithmic factors). (We will not prove this here; a proof can be found in [@agarwal_reinforcement_2022].)
 
 In ETC, we had to set $N_{\text{explore}}$ based on the total number of timesteps $T$. But the epsilon-greedy algorithm actually handles the exploration *automatically*: the regret rate holds for *any* $t$, and doesn’t depend on the final horizon $T$.
 
@@ -503,6 +503,7 @@ But the way these algorithms explore is rather naive: we’ve been exploring *un
 
 
 ## Upper Confidence Bound (UCB) {#sec-ucb}
+
 To quantify how *certain* we are about the mean of each arm, we’ll
 compute *confidence intervals* for our estimators, and then choose the
 arm with the highest *upper confidence bound*. This operates on the
@@ -536,17 +537,17 @@ $$
     N^k_t &:= \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} \\
     \hat \mu^k_t &:= \frac{1}{N^k_t} \sum_{\tau=0}^{t-1} \mathbf{1} \{ a_\tau = k \} r_\tau.
 \end{aligned}
-$$
+$$ {#eq-bandits-count}
 
 To achieve the “fixed sample size” assumption, we’ll
 need to shift our index from *time* to *number of samples from each
-arm*. In particular, we’ll define $\tilde r^k_n$ to be the $n$th sample
-from arm $k$, and $\tilde \mu^k_n$ to be the sample average of the first
+arm*. In particular, we’ll define $\widetilde r^k_n$ to be the $n$th sample
+from arm $k$, and $\widetilde \mu^k_n$ to be the sample average of the first
 $n$ samples from arm $k$. Then, for a fixed $n$, this satisfies the
 “fixed sample size” assumption, and we can apply Hoeffding’s inequality
-to get a bound on $\tilde \mu^k_n$.
+to get a bound on $\widetilde \mu^k_n$.
 
-So how can we extend our bound on $\tilde\mu^k_n$ to $\hat \mu^k_t$?
+So how can we extend our bound on $\widetilde\mu^k_n$ to $\hat \mu^k_t$?
 Well, we know $N^k_t \le t$ (where equality would be the case if and
 only if we had pulled arm $k$ every time). So we can apply the same
 trick as last time, where we uniform-ize across all possible values of
@@ -554,11 +555,11 @@ $N^k_t$:
 
 $$
 \begin{aligned}
-    \pr\left( \forall n \le t, |\tilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) &\ge 1-t\delta.
+    \pr\left( \forall n \le t, |\widetilde \mu^k_n - \mu^k | \le \sqrt{\frac{\ln(2/\delta)}{2n}} \right) &\ge 1-t\delta.
 \end{aligned}
-$$
+$$ {#eq-bandits-uniform-count}
 
-In particular, since $N^k_t \le t$, and $\tilde \mu^k_{N^k_t} = \hat \mu^k_t$ by definition, we have
+In particular, since $N^k_t \le t$, and $\widetilde \mu^k_{N^k_t} = \hat \mu^k_t$ by definition, we have
 
 $$
 \begin{aligned}
@@ -657,12 +658,12 @@ Putting everything together gives
 $$
 \begin{aligned}
     \text{Regret}_T &\le 2 K \sqrt{2T \ln(2TK/\delta'')} && \text{with probability } 1-\delta'' \\
-    &= \tilde O(K\sqrt{T})
+    &= \widetilde O(K\sqrt{T})
 \end{aligned}
 $$
 
 In fact, we can do a more sophisticated analysis to trim off a factor of $\sqrt{K}$
-and show $\text{Regret}_T = \tilde O(\sqrt{TK})$.
+and show $\text{Regret}_T = \widetilde O(\sqrt{TK})$.
 
 
 
@@ -689,6 +690,7 @@ $$
 
 
 ## Thompson sampling and Bayesian bandits {#sec-thompson-sampling}
+
 So far, we’ve treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the
 reward distributions as *fixed*. Instead, we can take a **Bayesian**
 approach where we treat them as random variables from some **prior
@@ -846,8 +848,8 @@ expression for $\pi_t(x_t) = \arg\max_a \dots$.
 :::
 
 Recall that running UCB for $T$ timesteps on an MAB with $K$ arms
-achieves a regret bound of $\tilde{O}(\sqrt{TK})$. So in this problem,
-we would achieve regret $\tilde{O}(\sqrt{TK|\mathcal{X}|})$ in the
+achieves a regret bound of $\widetilde{O}(\sqrt{TK})$. So in this problem,
+we would achieve regret $\widetilde{O}(\sqrt{TK|\mathcal{X}|})$ in the
 contextual MAB, which has a polynomial dependence on $|\mathcal{X}|$.
 But in a situation where we have large, or even infinitely many
 contexts, e.g. in the case where our context is a continuous value, this
@@ -862,6 +864,7 @@ incorporate this structure into our solution?
 
 
 ### Linear contextual bandits {#sec-lin-ucb}
+
 We want to model the *mean reward* of arm $k$ as a function of the
 context, i.e. $\mu^k(x)$. One simple model is the *linear* one:
 $\mu^k(x) = x^\top \theta^k$, where $x \in \mathcal{X} = \mathbb{R}^d$ and
@@ -972,10 +975,10 @@ width of the confidence interval. Here, we treat it as a tunable
 parameter, though in a theoretical analysis, it would depend on $A_t^k$
 and the probability $\delta$ with which the bound holds.
 
-Using similar tools for UCB, we can also prove an $\tilde{O}(\sqrt{T})$
+Using similar tools for UCB, we can also prove an $\widetilde{O}(\sqrt{T})$
 regret bound. The full details of the analysis can be found in Section 3 of [@agarwal_reinforcement_2022].
 
-## Summary
+## Key takeaways
 
 In this chapter,
 we explored the **multi-armed bandit** setting for analyzing sequential decision-making in an unknown environment.

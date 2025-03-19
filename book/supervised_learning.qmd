@@ -38,16 +38,16 @@ SL algorithms can learn to solve this task as well.
 #| layout-ncol: 2
 data = MNIST(MNIST_PATH, train=True, download=True)
 
+plt.figure(figsize=(2, 2))
 plt.axis('off')
 plt.imshow(data.data[0], cmap='gray')
 # plt.title(f"Label: {data.targets[0]}")
-plt.gcf().set_size_inches(2, 2)
 plt.show()
 
+plt.figure(figsize=(2, 2))
 plt.axis('off')
 plt.imshow(data.data[1], cmap='gray')
 # plt.title(f"Label: {data.targets[1]}")
-plt.gcf().set_size_inches(2, 2)
 plt.show()
 ```
 
@@ -513,7 +513,7 @@ with a lower overall empirical risk.
 
 Stepping for a moment back into the world of RL,
 you might wonder,
-why can't we simply apply gradient descent (or rather, gradient ascent)
+why can't we simply apply gradient descent
 to the total reward?
 It turns out that the gradient of the total reward with respect to the policy parameters
 known as the **policy gradient**,
@@ -625,7 +625,7 @@ Essentially, the hierarchical structure of the neural network,
 i.e. computing the output of the network as a composition of functions,
 allows us to use the chain rule to compute the gradient of the output with respect to the parameters of each layer.
 
-## Summary
+## Key takeaways
 
 We have now gotten a glimpse into **supervised learning**,
 which seeks to learn about some input-output relationship

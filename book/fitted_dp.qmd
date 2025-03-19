@@ -752,7 +752,7 @@ Is fitted policy iteration online or offline?
 On-policy or off-policy?
 :::
 
-## Summary
+## Key takeaways
 
 In most real-world settings,
 we don't know the state transitions $P$.

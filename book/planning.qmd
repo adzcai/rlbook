@@ -752,7 +752,7 @@ This is the reward function we assumed
 when discussing MDPs (@sec-mdps).
 
 
-## Summary
+## Key takeaways
 
 In this chapter,
 we explored tree search-based algorithms for deterministic, zero sum, fully observable two-player games.

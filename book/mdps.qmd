@@ -2172,7 +2172,7 @@ $$
 $$
 ::::
 
-## Summary
+## Key takeaways
 
 -   Markov decision processes (MDPs) are a framework for sequential
     decision making under uncertainty. They consist of a state space
@@ -2181,14 +2181,11 @@ $$
     reward function $r(s, a)$. They can be finite-horizon (ends after
     $H$ timesteps) or infinite-horizon (where rewards scale by
     $\gamma \in (0, 1)$ at each timestep).
-
 -   Our goal is to find a policy $\pi$ that maximizes expected total
     reward. Policies can be **deterministic** or **stochastic**,
     **history-dependent** or **history-independent**, **stationary** or
     **time-dependent**.
-
 -   A policy induces a distribution over **trajectories**.
-
 -   We can evaluate a policy by computing its **value function**
     $V^\pi(s)$, which is the expected total reward starting from state
     $s$ and following policy $\pi$. We can also compute the
@@ -2196,15 +2193,12 @@ $$
     total reward starting from state $s$, taking action $a$, and then
     following policy $\pi$. In the finite-horizon setting, these also
     depend on the timestep $\hi$.
-
 -   The **Bellman consistency equation** is an equation that the value
     function must satisfy. It can be used to solve for the value
     functions exactly. Thinking of the r.h.s. of this equation as an
     operator on value functions gives the **Bellman operator**.
-
 -   In the finite-horizon setting, we can compute the optimal policy
     using **dynamic programming**.
-
 -   In the infinite-horizon setting, we can compute the optimal policy
     using **value iteration** or **policy iteration**.
 

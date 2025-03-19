@@ -135,14 +135,19 @@ We use $[N]$ as shorthand for the set $\{ 0, 1, \dots, N-1 \}$.
 |              | $\triangle(\mathcal{X})$ | A distribution supported on $\mathcal{X}$. |
 |    $\hi$     |   $[\hor]$               | Time horizon index of an MDP (subscript).    |
 |    $k$       |   $[K]$                  | Arm index of a multi-armed bandit (superscript).  |
-|    $t$       |   $[T]$                  | Iteration index of an algorithm (subscript).  |
+|    $t$       |   $[T]$                  | Number of episodes. |
+|    $i$       |   $[I]$                  | Iteration index of an algorithm (subscript).  |
 |    $\theta$  | $\Theta$                 | A set of parameters. |
+
+: Table of common notation. {#tbl-notation}
 
 Note that throughout the text, certain symbols will stand for either random variables or fixed values.
 We aim to clarify in ambiguous settings.
-Be warned that notation in RL can appear quite complicated,
+Be warned that RL notation can _appear_ quite complicated,
 since we often need to index across algorithm iterations, trajectories, and timesteps,
 so that certain values can have two or three indices attached to them.
+It's important to see beyond the formal notation
+and _interpret_ the quantities being symbolized.
 
 
 

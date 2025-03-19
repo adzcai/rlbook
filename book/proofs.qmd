@@ -286,3 +286,66 @@ Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$,
 where $P_\hi$ is sym. p.d.,
 proving the inductive hypothesis and completing the proof of @thm-optimal-policy-lqr-linear and @thm-optimal-value-lqr-quadratic.
 
+
+## UCBVI reward bonus proof {#sec-ucbvi-proof}
+
+We aim to show that, with high probability,
+
+$$
+V_\hi^\star(s) \le \widehat{V}_\hi^t(s) \quad \forall t \in [T], h \in [H], s \in \mathcal{S}.
+$$
+
+We'll do this by bounding the error incurred at each step of DP. Recall that DP solves for $\widehat{V}_\hi^t(s)$ recursively as follows:
+
+$$
+\widehat{V}_\hi^t(s) = \max_{a \in \mathcal{A}} \left[ \widetilde r^t_\hi(s, a) + \E_{s' \sim \widehat{P}_\hi^t(\cdot \mid s, a)} \left[ \widehat{V}_{h+1}^t(s') \right] \right]
+$$
+
+where $\widetilde r^t_\hi(s, a) = r_\hi(s, a) + b_\hi^t(s, a)$ is the reward function of our modelled MDP $\widetilde{\mathcal{M}}^t$. On the other hand, we know that $V^\star$ must satisfy
+
+$$
+V^\star_\hi(s) = \max_{a \in \mathcal{A}} \left[ \widetilde r^t_\hi(s, a) + \E_{s' \sim P^?_\hi(\cdot \mid s, a)} [V^\star_{\hi+1}(s')] \right]
+$$
+
+so it suffices to bound the difference between the two inner expectations. There are two sources of error:
+
+1.  The value functions $\widehat{V}^t_{h+1}$ v.s. $V^\star_{h+1}$
+
+2.  The transition probabilities $\widehat{P}_\hi^t$ v.s. $P^?_\hi$.
+
+We can bound these individually, and then combine them by the triangle inequality. For the former, we can simply bound the difference by $H$, assuming that the rewards are within $[0, 1]$. Now, all that is left is to bound the error from the transition probabilities:
+
+$$
+\text{error} = \left| \E_{s' \sim \widehat{P}_\hi^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] - \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]. \right|
+$$ {#eq-err}
+
+Let us bound this term for a fixed $s, a, h, t$. (Later we can make this uniform across $s, a, h, t$ using the union bound.) Note that expanding out the definition of $\widehat{P}_\hi^t$ gives
+
+$$
+\begin{aligned}
+        \E_{s' \sim \widehat{P}_\hi^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] & = \sum_{s' \in \mathcal{S}} \frac{N^t_\hi(s, a, s')}{N^t_\hi(s, a)} V^\star_{h+1}(s')                                                     \\
+    & = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \sum_{s' \in \mathcal{S}} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s, a, s') } V^\star_{h+1}(s') \\
+    & = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \underbrace{\ind{ (s_\hi^i, a_\hi^i) = (s, a) } V^\star_{h+1}(s_{h+1}^i)}_{X^i}
+\end{aligned}
+$$
+
+since the terms where $s' \neq s_{h+1}^i$ vanish.
+
+Now, in order to apply Hoeffding's inequality, we would like to express the second term in @eq-err as a sum over $t$ random variables as well. We will do this by redundantly averaging over all desired trajectories (i.e. where we visit state $s$ and action $a$ at time $h$):
+
+$$
+\begin{aligned}
+        \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]
+         & = \sum_{s' \in \mathcal{S}} P^?_\hi(s' \mid s, a) V^\star_{h+1}(s')                                                                              \\
+         & = \sum_{s' \in \mathcal{S}} \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) } P^?_\hi(s' \mid s, a) V^\star_{h+1}(s') \\
+         & = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i.
+\end{aligned}
+$$
+
+Now we can apply Hoeffding's inequality to $X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i$, which is bounded by $\hor$, to obtain that, with probability at least $1-\delta$,
+
+$$
+\text{error} = \left| \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \left(X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i \right) \right| \le 2 H \sqrt{\frac{\ln(1/\delta)}{N_\hi^t(s, a)}}.
+$$
+
+Applying a union bound over all $s \in \mathcal{S}, a \in \mathcal{A}, t \in [T], h \in [H]$ gives the $b_\hi^t(s, a)$ term above.
