@@ -2300,7 +2300,7 @@ from spinning up:
 The gradient estimates are accumulated across learners and periodically updated and synchronized across all learners.
 All policy gradient methods can be parallelized in this way.
 - @schulman_trust_2015
-- @schulman_high-dimensional_2018
+- @schulman_high-dimensional_2016
 - @schulman_proximal_2017
 - @wu_scalable_2017
 - @wang_sample_2017

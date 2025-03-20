@@ -1,6 +1,6 @@
 {{< include macros.qmd >}}
 
-# Introduction {.unnumbered}
+# Introduction
 
 Welcome to the study of reinforcement learning!
 This textbook accompanies the undergraduate course [CS 1840/STAT 184](http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html) taught at Harvard.
