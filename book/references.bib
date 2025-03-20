@@ -14,7 +14,7 @@
 }
 
 @inproceedings{lechner_gigastep_2023,
-  title = {Gigastep - {{One Billion Steps}} per {{Second Multi-agent Reinforcement Learning}}},
+  title = {Gigastep - One Billion Steps per Second Multi-Agent Reinforcement Learning},
   author = {Lechner, Mathias and Yin, Lianhao and Seyde, Tim and Wang, Tsun-Hsuan and Xiao, Wei and Hasani, Ramin and Rountree, Joshua and Rus, Daniela},
   date = {2023-11-02},
   url = {https://openreview.net/forum?id=UgPAaEugH3},
@@ -233,19 +233,6 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Magnetic control of tokamak plasmas through deep reinforcement learning (2022) - Degrave et al.pdf}
 }
 
-@inproceedings{silver_deterministic_2014,
-  title = {Deterministic Policy Gradient Algorithms},
-  booktitle = {Proceedings of the 31st {{International Conference}} on {{International Conference}} on {{Machine Learning}} - {{Volume}} 32},
-  author = {Silver, David and Lever, Guy and Heess, Nicolas and Degris, Thomas and Wierstra, Daan and Riedmiller, Martin},
-  date = {2014-06-21},
-  series = {{{ICML}}'14},
-  pages = {I-387--I-395},
-  publisher = {JMLR.org},
-  location = {Beijing, China},
-  abstract = {In this paper we consider deterministic policy gradient algorithms for reinforcement learning with continuous actions. The deterministic policy gradient has a particularly appealing form: it is the expected gradient of the action-value function. This simple form means that the deterministic policy gradient can be estimated much more efficiently than the usual stochastic policy gradient. To ensure adequate exploration, we introduce an off-policy actor-critic algorithm that learns a deterministic target policy from an exploratory behaviour policy. We demonstrate that deterministic policy gradient algorithms can significantly outperform their stochastic counterparts in high-dimensional action spaces.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2014/Deterministic policy gradient algorithms (2014) - Silver et al.pdf}
-}
-
 @book{sussman_functional_2013,
   title = {Functional Differential Geometry},
   author = {Sussman, Gerald Jay and Wisdom, Jack and Farr, Will},
@@ -316,23 +303,6 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Algorithms for Decision Making (2022) - Kochenderfer, Wheeler, Wray.pdf}
 }
 
-@inproceedings{schulman_high-dimensional_2018,
-  title = {High-{{Dimensional Continuous Control Using Generalized Advantage Estimation}}},
-  booktitle = {{{ICLR}} 2016},
-  author = {Schulman, John and Moritz, Philipp and Levine, Sergey and Jordan, Michael and Abbeel, Pieter},
-  date = {2018-10-20},
-  eprint = {1506.02438},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
-  url = {http://arxiv.org/abs/1506.02438},
-  urldate = {2023-06-21},
-  abstract = {Policy gradient methods are an appealing approach in reinforcement learning because they directly optimize the cumulative reward and can straightforwardly be used with nonlinear function approximators such as neural networks. The two main challenges are the large number of samples typically required, and the difficulty of obtaining stable and steady improvement despite the nonstationarity of the incoming data. We address the first challenge by using value functions to substantially reduce the variance of policy gradient estimates at the cost of some bias, with an exponentially-weighted estimator of the advantage function that is analogous to TD(lambda). We address the second challenge by using trust region optimization procedure for both the policy and the value function, which are represented by neural networks. Our approach yields strong empirical results on highly challenging 3D locomotion tasks, learning running gaits for bipedal and quadrupedal simulated robots, and learning a policy for getting the biped to stand up from starting out lying on the ground. In contrast to a body of prior work that uses hand-crafted policy representations, our neural network policies map directly from raw kinematics to joint torques. Our algorithm is fully model-free, and the amount of simulated experience required for the learning tasks on 3D bipeds corresponds to 1-2 weeks of real time.},
-  pubstate = {preprint},
-  keywords = {broken},
-  annotation = {2253 citations (Semantic Scholar/arXiv) [2023-07-22]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/High-Dimensional Continuous Control Using Generalized Advantage Estimation (2018) - Schulman et al2.pdf}
-}
-
 @inproceedings{kakade_approximately_2002,
   title = {Approximately {{Optimal Approximate Reinforcement Learning}}},
   booktitle = {Proceedings of the {{Nineteenth International Conference}} on {{Machine Learning}}},
@@ -373,25 +343,6 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Brax – A Differentiable Physics Engine for Large Scale Rigid Body Simulation (2021) - Freeman et al.pdf}
 }
 
-@inproceedings{wang_dueling_2016,
-  title = {Dueling {{Network Architectures}} for {{Deep Reinforcement Learning}}},
-  booktitle = {{{ICML}} 2016},
-  author = {Wang, Ziyu and Schaul, Tom and Hessel, Matteo and family=Hasselt, given=Hado, prefix=van, useprefix=true and Lanctot, Marc and family=Freitas, given=Nando, prefix=de, useprefix=true},
-  date = {2016-04-05},
-  eprint = {1511.06581},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
-  pages = {1995--2003},
-  publisher = {arXiv},
-  doi = {10.48550/arXiv.1511.06581},
-  url = {http://proceedings.mlr.press/v48/wangf16.html},
-  urldate = {2023-05-28},
-  abstract = {In recent years there have been many successes of using deep representations in reinforcement learning. Still, many of these applications use conventional architectures, such as convolutional networks, LSTMs, or auto-encoders. In this paper, we present a new neural network architecture for model-free reinforcement learning. Our dueling network represents two separate estimators: one for the state value function and one for the state-dependent action advantage function. The main benefit of this factoring is to generalize learning across actions without imposing any change to the underlying reinforcement learning algorithm. Our results show that this architecture leads to better policy evaluation in the presence of many similar-valued actions. Moreover, the dueling architecture enables our RL agent to outperform the state-of-the-art on the Atari 2600 domain.},
-  eventtitle = {{{ICML}}},
-  annotation = {2642 citations (Semantic Scholar/arXiv) [2023-05-28]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Dueling Network Architectures for Deep Reinforcement Learning (2016) - Wang et al.pdf}
-}
-
 @article{lai_asymptotically_1985,
   title = {Asymptotically Efficient Adaptive Allocation Rules},
   author = {Lai, T. L and Robbins, Herbert},
@@ -409,7 +360,7 @@
 }
 
 @book{nielsen_neural_2015,
-  title = {Neural {{Networks}} and {{Deep Learning}}},
+  title = {Neural Networks and Deep Learning},
   author = {Nielsen, Michael A.},
   date = {2015},
   publisher = {Determination Press},
@@ -419,8 +370,8 @@
 }
 
 @book{james_introduction_2023,
-  title = {An {{Introduction}} to {{Statistical Learning}}: With {{Applications}} in {{Python}}},
-  shorttitle = {An {{Introduction}} to {{Statistical Learning}}},
+  title = {An Introduction to Statistical Learning: With Applications in Python},
+  shorttitle = {An Introduction to Statistical Learning},
   author = {James, Gareth and Witten, Daniela and Hastie, Trevor and Tibshirani, Robert and Taylor, Jonathan},
   date = {2023},
   series = {Springer {{Texts}} in {{Statistics}}},
@@ -464,7 +415,7 @@
 }
 
 @inproceedings{ross_reduction_2010,
-  title = {A {{Reduction}} of {{Imitation Learning}} and {{Structured Prediction}} to {{No-Regret Online Learning}}},
+  title = {A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning},
   author = {Ross, Stéphane and Gordon, Geoffrey J. and Bagnell, J.},
   date = {2010-11-02},
   url = {https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e},
@@ -493,7 +444,7 @@
 }
 
 @online{zhang_deep_2015,
-  title = {Deep Learning with {{Elastic Averaging SGD}}},
+  title = {Deep Learning with Elastic Averaging {{SGD}}},
   author = {Zhang, Sixin and Choromanska, Anna and LeCun, Yann},
   date = {2015-10-25},
   eprint = {1412.6651},
@@ -509,7 +460,7 @@
 }
 
 @inreference{achiam_spinning_2018,
-  title = {Spinning {{Up}} in {{Deep Reinforcement Learning}}},
+  title = {Spinning up in Deep Reinforcement Learning},
   author = {Achiam, Joshua},
   date = {2018},
   url = {https://spinningup.openai.com/en/latest/index.html},
@@ -519,7 +470,7 @@
 }
 
 @online{zhang_adaptable_2024,
-  title = {Adaptable {{Logical Control}} for {{Large Language Models}}},
+  title = {Adaptable Logical Control for Large Language Models},
   author = {Zhang, Honghua and Kung, Po-Nien and Yoshida, Masahiro and family=Broeck, given=Guy Van, prefix=den, useprefix=false and Peng, Nanyun},
   date = {2024-06-19},
   eprint = {2406.13892},
@@ -535,7 +486,7 @@
 }
 
 @online{zhai_fine-tuning_2024,
-  title = {Fine-{{Tuning Large Vision-Language Models}} as {{Decision-Making Agents}} via {{Reinforcement Learning}}},
+  title = {Fine-Tuning Large Vision-Language Models as Decision-Making Agents via Reinforcement Learning},
   author = {Zhai, Yuexiang and Bai, Hao and Lin, Zipeng and Pan, Jiayi and Tong, Shengbang and Zhou, Yifei and Suhr, Alane and Xie, Saining and LeCun, Yann and Ma, Yi and Levine, Sergey},
   date = {2024-05-16},
   eprint = {2405.10292},
@@ -551,8 +502,8 @@
 }
 
 @online{welleck_decoding_2024,
-  title = {From {{Decoding}} to {{Meta-Generation}}: {{Inference-time Algorithms}} for {{Large Language Models}}},
-  shorttitle = {From {{Decoding}} to {{Meta-Generation}}},
+  title = {From Decoding to Meta-Generation: {{Inference-time}} Algorithms for Large Language Models},
+  shorttitle = {From Decoding to Meta-Generation},
   author = {Welleck, Sean and Bertsch, Amanda and Finlayson, Matthew and Schoelkopf, Hailey and Xie, Alex and Neubig, Graham and Kulikov, Ilia and Harchaoui, Zaid},
   date = {2024-06-24},
   eprint = {2406.16838},
@@ -568,8 +519,8 @@
 }
 
 @online{sun_easy--hard_2024,
-  title = {Easy-to-{{Hard Generalization}}: {{Scalable Alignment Beyond Human Supervision}}},
-  shorttitle = {Easy-to-{{Hard Generalization}}},
+  title = {Easy-to-Hard Generalization: {{Scalable}} Alignment beyond Human Supervision},
+  shorttitle = {Easy-to-Hard Generalization},
   author = {Sun, Zhiqing and Yu, Longhui and Shen, Yikang and Liu, Weiyang and Yang, Yiming and Welleck, Sean and Gan, Chuang},
   date = {2024-03-14},
   eprint = {2403.09472},
@@ -585,7 +536,7 @@
 }
 
 @article{mnih_playing_2013,
-  title = {Playing {{Atari}} with {{Deep Reinforcement Learning}}},
+  title = {Playing Atari with Deep Reinforcement Learning},
   author = {Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Graves, Alex and Antonoglou, Ioannis and Wierstra, Daan and Riedmiller, Martin A.},
   date = {2013},
   journaltitle = {CoRR},
@@ -609,7 +560,7 @@
 }
 
 @inproceedings{azar_minimax_2017,
-  title = {Minimax {{Regret Bounds}} for {{Reinforcement Learning}}},
+  title = {Minimax Regret Bounds for Reinforcement Learning},
   booktitle = {Proceedings of the 34th {{International Conference}} on {{Machine Learning}}},
   author = {Azar, Mohammad Gheshlaghi and Osband, Ian and Munos, Rémi},
   date = {2017-07-17},
@@ -625,7 +576,7 @@
 }
 
 @inproceedings{kakade_natural_2001,
-  title = {A {{Natural Policy Gradient}}},
+  title = {A Natural Policy Gradient},
   booktitle = {Advances in {{Neural Information Processing Systems}}},
   author = {Kakade, Sham M},
   date = {2001},
@@ -639,7 +590,7 @@
 }
 
 @article{deng_mnist_2012,
-  title = {The {{MNIST Database}} of {{Handwritten Digit Images}} for {{Machine Learning Research}} [{{Best}} of the {{Web}}]},
+  title = {The {{MNIST}} Database of Handwritten Digit Images for Machine Learning Research},
   author = {Deng, Li},
   date = {2012-11},
   journaltitle = {IEEE Signal Processing Magazine},
@@ -676,7 +627,7 @@
 }
 
 @artwork{frans_berkelaar_container_2009,
-  title = {Container Ship {{MSC Davos}} - {{Westerschelde}} - {{Zeeland}}},
+  title = {Container Ship {{MSC}} Davos - Westerschelde - Zeeland},
   author = {{Frans Berkelaar}},
   date = {2009-05-29},
   url = {https://www.flickr.com/photos/28169156@N03/52957948820/},
@@ -696,7 +647,7 @@
 }
 
 @article{white_survey_1993,
-  title = {A {{Survey}} of {{Applications}} of {{Markov Decision Processes}}},
+  title = {A Survey of Applications of Markov Decision Processes},
   author = {White, D. J.},
   date = {1993},
   journaltitle = {The Journal of the Operational Research Society},
@@ -715,7 +666,7 @@
 }
 
 @article{meurer_sympy_2017,
-  title = {{{SymPy}}: Symbolic Computing in {{Python}}},
+  title = {{{SymPy}}: Symbolic Computing in Python},
   shorttitle = {{{SymPy}}},
   author = {Meurer, Aaron and Smith, Christopher P. and Paprocki, Mateusz and Čertík, Ondřej and Kirpichev, Sergey B. and Rocklin, Matthew and family=Kumar, given=AmiT, given-i={{Am}} and Ivanov, Sergiu and Moore, Jason K. and Singh, Sartaj and Rathnayake, Thilina and Vig, Sean and Granger, Brian E. and Muller, Richard P. and Bonazzi, Francesco and Gupta, Harsh and Vats, Shivam and Johansson, Fredrik and Pedregosa, Fabian and Curry, Matthew J. and Terrel, Andy R. and Roučka, Štěpán and Saboo, Ashutosh and Fernando, Isuru and Kulal, Sumith and Cimrman, Robert and Scopatz, Anthony},
   date = {2017-01-02},
@@ -734,7 +685,7 @@
 }
 
 @inproceedings{ansel_pytorch_2024,
-  title = {{{PyTorch}} 2: {{Faster}} Machine Learning through Dynamic Python Bytecode Transformation and Graph Compilation},
+  title = {{{PyTorch}} 2: Faster Machine Learning through Dynamic Python Bytecode Transformation and Graph Compilation},
   booktitle = {29th {{ACM}} International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 2 ({{ASPLOS}} '24)},
   author = {Ansel, Jason and Yang, Edward and He, Horace and Gimelshein, Natalia and Jain, Animesh and Voznesensky, Michael and Bao, Bin and Bell, Peter and Berard, David and Burovski, Evgeni and Chauhan, Geeta and Chourdia, Anjali and Constable, Will and Desmaison, Alban and DeVito, Zachary and Ellison, Elias and Feng, Will and Gong, Jiong and Gschwind, Michael and Hirsh, Brian and Huang, Sherlock and Kalambarkar, Kshiteej and Kirsch, Laurent and Lazos, Michael and Lezcano, Mario and Liang, Yanbo and Liang, Jason and Lu, Yinghai and family=Luk, given=CK, given-i=CK and Maher, Bert and Pan, Yunjie and Puhrsch, Christian and Reso, Matthias and Saroufim, Mark and Siraichi, Marcos Yukio and Suk, Helen and Suo, Michael and Tillet, Phil and Wang, Eikan and Wang, Xiaodong and Wen, William and Zhang, Shunting and Zhao, Xu and Zhou, Keren and Zou, Richard and Mathews, Ajit and Chanan, Gregory and Wu, Peng and Chintala, Soumith},
   date = {2024-04},
@@ -745,8 +696,8 @@
 }
 
 @article{carvalho_predictive_2024,
-  title = {Predictive {{Representations}}: {{Building Blocks}} of {{Intelligence}}},
-  shorttitle = {Predictive {{Representations}}},
+  title = {Predictive Representations: Building Blocks of Intelligence},
+  shorttitle = {Predictive Representations},
   author = {Carvalho, Wilka and Tomov, Momchil S. and family=Cothi, given=William, prefix=de, useprefix=true and Barry, Caswell and Gershman, Samuel J.},
   date = {2024-10-11},
   journaltitle = {Neural Computation},
@@ -763,7 +714,7 @@
 }
 
 @online{deepseek-ai_deepseek-r1_2025,
-  title = {{{DeepSeek-R1}}: {{Incentivizing Reasoning Capability}} in {{LLMs}} via {{Reinforcement Learning}}},
+  title = {{{DeepSeek-R1}}: Incentivizing Reasoning Capability in Llms via Reinforcement Learning},
   shorttitle = {{{DeepSeek-R1}}},
   author = {DeepSeek-AI and Guo, Daya and Yang, Dejian and Zhang, Haowei and Song, Junxiao and Zhang, Ruoyu and Xu, Runxin and Zhu, Qihao and Ma, Shirong and Wang, Peiyi and Bi, Xiao and Zhang, Xiaokang and Yu, Xingkai and Wu, Yu and Wu, Z. F. and Gou, Zhibin and Shao, Zhihong and Li, Zhuoshu and Gao, Ziyi and Liu, Aixin and Xue, Bing and Wang, Bingxuan and Wu, Bochao and Feng, Bei and Lu, Chengda and Zhao, Chenggang and Deng, Chengqi and Zhang, Chenyu and Ruan, Chong and Dai, Damai and Chen, Deli and Ji, Dongjie and Li, Erhang and Lin, Fangyun and Dai, Fucong and Luo, Fuli and Hao, Guangbo and Chen, Guanting and Li, Guowei and Zhang, H. and Bao, Han and Xu, Hanwei and Wang, Haocheng and Ding, Honghui and Xin, Huajian and Gao, Huazuo and Qu, Hui and Li, Hui and Guo, Jianzhong and Li, Jiashi and Wang, Jiawei and Chen, Jingchang and Yuan, Jingyang and Qiu, Junjie and Li, Junlong and Cai, J. L. and Ni, Jiaqi and Liang, Jian and Chen, Jin and Dong, Kai and Hu, Kai and Gao, Kaige and Guan, Kang and Huang, Kexin and Yu, Kuai and Wang, Lean and Zhang, Lecong and Zhao, Liang and Wang, Litong and Zhang, Liyue and Xu, Lei and Xia, Leyi and Zhang, Mingchuan and Zhang, Minghua and Tang, Minghui and Li, Meng and Wang, Miaojun and Li, Mingming and Tian, Ning and Huang, Panpan and Zhang, Peng and Wang, Qiancheng and Chen, Qinyu and Du, Qiushi and Ge, Ruiqi and Zhang, Ruisong and Pan, Ruizhe and Wang, Runji and Chen, R. J. and Jin, R. L. and Chen, Ruyi and Lu, Shanghao and Zhou, Shangyan and Chen, Shanhuang and Ye, Shengfeng and Wang, Shiyu and Yu, Shuiping and Zhou, Shunfeng and Pan, Shuting and Li, S. S. and Zhou, Shuang and Wu, Shaoqing and Ye, Shengfeng and Yun, Tao and Pei, Tian and Sun, Tianyu and Wang, T. and Zeng, Wangding and Zhao, Wanjia and Liu, Wen and Liang, Wenfeng and Gao, Wenjun and Yu, Wenqin and Zhang, Wentao and Xiao, W. L. and An, Wei and Liu, Xiaodong and Wang, Xiaohan and Chen, Xiaokang and Nie, Xiaotao and Cheng, Xin and Liu, Xin and Xie, Xin and Liu, Xingchao and Yang, Xinyu and Li, Xinyuan and Su, Xuecheng and Lin, Xuheng and Li, X. Q. and Jin, Xiangyue and Shen, Xiaojin and Chen, Xiaosha and Sun, Xiaowen and Wang, Xiaoxiang and Song, Xinnan and Zhou, Xinyi and Wang, Xianzu and Shan, Xinxia and Li, Y. K. and Wang, Y. Q. and Wei, Y. X. and Zhang, Yang and Xu, Yanhong and Li, Yao and Zhao, Yao and Sun, Yaofeng and Wang, Yaohui and Yu, Yi and Zhang, Yichao and Shi, Yifan and Xiong, Yiliang and He, Ying and Piao, Yishi and Wang, Yisong and Tan, Yixuan and Ma, Yiyang and Liu, Yiyuan and Guo, Yongqiang and Ou, Yuan and Wang, Yuduan and Gong, Yue and Zou, Yuheng and He, Yujia and Xiong, Yunfan and Luo, Yuxiang and You, Yuxiang and Liu, Yuxuan and Zhou, Yuyang and Zhu, Y. X. and Xu, Yanhong and Huang, Yanping and Li, Yaohui and Zheng, Yi and Zhu, Yuchen and Ma, Yunxian and Tang, Ying and Zha, Yukun and Yan, Yuting and Ren, Z. Z. and Ren, Zehui and Sha, Zhangli and Fu, Zhe and Xu, Zhean and Xie, Zhenda and Zhang, Zhengyan and Hao, Zhewen and Ma, Zhicheng and Yan, Zhigang and Wu, Zhiyu and Gu, Zihui and Zhu, Zijia and Liu, Zijun and Li, Zilin and Xie, Ziwei and Song, Ziyang and Pan, Zizheng and Huang, Zhen and Xu, Zhipeng and Zhang, Zhongyu and Zhang, Zhen},
   date = {2025-01-22},
@@ -778,27 +729,11 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2025/DeepSeek-R1 (2025) - DeepSeek-AI et al.pdf;/Users/adzcai/Zotero/storage/3MYSD8TV/2501.html}
 }
 
-@online{farebrother_stop_2024,
-  title = {Stop {{Regressing}}: {{Training Value Functions}} via {{Classification}} for {{Scalable Deep RL}}},
-  shorttitle = {Stop {{Regressing}}},
-  author = {Farebrother, Jesse and Orbay, Jordi and Vuong, Quan and Taïga, Adrien Ali and Chebotar, Yevgen and Xiao, Ted and Irpan, Alex and Levine, Sergey and Castro, Pablo Samuel and Faust, Aleksandra and Kumar, Aviral and Agarwal, Rishabh},
-  date = {2024-03-06},
-  eprint = {2403.03950},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
-  doi = {10.48550/arXiv.2403.03950},
-  url = {http://arxiv.org/abs/2403.03950},
-  urldate = {2025-02-07},
-  abstract = {Value functions are a central component of deep reinforcement learning (RL). These functions, parameterized by neural networks, are trained using a mean squared error regression objective to match bootstrapped target values. However, scaling value-based RL methods that use regression to large networks, such as high-capacity Transformers, has proven challenging. This difficulty is in stark contrast to supervised learning: by leveraging a cross-entropy classification loss, supervised methods have scaled reliably to massive networks. Observing this discrepancy, in this paper, we investigate whether the scalability of deep RL can also be improved simply by using classification in place of regression for training value functions. We demonstrate that value functions trained with categorical cross-entropy significantly improves performance and scalability in a variety of domains. These include: single-task RL on Atari 2600 games with SoftMoEs, multi-task RL on Atari with large-scale ResNets, robotic manipulation with Q-transformers, playing Chess without search, and a language-agent Wordle task with high-capacity Transformers, achieving state-of-the-art results on these domains. Through careful analysis, we show that the benefits of categorical cross-entropy primarily stem from its ability to mitigate issues inherent to value-based RL, such as noisy targets and non-stationarity. Overall, we argue that a simple shift to training value functions with categorical cross-entropy can yield substantial improvements in the scalability of deep RL at little-to-no cost.},
-  pubstate = {prepublished},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Stop Regressing (2024) - Farebrother et al.pdf;/Users/adzcai/Zotero/storage/ZLQNN42D/2403.html}
-}
-
 @article{maxwell_governors_1867,
-  title = {On {{Governors}}},
+  title = {On Governors},
   author = {Maxwell, J. Clerk},
   date = {1867},
-  journaltitle = {Proceedings of the Royal Society of London},
+  journaltitle = {Proceedings of the royal society of London},
   volume = {16},
   eprint = {112510},
   eprinttype = {jstor},
@@ -812,8 +747,8 @@
 }
 
 @inproceedings{schulman_trust_2015,
-  title = {Trust {{Region Policy Optimization}}},
-  booktitle = {Proceedings of the 32nd {{International Conference}} on {{Machine Learning}}},
+  title = {Trust Region Policy Optimization},
+  booktitle = {Proceedings of the 32nd International Conference on Machine Learning},
   author = {Schulman, John and Levine, Sergey and Abbeel, Pieter and Jordan, Michael and Moritz, Philipp},
   date = {2015-06-01},
   pages = {1889--1897},
@@ -822,13 +757,12 @@
   url = {https://proceedings.mlr.press/v37/schulman15.html},
   urldate = {2025-03-09},
   abstract = {In this article, we describe a method for optimizing control policies, with guaranteed monotonic improvement. By making several approximations to the theoretically-justified scheme, we develop a practical algorithm, called Trust Region Policy Optimization (TRPO). This algorithm is effective for optimizing large nonlinear policies such as neural networks. Our experiments demonstrate its robust performance on a wide variety of tasks: learning simulated robotic swimming, hopping, and walking gaits; and playing Atari games using images of the screen as input. Despite its approximations that deviate from the theory, TRPO tends to give monotonic improvement, with little tuning of hyperparameters.},
-  eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization (2015) - Schulman et al.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization, Supplementary (2015) - Schulman et al.pdf}
 }
 
 @artwork{danilyuk_robot_2021,
-  title = {A {{Robot Imitating}} a {{Girl}}'s {{Movement}}},
+  title = {A Robot Imitating a Girl's Movement},
   author = {Danilyuk, Pavel},
   date = {2021-05-19},
   url = {https://www.pexels.com/photo/a-robot-imitating-a-girl-s-movement-8294811/}
@@ -837,7 +771,7 @@
 @inproceedings{huang_ppo-clip_2024,
   title = {{{PPO-clip}} Attains Global Optimality: Towards Deeper Understandings of Clipping},
   shorttitle = {{{PPO-clip}} Attains Global Optimality},
-  booktitle = {Proceedings of the {{Thirty-Eighth AAAI Conference}} on {{Artificial Intelligence}} and {{Thirty-Sixth Conference}} on {{Innovative Applications}} of {{Artificial Intelligence}} and {{Fourteenth Symposium}} on {{Educational Advances}} in {{Artificial Intelligence}}},
+  booktitle = {Proceedings of the Thirty-Eighth {{AAAI}} Conference on Artificial Intelligence and Thirty-Sixth Conference on Innovative Applications of Artificial Intelligence and Fourteenth Symposium on Educational Advances in Artificial Intelligence},
   author = {Huang, Nai-Chieh and Hsieh, Ping-Chun and Ho, Kuo-Hao and Wu, I-Chen},
   date = {2024-02-20},
   series = {{{AAAI}}'24/{{IAAI}}'24/{{EAAI}}'24},
@@ -853,8 +787,8 @@
 }
 
 @inproceedings{sutton_policy_1999,
-  title = {Policy {{Gradient Methods}} for {{Reinforcement Learning}} with {{Function Approximation}}},
-  booktitle = {Advances in {{Neural Information Processing Systems}}},
+  title = {Policy Gradient Methods for Reinforcement Learning with Function Approximation},
+  booktitle = {Advances in Neural Information Processing Systems},
   author = {Sutton, Richard S and McAllester, David and Singh, Satinder and Mansour, Yishay},
   date = {1999},
   volume = {12},
@@ -864,4 +798,182 @@
   abstract = {Function  approximation  is  essential  to  reinforcement  learning,  but  the standard approach of approximating a  value function and deter(cid:173) mining  a  policy  from  it  has so  far  proven theoretically  intractable.  In this paper we explore an alternative approach in which the policy  is explicitly represented by its own function approximator,  indepen(cid:173) dent of the value function,  and is  updated according to the gradient  of expected reward with respect to the policy parameters.  Williams's  REINFORCE method and actor-critic methods are examples of this  approach.  Our  main  new  result  is  to  show  that  the  gradient  can  be  written  in  a  form  suitable  for  estimation  from  experience  aided  by  an  approximate  action-value  or  advantage  function.  Using  this  result,  we  prove for  the first  time that a  version  of policy  iteration  with arbitrary differentiable function approximation is convergent to  a  locally optimal policy.},
   keywords = {⛔ No DOI found},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1999/Policy Gradient Methods for Reinforcement Learning with Function Approximation (1999) - Sutton, McAllester, Singh, Mansour.pdf}
+}
+
+@inproceedings{hasselt_double_2010,
+  title = {Double Q-Learning},
+  booktitle = {Advances in {{Neural Information Processing Systems}}},
+  author = {Hasselt, Hado},
+  date = {2010},
+  volume = {23},
+  publisher = {Curran Associates, Inc.},
+  url = {https://proceedings.neurips.cc/paper_files/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-Abstract.html},
+  urldate = {2025-03-20},
+  abstract = {In some stochastic environments the well-known reinforcement learning algorithm Q-learning performs very poorly. This poor performance is caused by large overestimations of action values. These overestimations result from a positive bias that is introduced because Q-learning uses the maximum action value as an approximation for the maximum expected action value. We introduce an alternative way to approximate the maximum expected value for any set of random variables. The obtained double estimator method is shown to sometimes underestimate rather than overestimate the maximum expected value. We apply the double estimator to Q-learning to construct Double Q-learning, a new off-policy reinforcement learning algorithm. We show the new algorithm converges to the optimal policy and that it performs well in some settings in which Q-learning performs poorly due to its overestimation.},
+  keywords = {⛔ No DOI found},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2010/Double Q-learning (2010) - Hasselt.pdf}
+}
+
+@article{lecun_gradient-based_1998,
+  title = {Gradient-Based Learning Applied to Document Recognition},
+  author = {Lecun, Y. and Bottou, L. and Bengio, Y. and Haffner, P.},
+  date = {1998-11},
+  journaltitle = {Proceedings of the IEEE},
+  volume = {86},
+  number = {11},
+  pages = {2278--2324},
+  issn = {1558-2256},
+  doi = {10.1109/5.726791},
+  url = {https://ieeexplore.ieee.org/document/726791},
+  urldate = {2025-03-20},
+  abstract = {Multilayer neural networks trained with the back-propagation algorithm constitute the best example of a successful gradient based learning technique. Given an appropriate network architecture, gradient-based learning algorithms can be used to synthesize a complex decision surface that can classify high-dimensional patterns, such as handwritten characters, with minimal preprocessing. This paper reviews various methods applied to handwritten character recognition and compares them on a standard handwritten digit recognition task. Convolutional neural networks, which are specifically designed to deal with the variability of 2D shapes, are shown to outperform all other techniques. Real-life document recognition systems are composed of multiple modules including field extraction, segmentation recognition, and language modeling. A new learning paradigm, called graph transformer networks (GTN), allows such multimodule systems to be trained globally using gradient-based methods so as to minimize an overall performance measure. Two systems for online handwriting recognition are described. Experiments demonstrate the advantage of global training, and the flexibility of graph transformer networks. A graph transformer network for reading a bank cheque is also described. It uses convolutional neural network character recognizers combined with global training techniques to provide record accuracy on business and personal cheques. It is deployed commercially and reads several million cheques per day.},
+  eventtitle = {Proceedings of the {{IEEE}}},
+  keywords = {Character recognition,Feature extraction,Hidden Markov models,Machine learning,Multi-layer neural network,Neural networks,Optical character recognition software,Optical computing,Pattern recognition,Principal component analysis},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1998/Gradient-based learning applied to document recognition (1998) - Lecun, Bottou, Bengio, Haffner.pdf;/Users/adzcai/Zotero/storage/YMDDDNJS/726791.html}
+}
+
+@inproceedings{hessel_rainbow_2018,
+  title = {Rainbow: Combining Improvements in Deep Reinforcement Learning},
+  shorttitle = {Rainbow},
+  booktitle = {Proceedings of the Thirty-Second {{AAAI}} Conference on Artificial Intelligence and Thirtieth Innovative Applications of Artificial Intelligence Conference and Eighth {{AAAI}} Symposium on Educational Advances in Artificial Intelligence},
+  author = {Hessel, Matteo and Modayil, Joseph and family=Hasselt, given=Hado, prefix=van, useprefix=true and Schaul, Tom and Ostrovski, Georg and Dabney, Will and Horgan, Dan and Piot, Bilal and Azar, Mohammad and Silver, David},
+  date = {2018-02-02},
+  series = {{{AAAI}}'18/{{IAAI}}'18/{{EAAI}}'18},
+  pages = {3215--3222},
+  publisher = {AAAI Press},
+  location = {New Orleans, Louisiana, USA},
+  abstract = {The deep reinforcement learning community has made several independent improvements to the DQN algorithm. However, it is unclear which of these extensions are complementary and can be fruitfully combined. This paper examines six extensions to the DQN algorithm and empirically studies their combination. Our experiments show that the combination provides state-of-the-art performance on the Atari 2600 benchmark, both in terms of data efficiency and final performance. We also provide results from a detailed ablation study that shows the contribution of each component to overall performance.},
+  isbn = {978-1-57735-800-8},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Rainbow (2018) - Hessel et al.pdf}
+}
+
+@inproceedings{schaul_prioritized_2016,
+  title = {Prioritized Experience Replay},
+  booktitle = {4th International Conference on Learning Representations},
+  author = {Schaul, Tom and Quan, John and Antonoglou, Ioannis and Silver, David},
+  editor = {Bengio, Yoshua and LeCun, Yann},
+  date = {2016-05-02},
+  location = {San Juan, Puerto Rico},
+  url = {http://arxiv.org/abs/1511.05952},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  keywords = {⛔ No DOI found},
+  timestamp = {Thu, 25 Jul 2019 14:25:38 +0200},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Prioritized experience replay (2016) - Schaul et al.pdf}
+}
+
+@inproceedings{farebrother_stop_2024,
+  title = {Stop Regressing: Training Value Functions via Classification for Scalable Deep {{RL}}},
+  shorttitle = {Stop Regressing},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning},
+  author = {Farebrother, Jesse and Orbay, Jordi and Vuong, Quan and Taïga, Adrien Ali and Chebotar, Yevgen and Xiao, Ted and Irpan, Alex and Levine, Sergey and Castro, Pablo Samuel and Faust, Aleksandra and Kumar, Aviral and Agarwal, Rishabh},
+  date = {2024-07-21},
+  series = {{{ICML}}'24},
+  volume = {235},
+  pages = {13049--13071},
+  publisher = {JMLR.org},
+  location = {Vienna, Austria},
+  abstract = {Value functions are an essential component in deep reinforcement learning (RL), that are typically trained via mean squared error regression to match bootstrapped target values. However, scaling value-based RL methods to large networks has proven challenging. This difficulty is in stark contrast to supervised learning: by leveraging a crossentropy classification loss, supervised methods have scaled reliably to massive networks. Observing this discrepancy, in this paper, we investigate whether the scalability of deep RL can also be improved simply by using classification in place of regression for training value functions. We show that training value functions with categorical cross-entropy significantly enhances performance and scalability across various domains, including single-task RL on Atari 2600 games, multitask RL on Atari with large-scale ResNets, robotic manipulation with Q-transformers, playing Chess without search, and a language-agent Wordle task with high-capacity Transformers, achieving state-of-the-art results on these domains. Through careful analysis, we show that categorical cross-entropy mitigates issues inherent to value-based RL, such as noisy targets and non-stationarity. We argue that shifting to categorical cross-entropy for training value functions can substantially improve the scalability of deep RL at little-to-no cost.},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Stop regressing (2024) - Farebrother et al.pdf}
+}
+
+@inproceedings{hasselt_deep_2016,
+  title = {Deep Reinforcement Learning with Double Q-Learning},
+  booktitle = {Proceedings of the Thirtieth {{AAAI}} Conference on Artificial Intelligence},
+  author = {family=Hasselt, given=Hado, prefix=van, useprefix=false and Guez, Arthur and Silver, David},
+  date = {2016-02-12},
+  series = {{{AAAI}}'16},
+  pages = {2094--2100},
+  publisher = {AAAI Press},
+  location = {Phoenix, Arizona},
+  abstract = {The popular Q-learning algorithm is known to overestimate action values under certain conditions. It was not previously known whether, in practice, such overestimations are common, whether they harm performance, and whether they can generally be prevented. In this paper, we answer all these questions affirmatively. In particular, we first show that the recent DQN algorithm, which combines Q-learning with a deep neural network, suffers from substantial overestimations in some games in the Atari 2600 domain. We then show that the idea behind the Double Q-learning algorithm, which was introduced in a tabular setting, can be generalized to work with large-scale function approximation. We propose a specific adaptation to the DQN algorithm and show that the resulting algorithm not only reduces the observed overestimations, as hypothesized, but that this also leads to much better performance on several games.},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Deep reinforcement learning with double Q-Learning (2016) - Hasselt, Guez, Silver.pdf}
+}
+
+@inproceedings{mnih_asynchronous_2016,
+  title = {Asynchronous Methods for Deep Reinforcement Learning},
+  booktitle = {Proceedings of {{The}} 33rd {{International Conference}} on {{Machine Learning}}},
+  author = {Mnih, Volodymyr and Badia, Adria Puigdomenech and Mirza, Mehdi and Graves, Alex and Lillicrap, Timothy and Harley, Tim and Silver, David and Kavukcuoglu, Koray},
+  date = {2016-06-11},
+  pages = {1928--1937},
+  publisher = {PMLR},
+  issn = {1938-7228},
+  url = {https://proceedings.mlr.press/v48/mniha16.html},
+  urldate = {2025-03-20},
+  abstract = {We propose a conceptually simple and lightweight framework for deep reinforcement learning that uses asynchronous gradient descent for optimization of deep neural network controllers. We present asynchronous variants of four standard reinforcement learning algorithms and show that parallel actor-learners have a stabilizing effect on training allowing all four methods to successfully train neural network controllers. The best performing method, an asynchronous variant of actor-critic, surpasses the current state-of-the-art on the Atari domain while training for half the time on a single multi-core CPU instead of a GPU. Furthermore, we show that asynchronous actor-critic succeeds on a wide variety of continuous motor control problems as well as on a new task of navigating random 3D mazes using a visual input.},
+  eventtitle = {International {{Conference}} on {{Machine Learning}}},
+  langid = {english},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Asynchronous Methods for Deep Reinforcement Learning (2016) - Mnih et al.pdf}
+}
+
+@inproceedings{schulman_high-dimensional_2016,
+  title = {High-Dimensional Continuous Control Using Generalized Advantage Estimation},
+  booktitle = {4th International Conference on Learning Representations},
+  author = {Schulman, John and Moritz, Philipp and Levine, Sergey and Jordan, Michael I. and Abbeel, Pieter},
+  editor = {Bengio, Yoshua and LeCun, Yann},
+  date = {2016-05-02},
+  location = {San Juan, Puerto Rico},
+  url = {http://arxiv.org/abs/1506.02438},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  keywords = {⛔ No DOI found},
+  timestamp = {Thu, 25 Jul 2019 14:25:38 +0200},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/High-dimensional continuous control using generalized advantage estimation (2016) - Schulman et al.pdf}
+}
+
+@inproceedings{wu_scalable_2017,
+  title = {Scalable Trust-Region Method for Deep Reinforcement Learning Using Kronecker-Factored Approximation},
+  booktitle = {Advances in Neural Information Processing Systems},
+  author = {Wu, Yuhuai and Mansimov, Elman and Grosse, Roger B and Liao, Shun and Ba, Jimmy},
+  date = {2017},
+  volume = {30},
+  publisher = {Curran Associates, Inc.},
+  url = {https://proceedings.neurips.cc/paper/2017/hash/361440528766bbaaaa1901845cf4152b-Abstract.html},
+  urldate = {2025-03-20},
+  abstract = {In this work, we propose to apply trust region optimization to deep reinforcement learning using a recently proposed Kronecker-factored approximation to the curvature. We extend the framework of natural policy gradient and propose to optimize both the actor and the critic using Kronecker-factored approximate curvature (K-FAC) with trust region; hence we call our method Actor Critic using Kronecker-Factored Trust Region (ACKTR). To the best of our knowledge, this is the first scalable trust region natural gradient method for actor-critic methods. It is also the method that learns non-trivial tasks in continuous control as well as discrete control policies directly from raw pixel inputs. We tested our approach across discrete domains in Atari games as well as continuous domains in the MuJoCo environment. With the proposed methods, we are able to achieve higher rewards and a 2- to 3-fold improvement in sample efficiency on average, compared to previous state-of-the-art on-policy actor-critic methods. Code is available at https://github.com/openai/baselines},
+  keywords = {⛔ No DOI found},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Scalable trust-region method for deep reinforcement learning using Kronecker-factored approximation (2017) - Wu et al.pdf}
+}
+
+@inproceedings{wang_sample_2017,
+  title = {Sample Efficient Actor-Critic with Experience Replay},
+  booktitle = {5th International Conference on Learning Representations},
+  author = {Wang, Ziyu and Bapst, Victor and Heess, Nicolas and Mnih, Volodymyr and Munos, Remi and Kavukcuoglu, Koray and family=Freitas, given=Nando, prefix=de, useprefix=false},
+  date = {2017-02-06},
+  url = {https://openreview.net/forum?id=HyM25Mqel},
+  urldate = {2025-03-20},
+  abstract = {This paper presents an actor-critic deep reinforcement learning agent with experience replay that is stable, sample efficient, and performs remarkably well on challenging environments, including the discrete 57-game Atari domain and several continuous control problems. To achieve this, the paper introduces several innovations, including truncated importance sampling with bias correction, stochastic dueling network architectures, and a new trust region policy optimization method.},
+  langid = {english},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Sample Efficient Actor-Critic with Experience Replay (2017) - Wang et al.pdf}
+}
+
+@inproceedings{haarnoja_soft_2018,
+  title = {Soft Actor-Critic: {{Off-policy}} Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor},
+  shorttitle = {Soft Actor-Critic},
+  booktitle = {Proceedings of the 35th {{International Conference}} on {{Machine Learning}}},
+  author = {Haarnoja, Tuomas and Zhou, Aurick and Abbeel, Pieter and Levine, Sergey},
+  date = {2018-07-03},
+  pages = {1861--1870},
+  publisher = {PMLR},
+  issn = {2640-3498},
+  url = {https://proceedings.mlr.press/v80/haarnoja18b.html},
+  urldate = {2025-03-20},
+  abstract = {Model-free deep reinforcement learning (RL) algorithms have been demonstrated on a range of challenging decision making and control tasks. However, these methods typically suffer from two major challenges: very high sample complexity and brittle convergence properties, which necessitate meticulous hyperparameter tuning. Both of these challenges severely limit the applicability of such methods to complex, real-world domains. In this paper, we propose soft actor-critic, an off-policy actor-critic deep RL algorithm based on the maximum entropy reinforcement learning framework. In this framework, the actor aims to maximize expected reward while also maximizing entropy. That is, to succeed at the task while acting as randomly as possible. Prior deep RL methods based on this framework have been formulated as Q-learning methods. By combining off-policy updates with a stable stochastic actor-critic formulation, our method achieves state-of-the-art performance on a range of continuous control benchmark tasks, outperforming prior on-policy and off-policy methods. Furthermore, we demonstrate that, in contrast to other off-policy algorithms, our approach is very stable, achieving very similar performance across different random seeds.},
+  eventtitle = {International {{Conference}} on {{Machine Learning}}},
+  langid = {english},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Soft Actor-Critic (2018) - Haarnoja, Zhou, Abbeel, Levine_1.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Soft Actor-Critic (2018) - Haarnoja, Zhou, Abbeel, Levine_2.pdf}
+}
+
+@inproceedings{silver_deterministic_2014,
+  title = {Deterministic Policy Gradient Algorithms},
+  booktitle = {Proceedings of the 31st {{International Conference}} on {{Machine Learning}}},
+  author = {Silver, David and Lever, Guy and Heess, Nicolas and Degris, Thomas and Wierstra, Daan and Riedmiller, Martin},
+  date = {2014-01-27},
+  pages = {387--395},
+  publisher = {PMLR},
+  issn = {1938-7228},
+  url = {https://proceedings.mlr.press/v32/silver14.html},
+  urldate = {2025-03-20},
+  abstract = {In this paper we consider deterministic policy gradient algorithms for reinforcement learning with continuous actions. The deterministic policy gradient has a particularly appealing form: it is the expected gradient of the action-value function. This simple form means that the deterministic policy gradient can be estimated much more efficiently than the usual stochastic policy gradient. To ensure adequate exploration, we introduce an off-policy actor-critic algorithm that learns a deterministic target policy from an exploratory behaviour policy. Deterministic policy gradient algorithms outperformed their stochastic counterparts in several benchmark problems, particularly in high-dimensional action spaces.},
+  eventtitle = {International {{Conference}} on {{Machine Learning}}},
+  langid = {english},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2014/Deterministic Policy Gradient Algorithms (2014) - Silver et al.pdf}
 }

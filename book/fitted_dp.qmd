@@ -770,3 +770,15 @@ that used a dataset of interactions
 to learn some quantity of interest.
 We then saw the _online_ equivalents
 that observe data by interacting with the environment.
+
+## Bibliographic notes {#sec-fit-bib}
+
+from spinning up:
+
+- @mnih_playing_2013
+- @hausknecht_deep_2017
+- @wang_dueling_2016
+- @hasselt_double_2010
+- @hasselt_deep_2016
+- @hessel_rainbow_2018
+
