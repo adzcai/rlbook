@@ -681,7 +681,7 @@ def mcts_iter(tree, s_init):
 How do we actually compute a useful $\pi_\text{guide}$ and $v$?
 If we have some existing dataset of trajectories,
 we could use @sec-imitation-learning (that is, imitation learning)
-to generate a policy $\pi_\text{guide}$ via behavioral cloning
+to generate a policy $\pi_\text{guide}$ via behavior cloning
 and learn $v$ by regressing the game outcomes onto states.
 Then, plugging these into @def-mcts-policy-value
 results in a stronger policy by using tree search to "think ahead".
@@ -724,7 +724,7 @@ Input:
 For $t = 0, \dots, T-1$:
 
 - **Policy improvement**: Let $\pi^t_\text{MCTS}$ denote the policy obtained by @def-mcts-policy-value with $\pi_{\theta^t}$ and $v-{\lambda^t}$. We use $\pi^t-\text{MCTS}$ to play against itself $M$ times. This generates $M$ trajectories $\tau-0, \dots, \tau-{M-1}$.
-- **Policy evaluation**: Use behavioral cloning to find a set of policy parameters $\theta^{t+1}$ that mimic the behavior of $\pi^t_\text{MCTS}$ and a set of value function parameters $\lambda^{t+1}$ that approximate its value function. That is,
+- **Policy evaluation**: Use behavior cloning to find a set of policy parameters $\theta^{t+1}$ that mimic the behavior of $\pi^t_\text{MCTS}$ and a set of value function parameters $\lambda^{t+1}$ that approximate its value function. That is,
   $$
   \begin{aligned}
   \theta^{t+1} &\gets \arg\min_\theta \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} - \log \pi_\theta(a^m_\hi \mid s^m_\hi) \\

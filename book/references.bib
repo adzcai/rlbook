@@ -373,6 +373,25 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Brax – A Differentiable Physics Engine for Large Scale Rigid Body Simulation (2021) - Freeman et al.pdf}
 }
 
+@inproceedings{wang_dueling_2016,
+  title = {Dueling {{Network Architectures}} for {{Deep Reinforcement Learning}}},
+  booktitle = {{{ICML}} 2016},
+  author = {Wang, Ziyu and Schaul, Tom and Hessel, Matteo and family=Hasselt, given=Hado, prefix=van, useprefix=true and Lanctot, Marc and family=Freitas, given=Nando, prefix=de, useprefix=true},
+  date = {2016-04-05},
+  eprint = {1511.06581},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  pages = {1995--2003},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.1511.06581},
+  url = {http://proceedings.mlr.press/v48/wangf16.html},
+  urldate = {2023-05-28},
+  abstract = {In recent years there have been many successes of using deep representations in reinforcement learning. Still, many of these applications use conventional architectures, such as convolutional networks, LSTMs, or auto-encoders. In this paper, we present a new neural network architecture for model-free reinforcement learning. Our dueling network represents two separate estimators: one for the state value function and one for the state-dependent action advantage function. The main benefit of this factoring is to generalize learning across actions without imposing any change to the underlying reinforcement learning algorithm. Our results show that this architecture leads to better policy evaluation in the presence of many similar-valued actions. Moreover, the dueling architecture enables our RL agent to outperform the state-of-the-art on the Atari 2600 domain.},
+  eventtitle = {{{ICML}}},
+  annotation = {2642 citations (Semantic Scholar/arXiv) [2023-05-28]},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Dueling Network Architectures for Deep Reinforcement Learning (2016) - Wang et al.pdf}
+}
+
 @article{lai_asymptotically_1985,
   title = {Asymptotically Efficient Adaptive Allocation Rules},
   author = {Lai, T. L and Robbins, Herbert},
@@ -805,5 +824,44 @@
   abstract = {In this article, we describe a method for optimizing control policies, with guaranteed monotonic improvement. By making several approximations to the theoretically-justified scheme, we develop a practical algorithm, called Trust Region Policy Optimization (TRPO). This algorithm is effective for optimizing large nonlinear policies such as neural networks. Our experiments demonstrate its robust performance on a wide variety of tasks: learning simulated robotic swimming, hopping, and walking gaits; and playing Atari games using images of the screen as input. Despite its approximations that deviate from the theory, TRPO tends to give monotonic improvement, with little tuning of hyperparameters.},
   eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization (2015) - Schulman et al_Supplementary.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization (2015) - Schulman et al.pdf}
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization (2015) - Schulman et al.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust Region Policy Optimization, Supplementary (2015) - Schulman et al.pdf}
+}
+
+@artwork{danilyuk_robot_2021,
+  title = {A {{Robot Imitating}} a {{Girl}}'s {{Movement}}},
+  author = {Danilyuk, Pavel},
+  date = {2021-05-19},
+  url = {https://www.pexels.com/photo/a-robot-imitating-a-girl-s-movement-8294811/}
+}
+
+@inproceedings{huang_ppo-clip_2024,
+  title = {{{PPO-clip}} Attains Global Optimality: Towards Deeper Understandings of Clipping},
+  shorttitle = {{{PPO-clip}} Attains Global Optimality},
+  booktitle = {Proceedings of the {{Thirty-Eighth AAAI Conference}} on {{Artificial Intelligence}} and {{Thirty-Sixth Conference}} on {{Innovative Applications}} of {{Artificial Intelligence}} and {{Fourteenth Symposium}} on {{Educational Advances}} in {{Artificial Intelligence}}},
+  author = {Huang, Nai-Chieh and Hsieh, Ping-Chun and Ho, Kuo-Hao and Wu, I-Chen},
+  date = {2024-02-20},
+  series = {{{AAAI}}'24/{{IAAI}}'24/{{EAAI}}'24},
+  volume = {38},
+  pages = {12600--12607},
+  publisher = {AAAI Press},
+  doi = {10.1609/aaai.v38i11.29154},
+  url = {https://doi.org/10.1609/aaai.v38i11.29154},
+  urldate = {2025-03-19},
+  abstract = {Proximal Policy Optimization algorithm employing a clipped surrogate objective (PPO-Clip) is a prominent exemplar of the policy optimization methods. However, despite its remarkable empirical success, PPO-Clip lacks theoretical substantiation to date. In this paper, we contribute to the field by establishing the first global convergence results of a PPO-Clip variant in both tabular and neural function approximation settings. Our findings highlight the O(1/√T) min-iterate convergence rate specifically in the context of neural function approximation. We tackle the inherent challenges in analyzing PPO-Clip through three central concepts: (i) We introduce a generalized version of the PPO-Clip objective, illuminated by its connection with the hinge loss. (ii) Employing entropic mirror descent, we establish asymptotic convergence for tabular PPO-Clip with direct policy parameterization. (iii) Inspired by the tabular analysis, we streamline convergence analysis by introducing a two-step policy improvement approach. This decouples policy search from complex neural policy parameterization using a regression-based update scheme. Furthermore, we gain deeper insights into the efficacy of PPO-Clip by interpreting these generalized objectives. Our theoretical findings also mark the first characterization of the influence of the clipping mechanism on PPO-Clip convergence. Importantly, the clipping range affects only the pre-constant of the convergence rate.},
+  isbn = {978-1-57735-887-9},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/PPO-clip attains global optimality (2024) - Huang, Hsieh, Ho, Wu.pdf}
+}
+
+@inproceedings{sutton_policy_1999,
+  title = {Policy {{Gradient Methods}} for {{Reinforcement Learning}} with {{Function Approximation}}},
+  booktitle = {Advances in {{Neural Information Processing Systems}}},
+  author = {Sutton, Richard S and McAllester, David and Singh, Satinder and Mansour, Yishay},
+  date = {1999},
+  volume = {12},
+  publisher = {MIT Press},
+  url = {https://papers.nips.cc/paper_files/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html},
+  urldate = {2025-03-19},
+  abstract = {Function  approximation  is  essential  to  reinforcement  learning,  but  the standard approach of approximating a  value function and deter(cid:173) mining  a  policy  from  it  has so  far  proven theoretically  intractable.  In this paper we explore an alternative approach in which the policy  is explicitly represented by its own function approximator,  indepen(cid:173) dent of the value function,  and is  updated according to the gradient  of expected reward with respect to the policy parameters.  Williams's  REINFORCE method and actor-critic methods are examples of this  approach.  Our  main  new  result  is  to  show  that  the  gradient  can  be  written  in  a  form  suitable  for  estimation  from  experience  aided  by  an  approximate  action-value  or  advantage  function.  Using  this  result,  we  prove for  the first  time that a  version  of policy  iteration  with arbitrary differentiable function approximation is convergent to  a  locally optimal policy.},
+  keywords = {⛔ No DOI found},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1999/Policy Gradient Methods for Reinforcement Learning with Function Approximation (1999) - Sutton, McAllester, Singh, Mansour.pdf}
 }

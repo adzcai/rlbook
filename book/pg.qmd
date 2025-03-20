@@ -1979,7 +1979,7 @@ especially as the parameter space gets large (@rem-npg-efficiency).
 Can we achieve a similar effect without the inverse Fisher information matrix?
 This brings us to the **proximal policy optimization** algorithm.
 
-## Penalty-based proximal policy optimization {#sec-ppo}
+## Penalty-based proximal policy optimization {#sec-ppo-kl}
 
 We can relax the TRPO optimization problem (@eq-trpo) in a different way:
 Rather than imposing a _hard constraint_
@@ -2165,13 +2165,13 @@ $$
 \Lambda_\hi^\text{clipped}(\thetanext, \thetacurr)
 =
 \text{clip}(\Lambda_\hi(\thetanext, \thetacurr), 1-\epsilon, 1+\epsilon),
-$$
+$$ {#eq-clip-ratio}
 
 where
 
 $$
-\text{clip}(x, a, b) = \max \{ a, \min \{ x, b \} \}.
-$$
+\text{clip}(x, a, b) := \max \{ a, \min \{ x, b \} \}.
+$$ {#eq-def-clip}
 
 ::: {#rem-interpret-clip}
 #### Interpretation
@@ -2237,6 +2237,8 @@ plt.show()
 ::: {#def-ppo-clip}
 #### Clipped surrogate objective
 
+The PPO-Clip objective is
+
 $$
 L^\ki(\theta) = \E_{\tau \sim \rho^{\picurr}} \left[
     \sum_{\hi=0}^{\hor-1}
@@ -2259,13 +2261,16 @@ $$ {#eq-clip-objective}
 
 From a traditional optimization perspective,
 this objective function seems challenging to analyze:
+the clip operation (@eq-def-clip) is not differentiable
 :::
 
 
 
 ## Key takeaways
 
-Policy gradient methods are a powerful family of algorithms that directly optimize the expected total reward by iteratively updating the policy parameters.
+Policy gradient methods are a powerful family of algorithms
+that optimize the expected total reward
+by iteratively updating the policy parameters.
 Precisely,
 we estimate the gradient of the expected total reward (with respect to the parameters),
 and update the parameters in that direction.
@@ -2273,10 +2278,27 @@ But estimating the gradient is a tricky task!
 We saw many ways to reduce the variance of the gradient estimator,
 culminating in the advantage-based expression @eq-estimator-adv.
 
-But updating the parameters doesn't entirely solve the problem: Sometimes, a small step in the parameters might lead to a big step in the policy. To avoid changing the policy too much at each step, we must account for the curvature in the parameter space. We first did this explicitly with @sec-trpo, and then saw ways to relax the constraint in NPG and @sec-ppo.
+But updating the parameters doesn't entirely solve the problem:
+Sometimes, a small step in the parameters might lead to a big step in the policy.
+To avoid changing the policy too much at each step,
+we must account for the curvature in the parameter space.
+We first did this explicitly with @sec-trpo,
+and then saw ways to relax the constraint
+via the natural policy gradient update (@sec-npg),
+the PPO-KL update (@sec-ppo-kl),
+and the PPO-Clip update (@sec-ppo-clip).
 
-These are still popular methods to this day, especially because they efficiently integrate with *deep neural networks* for representing complex functions.
+These are still popular methods to this day,
+especially because they efficiently integrate with *deep neural networks* for representing complex functions.
 
 ## Bibliographic notes {#sec-pg-bib}
 
-[@kakade_approximately_2002]
+@kakade_approximately_2002
+
+
+
+
+::: {.content-visible when-profile="thesis"}
+## Differences from course
+
+:::

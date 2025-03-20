@@ -1,8 +1,3 @@
----
-
-
-
----
 {{< include macros.qmd >}}
 
 # Multi-Armed Bandits {#sec-bandits}
