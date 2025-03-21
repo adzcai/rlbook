@@ -199,9 +199,9 @@ This would mean that each _nonterminal_ state already has some predetermined gam
 That is, in each state,
 it is already possible to determine which player is going to win.
 
-Let $V_\hi^\star(s)$ denote the game score
+Let $V_\step^\star(s)$ denote the game score
 under optimal play from both players
-starting in state $s$ at time $\hi$.
+starting in state $s$ at time $\step$.
 
 ::: {#def-min-max-value}
 #### Min-max search algorithm
@@ -217,10 +217,10 @@ of the value of each state
 under optimal play:
 
 $$
-V_\hi^{\star}(s) = \begin{cases}
-r(s) & \hi = \hor \\
-\max_{a \in \mathcal{A}_\hi(s)} V_{\hi+1}^{\star}(P(s, a)) & \hi \text{ is even and } \hi < H \\
-\min_{a \in \mathcal{A}_\hi(s)} V_{\hi+1}^{\star}(P(s, a)) & \hi \text{ is odd and } \hi < H
+V_\step^{\star}(s) = \begin{cases}
+r(s) & \step = \Step \\
+\max_{a \in \mathcal{A}_\step(s)} V_{\step+1}^{\star}(P(s, a)) & \step \text{ is even and } \step < H \\
+\min_{a \in \mathcal{A}_\step(s)} V_{\step+1}^{\star}(P(s, a)) & \step \text{ is odd and } \step < H
 \end{cases}.
 $$
 
@@ -287,7 +287,7 @@ shown in the table below:
 | C | 0  | 3  | -1 |
 
 We can visualize this as the following complete game tree,
-where each box contains the value $V_\hi^\star(s)$ of that node.
+where each box contains the value $V_\step^\star(s)$ of that node.
 The min-max values of the terminal states are already known:
 
 ![](./shared/minmax.png)
@@ -317,9 +317,9 @@ resulting in a game score of $\max(-2, -3, -1) = -1$.
 
 ### Complexity of min-max search
 
-At each of the $\hor$ timesteps,
+At each of the $\Step$ timesteps,
 this algorithm iterates through the entire action space at that state,
-and therefore has a time complexity of $\hor^{n_A}$
+and therefore has a time complexity of $\Step^{n_A}$
 (where $n_A$ is the largest number of actions possibly available at once).
 This makes the min-max algorithm impractical for even moderately sized games.
 
@@ -349,15 +349,15 @@ she doesn't need to evaluate action $a'$ any further.
 Concretely, we run min-max search as above,
 except now we keep track of two additional parameters $\alpha(s)$ and $\beta(s)$ while evaluating each state:
 
-- Starting in state $s$, Max can achieve a game score of _at least_ $\alpha(s)$ assuming Min plays optimally. That is, $V^\star_\hi(s) \ge \alpha(s)$ at all points.
-- Analogously, starting in state $s$, Min can ensure a game score of _at most_ $\beta(s)$ assuming Max plays optimally. That is, $V^\star_\hi(s) \le \beta(s)$ at all points.
+- Starting in state $s$, Max can achieve a game score of _at least_ $\alpha(s)$ assuming Min plays optimally. That is, $V^\star_\step(s) \ge \alpha(s)$ at all points.
+- Analogously, starting in state $s$, Min can ensure a game score of _at most_ $\beta(s)$ assuming Max plays optimally. That is, $V^\star_\step(s) \le \beta(s)$ at all points.
 
-Suppose we are evaluating $V^\star_\hi(s)$,
-where it is Max's turn ($\hi$ is even).
+Suppose we are evaluating $V^\star_\step(s)$,
+where it is Max's turn ($\step$ is even).
 We update $\alpha(s)$ to be the _highest_ minimax value achievable from $s$ so far.
 That is, the value of $s$ is _at least_ $\alpha(s)$.
 Suppose Max chooses action $a$, which leads to state $s'$, in which it is Min's turn.
-If any of Min's actions in $s'$ achieve a value $V^\star_{\hi+1}(s') \le \alpha(s)$,
+If any of Min's actions in $s'$ achieve a value $V^\star_{\step+1}(s') \le \alpha(s)$,
 we know that Max would not choose action $a$,
 since they know that it is _worse_ than whichever action gave the value $\alpha(s)$.
 Similarly, to evaluate a state on Min's turn,
@@ -406,7 +406,7 @@ We initialize $\alpha(s')$ and $\beta(s')$ from the root:
 ![](./shared/alpha-beta-5.png)
 
 Now suppose Min takes action D, resulting in a value of $-3$.
-We see that $V^\star_\hi(s') = \min(-3, x, y)$,
+We see that $V^\star_\step(s') = \min(-3, x, y)$,
 where $x$ and $y$ are the values of the remaining two actions.
 But since $\min(-3, x, y) \le -3$,
 we know that the value of $s'$ is at most $-3$.
@@ -727,8 +727,8 @@ For $t = 0, \dots, T-1$:
 - **Policy evaluation**: Use behavior cloning to find a set of policy parameters $\theta^{t+1}$ that mimic the behavior of $\pi^t_\text{MCTS}$ and a set of value function parameters $\lambda^{t+1}$ that approximate its value function. That is,
   $$
   \begin{aligned}
-  \theta^{t+1} &\gets \arg\min_\theta \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} - \log \pi_\theta(a^m_\hi \mid s^m_\hi) \\
-  \lambda^{t+1} &\gets \arg\min_\lambda \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} (v_\lambda(s^m_\hi) - R(\tau_m))^2
+  \theta^{t+1} &\gets \arg\min_\theta \sum_{m=0}^{M-1} \sum_{\step=0}^{H-1} - \log \pi_\theta(a^m_\step \mid s^m_\step) \\
+  \lambda^{t+1} &\gets \arg\min_\lambda \sum_{m=0}^{M-1} \sum_{\step=0}^{H-1} (v_\lambda(s^m_\step) - R(\tau_m))^2
   \end{aligned}
   $$
 

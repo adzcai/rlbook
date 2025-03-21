@@ -2,7 +2,7 @@
 
 # Background {#sec-background}
 
-## O notation
+## O notation {#sec-o-notation}
 
 Throughout this chapter and the rest of the book, we will describe the
 asymptotic behavior of a function using $O$ notation.

@@ -28,15 +28,28 @@ How does RL compare to the other two core machine learning paradigms,
   which can be thought of as a sort of feedback.
   Unsupervised learning is crucial in many real-world applications of RL for dimensionality reduction.
 
+The key difference is that RL algorithms don't learn from some existing dataset;
+rather, they must go out and interact with the environment
+to collect their own data in an online way.
+This means RL algorithms face a distinct set of challenges
+from other kinds of machine learning.
+We'll discuss these more concretely in @sec-intro-challenges.
+
+::: {#rem-reward-hypothesis}
+#### The reward hypothesis
 
 Why do we only focus on maximizing a _scalar_ reward signal?
 Surely a more descriptive or higher-dimensional signal would enable more efficient learning.
 Nonetheless, many (prominent) researchers hold that **scalar reward is enough**
 for developing behaviors that achieve a wide array of goals [@silver_reward_2021].
-This idea is sometimes also termed the **reward hypothesis**.
+This idea is also termed the **reward hypothesis**,
+and goes back at least as far as Turing,
+who suggested that one could train a "universal machine" using one input signal for "pain"
+and another for "pleasure" [@turing_intelligent_1948].
 Reinforcement learning takes this hypothesis seriously.
 It is undeniable that maximizing scalar rewards has led to success
 in an assortment of sequential decision-making problems.
+:::
 
 
 
@@ -45,23 +58,42 @@ in an assortment of sequential decision-making problems.
 What tasks, exactly, are important for RL?
 Typically,
 
-- **Policy evaluation (prediction)**:
+- **Policy evaluation (prediction)**:\index{prediction}
   How 'good' is a specific state, or state-action pair (under a given policy)?
   That is, how much reward does it lead to in the long run?
+  This is also called the task of **value estimation**.
 
 - **Policy optimization (control)**:
   Suppose we fully understand how the environment behaves.
   What is the best action to take in every scenario?
 
 
-## Challenges of reinforcement learning
+## Challenges of reinforcement learning {#sec-intro-challenges}
 
 **Recursion (bootstrapping)**:
-How can we "reuse" our current predictions to generate new information?
+how can we "reuse" our current predictions to generate new information?
 
 **Exploration-exploitation tradeoff**:
-Should we try new actions, or capitalize on actions that we currently believe to be good?
+should we try new actions, or capitalize on actions that we currently believe to be good?
 
+**Credit assignment**:
+Consider this example:
+some mornings, you may wake up well rested,
+while other mornings, you may wake up drowsy and tired,
+even if the amount of time you spent asleep stays the same.
+What could be the cause?
+You take so many actions throughout the day,
+and any one of them could be the reason for your good or poor sleep.
+Was it a skipped meal? A lack of exercise?
+When these consequences interact with each other,
+it can be challenging to properly _assign credit_
+to the actions that cause the observed effects.
+
+**Reproducibility**:
+the high variance inherent in interacting with the environment
+means that the results of RL experiments can be challenging to reproduce.
+Even when averaging across multiple random seeds,
+the same algorithm can achieve drastically different-seeming results [@agarwal_deep_2021].
 
 ## Programming {#sec-programming}
 
@@ -94,12 +126,14 @@ Interest has surged in RL in the past decades,
 especially since AlphaGo's groundbreaking success [@silver_mastering_2016].
 There are a number of recent textbooks that cover the field of RL:
 
-@sutton_reinforcement_2018 set the framework for much of modern reinforcement learning.
-@plaat_deep_2022 is a comprehensive graduate-level textbook on modern deep reinforcement learning.
+@sutton_reinforcement_2018 set the framework for much of modern RL.
+@plaat_deep_2022 is a graduate-level textbook on deep reinforcement learning.
 @agarwal_reinforcement_2022 is a useful reference for theoretical guarantees of RL algorithms.
 @li_reinforcement_2023 highlights the connections between RL and optimal control.
 @mannor_reinforcement_2024 is another advanced undergraduate course textbook.
 @bertsekas_neuro-dynamic_1996 introduced many of the core concepts of RL.
+@szepesvari_algorithms_2010 is an invaluable resource on much of the theory underlying the methods in this book and elsewhere.
+@kochenderfer_algorithms_2022 provides a more probabilistic perspective alongside Julia code for various RL algorithms.
 
 There are also a number of review articles that summarize recent advances.
 @murphy_reinforcement_2024 gives an overview of the past decade of advancements in RL.
@@ -107,7 +141,6 @@ There are also a number of review articles that summarize recent advances.
 
 Other textbooks focus on specific RL techniques
 or on applications of RL to specific fields.
-@szepesvari_algorithms_2010 is an invaluable resource on much of the theory underlying the methods in this book and elsewhere.
 @albrecht_multi-agent_2023 discusses **multi-agent** reinforcement learning.
 @rao_foundations_2022 focuses on applications of RL to finance.
 @li_deep_2018 surveys applications of RL to various fields.

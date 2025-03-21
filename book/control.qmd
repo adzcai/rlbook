@@ -112,7 +112,7 @@ A continuous control environment is a special case of an MDP (@def-finite-horizo
 Recall that a finite-horizon MDP
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, P, r, \hor).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, P, r, \Step).
 $$ {#eq-recall-finite-mdp}
 
 is defined by its state space $\mathcal{S}$,
@@ -120,7 +120,7 @@ action space $\mathcal{A}$,
 initial state distribution $P_0$,
 state transitions $P$,
 reward function $r$,
-and time horizon $\hor$.
+and time horizon $\Step$.
 These each have equivalents in the control setting.
 
 ::: {#def-continuous-control}
@@ -137,18 +137,18 @@ A continuous control environment is defined by the following components:
 -   $P_0 \in \triangle(\mathcal{S})$ denotes the initial state distribution.
 -   We call the state transitions the **dynamics** of the system and denote them by $f$:
     $$
-    \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi),
+    \st_{\step+1} = f_\step(\st_\step, \act_\step, w_\step),
     $$ {#eq-lqr-dynamics}
-    where $w_\hi$ denotes noise drawn from the distribution $\nu_\hi \in \triangle(\mathbb{R}^{n_w})$.
-    Note that the dynamics may vary at each timestep $\hi$.
--   Instead of maximizing the reward function, we seek to minimize the **cost function** $c_\hi: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$.
+    where $w_\step$ denotes noise drawn from the distribution $\nu_\step \in \triangle(\mathbb{R}^{n_w})$.
+    Note that the dynamics may vary at each timestep $\step$.
+-   Instead of maximizing the reward function, we seek to minimize the **cost function** $c_\step: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$.
     Often, the cost function describes *how far away* we are from a **target state-action pair** $(\st^\star, \act^\star)$.
--   The agent acts over a *finite time horizon* $\hor \in \mathbb{N}$.
+-   The agent acts over a *finite time horizon* $\Step \in \mathbb{N}$.
 
 Together, these constitute a description of the environment
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, f, \nu, c, \hor).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, f, \nu, c, \Step).
 $$ {#eq-continuous-control}
 :::
 
@@ -162,13 +162,13 @@ that minimizes the total cost
 
 $$
 \begin{aligned}
-    \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad & \E \left[
-        \sum_{\hi=0}^{\hor-1} c_\hi(\st_\hi, \act_\hi)
+    \min_{\pi_0, \dots, \pi_{\Step-1} : \mathcal{S} \to \mathcal{A}} \quad & \E \left[
+        \sum_{\step=0}^{\Step-1} c_\step(\st_\step, \act_\step)
     \right] \\
-    \text{where} \quad & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi), \\
-    & \act_\hi = \pi_\hi(\st_\hi) \\
+    \text{where} \quad & \st_{\step+1} = f_\step(\st_\step, \act_\step, w_\step), \\
+    & \act_\step = \pi_\step(\st_\step) \\
     & \st_0 \sim P_0 \\
-    & w_\hi \sim \nu_\hi.
+    & w_\step \sim \nu_\step.
 \end{aligned}
 $$ {#eq-optimal-control}
 :::
@@ -176,11 +176,11 @@ $$ {#eq-optimal-control}
 In this chapter, we will only consider *deterministic, time-dependent* policies
 
 $$
-\pi = (\pi_0, \dots, \pi_{\hor-1})
+\pi = (\pi_0, \dots, \pi_{\Step-1})
 \quad \text{where} \quad
 \pi_h : \mathcal{S} \to \mathcal{A}
 \text{ for each }
-\hi \in [\hor].
+\step \in [\Step].
 $$ {#eq-det-h-policy}
 
 To make the explicit conditioning more concise,
@@ -197,9 +197,9 @@ is to take rollouts in the environment using $\pi$.
 ::: {#thm-continuous-control-trajectories}
 #### Trajectory distributions
 
-Let $\pi = \{ \pi_0, \dots, \pi_{\hor-1} \}$ be a deterministic, time-dependent policy.
-We include states $\st_\hi$, actions $\act_\hi$, and noise terms $w_\hi$ in the trajectory.
-Then the density of a trajectory $\tau = (\st_0, \act_0, w_0, \dots, w_{\hor-2}, \st_{\hor-1}, \act_{\hor-1})$
+Let $\pi = \{ \pi_0, \dots, \pi_{\Step-1} \}$ be a deterministic, time-dependent policy.
+We include states $\st_\step$, actions $\act_\step$, and noise terms $w_\step$ in the trajectory.
+Then the density of a trajectory $\tau = (\st_0, \act_0, w_0, \dots, w_{\Step-2}, \st_{\Step-1}, \act_{\Step-1})$
 can be expressed as follows:
 
 $$
@@ -208,13 +208,13 @@ $$
 &:= P_0(\st_0) \times \ind{\act_0 = \pi_0(\st_0)} \\
 &\quad {} \times \nu(w_0) \times \ind{\st_1 = f(\st_0, \act_0, w_0)} \\
 &\quad {} \times \cdots \\
-&\quad {} \times \nu(w_{\hor-2})
-    \times \ind{\st_{\hor-1} = f(\st_{\hor-2}, \act_{\hor-2}, w_{\hor-2})}
-    \times \ind{\act_{\hor-1} = \pi_{\hor-1}(\st_{\hor-1})} \\
+&\quad {} \times \nu(w_{\Step-2})
+    \times \ind{\st_{\Step-1} = f(\st_{\Step-2}, \act_{\Step-2}, w_{\Step-2})}
+    \times \ind{\act_{\Step-1} = \pi_{\Step-1}(\st_{\Step-1})} \\
 &= P_0(\st_0) \ind{\act_0 = \pi_0(\st_0)}
-    \prod_{\hi=1}^{\hor-1} \nu(w_{\hi-1})
-    \ind{\st_{\hi} = f(\st_{\hi-1}, \act_{\hi-1}, w_{\hi-1})}
-    \ind{\act_{\hi} = \pi_{\hi}(\st_{\hi})}
+    \prod_{\step=1}^{\Step-1} \nu(w_{\step-1})
+    \ind{\st_{\step} = f(\st_{\step-1}, \act_{\step-1}, w_{\step-1})}
+    \ind{\act_{\step} = \pi_{\step}(\st_{\step})}
 \end{aligned}
 $$ {#eq-continuous-autoregressive-trajectories}
 :::
@@ -232,14 +232,14 @@ _value functions_ will be crucial for constructing the optimal policy via **dyna
 ::: {#def-value-lqr}
 #### Value functions in LQR
 
-Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{\hor-1})$,
-we can define its value function $V^\pi_\hi : \mathcal{S} \to \mathbb{R}$ at time $\hi \in [\hor]$
+Given a policy $\mathbf{\pi} = (\pi_0, \dots, \pi_{\Step-1})$,
+we can define its value function $V^\pi_\step : \mathcal{S} \to \mathbb{R}$ at time $\step \in [\Step]$
 as the **cost-to-go** incurred by that policy in expectation:
 
 $$
-V^\pi_\hi (\st) = \E_{\tau \sim \rho^\pi} \left[
-    \sum_{\hi'=\hi}^{\hor-1} c(\st_{\hi'}, \act_{\hi'})
-    \mid \st_\hi = \st
+V^\pi_\step (\st) = \E_{\tau \sim \rho^\pi} \left[
+    \sum_{\step'=\step}^{\Step-1} c(\st_{\step'}, \act_{\step'})
+    \mid \st_\step = \st
 \right]
 $$ {#eq-value-control}
 :::
@@ -250,9 +250,9 @@ $$ {#eq-value-control}
 The Q-function additionally conditions on the first action we take:
 
 $$
-Q^\pi_\hi (\st, \act) = \E_{\tau \sim \rho^\pi} \left[
-    \sum_{\hi'=\hi}^{\hor-1} c(\st_{\hi'}, \act_{\hi'})
-    \mid (\st_\hi, \act_\hi) = (\st, \act)
+Q^\pi_\step (\st, \act) = \E_{\tau \sim \rho^\pi} \left[
+    \sum_{\step'=\step}^{\Step-1} c(\st_{\step'}, \act_{\step'})
+    \mid (\st_\step, \act_\step) = (\st, \act)
 \right]
 $$ {#eq-q-lqr}
 :::
@@ -322,20 +322,20 @@ The dynamics $f$ are specified by the matrices
 $A \in \mathbb{R}^{n_\st \times n_\st}$ and $B \in \mathbb{R}^{n_\st \times n_\act}$:
 
 $$
-x_{\hi+1} = f(\st_\hi, \act_\hi, w_\hi) = A \st_\hi + B \act_\hi + w_\hi
+x_{\step+1} = f(\st_\step, \act_\step, w_\step) = A \st_\step + B \act_\step + w_\step
 $$ {#eq-lqr-linear-dynamics}
 
-for all $\hi \in [\hor-1]$,
-where $w_\hi \sim \mathcal{N}(0, \sigma^2) I$.
+for all $\step \in [\Step-1]$,
+where $w_\step \sim \mathcal{N}(0, \sigma^2) I$.
 
 The cost function is specified by the symmetric positive definite matrices
 $Q \in \mathbb{R}^{n_\st \times n_\st}$ and $R \in \mathbb{R}^{n_\act \times n_\act}$:
 
 $$
-c(\st_\hi, \act_\hi) = \st_\hi^\top Q \st_\hi + \act_\hi^\top R \act_\hi
+c(\st_\step, \act_\step) = \st_\step^\top Q \st_\step + \act_\step^\top R \act_\step
 $$ {#eq-lqr-cost-quadratic}
 
-for all $\hi \in [\hor]$.
+for all $\step \in [\Step]$.
 (See @sec-bg-linear-algebra if you're unfamiliar with symmetric positive definite matrices.)
 We use the same letter as the Q-function (@def-q-lqr);
 the context should make it clear which is intended.
@@ -344,7 +344,7 @@ the context should make it clear which is intended.
 ::: {#rem-lqr-properties}
 #### Properties of LQR
 
-Recall that $w_\hi$ is a noise term that makes the dynamics random.
+Recall that $w_\step$ is a noise term that makes the dynamics random.
 By setting its covariance matrix to $\sigma^2 I$,
 we mean that there is Gaussian noise of standard deviation $\sigma$
 added independently to each coordinate of the state.
@@ -469,10 +469,10 @@ achieves *minimum cost* across all policies $\pi$ that are *history-independent,
 
 $$
 \begin{aligned}
-    V^\star_\hi(\st) &= \min_{\pi} V^\pi_\hi(\st) \\
+    V^\star_\step(\st) &= \min_{\pi} V^\pi_\step(\st) \\
     &= \min_{\pi} \E_{\tau \sim \rho^\pi} \left[
-            \sum_{\hi'=\hi}^{\hor-1} \left( \st_{\hi'}^\top Q \st_{\hi'} + \act_{\hi'}^\top R \act_{\hi'} \right)
-            \mid \st_\hi = \st
+            \sum_{\step'=\step}^{\Step-1} \left( \st_{\step'}^\top Q \st_{\step'} + \act_{\step'}^\top R \act_{\step'} \right)
+            \mid \st_\step = \st
         \right] \\
 \end{aligned}
 $$ {#eq-optimal-value-lqr}
@@ -486,10 +486,10 @@ conditioned on the starting state-action pair:
 
 $$
 \begin{aligned}
-    Q^\star_\hi(\st, \act) &= \min_{\pi} Q^\pi_\hi(\st, \act) \\
+    Q^\star_\step(\st, \act) &= \min_{\pi} Q^\pi_\step(\st, \act) \\
     &= \min_{\pi} \E \left[
-        \sum_{\hi'=\hi}^{\hor-1}\left(  \st_{\hi'}^\top Q \st_{\hi'} + \act_{\hi'}^\top R \act_{\hi'} \right)
-        \mid \st_\hi = \st, \act_\hi = \act
+        \sum_{\step'=\step}^{\Step-1}\left(  \st_{\step'}^\top Q \st_{\step'} + \act_{\step'}^\top R \act_{\step'} \right)
+        \mid \st_\step = \st, \act_\step = \act
     \right] \\
 \end{aligned}
 $$ {#eq-optimal-q-lqr}
@@ -514,26 +514,26 @@ and $\pi_h^\star$ is *linear* and furthermore does not depend on the amount of n
 ::: {#thm-optimal-value-lqr-quadratic}
 #### Optimal value function in LQR is an upward-curved quadratic
 
-At each timestep $\hi \in [\hor]$,
+At each timestep $\step \in [\Step]$,
 
 $$
-V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi
+V^\star_\step(\st) = \st^\top P_\step \st + p_\step
 $$ {#eq-optimal-value-lqr-quadratic}
 
-for some symmetric, positive-definite $n_\st \times n_\st$ matrix $P_\hi$ and scalar
-$p_\hi \in \mathbb{R}$.
+for some symmetric, positive-definite $n_\st \times n_\st$ matrix $P_\step$ and scalar
+$p_\step \in \mathbb{R}$.
 :::
 
 ::: {#thm-optimal-policy-lqr-linear}
 #### Optimal policy in LQR is linear
 
-At each timestep $\hi \in [\hor]$, 
+At each timestep $\step \in [\Step]$, 
 
 $$
-\pi^\star_\hi (\st) = - K_\hi \st
+\pi^\star_\step (\st) = - K_\step \st
 $$ {#eq-optimal-policy-lqr-linear}
 
-for some $K_\hi \in \mathbb{R}^{n_\act \times n_\st}$.
+for some $K_\step \in \mathbb{R}^{n_\act \times n_\st}$.
 (The negative is due to convention.)
 :::
 
@@ -559,17 +559,17 @@ graph RL
     Q2["..."]
 ```
 
-Here we provide the concrete $P_\hi, p_\hi$, and $K_\hi$
+Here we provide the concrete $P_\step, p_\step$, and $K_\step$
 used to compute the quantities above.
 
 ::: {#def-riccati}
 #### Riccati equation
 
-It turns out that the matrices $P_0, \dots, P_{\hor-1}$ used to define $V^\star$
+It turns out that the matrices $P_0, \dots, P_{\Step-1}$ used to define $V^\star$
 obey a recurrence relation known as the **Riccati equation**:
 
 $$
-P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A,
+P_\step = Q + A^\top P_{\step+1} A - A^\top P_{\step+1} B (R + B^\top P_{\step+1} B)^{-1} B^\top P_{\step+1} A,
 $$ {#eq-riccati}
 
 where $A \in \mathbb{R}^{n_\st \times n_\st}$ and $B \in \mathbb{R}^{n_\st \times n_\act}$
@@ -578,19 +578,19 @@ and $Q \in \mathbb{R}^{n_\st \times n_\st}$ and $R \in \mathbb{R}^{n_\act \times
 are the matrices used to define the cost function $c$ (@def-lqr).
 :::
 
-The scalars $p_\hi$ obey the recurrence relation
+The scalars $p_\step$ obey the recurrence relation
 
 $$
-p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}
+p_\step = \mathrm{Tr}(\sigma^2 P_{\step+1}) + p_{\step+1}
 $$ {#eq-lqr-proof-scalar}
 
-and the matrices $K_0, \dots, K_{\hor-1}$ for defining the policy satisfy
+and the matrices $K_0, \dots, K_{\Step-1}$ for defining the policy satisfy
 
 $$
-K_\hi = (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
+K_\step = (R + B^\top P_{\step+1} B)^{-1} B^\top P_{\step+1} A.
 $$ {#eq-k-pi}
 
-By setting $P_\hor = 0$ and $p_\hor = 0$,
+By setting $P_\Step = 0$ and $p_\Step = 0$,
 
 ```{python}
 def dp_lqr(A, B, Q, R, sigma, H):
@@ -608,36 +608,36 @@ def dp_lqr(A, B, Q, R, sigma, H):
 latex(dp_lqr)
 ```
 
-### Expected state at time $\hi$
+### Expected state at time $\step$
 
 Let's consider how the
-state at time $\hi$ behaves when we act according to this optimal policy.
+state at time $\step$ behaves when we act according to this optimal policy.
 In the field of control theory,
 which is often used in high-stakes circumstances such as aviation or architecture,
 it is important to understand the way the state evolves
 under the proposed controls.
 
-How can we compute the expected state at time $\hi$ when acting
-according to the optimal policy? Let's first express $\st_\hi$ in a
+How can we compute the expected state at time $\step$ when acting
+according to the optimal policy? Let's first express $\st_\step$ in a
 cleaner way in terms of the history. Note that having linear dynamics
 makes it easy to expand terms backwards in time: 
 
 $$
 \begin{aligned}
-    \st_\hi & = A \st_{\hi-1} + B \act_{\hi-1} + w_{\hi-1}                                 \\
-            & = A (A\st_{\hi-2} + B \act_{\hi-2} + w_{\hi-2}) + B \act_{\hi-1} + w_{\hi-1} \\
+    \st_\step & = A \st_{\step-1} + B \act_{\step-1} + w_{\step-1}                                 \\
+            & = A (A\st_{\step-2} + B \act_{\step-2} + w_{\step-2}) + B \act_{\step-1} + w_{\step-1} \\
             & = \cdots                                                                     \\
-            & = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i (B \act_{\hi-i-1} + w_{\hi-i-1}).
+            & = A^\step \st_0 + \sum_{i=0}^{\step-1} A^i (B \act_{\step-i-1} + w_{\step-i-1}).
 \end{aligned}
 $$ {#eq-expected-state-derive}
 
 Let's consider the *average state* at this time, given all the past
-states and actions. Since we assume that $\E [w_\hi] = 0$ (this is the
-zero vector in $d$ dimensions), when we take an expectation, the $w_\hi$
+states and actions. Since we assume that $\E [w_\step] = 0$ (this is the
+zero vector in $d$ dimensions), when we take an expectation, the $w_\step$
 term vanishes due to linearity, and so we're left with
 
 $$
-\E [\st_\hi \mid \st_{0:(\hi-1)}, \act_{0:(\hi-1)}] = A^\hi \st_0 + \sum_{i=0}^{\hi-1} A^i B \act_{\hi-i-1}.
+\E [\st_\step \mid \st_{0:(\step-1)}, \act_{0:(\step-1)}] = A^\step \st_0 + \sum_{i=0}^{\step-1} A^i B \act_{\step-i-1}.
 $$ {#eq-expected-state}
 
 
@@ -647,23 +647,23 @@ $$ {#eq-expected-state}
 Show that if we choose actions according to the optimal policy @lem-pi-linear, @eq-expected-state becomes
 
 $$
-\E [\st_\hi \mid \st_0, \act_i = \pi^\star_i(\st_i)\quad \forall i \le \hi] = \left( \prod_{i=0}^{\hi-1} (A - B K_i) \right) \st_0.
+\E [\st_\step \mid \st_0, \act_i = \pi^\star_i(\st_i)\quad \forall i \le \step] = \left( \prod_{i=0}^{\step-1} (A - B K_i) \right) \st_0.
 $$
 :::
 
 This introdces the quantity $A - B K_i$, which shows up frequently in
-control theory. For example, one important question is: will $\st_\hi$
+control theory. For example, one important question is: will $\st_\step$
 remain bounded, or will it go to infinity as time goes on? To answer
 this, let's imagine for simplicity that these $K_i$s are equal (call
-this matrix $K$). Then the expression above becomes $(A-BK)^\hi \st_0$.
+this matrix $K$). Then the expression above becomes $(A-BK)^\step \st_0$.
 Now consider the maximum eigenvalue $\lambda_{\max}$ of $A - BK$. If
 $|\lambda_{\max}| > 1$, then there's some nonzero initial state
 $\bar \st_0$, the corresponding eigenvector, for which
 
 
 $$
-\lim_{\hi \to \infty} (A - BK)^\hi \bar \st_0
-    = \lim_{\hi \to \infty} \lambda_{\max}^\hi \bar \st_0
+\lim_{\step \to \infty} (A - BK)^\step \bar \st_0
+    = \lim_{\step \to \infty} \lambda_{\max}^\step \bar \st_0
     = \infty.
 $$
     
@@ -713,11 +713,11 @@ The modified problem is now defined as follows:
 
 $$
 \begin{aligned}
-        \min_{\pi_{0}, \dots, \pi_{\hor-1}} \quad & \E \left[ \left( \sum_{\hi=0}^{\hor-1} (\st_\hi^\top Q_\hi \st_\hi) + \act_\hi^\top R_\hi \act_\hi \right) + \st_\hor^\top Q_\hor \st_\hor \right] \\
-        \textrm{where} \quad                      & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + w_\hi                                                             \\
+        \min_{\pi_{0}, \dots, \pi_{\Step-1}} \quad & \E \left[ \left( \sum_{\step=0}^{\Step-1} (\st_\step^\top Q_\step \st_\step) + \act_\step^\top R_\step \act_\step \right) + \st_\Step^\top Q_\Step \st_\Step \right] \\
+        \textrm{where} \quad                      & \st_{\step+1} = f_\step(\st_\step, \act_\step, w_\step) = A_\step \st_\step + B_\step \act_\step + w_\step                                                             \\
                                                   & \st_0 \sim \mu_0                                                                                                                                   \\
-                                                  & \act_\hi = \pi_\hi (\st_\hi)                                                                                                                       \\
-                                                  & w_\hi \sim \mathcal{N}(0, \sigma^2 I).
+                                                  & \act_\step = \pi_\step (\st_\step)                                                                                                                       \\
+                                                  & w_\step \sim \mathcal{N}(0, \sigma^2 I).
 \end{aligned}
 $$
 
@@ -732,7 +732,7 @@ accordingly:
 #### Time-dependent Riccati Equation
 
 $$
-P_\hi = Q_\hi + A_\hi^\top P_{\hi+1} A_\hi - A_\hi^\top P_{\hi+1} B_\hi (R_\hi + B_\hi^\top P_{\hi+1} B_\hi)^{-1} B_\hi^\top P_{\hi+1} A_\hi.
+P_\step = Q_\step + A_\step^\top P_{\step+1} A_\step - A_\step^\top P_{\step+1} B_\step (R_\step + B_\step^\top P_{\step+1} B_\step)^{-1} B_\step^\top P_{\step+1} A_\step.
 $$
 
 Note that this is just the time-homogeneous Riccati equation
@@ -743,7 +743,7 @@ relevant matrices.
 ::: {#exr-time-dependent}
 #### Time dependent LQR proof
 
-Walk through the proof in @sec-optimal-lqr to verify that we can simply add $\hi$ for the time-dependent case.
+Walk through the proof in @sec-optimal-lqr to verify that we can simply add $\step$ for the time-dependent case.
 :::
 
 Additionally, by allowing the dynamics to vary across time, we gain the
@@ -757,21 +757,21 @@ the state and action, incentivizing staying as close as possible to
 $(\st^\star, \act^\star) = (0, 0)$. We can also consider more general
 quadratic cost functions that also have first-order terms and a constant
 term. Combining this with time-dependent dynamics results in the
-following expression, where we introduce a new matrix $M_\hi$ for the
-cross term, linear coefficients $q_\hi$ and $r_\hi$ for the state and
-action respectively, and a constant term $c_\hi$:
+following expression, where we introduce a new matrix $M_\step$ for the
+cross term, linear coefficients $q_\step$ and $r_\step$ for the state and
+action respectively, and a constant term $c_\step$:
 
 $$
-c_\hi(\st_\hi, \act_\hi) = ( \st_\hi^\top Q_\hi \st_\hi + \st_\hi^\top M_\hi \act_\hi + \act_\hi^\top R_\hi \act_\hi ) + (\st_\hi^\top q_\hi + \act_\hi^\top r_\hi) + c_\hi.
+c_\step(\st_\step, \act_\step) = ( \st_\step^\top Q_\step \st_\step + \st_\step^\top M_\step \act_\step + \act_\step^\top R_\step \act_\step ) + (\st_\step^\top q_\step + \act_\step^\top r_\step) + c_\step.
 $$ {#eq-general-quadratic-cost}
 
 Similarly, we can also include a
-constant term $v_\hi \in \mathbb{R}^{n_\st}$ in the dynamics (note that this is
-*deterministic* at each timestep, unlike the stochastic noise $w_\hi$):
+constant term $v_\step \in \mathbb{R}^{n_\st}$ in the dynamics (note that this is
+*deterministic* at each timestep, unlike the stochastic noise $w_\step$):
 
 
 $$
-\st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi) = A_\hi \st_\hi + B_\hi \act_\hi + v_\hi + w_\hi.
+\st_{\step+1} = f_\step(\st_\step, \act_\step, w_\step) = A_\step \st_\step + B_\step \act_\step + v_\step + w_\step.
 $$
 
 
@@ -789,13 +789,13 @@ proof in @sec-optimal-lqr.
 Consider applying LQR to a task like autonomous driving, where the
 target state-action pair changes over time. We might want the vehicle to
 follow a predefined *trajectory* of states and actions
-$(\st_\hi^\star, \act_\hi^\star)_{\hi=0}^{\hor-1}$. To express this as a
+$(\st_\step^\star, \act_\step^\star)_{\step=0}^{\Step-1}$. To express this as a
 control problem, we'll need a corresponding time-dependent cost
 function:
 
 
 $$
-c_\hi(\st_\hi, \act_\hi) = (\st_\hi - \st^\star_\hi)^\top Q (\st_\hi - \st^\star_\hi) + (\act_\hi - \act^\star_\hi)^\top R (\act_\hi - \act^\star_\hi).
+c_\step(\st_\step, \act_\step) = (\st_\step - \st^\star_\step)^\top Q (\st_\step - \st^\star_\step) + (\act_\step - \act^\star_\step)^\top R (\act_\step - \act^\star_\step).
 $$
 
 
@@ -806,7 +806,7 @@ function above @eq-general-quadratic-cost:
 
 
 $$
-M_\hi = 0, \qquad q_\hi = -2Q \st^\star_\hi, \qquad r_\hi = -2R \act^\star_\hi, \qquad c_\hi = (\st^\star_\hi)^\top Q (\st^\star_\hi) + (\act^\star_\hi)^\top R (\act^\star_\hi).
+M_\step = 0, \qquad q_\step = -2Q \st^\star_\step, \qquad r_\step = -2R \act^\star_\step, \qquad c_\step = (\st^\star_\step)^\top Q (\st^\star_\step) + (\act^\star_\step)^\top R (\act^\star_\step).
 $$
 
 
@@ -831,12 +831,12 @@ and ignore the terminal state for simplicity:
 
 $$
 \begin{aligned}
-        \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad
+        \min_{\pi_0, \dots, \pi_{\Step-1} : \mathcal{S} \to \mathcal{A}} \quad
         & \E_{\st_0 \sim P_0} \left[
-            \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi)
+            \sum_{\step=0}^{\Step-1} c(\st_\step, \act_\step)
         \right] \\
-        \text{where} \quad                                  & \st_{\hi+1} = f(\st_\hi, \act_\hi)                                   \\
-                                                            & \act_\hi = \pi_\hi(\st_\hi)                                          \\
+        \text{where} \quad                                  & \st_{\step+1} = f(\st_\step, \act_\step)                                   \\
+                                                            & \act_\step = \pi_\step(\st_\step)                                          \\
                                                             & \st_0 \sim \mu_0                                                     \\
                                                             & c(\st, \act) = d(\st, \st^\star) + d(\act, \act^\star).
 \end{aligned}
@@ -998,32 +998,32 @@ state.
 
 At iteration $i$ of the algorithm, we begin with a **candidate**
 trajectory
-$\bar \tau^i = (\bar \st^i_0, \bar \act^i_0, \dots, \bar \st^i_{\hor-1}, \bar \act^i_{\hor-1})$.
+$\bar \tau^i = (\bar \st^i_0, \bar \act^i_0, \dots, \bar \st^i_{\Step-1}, \bar \act^i_{\Step-1})$.
 
 **Step 1: Form a time-dependent LQR problem.** At each timestep
-$\hi \in [\hor]$, we use the techniques from
+$\step \in [\Step]$, we use the techniques from
 [](#approx_nonlinear) to linearize the dynamics and
-quadratize the cost function around $(\bar \st^i_\hi, \bar \act^i_\hi)$:
+quadratize the cost function around $(\bar \st^i_\step, \bar \act^i_\step)$:
 
 
 $$
 \begin{aligned}
-    f_\hi(\st, \act) & \approx f(\bar {\st}^i_\hi, \bar {\act}^i_\hi) + \nabla_{\st } f(\bar {\st}^i_\hi, \bar {\act}^i_\hi)(\st - \bar {\st}^i_\hi) + \nabla_{\act } f(\bar {\st}^i_\hi, \bar {\act}^i_\hi)(\act - \bar {\act}^i_\hi)                         \\
-    c_\hi(\st, \act) & \approx c(\bar {\st}^i_\hi, \bar {\act}^i_\hi) + \begin{bmatrix}
-                                                              \st - \bar {\st }^i_\hi& \act - \bar {\act}^i_\hi
+    f_\step(\st, \act) & \approx f(\bar {\st}^i_\step, \bar {\act}^i_\step) + \nabla_{\st } f(\bar {\st}^i_\step, \bar {\act}^i_\step)(\st - \bar {\st}^i_\step) + \nabla_{\act } f(\bar {\st}^i_\step, \bar {\act}^i_\step)(\act - \bar {\act}^i_\step)                         \\
+    c_\step(\st, \act) & \approx c(\bar {\st}^i_\step, \bar {\act}^i_\step) + \begin{bmatrix}
+                                                              \st - \bar {\st }^i_\step& \act - \bar {\act}^i_\step
                                                           \end{bmatrix} \begin{bmatrix}
-                                                                            \nabla_{\st } c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)\\
-                                                                            \nabla_{\act} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)
+                                                                            \nabla_{\st } c(\bar {\st}^i_\step, \bar {\act}^i_\step)\\
+                                                                            \nabla_{\act} c(\bar {\st}^i_\step, \bar {\act}^i_\step)
                                                                         \end{bmatrix}                                                      \\
                      & \qquad + \frac{1}{2} \begin{bmatrix}
-                                                \st - \bar {\st }^i_\hi& \act - \bar {\act}^i_\hi
+                                                \st - \bar {\st }^i_\step& \act - \bar {\act}^i_\step
                                             \end{bmatrix} \begin{bmatrix}
-                                                              \nabla_{\st \st} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)  & \nabla_{\st \act} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)  \\
-                                                              \nabla_{\act \st} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi) & \nabla_{\act \act} c(\bar {\st}^i_\hi, \bar {\act}^i_\hi)
+                                                              \nabla_{\st \st} c(\bar {\st}^i_\step, \bar {\act}^i_\step)  & \nabla_{\st \act} c(\bar {\st}^i_\step, \bar {\act}^i_\step)  \\
+                                                              \nabla_{\act \st} c(\bar {\st}^i_\step, \bar {\act}^i_\step) & \nabla_{\act \act} c(\bar {\st}^i_\step, \bar {\act}^i_\step)
                                                           \end{bmatrix}
     \begin{bmatrix}
-        \st - \bar {\st }^i_\hi\\
-        \act - \bar {\act}^i_\hi
+        \st - \bar {\st }^i_\step\\
+        \act - \bar {\act}^i_\step
     \end{bmatrix}.
 \end{aligned}
 $$
@@ -1033,14 +1033,14 @@ $$
 **Step 2: Compute the optimal policy.** We can now solve the
 time-dependent LQR problem using the Riccati equation from
 @sec-time-dep-lqr to compute the optimal policy
-$\pi^i_0, \dots, \pi^i_{\hor-1}$.
+$\pi^i_0, \dots, \pi^i_{\Step-1}$.
 
 **Step 3: Generate a new series of actions.** We can then generate a new
 sample trajectory by taking actions according to this optimal policy:
 
 
 $$
-\bar \st^{i+1}_0 = \bar \st_0, \qquad \widetilde \act_\hi = \pi^i_\hi(\bar \st^{i+1}_\hi), \qquad \bar \st^{i+1}_{\hi+1} = f(\bar \st^{i+1}_\hi, \widetilde \act_\hi).
+\bar \st^{i+1}_0 = \bar \st_0, \qquad \widetilde \act_\step = \pi^i_\step(\bar \st^{i+1}_\step), \qquad \bar \st^{i+1}_{\step+1} = f(\bar \st^{i+1}_\step, \widetilde \act_\step).
 $$
 
 
@@ -1048,24 +1048,24 @@ Note that the states are sampled according to the *true* dynamics, which
 we assume we have query access to.
 
 **Step 4: Compute a better candidate trajectory.**, Note that we've
-denoted these actions as $\widetilde \act_\hi$ and aren't directly using
-them for the next iteration $\bar \act^{i+1}_\hi$. Rather, we want to
+denoted these actions as $\widetilde \act_\step$ and aren't directly using
+them for the next iteration $\bar \act^{i+1}_\step$. Rather, we want to
 *interpolate* between them and the actions from the previous iteration
-$\bar \act^i_0, \dots, \bar \act^i_{\hor-1}$. This is so that the cost
+$\bar \act^i_0, \dots, \bar \act^i_{\Step-1}$. This is so that the cost
 will *increase monotonically,* since if the new policy turns out to
 actually be worse, we can stay closer to the previous trajectory. (Can
 you think of an intuitive example where this might happen?)
 
 Formally, we want to find $\alpha \in [0, 1]$ to generate the next
 iteration of actions
-$\bar \act^{i+1}_0, \dots, \bar \act^{i+1}_{\hor-1}$ such that the cost
+$\bar \act^{i+1}_0, \dots, \bar \act^{i+1}_{\Step-1}$ such that the cost
 is minimized: 
 
 $$
 \begin{aligned}
-    \min_{\alpha \in [0, 1]} \quad & \sum_{\hi=0}^{\hor-1} c(\st_\hi, \bar \act^{i+1}_\hi)                     \\
-    \text{where} \quad             & \st_{\hi+1} = f(\st_\hi, \bar \act^{i+1}_\hi)                             \\
-                                   & \bar \act^{i+1}_\hi = \alpha \bar \act^i_\hi + (1-\alpha) \widetilde \act_\hi \\
+    \min_{\alpha \in [0, 1]} \quad & \sum_{\step=0}^{\Step-1} c(\st_\step, \bar \act^{i+1}_\step)                     \\
+    \text{where} \quad             & \st_{\step+1} = f(\st_\step, \bar \act^{i+1}_\step)                             \\
+                                   & \bar \act^{i+1}_\step = \alpha \bar \act^i_\step + (1-\alpha) \widetilde \act_\step \\
                                    & \st_0 = \bar \st_0.
 \end{aligned}
 $$

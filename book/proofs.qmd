@@ -4,60 +4,60 @@
 
 ## LQR proof {#sec-proof-lqr}
 
-1. We'll compute $V_\hor^\star$ (at the end of the horizon) as our base case.
-2. Then we'll work step-by-step backwards in time, using $V_{\hi+1}^\star$ to compute $Q_\hi^\star$, $\pi_{\hi}^\star$, and $V_\hi^\star$.
+1. We'll compute $V_\Step^\star$ (at the end of the horizon) as our base case.
+2. Then we'll work step-by-step backwards in time, using $V_{\step+1}^\star$ to compute $Q_\step^\star$, $\pi_{\step}^\star$, and $V_\step^\star$.
 
 **Base case:**
 
 At the final timestep,
 there are no possible actions to take,
-and so $V^\star_\hor(\st) = c(\st) = \st^\top Q \st$.
-Thus $V_\hor^\star(\st) = \st^\top P_\hor \st + p_\hor$
-where $P_\hor = Q$ and $p_\hor = 0$.
+and so $V^\star_\Step(\st) = c(\st) = \st^\top Q \st$.
+Thus $V_\Step^\star(\st) = \st^\top P_\Step \st + p_\Step$
+where $P_\Step = Q$ and $p_\Step = 0$.
 
 **Inductive hypothesis:**
 
 We seek to show that the inductive step holds for both theorems:
-If $V^\star_{\hi+1}(\st)$ is an upward-curved quadratic,
-then $V^\star_\hi(\st)$ must also be an upward-curved quadratic,
-and $\pi^\star_\hi(\st)$ must be linear.
+If $V^\star_{\step+1}(\st)$ is an upward-curved quadratic,
+then $V^\star_\step(\st)$ must also be an upward-curved quadratic,
+and $\pi^\star_\step(\st)$ must be linear.
 We'll break this down into the following steps:
 
-1. Show that $Q^\star_\hi(\st, \act)$ is an upward-curved quadratic (in both
+1. Show that $Q^\star_\step(\st, \act)$ is an upward-curved quadratic (in both
 $\st$ and $\act$).
 2. Derive the optimal policy
-$\pi^\star_\hi(\st) = \arg \min_\act Q^\star_\hi(\st, \act)$ and show
+$\pi^\star_\step(\st) = \arg \min_\act Q^\star_\step(\st, \act)$ and show
 that it's linear.
-3. Show that $V^\star_\hi(\st)$ is an upward-curved quadratic.
+3. Show that $V^\star_\step(\st)$ is an upward-curved quadratic.
 
 We first assume the inductive hypothesis that our theorems are true at
-time $\hi+1$. That is,
+time $\step+1$. That is,
 
 $$
-V^\star_{\hi+1}(\st) = \st^\top P_{\hi+1} \st + p_{\hi+1} \quad \forall \st \in \mathcal{S}.
+V^\star_{\step+1}(\st) = \st^\top P_{\step+1} \st + p_{\step+1} \quad \forall \st \in \mathcal{S}.
 $$
 
 :::: {#lem-q-upward-quadratic}
-#### $Q^\star_\hi(\st, \act)$ is an upward-curved quadratic
+#### $Q^\star_\step(\st, \act)$ is an upward-curved quadratic
 
-Let us decompose $Q^\star_\hi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$
+Let us decompose $Q^\star_\step : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$
 into the immediate reward plus the expected cost-to-go:
 
 $$
-Q^\star_\hi(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\hi+1})} [V^\star_{\hi+1}(\st')].
+Q^\star_\step(\st, \act) = c(\st, \act) + \E_{\st' \sim f(\st, \act, w_{\step+1})} [V^\star_{\step+1}(\st')].
 $$
 
 Recall $c(\st, \act) := \st^\top Q \st + \act^\top R \act$.
 Let's consider the expectation over the next timestep.
 The only randomness in the dynamics comes from the noise
-$w_{\hi+1} \sim \mathcal{N}(0, \sigma^2 I)$,
+$w_{\step+1} \sim \mathcal{N}(0, \sigma^2 I)$,
 so we can expand the expectation as: 
 
 $$
 \begin{aligned}
-            & \E_{\st'} [V^\star_{\hi+1}(\st')]                                                                                                         \\
-    {} = {} & \E_{w_{\hi+1}} [V^\star_{\hi+1}(A \st + B \act + w_{\hi+1})]                                             &  & \text{definition of } f     \\
-    {} = {} & \E_{w_{\hi+1}} [ (A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1} ]. &  & \text{inductive hypothesis}
+            & \E_{\st'} [V^\star_{\step+1}(\st')]                                                                                                         \\
+    {} = {} & \E_{w_{\step+1}} [V^\star_{\step+1}(A \st + B \act + w_{\step+1})]                                             &  & \text{definition of } f     \\
+    {} = {} & \E_{w_{\step+1}} [ (A \st + B \act + w_{\step+1})^\top P_{\step+1} (A \st + B \act + w_{\step+1}) + p_{\step+1} ]. &  & \text{inductive hypothesis}
 \end{aligned}
 $$
 
@@ -65,21 +65,21 @@ Summing and combining like terms, we get
 
 $$
 \begin{aligned}
-    Q^\star_\hi(\st, \act) & = \st^\top Q \st + \act^\top R \act + \E_{w_{\hi+1}} [(A \st + B \act + w_{\hi+1})^\top P_{\hi+1} (A \st + B \act + w_{\hi+1}) + p_{\hi+1}] \\
-                           & = \st^\top (Q + A^\top P_{\hi+1} A)\st + \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act                       \\
-                           & \qquad + \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] + p_{\hi+1}.
+    Q^\star_\step(\st, \act) & = \st^\top Q \st + \act^\top R \act + \E_{w_{\step+1}} [(A \st + B \act + w_{\step+1})^\top P_{\step+1} (A \st + B \act + w_{\step+1}) + p_{\step+1}] \\
+                           & = \st^\top (Q + A^\top P_{\step+1} A)\st + \act^\top (R + B^\top P_{\step+1} B) \act + 2 \st^\top A^\top P_{\step+1} B \act                       \\
+                           & \qquad + \E_{w_{\step+1}} [w_{\step+1}^\top P_{\step+1} w_{\step+1}] + p_{\step+1}.
 \end{aligned}
 $$
 
-Note that the terms that are linear in $w_\hi$ have mean
+Note that the terms that are linear in $w_\step$ have mean
 zero and vanish. Now consider the remaining expectation over the noise.
 By expanding out the product and using linearity of expectation, we can
 write this out as 
 
 $$
 \begin{aligned}
-    \E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] & = \sum_{i=1}^d \sum_{j=1}^d (P_{\hi+1})_{ij} \E_{w_{\hi+1}} [(w_{\hi+1})_i (w_{\hi+1})_j] \\
-    & = \sigma^2 \mathrm{Tr}(P_{\hi + 1})
+    \E_{w_{\step+1}} [w_{\step+1}^\top P_{\step+1} w_{\step+1}] & = \sum_{i=1}^d \sum_{j=1}^d (P_{\step+1})_{ij} \E_{w_{\step+1}} [(w_{\step+1})_i (w_{\step+1})_j] \\
+    & = \sigma^2 \mathrm{Tr}(P_{\step + 1})
 \end{aligned}
 $$
 
@@ -92,33 +92,33 @@ it's often helpful to consider the terms on the diagonal ($i = j$) separately fr
 In this case, the expectation of each diagonal term becomes
 
 $$
-(P_{\hi+1})_{ii} \E (w_{\hi+1})_i^2 = \sigma^2 (P_{\hi+1})_{ii}.
+(P_{\step+1})_{ii} \E (w_{\step+1})_i^2 = \sigma^2 (P_{\step+1})_{ii}.
 $$ {#eq-qf-mean-diagonal}
 
-Off the diagonal, since the elements of $w_{\hi+1}$ are independent, the
+Off the diagonal, since the elements of $w_{\step+1}$ are independent, the
 expectation factors, and since each element has mean zero, the term
 vanishes:
 
 $$
-(P_{\hi+1})_{ij} \E [(w_{\hi+1})_i] \E [(w_{\hi+1})_j] = 0.
+(P_{\step+1})_{ij} \E [(w_{\step+1})_i] \E [(w_{\step+1})_j] = 0.
 $$ {#eq-qf-mean-off-diagonal}
 
 Thus,
 the only terms left are the ones on the diagonal,
-so the sum of these can be expressed as the trace of $\sigma^2 P_{\hi+1}$:
+so the sum of these can be expressed as the trace of $\sigma^2 P_{\step+1}$:
 
 $$
-\E_{w_{\hi+1}} [w_{\hi+1}^\top P_{\hi+1} w_{\hi+1}] = \sigma^2 \mathrm{Tr}(P_{\hi+1}).
+\E_{w_{\step+1}} [w_{\step+1}^\top P_{\step+1} w_{\step+1}] = \sigma^2 \mathrm{Tr}(P_{\step+1}).
 $$ {#eq-qf-mean-trace}
 :::
 
-Substituting this back into the expression for $Q^\star_\hi$, we have:
+Substituting this back into the expression for $Q^\star_\step$, we have:
 
 $$
 \begin{aligned}
-    Q^\star_\hi(\st, \act) & = \st^\top (Q + A^\top P_{\hi+1} A) \st + \act^\top (R + B^\top P_{\hi+1} B) \act
-    + 2\st^\top A^\top P_{\hi+1} B \act                                                                        \\
-                            & \qquad + \sigma^2 \mathrm{Tr}(P_{\hi+1}) + p_{\hi+1}.
+    Q^\star_\step(\st, \act) & = \st^\top (Q + A^\top P_{\step+1} A) \st + \act^\top (R + B^\top P_{\step+1} B) \act
+    + 2\st^\top A^\top P_{\step+1} B \act                                                                        \\
+                            & \qquad + \sigma^2 \mathrm{Tr}(P_{\step+1}) + p_{\step+1}.
 \end{aligned}
 $$ {#eq-lqr-q-opt}
 
@@ -130,29 +130,29 @@ so that its minimum with respect to $\act$ is well-defined.
 We can do this by noting that the **Hessian matrix** of second derivatives is positive definite:
 
 $$
-\nabla_{\act \act} Q_\hi^\star(\st, \act) = R + B^\top P_{\hi+1} B
+\nabla_{\act \act} Q_\step^\star(\st, \act) = R + B^\top P_{\step+1} B
 $$
 
 Since $R$ is sym. p.d. (@def-lqr),
-and $P_{\hi+1}$ is sym. p.d. (by the inductive hypothesis),
+and $P_{\step+1}$ is sym. p.d. (by the inductive hypothesis),
 this sum must also be sym. p.d.,
-and so $Q^\star_\hi$ is indeed an upward-curved quadratic with respect to $\act$.
+and so $Q^\star_\step$ is indeed an upward-curved quadratic with respect to $\act$.
 (If this isn't clear, try proving it as an exercise.)
 The proof of its upward curvature with respect to $\st$ is equivalent.
 ::::
 
 ::: {#lem-pi-linear}
-#### $\pi^\star_\hi$ is linear
+#### $\pi^\star_\step$ is linear
 
-Since $Q^\star_\hi$ is an upward-curved quadratic,
+Since $Q^\star_\step$ is an upward-curved quadratic,
 finding its minimum over $\act$ is easy:
 we simply set the gradient with respect to $\act$ equal to zero and solve for $\act$.
 First, we calculate the gradient:
 
 $$
 \begin{aligned}
-    \nabla_\act Q^\star_\hi(\st, \act) & = \nabla_\act [ \act^\top (R + B^\top P_{\hi+1} B) \act + 2 \st^\top A^\top P_{\hi+1} B \act ] \\
-                                       & = 2 (R + B^\top P_{\hi+1} B) \act + 2 (\st^\top A^\top P_{\hi+1} B)^\top
+    \nabla_\act Q^\star_\step(\st, \act) & = \nabla_\act [ \act^\top (R + B^\top P_{\step+1} B) \act + 2 \st^\top A^\top P_{\step+1} B \act ] \\
+                                       & = 2 (R + B^\top P_{\step+1} B) \act + 2 (\st^\top A^\top P_{\step+1} B)^\top
 \end{aligned}
 $$
 
@@ -160,34 +160,34 @@ Setting this to zero, we get
 
 $$
 \begin{aligned}
-    0                  & = (R + B^\top P_{\hi+1} B) \pi^\star_\hi(\st) + B^\top P_{\hi+1} A \st \nonumber \\
-    \pi^\star_\hi(\st) & = (R + B^\top P_{\hi+1} B)^{-1} (-B^\top P_{\hi+1} A \st) \nonumber              \\
-                       & = - K_\hi \st,
+    0                  & = (R + B^\top P_{\step+1} B) \pi^\star_\step(\st) + B^\top P_{\step+1} A \st \nonumber \\
+    \pi^\star_\step(\st) & = (R + B^\top P_{\step+1} B)^{-1} (-B^\top P_{\step+1} A \st) \nonumber              \\
+                       & = - K_\step \st,
 \end{aligned}
 $$
 
 where
 
 $$
-K_\hi = (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
+K_\step = (R + B^\top P_{\step+1} B)^{-1} B^\top P_{\step+1} A.
 $$ {#eq-k-pi}
 
 Note that this optimal policy doesn't depend on the starting distribution $\mu_0$.
 It's also fully **deterministic** and isn't affected by the noise terms
-$w_0, \dots, w_{\hor-1}$.
+$w_0, \dots, w_{\Step-1}$.
 ::::
 
 :::: {#lem-upward-curved}
 #### The value function is an upward-curved quadratic
 
-Using the identity $V^\star_\hi(\st) = Q^\star_\hi(\st, \pi^\star(\st))$, we have:
+Using the identity $V^\star_\step(\st) = Q^\star_\step(\st, \pi^\star(\st))$, we have:
 
 $$
 \begin{aligned}
-    V^\star_\hi(\st) & = Q^\star_\hi(\st, \pi^\star(\st))                                                                \\
-                     & = \st^\top (Q + A^\top P_{\hi+1} A) \st + (-K_\hi \st)^\top (R + B^\top P_{\hi+1} B) (-K_\hi \st)
-    + 2\st^\top A^\top P_{\hi+1} B (-K_\hi \st)                                                                          \\
-                     & \qquad + \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}
+    V^\star_\step(\st) & = Q^\star_\step(\st, \pi^\star(\st))                                                                \\
+                     & = \st^\top (Q + A^\top P_{\step+1} A) \st + (-K_\step \st)^\top (R + B^\top P_{\step+1} B) (-K_\step \st)
+    + 2\st^\top A^\top P_{\step+1} B (-K_\step \st)                                                                          \\
+                     & \qquad + \mathrm{Tr}(\sigma^2 P_{\step+1}) + p_{\step+1}
 \end{aligned}
 $$
 
@@ -197,19 +197,19 @@ which is exactly what we were aiming for!
 The scalar term is clearly
 
 $$
-p_\hi = \mathrm{Tr}(\sigma^2 P_{\hi+1}) + p_{\hi+1}.
+p_\step = \mathrm{Tr}(\sigma^2 P_{\step+1}) + p_{\step+1}.
 $$ {#eq-lqr-proof-scalar}
 
-We can simplify the quadratic term by substituting in $K_\hi$ from @eq-k-pi.
+We can simplify the quadratic term by substituting in $K_\step$ from @eq-k-pi.
 Notice that when we do this,
-the $(R+B^\top P_{\hi+1} B)$ term in the expression is cancelled out by its inverse,
+the $(R+B^\top P_{\step+1} B)$ term in the expression is cancelled out by its inverse,
 and the remaining terms combine to give the **Riccati equation**:
 
 $$
-P_\hi = Q + A^\top P_{\hi+1} A - A^\top P_{\hi+1} B (R + B^\top P_{\hi+1} B)^{-1} B^\top P_{\hi+1} A.
+P_\step = Q + A^\top P_{\step+1} A - A^\top P_{\step+1} B (R + B^\top P_{\step+1} B)^{-1} B^\top P_{\step+1} A.
 $$ {#eq-lqr-proof-riccati}
 
-It remains to prove that $V^\star_\hi$ _curves upwards,_ that is, that $P_\hi$ is sym. p.d. We will use the following fact about **Schur complements:**
+It remains to prove that $V^\star_\step$ _curves upwards,_ that is, that $P_\step$ is sym. p.d. We will use the following fact about **Schur complements:**
 
 ::: {#lem-lemma-schur}
 #### Positive definiteness of Schur complements
@@ -239,7 +239,7 @@ then $D$ is positive _semidefinite_
 if and only if $D/A$ is positive _semidefinite_.
 :::
 
-Let $P$ denote $P_{\hi + 1}$ for brevity.
+Let $P$ denote $P_{\step + 1}$ for brevity.
 We already know $Q$ is sym. p.d.,
 so it suffices to show that
 
@@ -279,11 +279,11 @@ $$
 
 Since $R + B^\top P B$ is sym. p.d. and $D$ is p.s.d.,
 then $S = D / (R + B^\top P B)$ must be p.s.d.,
-and $P_\hi = Q + A S A^\top$ must be sym. p.d.
+and $P_\step = Q + A S A^\top$ must be sym. p.d.
 ::::
 
-Now we've shown that $V^\star_\hi(\st) = \st^\top P_\hi \st + p_\hi$,
-where $P_\hi$ is sym. p.d.,
+Now we've shown that $V^\star_\step(\st) = \st^\top P_\step \st + p_\step$,
+where $P_\step$ is sym. p.d.,
 proving the inductive hypothesis and completing the proof of @thm-optimal-policy-lqr-linear and @thm-optimal-value-lqr-quadratic.
 
 
@@ -292,40 +292,40 @@ proving the inductive hypothesis and completing the proof of @thm-optimal-policy
 We aim to show that, with high probability,
 
 $$
-V_\hi^\star(s) \le \widehat{V}_\hi^t(s) \quad \forall t \in [T], h \in [H], s \in \mathcal{S}.
+V_\step^\star(s) \le \widehat{V}_\step^t(s) \quad \forall t \in [T], h \in [H], s \in \mathcal{S}.
 $$
 
-We'll do this by bounding the error incurred at each step of DP. Recall that DP solves for $\widehat{V}_\hi^t(s)$ recursively as follows:
+We'll do this by bounding the error incurred at each step of DP. Recall that DP solves for $\widehat{V}_\step^t(s)$ recursively as follows:
 
 $$
-\widehat{V}_\hi^t(s) = \max_{a \in \mathcal{A}} \left[ \widetilde r^t_\hi(s, a) + \E_{s' \sim \widehat{P}_\hi^t(\cdot \mid s, a)} \left[ \widehat{V}_{h+1}^t(s') \right] \right]
+\widehat{V}_\step^t(s) = \max_{a \in \mathcal{A}} \left[ \widetilde r^t_\step(s, a) + \E_{s' \sim \widehat{P}_\step^t(\cdot \mid s, a)} \left[ \widehat{V}_{h+1}^t(s') \right] \right]
 $$
 
-where $\widetilde r^t_\hi(s, a) = r_\hi(s, a) + b_\hi^t(s, a)$ is the reward function of our modelled MDP $\widetilde{\mathcal{M}}^t$. On the other hand, we know that $V^\star$ must satisfy
+where $\widetilde r^t_\step(s, a) = r_\step(s, a) + b_\step^t(s, a)$ is the reward function of our modelled MDP $\widetilde{\mathcal{M}}^t$. On the other hand, we know that $V^\star$ must satisfy
 
 $$
-V^\star_\hi(s) = \max_{a \in \mathcal{A}} \left[ \widetilde r^t_\hi(s, a) + \E_{s' \sim P^?_\hi(\cdot \mid s, a)} [V^\star_{\hi+1}(s')] \right]
+V^\star_\step(s) = \max_{a \in \mathcal{A}} \left[ \widetilde r^t_\step(s, a) + \E_{s' \sim P^?_\step(\cdot \mid s, a)} [V^\star_{\step+1}(s')] \right]
 $$
 
 so it suffices to bound the difference between the two inner expectations. There are two sources of error:
 
 1.  The value functions $\widehat{V}^t_{h+1}$ v.s. $V^\star_{h+1}$
 
-2.  The transition probabilities $\widehat{P}_\hi^t$ v.s. $P^?_\hi$.
+2.  The transition probabilities $\widehat{P}_\step^t$ v.s. $P^?_\step$.
 
 We can bound these individually, and then combine them by the triangle inequality. For the former, we can simply bound the difference by $H$, assuming that the rewards are within $[0, 1]$. Now, all that is left is to bound the error from the transition probabilities:
 
 $$
-\text{error} = \left| \E_{s' \sim \widehat{P}_\hi^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] - \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]. \right|
+\text{error} = \left| \E_{s' \sim \widehat{P}_\step^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] - \E_{s' \sim P^?_\step(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]. \right|
 $$ {#eq-err}
 
-Let us bound this term for a fixed $s, a, h, t$. (Later we can make this uniform across $s, a, h, t$ using the union bound.) Note that expanding out the definition of $\widehat{P}_\hi^t$ gives
+Let us bound this term for a fixed $s, a, h, t$. (Later we can make this uniform across $s, a, h, t$ using the union bound.) Note that expanding out the definition of $\widehat{P}_\step^t$ gives
 
 $$
 \begin{aligned}
-        \E_{s' \sim \widehat{P}_\hi^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] & = \sum_{s' \in \mathcal{S}} \frac{N^t_\hi(s, a, s')}{N^t_\hi(s, a)} V^\star_{h+1}(s')                                                     \\
-    & = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \sum_{s' \in \mathcal{S}} \ind{ (s_\hi^i, a_\hi^i, s_{h+1}^i) = (s, a, s') } V^\star_{h+1}(s') \\
-    & = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \underbrace{\ind{ (s_\hi^i, a_\hi^i) = (s, a) } V^\star_{h+1}(s_{h+1}^i)}_{X^i}
+        \E_{s' \sim \widehat{P}_\step^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] & = \sum_{s' \in \mathcal{S}} \frac{N^t_\step(s, a, s')}{N^t_\step(s, a)} V^\star_{h+1}(s')                                                     \\
+    & = \frac{1}{N^t_\step(s, a)} \sum_{i=0}^{t-1} \sum_{s' \in \mathcal{S}} \ind{ (s_\step^i, a_\step^i, s_{h+1}^i) = (s, a, s') } V^\star_{h+1}(s') \\
+    & = \frac{1}{N^t_\step(s, a)} \sum_{i=0}^{t-1} \underbrace{\ind{ (s_\step^i, a_\step^i) = (s, a) } V^\star_{h+1}(s_{h+1}^i)}_{X^i}
 \end{aligned}
 $$
 
@@ -335,17 +335,17 @@ Now, in order to apply Hoeffding's inequality, we would like to express the seco
 
 $$
 \begin{aligned}
-        \E_{s' \sim P^?_\hi(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]
-         & = \sum_{s' \in \mathcal{S}} P^?_\hi(s' \mid s, a) V^\star_{h+1}(s')                                                                              \\
-         & = \sum_{s' \in \mathcal{S}} \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) } P^?_\hi(s' \mid s, a) V^\star_{h+1}(s') \\
-         & = \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i.
+        \E_{s' \sim P^?_\step(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]
+         & = \sum_{s' \in \mathcal{S}} P^?_\step(s' \mid s, a) V^\star_{h+1}(s')                                                                              \\
+         & = \sum_{s' \in \mathcal{S}} \frac{1}{N^t_\step(s, a)} \sum_{i=0}^{t-1} \ind{ (s_\step^i, a_\step^i) = (s, a) } P^?_\step(s' \mid s, a) V^\star_{h+1}(s') \\
+         & = \frac{1}{N^t_\step(s, a)} \sum_{i=0}^{t-1} \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\step^i, a_\step^i)} X^i.
 \end{aligned}
 $$
 
-Now we can apply Hoeffding's inequality to $X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i$, which is bounded by $\hor$, to obtain that, with probability at least $1-\delta$,
+Now we can apply Hoeffding's inequality to $X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\step^i, a_\step^i)} X^i$, which is bounded by $\Step$, to obtain that, with probability at least $1-\delta$,
 
 $$
-\text{error} = \left| \frac{1}{N^t_\hi(s, a)} \sum_{i=0}^{t-1} \left(X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\hi^i, a_\hi^i)} X^i \right) \right| \le 2 H \sqrt{\frac{\ln(1/\delta)}{N_\hi^t(s, a)}}.
+\text{error} = \left| \frac{1}{N^t_\step(s, a)} \sum_{i=0}^{t-1} \left(X^i - \E_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_\step^i, a_\step^i)} X^i \right) \right| \le 2 H \sqrt{\frac{\ln(1/\delta)}{N_\step^t(s, a)}}.
 $$
 
-Applying a union bound over all $s \in \mathcal{S}, a \in \mathcal{A}, t \in [T], h \in [H]$ gives the $b_\hi^t(s, a)$ term above.
+Applying a union bound over all $s \in \mathcal{S}, a \in \mathcal{A}, t \in [T], h \in [H]$ gives the $b_\step^t(s, a)$ term above.

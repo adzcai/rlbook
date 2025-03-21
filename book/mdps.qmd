@@ -32,7 +32,8 @@ graph LR
     Environment --"observes *state*, *reward*"--> Agent
 ```
 
-This chapter will introduce the most popular mathematical formalization for such tasks:
+In this chapter,
+we'll investigate the most popular mathematical formalization for such tasks:
 **Markov decision processes (MDPs)**.
 We will study **dynamic programming (DP)** algorithms
 for solving tasks when the rules of the environment are totally known.
@@ -65,7 +66,7 @@ import numpy as np
 from IPython.display import Markdown, display
 ```
 
-## Introduction to Markov decision processes {#sec-finite-horizon-mdps}
+## Introduction to Markov decision processes {#sec-mdps-intro}
 
 To gain a better grasp of decision processes
 and identify the key features that we want to formalize,
@@ -154,8 +155,8 @@ The agent interacts with the environment in an indefinite loop.
 :::
 
 Consider an episodic task where the horizon is fixed and known in advance.
-That is, the agent takes up to $\hor$ actions,
-where $\hor$ is some finite positive integer.
+That is, the agent takes up to $\Step$ actions,
+where $\Step$ is some finite positive integer.
 We model such tasks with a **finite-horizon** MDP.
 Otherwise,
 if there's no limit to how long the episode can continue
@@ -175,9 +176,9 @@ In each episode:
 2. The agent observes the state and takes an action $a_0$.
 3. The environment updates to state $s_1$ according to the action.
 
-Steps 2 and 3 are repeated $\hor$ times,
-resulting in a sequence of states and actions $s_0, a_0, \dots, s_{\hor-1}, a_{\hor-1}, s_\hor$,
-where $s_\hor$ is some **terminal state**.
+Steps 2 and 3 are repeated $\Step$ times,
+resulting in a sequence of states and actions $s_0, a_0, \dots, s_{\Step-1}, a_{\Step-1}, s_\Step$,
+where $s_\Step$ is some **terminal state**.
 Here's the notation we will use to describe an MDP:
 
 ::: {#def-finite-horizon-mdp}
@@ -186,12 +187,12 @@ Here's the notation we will use to describe an MDP:
 The components of a finite-horizon Markov decision process are:
 
 1.  The **state** that the agent interacts with.
-    We use $s_\hi$ to denote the state at time $\hi$.
+    We use $s_\step$ to denote the state at time $\step$.
     $\mathcal{S}$ denotes the set of possible states,
     called the **state space**.
 
 2.  The **actions** that the agent can take.
-    We use $a_\hi$ to denote the action at time $\hi$.
+    We use $a_\step$ to denote the action at time $\step$.
     $\mathcal{A}$ denotes the set of possible actions,
     called the **action space**.
 
@@ -201,9 +202,9 @@ The components of a finite-horizon Markov decision process are:
     $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$
     that describe what state the agent
     transitions to after taking an action.
-    We write $P(s_{\hi + 1} \mid s_\hi, a_\hi)$
-    for the probability of transitioning to state $s_{\hi+1}$
-    when starting in state $s_\hi$ and taking action $a_\hi$.
+    We write $P(s_{\step + 1} \mid s_\step, a_\step)$
+    for the probability of transitioning to state $s_{\step+1}$
+    when starting in state $s_\step$ and taking action $a_\step$.
     Note that we use the letter $P$ for the state transition function
     and the symbol $\pr$ more generally to indicate probabilities of events.
 
@@ -212,16 +213,16 @@ The components of a finite-horizon Markov decision process are:
     $r : \mathcal{S} \times \mathcal{A} \to \mathbb{R}$,
     but many results will
     extend to a *stochastic* reward signal.
-    We will use $r_{\hi} := r(s_\hi, a_\hi)$
+    We will use $r_{\step} := r(s_\step, a_\step)$
     to denote the reward obtained
-    at time $\hi$.
+    at time $\step$.
 
-6.  A **time horizon** $\hor \in \mathbb{N}$
+6.  A **time horizon** $\Step \in \mathbb{N}$
     that specifies the maximum number of interactions in a **trajectory**,
     that is, a single sequence of states, actions, and rewards:
 
 $$
-(s_0, a_0, r_0, \dots, s_{\hor-1}, a_{\hor-1}, r_{\hor-1}).
+(s_0, a_0, r_0, \dots, s_{\Step-1}, a_{\Step-1}, r_{\Step-1}).
 $$ {#eq-trajectory}
 
 (Some sources omit the action and reward at the final time step.)
@@ -230,7 +231,7 @@ Combined together, these objects specify a finite-horizon Markov
 decision process:
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, P, r, \hor).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, P, r, \Step).
 $$ {#eq-finite-horizon-mdp}
 :::
 
@@ -280,7 +281,7 @@ from the past states and actions
 when conditioned on the current state and action:
 
 $$
-\pr(s_{\hi+1} \mid s_0, a_0, \dots, s_\hi, a_\hi) = \pr(s_{\hi+1} \mid s_\hi, a_\hi)
+\pr(s_{\step+1} \mid s_0, a_0, \dots, s_\step, a_\step) = \pr(s_{\step+1} \mid s_\step, a_\step)
 $$
 
 By their definition,
@@ -311,7 +312,7 @@ The **rewards** are as follows: You get penalized for tidying an orderly room (a
 but you get rewarded for ignoring an orderly room (since you can enjoy your additional time).
 Tidying a messy room is a chore that gives no reward.
 
-Consider a time horizon of $\hor = 7$ days (one interaction per day). Let
+Consider a time horizon of $\Step = 7$ days (one interaction per day). Let
 $t = 0$ correspond to Monday and $t = 6$ correspond to Sunday.
 :::
 
@@ -399,7 +400,7 @@ their outputs, inputs, and time-dependence.
     while a time-dependent policy can depend on the current timestep.
     For consistency with states and actions,
     we will denote the timestep as a subscript,
-    i.e. $\pi = \{ \pi_0, \dots, \pi_{\hor-1} \}.$
+    i.e. $\pi = \{ \pi_0, \dots, \pi_{\Step-1} \}.$
 ::::
 
 Note that for finite state and action spaces,
@@ -413,10 +414,10 @@ the policy's distribution over actions for the corresponding state.
 Here are some possible deterministic policies for the tidying MDP @exm-tidy-mdp:
 
 -   Always tidy: $\pi(s) = \text{tidy}$.
--   Only tidy on weekends: $\pi_\hi(s) = \text{tidy}$ if
-    $\hi \in \{ 5, 6 \}$ and $\pi_\hi(s) = \text{ignore}$ otherwise.
--   Only tidy if the room is messy: $\pi_\hi(\text{messy}) = \text{tidy}$
-    and $\pi_\hi(\text{orderly}) = \text{ignore}$ for all $\hi$.
+-   Only tidy on weekends: $\pi_\step(s) = \text{tidy}$ if
+    $\step \in \{ 5, 6 \}$ and $\pi_\step(s) = \text{ignore}$ otherwise.
+-   Only tidy if the room is messy: $\pi_\step(\text{messy}) = \text{tidy}$
+    and $\pi_\step(\text{orderly}) = \text{ignore}$ for all $\step$.
 :::
 
 ```{python}
@@ -449,13 +450,13 @@ immutability makes code easier to reason about.
 
 Suppose actions are chosen according to a history-independent policy.
 Use the chain rule of probability to show that,
-conditioned on the current state and action $s_\hi, a_\hi$,
-_all_ future states $s_{\hi'}$ where $\hi' > \hi$
+conditioned on the current state and action $s_\step, a_\step$,
+_all_ future states $s_{\step'}$ where $\step' > \step$
 are conditionally independent of the past states and actions.
-That is, for all $\hi' > \hi$,
+That is, for all $\step' > \step$,
 
 $$
-\pr(s_{\hi'} \mid s_0, a_0, \dots, s_\hi, a_\hi) = \pr(s_{\hi'} \mid s_\hi, a_\hi).
+\pr(s_{\step'} \mid s_0, a_0, \dots, s_\step, a_\step) = \pr(s_{\step'} \mid s_\step, a_\step).
 $$
 :::
 
@@ -476,7 +477,7 @@ This generative process induces a distribution $\rho^{\pi}$ over trajectories.
 Here is a possible trajectory for the tidying example:
 
 ::: {table}
-|  $\hi$  |    $0$    |    $1$    |    $2$    |   $3$    |   $4$   |    $5$    |    $6$    |
+|  $\step$  |    $0$    |    $1$    |    $2$    |   $3$    |   $4$   |    $5$    |    $6$    |
 | :-----: | :-------: | :-------: | :-------: | :------: | :-----: | :-------: | :-------: |
 |  $s$    |  orderly  |  orderly  |  orderly  |  messy   |  messy  |  orderly  |  orderly  |
 |  $a$    |   tidy    |  ignore   |  ignore   |  ignore  |  tidy   |  ignore   |  ignore   |
@@ -494,12 +495,12 @@ we can write down the likelihood function of this probability distribution in an
 
 Let $\pi$ be a history-independent policy.
 Then its trajectory distribution $\rho^\pi$ (@def-trajectory-distribution)
-over sequences of actions and states $(s_0, a_0, \dots, s_{\hor-1}, a_{\hor-1})$
+over sequences of actions and states $(s_0, a_0, \dots, s_{\Step-1}, a_{\Step-1})$
 can be written as
 
 $$
 \rho^{\pi}(\tau) := P_0(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots
-P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1}).
+P(s_{\Step-1} \mid s_{\Step-2}, a_{\Step-2}) \pi_{\Step-1}(a_{\Step-1} \mid s_{\Step-1}).
 $$ {#eq-autoregressive-trajectories}
 
 Note that we use a deterministic reward function,
@@ -558,7 +559,7 @@ def trajectory_log_likelihood(
 ```
 
 For a deterministic policy $\pi$,
-we have that $\pi_\hi(a \mid s) = \ind{a = \pi_\hi(s)}$;
+we have that $\pi_\step(a \mid s) = \ind{a = \pi_\step(s)}$;
 that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise.
 In this case, the only randomness in sampling trajectories comes from the initial state distribution $P_0$ and the state transitions $P$.
 
@@ -568,11 +569,11 @@ Recall that the core goal of an RL algorithm
 is to find a policy that maximizes the expected total reward
 
 $$
-\E [r_0 + \cdots + r_{\hor-1}],
+\E [r_0 + \cdots + r_{\Step-1}],
 $$ {#eq-expected-total-reward}
 
-where $r_\hi = r(s_\hi, a_\hi)$.
-Note that the quantity $r_0 + \cdots + r_{\hor-1}$ is a random variable
+where $r_\step = r(s_\step, a_\step)$.
+Note that the quantity $r_0 + \cdots + r_{\Step-1}$ is a random variable
 whose distribution depends on the policy's trajectory distribution $\rho^\pi$ (@def-trajectory-distribution).
 We need tools for describing the expected total reward achieved by a given policy,
 starting in specific states and actions.
@@ -583,21 +584,21 @@ and compute the optimal policy.
 #### Value function
 
 Let $\pi$ be a history-independent policy.
-Its **value function** at time $\hi$ returns the expected remaining reward
+Its **value function** at time $\step$ returns the expected remaining reward
 when starting in a specific state:
 
 $$
-V_\hi^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s]
+V_\step^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\step + \cdots + r_{H-1} \mid s_\step = s]
 $$ {#eq-v}
 
 Similarly,
 a history-independent policy's **action-value function** (aka Q function)
-at time $\hi$ returns its expected remaining reward,
+at time $\step$ returns its expected remaining reward,
 starting in a specific state
 _and_ taking a specific action:
 
 $$
-Q_\hi^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\hi + \cdots + r_{H-1} \mid s_\hi = s, a_\hi = a].
+Q_\step^\pi(s, a) := \E_{\tau \sim \rho^\pi} [r_\step + \cdots + r_{H-1} \mid s_\step = s, a_\step = a].
 $$ {#eq-q}
 :::
 
@@ -698,7 +699,7 @@ in that state
 over actions drawn from the policy:
 
 $$
-V_\hi^\pi(s) = \E_{a \sim \pi_\hi(s)} [Q_\hi^\pi(s, a)].
+V_\step^\pi(s) = \E_{a \sim \pi_\step(s)} [Q_\step^\pi(s, a)].
 $$ {#eq-relating-v-q}
 
 The value of a state-action pair
@@ -706,7 +707,7 @@ is the sum of the immediate reward
 and the expected value of the following state:
 
 $$
-Q_\hi^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\pi(s')].
+Q_\step^\pi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V_{\step+1}^\pi(s')].
 $$ {#eq-relating-q-v}
 :::
 
@@ -763,14 +764,14 @@ who is credited with introducing dynamic programming in 1953.
 For a history-independent policy $\pi$,
 
 $$
-V_\hi^\pi(s) = \E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\hi+1}^\pi(s')].
+V_\step^\pi(s) = \E_{\substack{a \sim \pi_\step(s) \\ s' \sim P(s, a)}} [r(s, a) + V_{\step+1}^\pi(s')].
 $$ {#eq-consistency}
 
 The proof is left as @exr-proof-consistency.
 This is a system of $H |\mathcal{S}|$ equations
 (one equation per state per timestep)
 in $H |\mathcal{S}|$ unknowns
-(the values $V_\hi^\pi(s)$),
+(the values $V_\step^\pi(s)$),
 so $V^\pi$ is the unique solution,
 as long as no two states are exactly identical to each other.
 :::
@@ -803,15 +804,15 @@ Note that for history-independent deterministic policies,
 the Bellman consistency equations simplify to
 
 $$
-V_\hi^\pi(s) = r(s, \pi_\hi(s)) + \E_{s' \sim P(s, \pi_\hi(s))} [V_{\hi+1}^\pi(s')].
+V_\step^\pi(s) = r(s, \pi_\step(s)) + \E_{s' \sim P(s, \pi_\step(s))} [V_{\step+1}^\pi(s')].
 $$ {#eq-bellman-deterministic}
 :::
 
 How can we actually _evaluate_ a given policy,
 that is, compute its value function?
 
-Suppose we start with some guess $v_\hi : \mathcal{S} \to \R$
-for the state values at time $\hi = 0, \dots, \hor-1$.
+Suppose we start with some guess $v_\step : \mathcal{S} \to \R$
+for the state values at time $\step = 0, \dots, \Step-1$.
 We write $v$ in lowercase to indicate
 that it might not be an actual value function of a policy.
 How might we improve this guess?
@@ -822,11 +823,11 @@ So if $v$ is close to the target $V^\pi$,
 it should nearly satisfy the system of equations
 associated with $\pi$.
 With this in mind,
-suppose we replace $V^\pi_{\hi+1}$ with $v_{\hi+1}$ on the right-hand side.
+suppose we replace $V^\pi_{\step+1}$ with $v_{\step+1}$ on the right-hand side.
 Then the new right-hand side quantity,
 
 $$
-\E_{\substack{a \sim \pi_\hi(s) \\ s' \sim P(s, a)}} [r(s, a) + v_{\hi+1}(s')],
+\E_{\substack{a \sim \pi_\step(s) \\ s' \sim P(s, a)}} [r(s, a) + v_{\step+1}(s')],
 $$ {#eq-updated-bellman}
 
 can be thought of as follows:
@@ -834,12 +835,12 @@ we take one action according to $\pi$,
 observe the immediate reward,
 and evaluate the next state using $v$.
 This is illustrated in @fig-updated-bellman below.
-This operation gives us an _updated_ estimate of the value of $V^\pi_\hi(s)$
+This operation gives us an _updated_ estimate of the value of $V^\pi_\step(s)$
 that is at least as accurate as applying $v(s)$ directly.
 
 ```{mermaid}
 %%| label: fig-updated-bellman
-%%| fig-cap: We evaluate the next state using $v_{\hi+1}$.
+%%| fig-cap: We evaluate the next state using $v_{\step+1}$.
 
 graph LR
     S0($$s$$) -- $$\pi_h$$ --> A0{{"$$a$$"}}
@@ -861,7 +862,7 @@ graph LR
 ```
 
 We can treat this operation
-of taking $v_\hi$ to its improved version in @eq-updated-bellman
+of taking $v_\step$ to its improved version in @eq-updated-bellman
 as a _higher-order function_
 known as the Bellman operator.
 
@@ -933,13 +934,13 @@ latex(
 The Bellman operator also gives us a concise way to express the Bellman consistency equations (@eq-consistency) for the value function:
 
 $$
-V_\hi^\pi = \mathcal{J}^{\pi_\hi}(V_{\hi+1}^\pi)
+V_\step^\pi = \mathcal{J}^{\pi_\step}(V_{\step+1}^\pi)
 $$ {#eq-bellman-operator-consistency}
 
 The Bellman consistency equations (@eq-consistency)
 give us a convenient algorithm for evaluating stationary policies:
-it expresses the value function at timestep $\hi$
-as a function of the value function at timestep $\hi+1$.
+it expresses the value function at timestep $\step$
+as a function of the value function at timestep $\step+1$.
 This means we can start at the end of the time horizon,
 where the value is known,
 and work backwards in time,
@@ -1044,8 +1045,8 @@ don't benefit over simply history-independent ones in MDPs.
 
 Let $\pi^\star$ be a history-independent policy.
 We say that $\pi^\star$ is **optimal**
-if $V_\hi^{\pi^\star}(s) \ge V_\hi^{\pi}(s)$
-for any history-independent policy $\pi$ at any time $\hi \in [\hor]$.
+if $V_\step^{\pi^\star}(s) \ge V_\step^{\pi}(s)$
+for any history-independent policy $\pi$ at any time $\step \in [\Step]$.
 In other words,
 an optimal history-independent policy achieves the highest possible
 expected remaining reward in every state at every time.
@@ -1071,19 +1072,19 @@ in which reward can be obtained.
 ::: {#def-optimal-value}
 #### Optimal value function
 
-Given a state $s$ at time $\hi$,
-the optimal value $V^\star_\hi(s)$
+Given a state $s$ at time $\step$,
+the optimal value $V^\star_\step(s)$
 is the _maximum_ expected remaining reward
 achievable by any history-independent policy $\pi$:
 
 $$
-V^\star_\hi(s) := \max_{\pi} V^{\pi}_\hi(s).
+V^\star_\step(s) := \max_{\pi} V^{\pi}_\step(s).
 $$ {#eq-optimal-value}
 
 The optimal action-value function is defined analogously:
 
 $$
-Q^\star_\hi(s, a) := \max_{\pi} Q^{\pi}_\hi(s, a).
+Q^\star_\step(s, a) := \max_{\pi} Q^{\pi}_\step(s, a).
 $$ {#eq-optimal-action-value}
 :::
 
@@ -1096,7 +1097,7 @@ The optimal value of a state
 is the maximum value across actions from that state:
 
 $$
-V_\hi^\star(s) = \max_{a \in \mathcal{A}} Q^\star_\hi(s, a).
+V_\step^\star(s) = \max_{a \in \mathcal{A}} Q^\star_\step(s, a).
 $$ {#eq-optimal-v-q}
 
 The optimal value of an action
@@ -1104,7 +1105,7 @@ is the immediate reward
 plus the expected value from the next state:
 
 $$
-Q^\star_\hi(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{\hi+1}(s')].
+Q^\star_\step(s, a) = r(s, a) + \E_{s' \sim P(s, a)} [V^\star_{\step+1}(s')].
 $$ {#eq-optimal-q-v}
 :::
 
@@ -1115,37 +1116,37 @@ using @eq-relating-v-q:
 
 $$
 \begin{aligned}
-V_\hi^\star(s)
-&= \max_\pi V^\pi_\hi(s) \\
-&= \max_\pi \E_{a \sim \pi_\hi(s)} [
-    Q^\pi_\hi(s, a)
+V_\step^\star(s)
+&= \max_\pi V^\pi_\step(s) \\
+&= \max_\pi \E_{a \sim \pi_\step(s)} [
+    Q^\pi_\step(s, a)
 ].
 \end{aligned}
 $$ {#eq-step-v-q}
 
-Now note that $Q^\pi_\hi$ doesn't depend on $\pi_\hi$,
-so we can split the maximization over $\pi = (\pi_0, \dots, \pi_{\hor-1})$
-into an _outer_ optimization over the immediate action $\pi_\hi$
+Now note that $Q^\pi_\step$ doesn't depend on $\pi_\step$,
+so we can split the maximization over $\pi = (\pi_0, \dots, \pi_{\Step-1})$
+into an _outer_ optimization over the immediate action $\pi_\step$
 and an _inner_ optimization over the remaining actions
-$\pi_{\hi + 1}, \dots, \pi_{\hor-1}$:
+$\pi_{\step + 1}, \dots, \pi_{\Step-1}$:
 
 $$
-\max_\pi \E_{a \sim \pi_\hi(s)} \Big[
-    Q^\pi_\hi(s, a)
+\max_\pi \E_{a \sim \pi_\step(s)} \Big[
+    Q^\pi_\step(s, a)
 ]
-= \max_{\pi_\hi} \E_{a \sim \pi_\hi(s)} \Big[
-    \max_{\pi_{\hi+1}, \dots, \pi_{\hor-1}}
-    Q^\pi_\hi(s, a)
+= \max_{\pi_\step} \E_{a \sim \pi_\step(s)} \Big[
+    \max_{\pi_{\step+1}, \dots, \pi_{\Step-1}}
+    Q^\pi_\step(s, a)
 \Big].
 $$ {#eq-step-split-optimization}
 
-But now the inner quantity is exactly $Q^\star_\hi(s, a)$
+But now the inner quantity is exactly $Q^\star_\step(s, a)$
 as defined in @eq-optimal-action-value.
-Now note that maximizing over $\pi_\hi$
+Now note that maximizing over $\pi_\step$
 reduces to just maximizing over the action taken:
 
 $$
-\max_{\pi_\hi} \E_{a \sim \pi_\hi(s)} [\cdots] = \max_{a \in \mathcal{A}} [\cdots].
+\max_{\pi_\step} \E_{a \sim \pi_\step(s)} [\cdots] = \max_{a \in \mathcal{A}} [\cdots].
 $$ {#eq-max-mean}
 
 This proves @eq-optimal-v-q.
@@ -1155,8 +1156,8 @@ We begin by using @eq-relating-q-v:
 
 $$
 \begin{aligned}
-Q^\star_\hi(s, a) &= \max_\pi Q^\pi_\hi(s, a) \\
-&= \max_\pi \Big[ r(s, a) + \E_{s' \sim P(s, a)}[ V^\pi_{\hi+1}(s') ] \Big]
+Q^\star_\step(s, a) &= \max_\pi Q^\pi_\step(s, a) \\
+&= \max_\pi \Big[ r(s, a) + \E_{s' \sim P(s, a)}[ V^\pi_{\step+1}(s') ] \Big]
 \end{aligned}
 $$
 
@@ -1172,10 +1173,10 @@ combining @eq-optimal-v-q and @eq-optimal-q-v gives the _Bellman optimality equa
 #### Bellman optimality equations
 
 The optimal value function function (@def-optimal-value) satisfies,
-for all timesteps $\hi \in [\hor-1]$,
+for all timesteps $\step \in [\Step-1]$,
 
 $$
-V_\hi^\star(s) = \max_a r(s, a) + \E_{s' \sim P(s, a)} [V_{\hi+1}^\star(s')].
+V_\step^\star(s) = \max_a r(s, a) + \E_{s' \sim P(s, a)} [V_{\step+1}^\star(s')].
 $$ {#eq-bellman-opt}
 
 Like the Bellman consistency equations (@eq-consistency),
@@ -1239,28 +1240,28 @@ including history-dependent ones,
 in the sense that for any partial trajectory
 
 $$
-\tau_\hi = (s_0, a_0, r_0, \dots, s_{\hi-1}, a_{\hi-1}, r_{\hi-1}, s_\hi),
+\tau_\step = (s_0, a_0, r_0, \dots, s_{\step-1}, a_{\step-1}, r_{\step-1}, s_\step),
 $$
 
 it achieves a higher expected remaining reward:
 
 $$
 \E_{\tau \sim \rho^{\pi^{Q^\star}}} [
-    r_\hi + \cdots + r_{\hor-1}
-    \mid \tau_\hi
+    r_\step + \cdots + r_{\Step-1}
+    \mid \tau_\step
 ]
 \ge
 \E_{\tau \sim \rho^{\pi^\text{any}}} [
-    r_\hi + \cdots + r_{\hor-1}
-    \mid \tau_\hi
+    r_\step + \cdots + r_{\Step-1}
+    \mid \tau_\step
 ].
 $$ {#eq-optimal-all}
 
-By conditioning on $\tau_\hi$,
+By conditioning on $\tau_\step$,
 we mean to condition on the event that
-$s_{\hi'}, a_{\hi'}$ are the state and action
-visited at time $\hi' < \hi$,
-and $s_\hi$ is the state at time $\hi$.
+$s_{\step'}, a_{\step'}$ are the state and action
+visited at time $\step' < \step$,
+and $s_\step$ is the state at time $\step$.
 (If the reward function were stochastic,
 we would condition on the observed rewards as well.)
 :::
@@ -1270,8 +1271,8 @@ We will now prove by induction that $\pi^{Q^\star}$ is optimal.
 Essentially,
 we begin at the _end_ of the trajectory,
 where the optimal action is simply the one that yields highest immediate reward.
-Once the optimal values at time $\hor-1$ are known,
-we use these to compute the optimal values at time $\hor-2$ using the Bellman optimality equations (@eq-bellman-opt),
+Once the optimal values at time $\Step-1$ are known,
+we use these to compute the optimal values at time $\Step-2$ using the Bellman optimality equations (@eq-bellman-opt),
 and proceed backward through the trajectory.
 
 ```{mermaid}
@@ -1296,59 +1297,59 @@ we can't take any more actions,
 so the $Q$-function simply returns the immediate reward:
 
 $$
-Q^\star_{\hor-1}(s, a) = r(s, a).
+Q^\star_{\Step-1}(s, a) = r(s, a).
 $$ {#eq-q-star-end}
 
-$\pi^{Q^\star}$ is then optimal across _all_ policies at time $\hor-1$,
+$\pi^{Q^\star}$ is then optimal across _all_ policies at time $\Step-1$,
 since the policy only determines a single action,
 the one which maximizes (expected) remaining reward:
 
 $$
-\E_{\tau \sim \rho^{\pi^{Q^\star}}}[ r_{\hor-1} \mid s_{\hor - 1} = s ]
+\E_{\tau \sim \rho^{\pi^{Q^\star}}}[ r_{\Step-1} \mid s_{\Step - 1} = s ]
 = \max_{a \in \mathcal{A}} r(s, a).
 $$ {#eq-end-optimal}
 
 For the inductive step,
 suppose $\pi^{Q^\star}$ is optimal across _all_ policies
-at time $\hi+1$.
+at time $\step+1$.
 Note that this implies $V^{\pi^{Q^\star}} = V^\star$.
 Then for any other policy $\pi^\text{any}$
 (which could be history-dependent),
-and for any partial trajectory $\tau_{\hi}$,
+and for any partial trajectory $\tau_{\step}$,
 
 $$
 \begin{aligned}
 &{} \E_{\tau \sim \rho^{\pi^\text{any}}} [
-    r_\hi + \cdots + r_{\hor-1} \mid \tau_{\hi}
+    r_\step + \cdots + r_{\Step-1} \mid \tau_{\step}
 ] \\
 ={}&
-\E_{\substack{a \sim \pi^\text{any}_\hi(\tau_\hi) \\ s' \sim P(s_\hi, a)}} \left[
-    r_\hi + \E_{\tau \sim \rho^{\pi^\text{any}}} [
-        r_{\hi+1} + \cdots + r_{\hor-1}
+\E_{\substack{a \sim \pi^\text{any}_\step(\tau_\step) \\ s' \sim P(s_\step, a)}} \left[
+    r_\step + \E_{\tau \sim \rho^{\pi^\text{any}}} [
+        r_{\step+1} + \cdots + r_{\Step-1}
         \mid
-        \tau_{\hi},
-        a_\hi = a,
-        s_{\hi+1} = s'
+        \tau_{\step},
+        a_\step = a,
+        s_{\step+1} = s'
     ]
 \right] \\
 \le{}&
-\E_{\substack{a \sim \pi^\text{any}_\hi(\tau_\hi) \\ s' \sim P(s_\hi, a)}} \left[
-    r_\hi + V^\star_{\hi+1}(s')
+\E_{\substack{a \sim \pi^\text{any}_\step(\tau_\step) \\ s' \sim P(s_\step, a)}} \left[
+    r_\step + V^\star_{\step+1}(s')
 \right] \\
 \le{}&
 \max_{a \in \mathcal{A}}
-r(s_\hi, a)
+r(s_\step, a)
 +
-\E_{s' \sim P(s_\hi, a)} \left[
-    V^\star_{\hi+1}(s')
+\E_{s' \sim P(s_\step, a)} \left[
+    V^\star_{\step+1}(s')
 \right] \\
-={}& V^\star_\hi(s_\hi).
+={}& V^\star_\step(s_\step).
 \end{aligned}
 $$ {#eq-pi-star-proof}
 
 This completes the inductive step,
 which shows that $\pi^{Q^\star}$ is optimal across _all_ policies
-at every time $\hi \in [\hor]$.
+at every time $\step \in [\Step]$.
 :::
 
 ```{python}
@@ -1375,10 +1376,10 @@ def find_optimal_policy(mdp: MDP):
 latex(find_optimal_policy, id_to_latex={"policy": r"\pi"}, trim_prefixes={"mdp"})
 ```
 
-At each of the $H$ timesteps, we must compute $Q^{\star}_\hi$
+At each of the $H$ timesteps, we must compute $Q^{\star}_\step$
 for each of the $|\mathcal{S}| |\mathcal{A}|$ state-action pairs.
 Each computation takes $|\mathcal{S}|$ operations to evaluate the average value over $s'$.
-Computing $\pi^\star_\hi$ and $V^\star_\hi$
+Computing $\pi^\star_\step$ and $V^\star_\step$
 then requires computing the value-maximizing action in each state,
 which is an additional $O(|\mathcal{S}| \mathcal{A}|)$ comparisons.
 This is dominated by the earlier term,
@@ -1471,7 +1472,7 @@ valuable the further into the future they are:
 $$
 r_0 + \gamma r_{1} + \gamma^2 r_{2} + \cdots
 =
-\sum_{\hi=0}^\infty \gamma^\hi r_{\hi}
+\sum_{\step=0}^\infty \gamma^\step r_{\step}
 \le R \frac{1}{1 - \gamma},
 $$ {#eq-discounted-rewards}
 
@@ -1545,7 +1546,7 @@ $$ {#eq-consistency-infinite}
 
 Note that we add up the rewards starting from time $0$,
 whereas in the finite-horizon case,
-we needed to explicitly add the rewards from time $\hi$ onwards.
+we needed to explicitly add the rewards from time $\step$ onwards.
 Heuristically speaking,
 why does it no longer matter which time step we start on
 when defining the value function?
@@ -1560,7 +1561,7 @@ they did in the finite-horizon setting
 (@thm-consistency).
 We need to insert a factor of $\gamma$
 to account for the discounting,
-and the $\hi$ subscript is gone since $V^\pi$ is stationary:
+and the $\step$ subscript is gone since $V^\pi$ is stationary:
 
 $$
 V^\pi(s) = \E_{\substack{a \sim \pi(s) \\ s' \sim P(s, a)}} [r(s, a) + \gamma V^\pi(s')].
@@ -1905,19 +1906,19 @@ Now let's move on to solving for an optimal policy in the infinite-horizon case.
 As in @def-optimal-policy-finite, an **optimal policy** $\pi^\star$
 is one that does at least as well as any other policy in all situations.
 That is, for all policies $\pi$,
-times $\hi \in \mathbb{N}$,
+times $\step \in \mathbb{N}$,
 and initial trajectories
-$\tau_{\le \hi} = (s_0, a_0, r_0, \dots, s_\hi)$,
+$\tau_{\le \step} = (s_0, a_0, r_0, \dots, s_\step)$,
 
 $$
 \begin{aligned}
     &
     \E_{\tau \sim \rho^{\pi^{\star}}}[
-        r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid \tau_{\le \hi}] \\
+        r_\step + \gamma r_{\step+1} + \gamma^2 r_{\step+2} + \cdots \mid \tau_{\le \step}] \\
     \ge{}
     &
     \E_{\tau \sim \rho^{\pi}}[
-        r_\hi + \gamma r_{\hi+1} + \gamma^2 r_{\hi+2} + \cdots \mid \tau_{\le \hi}]
+        r_\step + \gamma r_{\step+1} + \gamma^2 r_{\step+2} + \cdots \mid \tau_{\le \step}]
 \end{aligned}
 $$ {#eq-optimal-policy-infinite}
 
@@ -2244,7 +2245,7 @@ $$
     **state-action value function** $Q^\pi(s, a)$, which is the expected
     total reward starting from state $s$, taking action $a$, and then
     following policy $\pi$. In the finite-horizon setting, these also
-    depend on the timestep $\hi$.
+    depend on the timestep $\step$.
 -   The **Bellman consistency equation** is an equation that the value
     function must satisfy. It can be used to solve for the value
     functions exactly. Thinking of the r.h.s. of this equation as an

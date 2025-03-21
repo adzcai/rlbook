@@ -11,7 +11,7 @@ out of some class of policies $\Pi$,
 we want to find the one that achieves the maximum expected total reward:
 
 $$
-\hat \pi = \arg\max_{\pi \in \Pi} \E_{\tau \sim \rho^\pi} [R(\tau)] \quad \text{where} \quad R(\tau) := \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi).
+\hat \pi = \arg\max_{\pi \in \Pi} \E_{\tau \sim \rho^\pi} [R(\tau)] \quad \text{where} \quad R(\tau) := \sum_{\step=0}^{\Step-1} r(s_\step, a_\step).
 $$ {#eq-policy-optimization-goal}
 
 In a known environment with a finite set of states and actions,
@@ -81,7 +81,7 @@ by assuming that the state space conveys information about the timestep.
 We also use
 
 $$
-R(\tau) := \sum_{\hi=0}^{\hor-1} r_\hi
+R(\tau) := \sum_{\step=0}^{\Step-1} r_\step
 $$ {#eq-total-reward}
 
 to denote the total reward in a trajectory.
@@ -227,7 +227,7 @@ finite-dimensional:
 $$
 \begin{aligned}
 \hat \theta &= \arg\max_{\theta \in \R^D} J(\theta) \\
-\text{where}\quad J(\theta) &:= \E_{\tau \sim \rho^{\pi_\theta}} \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi).
+\text{where}\quad J(\theta) &:= \E_{\tau \sim \rho^{\pi_\theta}} \sum_{\step=0}^{\Step-1} r(s_\step, a_\step).
 \end{aligned}
 $$ {#eq-policy-optimization-parameters}
 
@@ -633,7 +633,7 @@ for a chosen parameterized policy class (@eq-parameterized-class):
 $$
 \theta^{t+1} = \theta^t + \eta \nabla J(\theta^t)
 \quad \text{where} \quad
-J(\theta) = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi) \right].
+J(\theta) = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{\step=0}^{\Step-1} r(s_\step, a_\step) \right].
 $$ {#eq-pg-optimization}
 
 The challenges lie mostly in computing unbiased gradient estimators (@def-unbiased-estimator)
@@ -751,16 +751,16 @@ g_{s, a}(\theta) &:= \psi \frac{\nabla \pi_{\theta}(a \mid s)}{\pi_{\theta}(a \m
 $$ {#eq-gd-log-step}
 
 Now we can extend this across the entire time horizon.
-Suppose we use $\picurr$ to roll out a trajectory $\tau = (s_0, a_0, \dots, s_{\hor-1}, a_{\hor-1})$
+Suppose we use $\picurr$ to roll out a trajectory $\tau = (s_0, a_0, \dots, s_{\Step-1}, a_{\Step-1})$
 and compute @eq-gd-log-step at each step of the trajectory.
 We compute a gradient coefficient at each timestep,
-so we denote each instance by $\psi_\hi(\tau)$.
+so we denote each instance by $\psi_\step(\tau)$.
 
 $$
 g_\tau(\theta)
 :=
-\sum_{\hi=0}^{\hor-1}
-\psi_\hi(\tau) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\sum_{\step=0}^{\Step-1}
+\psi_\step(\tau) \nabla \log \pi_{\theta}(a_\step \mid s_\step).
 $$ {#eq-general-pg-single}
 
 To reduce the variance,
@@ -771,19 +771,19 @@ This gives us the general form of the **policy gradient algorithm**:
 ::: {#def-policy-gradient}
 #### General policy gradient algorithm
 
-Suppose we are given an expression for the gradient coefficients $\psi_\hi(\tau)$.
+Suppose we are given an expression for the gradient coefficients $\psi_\step(\tau)$.
 Then we can perform policy gradient optimization as follows.
 
 At each iteration $t = 0, \dots, T-1$ of the algorithm,
 we sample $N$ trajectories
-$\tau^n = (s^n_0, a^n_0, r^n_0, \dots, s^n_{\hor-1}, a^n_{\hor-1}, r^n_{\hor-1})$,
+$\tau^n = (s^n_0, a^n_0, r^n_0, \dots, s^n_{\Step-1}, a^n_{\Step-1}, r^n_{\Step-1})$,
 and compute the update rule
 
 $$
 \begin{aligned}
 \theta^{t+1} &= \theta^t + \eta \frac{1}{N} \sum_{n=1}^N g_{\tau^n}(\theta^t) \\
-\text{where} \quad g_{\tau}(\theta) &= \sum_{\hi=0}^{\hor-1}
-\psi_\hi(\tau) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\text{where} \quad g_{\tau}(\theta) &= \sum_{\step=0}^{\Step-1}
+\psi_\step(\tau) \nabla \log \pi_{\theta}(a_\step \mid s_\step).
 \end{aligned}
 $$ {#eq-general-pg}
 :::
@@ -830,18 +830,18 @@ The last piece is to figure out what $\psi$ stands for.
 #### Brainstorming
 
 Can you think of any possibilities?
-$\psi_\hi(\tau)$ should correlate with the quality of the action taken at time $\hi$.
+$\psi_\step(\tau)$ should correlate with the quality of the action taken at time $\step$.
 It may depend on the current policy $\picurr$
-or any component of the trajectory $(s_0, a_0, r_0, \dots, s_{\hor-1}, a_{\hor-1}, r_{\hor-1})$.
+or any component of the trajectory $(s_0, a_0, r_0, \dots, s_{\Step-1}, a_{\Step-1}, r_{\Step-1})$.
 :::
 
 We won't keep you waiting:
-it turns out that if we set $\psi_\hi(\tau)$ to
+it turns out that if we set $\psi_\step(\tau)$ to
 
 1. $R(\tau)$ (the total reward of the trajectory) (@eq-estimator-reinforce),
-1. $\sum_{\hi'=\hi}^{\hor-1} r(s_{\hi'}, a_{\hi'})$ (the remaining reward in the trajectory),
-1. $Q^{\picurr}(s_\hi, a_\hi)$ (the current policy's Q-function), or
-1. $A^{\picurr}(s_\hi, a_\hi)$ (the current policy's advantage function),
+1. $\sum_{\step'=\step}^{\Step-1} r(s_{\step'}, a_{\step'})$ (the remaining reward in the trajectory),
+1. $Q^{\picurr}(s_\step, a_\step)$ (the current policy's Q-function), or
+1. $A^{\picurr}(s_\step, a_\step)$ (the current policy's advantage function),
 
 among other possibilities,
 the gradient term of @eq-general-pg is actually
@@ -856,8 +856,8 @@ $$
 \begin{aligned}
 g_{\tau}(\theta)
 &=
-\sum_{\hi=0}^{\hor-1}
-\psi_\hi(\tau) \nabla \log \pi_{\theta}(a_\hi \mid s_\hi) \\
+\sum_{\step=0}^{\Step-1}
+\psi_\step(\tau) \nabla \log \pi_{\theta}(a_\step \mid s_\step) \\
 \text{where} \quad
 \E_{\tau \sim \rho^{\pi_\theta}}[ g_{\tau}(\theta) ]
 &=
@@ -867,7 +867,7 @@ $$ {#eq-sgd-pg-estimator}
 
 ### The REINFORCE policy gradient {#sec-reinforce}
 
-We begin by showing that setting $\psi_\hi = \sum_{\hi'=0}^{\hor-1} r_{\hi'}$,
+We begin by showing that setting $\psi_\step = \sum_{\step'=0}^{\Step-1} r_{\step'}$,
 i.e. the total reward of the trajectory,
 provides an unbiased gradient estimator.
 
@@ -877,7 +877,7 @@ provides an unbiased gradient estimator.
 Substituting
 
 $$
-\psi_\hi(\tau) := R(\tau) := \sum_{\hi'=0}^{\hor-1} r_{\hi'}
+\psi_\step(\tau) := R(\tau) := \sum_{\step'=0}^{\Step-1} r_{\step'}
 $$ {#eq-estimator-reinforce}
 
 into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
@@ -889,9 +889,9 @@ $$
 \text{where} \quad
 g^\text{R}_{\tau} (\theta)
 &:=
-\sum_{\hi=0}^{\hor-1}
+\sum_{\step=0}^{\Step-1}
 R(\tau)
-\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\nabla \log \pi_{\theta}(a_\step \mid s_\step).
 \end{aligned}
 $$ {#eq-estimator-reinforce-unbiased}
 :::
@@ -948,25 +948,25 @@ that is, the gradient-log-likelihood (aka **score**)
 of the trajectory.
 Recall @thm-autoregressive-trajectories,
 in which we showed that when the state transitions are Markov
-(i.e. $s_{\hi}$ only depends on $s_{\hi-1}, a_{\hi-1}$)
+(i.e. $s_{\step}$ only depends on $s_{\step-1}, a_{\step-1}$)
 and the policy is history-independent
-(i.e. $a_\hi \sim \pi_\theta (\cdot \mid s_\hi)$),
+(i.e. $a_\step \sim \pi_\theta (\cdot \mid s_\step)$),
 we can autoregressively write out the likelihood of a trajectory under the policy $\pi_\theta$.
 Taking the log of the trajectory likelihood turns the products into sums:
 
 $$
-\log \rho^{\pi_\theta}(\tau) = \log P_0(s_0) + \sum_{\hi=0}^{\hor-1} \Big(
-    \log \pi_\theta(a_\hi \mid s_\hi) + \log P(s_{\hi+1} \mid s_\hi, a_\hi)
+\log \rho^{\pi_\theta}(\tau) = \log P_0(s_0) + \sum_{\step=0}^{\Step-1} \Big(
+    \log \pi_\theta(a_\step \mid s_\step) + \log P(s_{\step+1} \mid s_\step, a_\step)
 \Big)
 $$ {#eq-log-autoregressive}
 
 When we take the gradient with respect to the parameters $\theta$,
-only the $\log \pi_\theta(a_\hi \mid s_\hi)$ terms depend on $\theta$:
+only the $\log \pi_\theta(a_\step \mid s_\step)$ terms depend on $\theta$:
 
 $$
 \nabla \log \rho^{\pi_\theta}(\tau)
 =
-\sum_{\hi=0}^{\hor-1} \nabla \log \pi_\theta(a_\hi \mid s_\hi).
+\sum_{\step=0}^{\Step-1} \nabla \log \pi_\theta(a_\step \mid s_\step).
 $$ {#eq-grad-log-autoregressive}
 
 Substituting this into @eq-reinforce-grad-log-prob gives
@@ -975,7 +975,7 @@ $$
 \begin{aligned}
 \nabla J(\theta) &= \E_{\tau \sim \rho^{\pi_\theta}}
 \left[
-    \sum_{\hi=0}^{\hor-1} R(\tau) \nabla \log \pi_\theta(a_\hi \mid s_\hi)
+    \sum_{\step=0}^{\Step-1} R(\tau) \nabla \log \pi_\theta(a_\step \mid s_\step)
 \right] \\
 &= \E_{\tau \sim \rho^{\pi_\theta}} [g^\text{R}_\theta(\tau)],
 \end{aligned}
@@ -1119,7 +1119,7 @@ their mean over trajectories equals the true policy gradient (@def-unbiased-esti
 Can we construct estimators with lower *variance* as well?
 
 As a first step,
-note that the action taken at step $\hi$
+note that the action taken at step $\step$
 does not causally affect the reward from previous timesteps,
 since they're already in the past.
 So we should only use the reward from the current timestep onwards
@@ -1128,8 +1128,8 @@ to estimate the policy gradient.
 ::: {#thm-unbiased-remaining}
 #### Using the remaining reward is unbiased
 
-Substituting the reamining reward $\sum_{\hi'=\hi}^{\hor-1} r_{\hi'}$
-for $\psi_\hi(\tau)$
+Substituting the reamining reward $\sum_{\step'=\step}^{\Step-1} r_{\step'}$
+for $\psi_\step(\tau)$
 into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
 That is,
 
@@ -1139,9 +1139,9 @@ $$
 \text{where} \quad
 g^\text{rem}_{\tau} (\theta)
 &:=
-\sum_{\hi=0}^{\hor-1}
-\left( \sum_{\hi'=\hi}^{\hor-1} r_{\hi'} \right)
-\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\sum_{\step=0}^{\Step-1}
+\left( \sum_{\step'=\step}^{\Step-1} r_{\step'} \right)
+\nabla \log \pi_{\theta}(a_\step \mid s_\step).
 \end{aligned}
 $$ {#eq-unbiased-remaining}
 :::
@@ -1157,14 +1157,14 @@ we can replace the remaining reward with the policy's Q-function,
 evaluated at the current state.
 By the same reasoning as above,
 this also reduces the variance,
-since the only stochasticity in the expression $Q^{\pi_\theta}(s_\hi, a_\hi)$
+since the only stochasticity in the expression $Q^{\pi_\theta}(s_\step, a_\step)$
 comes from the current state and action.
 
 ::: {#thm-unbiased-q}
 #### Using the Q function is unbiased
 
-Substituting $Q^{\pi_\theta}(s_\hi, a_\hi)$
-for $\psi_\hi(\tau)$
+Substituting $Q^{\pi_\theta}(s_\step, a_\step)$
+for $\psi_\step(\tau)$
 into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
 That is,
 
@@ -1174,9 +1174,9 @@ $$
 \text{where} \quad
 g^\text{Q}_{\tau} (\theta)
 &:=
-\sum_{\hi=0}^{\hor-1}
-Q^{\pi_\theta}(s_\hi, a_\hi)
-\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\sum_{\step=0}^{\Step-1}
+Q^{\pi_\theta}(s_\step, a_\step)
+\nabla \log \pi_{\theta}(a_\step \mid s_\step).
 \end{aligned}
 $$ {#eq-estimator-q}
 :::
@@ -1201,7 +1201,7 @@ that yields an unbiased policy gradient estimator
 Substituting
 
 $$
-\psi^{\text{bl}}_\hi(\tau) := \psi_\hi(\tau) - b_\theta(s_\hi)
+\psi^{\text{bl}}_\step(\tau) := \psi_\step(\tau) - b_\theta(s_\step)
 $$ {#eq-estimator-baseline}
 
 into the general policy gradient estimator @eq-general-pg
@@ -1214,9 +1214,9 @@ $$
 \text{where} \quad
 g^\text{bl}_{\tau} (\theta)
 &:=
-\sum_{\hi=0}^{\hor-1}
-(\psi_\hi(\tau) - b_\theta(s_\hi))
-\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\sum_{\step=0}^{\Step-1}
+(\psi_\step(\tau) - b_\theta(s_\step))
+\nabla \log \pi_{\theta}(a_\step \mid s_\step).
 \end{aligned}
 $$ {#eq-estimator-q}
 :::
@@ -1227,20 +1227,20 @@ $$ {#eq-estimator-q}
 We leave the proof of @thm-unbiased-baseline as an exercise as well.
 :::
 
-For example, we might want $b_\hi$ to estimate the average remaining reward at a given timestep:
+For example, we might want $b_\step$ to estimate the average remaining reward at a given timestep:
 
 $$
-b_\theta(s_\hi) = \E_{\tau \sim \rho^{\pi_\theta}} \left[
-    \sum_{\hi'=\hi}^{\hor-1} r_{\hi'}
+b_\theta(s_\step) = \E_{\tau \sim \rho^{\pi_\theta}} \left[
+    \sum_{\step'=\step}^{\Step-1} r_{\step'}
 \right].
 $$ {#eq-exm-remaining}
 
 As a better baseline, we could instead choose the *value function* of $\pi_{\theta}$.
 For any policy $\pi$,
-note that the random variable $Q^\pi_\hi(s, a) - V^\pi_\hi(s)$,
+note that the random variable $Q^\pi_\step(s, a) - V^\pi_\step(s)$,
 where the randomness is taken over the action $a$,
 is centered around zero.
-(Recall $V^\pi_\hi(s) = \E_{a \sim \pi} Q^\pi_\hi(s, a).$)
+(Recall $V^\pi_\step(s) = \E_{a \sim \pi} Q^\pi_\step(s, a).$)
 This quantity matches the intuition given in @sec-pg-intro:
 it is *positive* for actions that are better than average (in state $s$),
 and *negative* for actions that are worse than average.
@@ -1251,17 +1251,17 @@ the **advantage function.**
 #### Advantage function
 
 For a policy $\pi$,
-its advantage function $A^\pi$ at time $\hi$ is given by
+its advantage function $A^\pi$ at time $\step$ is given by
 
 $$
-A^\pi_\hi(s, a) := Q^\pi_\hi(s, a) - V^\pi_\hi(s).
+A^\pi_\step(s, a) := Q^\pi_\step(s, a) - V^\pi_\step(s).
 $$ {#eq-advantage}
 :::
 
 Note that for an optimal policy $\pi^\star$,
 the advantage of a given state-action pair is always zero or negative.
 
-We can now use $A^{\pi_{\theta}}(s_\hi, a_\hi)$
+We can now use $A^{\pi_{\theta}}(s_\step, a_\step)$
 for the gradient coefficients
 to obtain the ultimate unbiased policy gradient estimator.
 
@@ -1271,7 +1271,7 @@ to obtain the ultimate unbiased policy gradient estimator.
 Substituting
 
 $$
-\psi_\hi(\tau) := A^{\pi_\theta}(s_\hi, a_\hi)
+\psi_\step(\tau) := A^{\pi_\theta}(s_\step, a_\step)
 $$ {#eq-estimator-adv}
 
 into the general policy gradient estimator @eq-general-pg gives an unbiased estimator.
@@ -1283,9 +1283,9 @@ $$
 \text{where} \quad
 g^\text{adv}_{\tau} (\theta)
 &:=
-\sum_{\hi=0}^{\hor-1}
-A^{\pi_\theta}(s_\hi, a_\hi)
-\nabla \log \pi_{\theta}(a_\hi \mid s_\hi).
+\sum_{\step=0}^{\Step-1}
+A^{\pi_\theta}(s_\step, a_\step)
+\nabla \log \pi_{\theta}(a_\step \mid s_\step).
 \end{aligned}
 $$ {#eq-estimator-adv}
 :::
@@ -1340,16 +1340,16 @@ Plugging this into our policy gradient expression, we get
 $$
 \begin{aligned}
     \nabla J(\theta) & = \E_{\tau \sim \rho^{\pi_\theta}} \left[
-    \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\hi | s_\hi) A_\hi^{\pi_\theta}
+    \sum_{t=0}^{T-1} \nabla \log \pi_\theta(a_\step | s_\step) A_\step^{\pi_\theta}
     \right]                                                                                                                    \\
                      & = \E_{\tau \sim \rho^{\pi_\theta}} \left[
-    \sum_{t=0}^{T-1} \left( \phi(s_\hi, a_\hi) - \E_{a' \sim \pi(s_\hi)} \phi(s_\hi, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi)
+    \sum_{t=0}^{T-1} \left( \phi(s_\step, a_\step) - \E_{a' \sim \pi(s_\step)} \phi(s_\step, a') \right) A_\step^{\pi_\theta}(s_\step, a_\step)
     \right]                                                                                                                    \\
-                     & = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{t=0}^{T-1} \phi(s_\hi, a_\hi) A_\hi^{\pi_\theta} (s_\hi, a_\hi) \right]
+                     & = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{t=0}^{T-1} \phi(s_\step, a_\step) A_\step^{\pi_\theta} (s_\step, a_\step) \right]
 \end{aligned}
 $$
 
-Why can we drop the $\E \phi(s_\hi, a')$ term? By linearity of expectation, consider the dropped term at a single timestep: $\E_{\tau \sim \rho^{\pi_\theta}} \left[ \left( \E_{a' \sim \pi(s_\hi)} \phi(s, a') \right) A_\hi^{\pi_\theta}(s_\hi, a_\hi) \right].$ By Adam's Law, we can wrap the advantage term in a conditional expectation on the state $s_\hi.$ Then we already know that $\E_{a \sim \pi(s)} A_\hi^{\pi}(s, a) = 0,$ and so this entire term vanishes.
+Why can we drop the $\E \phi(s_\step, a')$ term? By linearity of expectation, consider the dropped term at a single timestep: $\E_{\tau \sim \rho^{\pi_\theta}} \left[ \left( \E_{a' \sim \pi(s_\step)} \phi(s, a') \right) A_\step^{\pi_\theta}(s_\step, a_\step) \right].$ By Adam's Law, we can wrap the advantage term in a conditional expectation on the state $s_\step.$ Then we already know that $\E_{a \sim \pi(s)} A_\step^{\pi}(s, a) = 0,$ and so this entire term vanishes.
 :::
 
 ## Comparing policy gradient algorithms to policy iteration
@@ -1373,24 +1373,24 @@ which provides an expression for comparing the difference between two value func
 ::: {#thm-pdl}
 #### Performance difference lemma [@kakade_approximately_2002, Lemma 6.1]
 
-Suppose Alice is playing a game (an MDP). Bob is spectating, and can evaluate how good an action is compared to his own strategy. (That is, Bob can compute his *advantage function* $A_\hi^{\text{Bob}}(s_\hi, a_\hi)$). The performance difference lemma says that Bob can now calculate exactly how much better or worse he is than Alice as follows:
+Suppose Alice is playing a game (an MDP). Bob is spectating, and can evaluate how good an action is compared to his own strategy. (That is, Bob can compute his *advantage function* $A_\step^{\text{Bob}}(s_\step, a_\step)$). The performance difference lemma says that Bob can now calculate exactly how much better or worse he is than Alice as follows:
 
 $$
-V_0^{\text{Alice}}(s) - V_0^{\text{Bob}}(s) = \E_{\tau \sim \rho^\text{Alice}} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\text{Bob}} (s_\hi, a_\hi) \mid s_0 = s \right]
+V_0^{\text{Alice}}(s) - V_0^{\text{Bob}}(s) = \E_{\tau \sim \rho^\text{Alice}} \left[ \sum_{\step=0}^{\Step-1} A_\step^{\text{Bob}} (s_\step, a_\step) \mid s_0 = s \right]
 $$ {#eq-pdl}
 
 where $\rho^\text{Alice}$ denotes Alice's trajectory distribution (@def-trajectory-distribution).
 :::
 
-To see why, consider a specific step $\hi$ in the trajectory. We compute how much better actions from Bob are than the actions from Alice, on average. But this is exactly the average Bob-advantage across actions from Alice, as described in the PDL!
+To see why, consider a specific step $\step$ in the trajectory. We compute how much better actions from Bob are than the actions from Alice, on average. But this is exactly the average Bob-advantage across actions from Alice, as described in the PDL!
 
 ::: {.proof}
 Formally, this corresponds to a nice telescoping simplification when we expand out the definition of the advantage function. Note that
 
 $$
 \begin{aligned}
-A^\pi_\hi(s_\hi, a_\hi) &= Q^\pi_\hi(s_\hi, a_\hi) - V^\pi_\hi(s_\hi) \\
-&= r_\hi(s_\hi, a_\hi) + \E_{s_{\hi+1} \sim P(\cdot \mid s_\hi, a_\hi)} [V^\pi_{\hi+1}(s_{\hi+1})] - V^\pi_\hi(s_\hi)
+A^\pi_\step(s_\step, a_\step) &= Q^\pi_\step(s_\step, a_\step) - V^\pi_\step(s_\step) \\
+&= r_\step(s_\step, a_\step) + \E_{s_{\step+1} \sim P(\cdot \mid s_\step, a_\step)} [V^\pi_{\step+1}(s_{\step+1})] - V^\pi_\step(s_\step)
 \end{aligned}
 $$ {#eq-advantage-expansion}
 
@@ -1398,11 +1398,11 @@ so expanding out the r.h.s. expression of @eq-pdl and grouping terms together gi
 
 $$
 \begin{aligned}
-\E_{\tau \sim \rho^\text{Alice}} \left[ \sum_{\hi=0}^{\hor-1} A_\hi^{\text{Bob}} (s_\hi, a_\hi) \mid s_0 = s \right]
+\E_{\tau \sim \rho^\text{Alice}} \left[ \sum_{\step=0}^{\Step-1} A_\step^{\text{Bob}} (s_\step, a_\step) \mid s_0 = s \right]
 &= \E_{\tau \sim \rho_\text{Alice}} \bigg[
-    \left( \sum_{\hi=0}^{\hor-1} r_\hi(s_\hi, a_\hi) \right) \\
-& \quad {} + \left( V^{\text{Bob}}_1(s_1) + \cdots + V^{\text{Bob}}_\hor(s_\hor) \right) \\
-& \quad {} - \left( V^{\text{Bob}}_0(s_0) + \cdots + V^{\text{Bob}}_{\hor-1}(s_{\hor-1}) \right)
+    \left( \sum_{\step=0}^{\Step-1} r_\step(s_\step, a_\step) \right) \\
+& \quad {} + \left( V^{\text{Bob}}_1(s_1) + \cdots + V^{\text{Bob}}_\Step(s_\Step) \right) \\
+& \quad {} - \left( V^{\text{Bob}}_0(s_0) + \cdots + V^{\text{Bob}}_{\Step-1}(s_{\Step-1}) \right)
     \mid s_0 = s \bigg] \\
 &= V^{\text{Alice}}_0(s) - V^{\text{Bob}}_0(s).
 \end{aligned}
@@ -1412,7 +1412,7 @@ as desired.
 Note that the "inner" expectation from expanding the advantage function
 has the same distribution as the outer one,
 so omitting it here is valid.
-Also note that $V_\hor^\pi$,
+Also note that $V_\Step^\pi$,
 the value after reaching a terminal state,
 is always zero for any policy $\pi$.
 :::
@@ -1424,7 +1424,7 @@ We'll assume these policies are deterministic.
 Define $\Delta_\infty$ to be the most negative advantage:
 
 $$
-\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\hi(s, \widetilde \pi(s)).
+\Delta_\infty = \min_{s \in \mathcal{S}} A^{\pi}_\step(s, \widetilde \pi(s)).
 $$ {#eq-compare-advantage}
 
 Suppose $\Delta_\infty < 0$, i.e. there exists a state $s$ such that
@@ -1441,7 +1441,7 @@ Plugging this into the PDL (@thm-pdl) gives
 $$
 \begin{aligned}
 V_0^{\widetilde \pi}(s) - V_0^{\pi}(s) &= \E_{\tau \sim \rho^{\widetilde \pi}} \left[
-\sum_{\hi=0}^{\hor-1} A_\hi^{\pi}(s_\hi, a_\hi)
+\sum_{\step=0}^{\Step-1} A_\step^{\pi}(s_\step, a_\step)
 \mid s_0 = s
 \right] \\
 &\ge H \Delta_\infty \\
@@ -1605,7 +1605,7 @@ $$
     \log \rho^{\picurr}(\tau) - \log \rho^{\pinext}(\tau)
 \right] \\
 &= \E_{\tau \sim \rho^{\picurr}} \left[
-    \sum_{\hi=0}^{\hor-1} \log \picurr(a_\hi \mid s_\hi) - \log \pinext(a_\hi \mid s_\hi)
+    \sum_{\step=0}^{\Step-1} \log \picurr(a_\step \mid s_\step) - \log \pinext(a_\step \mid s_\step)
 \right] \\
 \end{aligned}
 $$ {#eq-kld-trajectories}
@@ -1641,9 +1641,9 @@ $$
 \begin{aligned}
 \theta^{k+1} &\gets \arg\max_{\thetanext \in \mathbb{R}^D}
 \E_{\tau \sim \rho^{\picurr}} \left[
-    \sum_{\hi=0}^{\hor-1}
-    \E_{a'_\hi \sim \pi^{\thetanext}(\cdot \mid s_\hi)}
-    A^{\picurr}(s_\hi, a'_\hi)
+    \sum_{\step=0}^{\Step-1}
+    \E_{a'_\step \sim \pi^{\thetanext}(\cdot \mid s_\step)}
+    A^{\picurr}(s_\step, a'_\step)
 \right] \\
 & \text{where } \kl{\rho^{\picurr}}{\rho^{\pinext}} < \delta
 \end{aligned}
@@ -1734,12 +1734,12 @@ We also take a second-order Taylor approximation to the constraint function:
 ::: {#thm-kl-quadratic}
 #### Quadratic approximation to KL divergence.
 
-The second-order approximation to $d^\ki(\theta) := \kl{p_\thetacurr}{p_\theta}$
+The second-order approximation to $d^\iter(\theta) := \kl{p_\thetacurr}{p_\theta}$
 is given by
 
 $$
 \begin{aligned}
-d^\ki(\theta)
+d^\iter(\theta)
 &=
 \frac{1}{2} (\theta - \thetacurr)^\top F_\thetacurr (\theta - \thetacurr) 
 +
@@ -1755,10 +1755,10 @@ where $F_{\thetacurr}$ is the **Fisher information matrix** (FIM) of the traject
 We leave the details as an exercise.
 Here is an outline:
 
-1.  Write down the Taylor expansion of $d^\ki(\theta)$ around $\thetacurr$.
-1.  Show that the zeroth-order term $d^\ki(\thetacurr)$ is zero.
-1.  Show that the gradient $\nabla d^\ki(\theta) \vert_{\theta = \thetacurr}$ is zero.
-1.  Show that the Hessian $\nabla^2 d^\ki(\theta) \vert_{\theta = \thetacurr}$ equals $F_\thetacurr$.
+1.  Write down the Taylor expansion of $d^\iter(\theta)$ around $\thetacurr$.
+1.  Show that the zeroth-order term $d^\iter(\thetacurr)$ is zero.
+1.  Show that the gradient $\nabla d^\iter(\theta) \vert_{\theta = \thetacurr}$ is zero.
+1.  Show that the Hessian $\nabla^2 d^\iter(\theta) \vert_{\theta = \thetacurr}$ equals $F_\thetacurr$.
 :::
 
 ::: {#def-fisher-matrix}
@@ -1848,7 +1848,7 @@ and approximate the expectation by a sample average,
 since we can write the Fisher information matrix as
 
 $$
-F_{\theta} = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{\hi=0}^{\hor-1} (\nabla \log \pi_\theta (a_\hi \mid s_\hi)) (\nabla \log \pi_\theta(a_\hi \mid s_\hi))^\top \right].
+F_{\theta} = \E_{\tau \sim \rho^{\pi_\theta}} \left[ \sum_{\step=0}^{\Step-1} (\nabla \log \pi_\theta (a_\step \mid s_\step)) (\nabla \log \pi_\theta(a_\step \mid s_\step))^\top \right].
 $$ {#eq-fisher-trajectory}
 
 Note that we've used the Markov property to cancel out the cross terms corresponding to two different time steps.
@@ -1997,7 +1997,7 @@ This gives the following objective [@schulman_proximal_2017]:
 
 $$
 \begin{aligned}
-\theta^{k+1} &\gets \arg\max_{\thetanext} \E_{\tau \sim \rho^{\picurr}} \left[ \sum_{\hi=0}^{\hor-1} \E_{a'_\hi \sim \pi_{\theta}(s_\hi)} A^{\picurr}(s_\hi, a'_\hi) \right] - \lambda \kl{\rho^{\picurr}}{\rho^{\pinext}}
+\theta^{k+1} &\gets \arg\max_{\thetanext} \E_{\tau \sim \rho^{\picurr}} \left[ \sum_{\step=0}^{\Step-1} \E_{a'_\step \sim \pi_{\theta}(s_\step)} A^{\picurr}(s_\step, a'_\step) \right] - \lambda \kl{\rho^{\picurr}}{\rho^{\pinext}}
 \end{aligned}
 $$ {#eq-ppo-penalty}
 
@@ -2012,8 +2012,8 @@ which gives us
 $$
 \begin{aligned}
     \kl{\rho^{\picurr}}{\rho^{\pi_{\theta}}} & = \E_{\tau \sim \rho^{\picurr}} \left[\log \frac{\rho^{\picurr}(\tau)}{\rho^{\pi_{\theta}}(\tau)}\right]                                                       \\
-                                           & = \E_{\tau \sim \rho^{\picurr}} \left[ \sum_{\hi=0}^{\hor-1} \log \frac{\picurr(a_\hi \mid s_\hi)}{\pi_{\theta}(a_\hi \mid s_\hi)}\right] \\
-                                           & = \E_{\tau \sim \rho^{\picurr}} \left[ \sum_{\hi=0}^{\hor-1} \log \frac{1}{\pi_{\theta}(a_\hi \mid s_\hi)}\right] + c
+                                           & = \E_{\tau \sim \rho^{\picurr}} \left[ \sum_{\step=0}^{\Step-1} \log \frac{\picurr(a_\step \mid s_\step)}{\pi_{\theta}(a_\step \mid s_\step)}\right] \\
+                                           & = \E_{\tau \sim \rho^{\picurr}} \left[ \sum_{\step=0}^{\Step-1} \log \frac{1}{\pi_{\theta}(a_\step \mid s_\step)}\right] + c
 \end{aligned}
 $$
 
@@ -2023,10 +2023,10 @@ This gives the objective
 $$
 L^k(\theta)
 =
-\E_{s_0, \dots, s_{\hor-1} \sim \rho^{\picurr}} \left[
-    \sum_{\hi=0}^{\hor-1} \E_{a_\hi \sim \pi_{\theta}(s_\hi)} A^{\picurr}(s_\hi, a_\hi)
+\E_{s_0, \dots, s_{\Step-1} \sim \rho^{\picurr}} \left[
+    \sum_{\step=0}^{\Step-1} \E_{a_\step \sim \pi_{\theta}(s_\step)} A^{\picurr}(s_\step, a_\step)
 \right] - \lambda \E_{\tau \sim \rho^{\picurr}}
-\left[ \sum_{\hi=0}^{\hor-1} \log \frac{1}{\pi_{\theta}(a_\hi \mid s_\hi)}\right]
+\left[ \sum_{\step=0}^{\Step-1} \log \frac{1}{\pi_{\theta}(a_\step \mid s_\step)}\right]
 $$
 
 Once again,
@@ -2040,26 +2040,26 @@ we want to estimate an expectation over one distribution by sampling from anothe
 We can use importance sampling (@thm-importance-sampling) to rewrite the inner expectation:
 
 $$
-\E_{a_\hi \sim \pinext(s_\hi)} A^{\picurr}(s_\hi, a_\hi)
+\E_{a_\step \sim \pinext(s_\step)} A^{\picurr}(s_\step, a_\step)
 =
-\E_{a_\hi \sim \picurr(s_\hi)} \left[
-    \frac{\pinext(a_\hi \mid s_\hi)}{\picurr(a_\hi \mid s_\hi)} A^{\picurr}(s_\hi, a_\hi)
+\E_{a_\step \sim \picurr(s_\step)} \left[
+    \frac{\pinext(a_\step \mid s_\step)}{\picurr(a_\step \mid s_\step)} A^{\picurr}(s_\step, a_\step)
 \right]
 $$ {#eq-likelihood-ratio}
 
 ::: {#rem-importance-interpretation}
 #### Interpretation of likelihood ratio
 
-Suppose $a^+$ is a "good" action for $\picurr$ in state $s_\hi$,
-i.e. $A^\picurr(s_\hi, a^+) > 0$.
+Suppose $a^+$ is a "good" action for $\picurr$ in state $s_\step$,
+i.e. $A^\picurr(s_\step, a^+) > 0$.
 Then maximizing @eq-likelihood-ratio encourages $\thetanext$ to _increase_ the probability ratio
-$\pinext(a_\hi \mid s_\hi) / \picurr(a_\hi \mid s_\hi)$.
+$\pinext(a_\step \mid s_\step) / \picurr(a_\step \mid s_\step)$.
 
 Otherwise,
-if $a^-$ is a "bad" action for $\picurr$ in state $s_\hi$
-(i.e. $A^\picurr(s_\hi, a^-) < 0$),
+if $a^-$ is a "bad" action for $\picurr$ in state $s_\step$
+(i.e. $A^\picurr(s_\step, a^-) < 0$),
 then maximizing @eq-likelihood-ratio encourages $\thetanext$ to _decrease_ the probability ratio
-$\pinext(a_\hi \mid s_\hi) / \picurr(a_\hi \mid s_\hi)$.
+$\pinext(a_\step \mid s_\step) / \picurr(a_\step \mid s_\step)$.
 :::
 
 Now we can combine the expectations together to get the objective
@@ -2069,9 +2069,9 @@ Now we can combine the expectations together to get the objective
 
 $$
 L^k(\theta) = \E_{\tau \sim \rho^{\picurr}} \left[
-    \sum_{\hi=0}^{\hor-1} \left(
-    \frac{\pi_\theta(a_\hi \mid s_\hi)}{\picurr(a_\hi \mid s_\hi)} A^{\picurr}(s_\hi, a_\hi)
-    - \lambda \log \frac{1}{\pi_\theta(a_\hi \mid s_\hi)}
+    \sum_{\step=0}^{\Step-1} \left(
+    \frac{\pi_\theta(a_\step \mid s_\step)}{\picurr(a_\step \mid s_\step)} A^{\picurr}(s_\step, a_\step)
+    - \lambda \log \frac{1}{\pi_\theta(a_\step \mid s_\step)}
     \right)
 \right]
 $$
@@ -2141,30 +2141,30 @@ this becomes
 
 $$
 L^k(\thetanext) = \E_{\tau \sim \rho^{\picurr}} \left[
-    \sum_{\hi=0}^{\hor-1}
-    \frac{\pi_\thetanext(a_\hi \mid s_\hi)}{\picurr(a_\hi \mid s_\hi)} A^{\picurr}(s_\hi, a_\hi)
+    \sum_{\step=0}^{\Step-1}
+    \frac{\pi_\thetanext(a_\step \mid s_\step)}{\picurr(a_\step \mid s_\step)} A^{\picurr}(s_\step, a_\step)
 \right]
 \approx V(\pi_\thetanext) - V(\picurr).
 $$ {#eq-penalty-no-kl}
 
 In the following part,
-define the policy ratio at time $\hi \in [\hor]$ as
+define the policy ratio at time $\step \in [\Step]$ as
 
 $$
-\Lambda_\hi(\thetanext, \thetacurr) = \frac{\pinext(a_\hi \mid s_\hi)}{\picurr(a_\hi \mid s_\hi)}.
+\Lambda_\step(\thetanext, \thetacurr) = \frac{\pinext(a_\step \mid s_\step)}{\picurr(a_\step \mid s_\step)}.
 $$ {#eq-policy-ratio}
 
 The clipped surrogate objective function modifies @eq-penalty-no-kl
 to remove incentives
 for $\pinext$ to differ greatly from $\picurr$.
 Specifically, we choose some small $\epsilon > 0$,
-and constrain $\Lambda_\hi(\thetanext, \thetacurr) \in (1-\epsilon, 1+\epsilon)$.
+and constrain $\Lambda_\step(\thetanext, \thetacurr) \in (1-\epsilon, 1+\epsilon)$.
 Formally,
 
 $$
-\Lambda_\hi^\text{clipped}(\thetanext, \thetacurr)
+\Lambda_\step^\text{clipped}(\thetanext, \thetacurr)
 =
-\text{clip}(\Lambda_\hi(\thetanext, \thetacurr), 1-\epsilon, 1+\epsilon),
+\text{clip}(\Lambda_\step(\thetanext, \thetacurr), 1-\epsilon, 1+\epsilon),
 $$ {#eq-clip-ratio}
 
 where
@@ -2177,20 +2177,20 @@ $$ {#eq-def-clip}
 #### Interpretation
 
 As in @rem-importance-interpretation,
-suppose $a_\hi^+$ and $a_\hi^-$ are a "good" and "bad" action in $s_\hi$,
-i.e. $A^\picurr(s_\hi, a_\hi^+) > 0$ and $A^\picurr(s_\hi, a_\hi^-) < 0$.
-By clipping $\Lambda_\hi(\thetanext, \thetacurr)$,
-no additional benefit is gained by increasing $\pinext(a_\hi^+ \mid s_\hi)$
-above $(1+\epsilon) \picurr(a_\hi^+ \mid s_\hi)$,
-or by decreasing $\picurr(a_\hi^- \mid s_\hi)$
-under $(1-\epsilon) \picurr(a_\hi^- \mid s_\hi)$.
+suppose $a_\step^+$ and $a_\step^-$ are a "good" and "bad" action in $s_\step$,
+i.e. $A^\picurr(s_\step, a_\step^+) > 0$ and $A^\picurr(s_\step, a_\step^-) < 0$.
+By clipping $\Lambda_\step(\thetanext, \thetacurr)$,
+no additional benefit is gained by increasing $\pinext(a_\step^+ \mid s_\step)$
+above $(1+\epsilon) \picurr(a_\step^+ \mid s_\step)$,
+or by decreasing $\picurr(a_\step^- \mid s_\step)$
+under $(1-\epsilon) \picurr(a_\step^- \mid s_\step)$.
 :::
 
 As a final step,
 we only use this clipped objective if it is smaller than the original objective.
-For example, if $A^\picurr(s_\hi, a_\hi) > 0$ and $\Lambda_\hi(\thetanext, \thetacurr) \ll 1 - \epsilon$,
-then the clipped objective would disproportionately incentivize taking action $a_\hi$.
-The same thing happens if $A^\picurr(s_\hi, a_\hi) < 0$ and $\Lambda_\hi(\thetanext, \thetacurr) > 1+\epsilon$.
+For example, if $A^\picurr(s_\step, a_\step) > 0$ and $\Lambda_\step(\thetanext, \thetacurr) \ll 1 - \epsilon$,
+then the clipped objective would disproportionately incentivize taking action $a_\step$.
+The same thing happens if $A^\picurr(s_\step, a_\step) < 0$ and $\Lambda_\step(\thetanext, \thetacurr) > 1+\epsilon$.
 
 Putting these together,
 this results in only clipping the policy ratio
@@ -2200,8 +2200,8 @@ on the side that it would normally move towards:
 #| label: fig-ppo-clip
 #| fig-cap: Clipped surrogate objective function
 #| fig-subcap:
-#| - For a "good" action $a_\hi^+$ with positive advantage.
-#| - For a "poor" action $a_\hi^-$ with negative advantage.
+#| - For a "good" action $a_\step^+$ with positive advantage.
+#| - For a "poor" action $a_\step^-$ with negative advantage.
 #| layout-ncol: 2
 
 x = jnp.linspace(0, 2, 400)
@@ -2240,16 +2240,16 @@ plt.show()
 The PPO-Clip objective is
 
 $$
-L^\ki(\theta) = \E_{\tau \sim \rho^{\picurr}} \left[
-    \sum_{\hi=0}^{\hor-1}
+L^\iter(\theta) = \E_{\tau \sim \rho^{\picurr}} \left[
+    \sum_{\step=0}^{\Step-1}
     \min \left\{
-        \Lambda_\hi(\theta, \thetacurr) A^{\picurr}(s_\hi, a_\hi),
+        \Lambda_\step(\theta, \thetacurr) A^{\picurr}(s_\step, a_\step),
         \text{clip}(
-            \Lambda_\hi(\theta, \thetacurr),
+            \Lambda_\step(\theta, \thetacurr),
             1-\epsilon,
             1+\epsilon
         )
-        A^\picurr(s_\hi, a_\hi)
+        A^\picurr(s_\step, a_\step)
     \right\}
 \right]
 $$ {#eq-clip-objective}

@@ -5,17 +5,36 @@
 In @sec-mdps,
 we discussed how to solve Markov decision processes
 where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite and small.
-Solving these sorts of MDPs isn't usually considered an "RL problem" because,
+Solving known, tabular MDPs isn't usually considered an "RL problem" because,
 put simply, it's too easy!
 The assumption that we know the environment
 and can compute expected values over the state transitions
 ends up being too strict for most real-world tasks.
 
+::: {#rem-model-free-model-based}
+#### Tackling unknown environments
+
+How can we deal with an unknown environment?
+One way is to learn a _model_ of the environment,
+that is, approximations of the reward function and state transitions.
+We can then plan in the model environment.
+This is the **model-based** approach.
+If the approximation is good enough,
+the optimal policy in the model environment
+will be near-optimal in the true environment.
+
+Instead of learning a model and planning within it,
+we could also try to learn the optimal value function and/or optimal policy directly.
+Such **model-free** methods are popular in practice,
+though they generally require many more samples.
+:::
+
 In this short chapter,
-we will tackle the full "RL problem"
+we will tackle the full RL problem
 by extending DP algorithms to account for unknown environments.
 We will also relax the assumption that the state space is small and finite:
-the methods we will cover support large or continuous state spaces.
+the methods we will cover support large or continuous state spaces
+by using _parameterized_ function approximation.
 This will require _learning_ about the environment
 by collecting data through interaction
 and then applying _supervised learning_ (see @sec-sl)
@@ -46,6 +65,8 @@ The term "fitted" means that,
 since we can no longer compute the Bellman consistency equations or Bellman optimality equations exactly,
 we plug data from the environment into a supervised learning algorithm
 to _approximately_ solve these equations.
+As such, these are also termed "approximate DP" algorithms,
+or "neuro-DP" algorithms, as in @bertsekas_neuro-dynamic_1996.
 We will also introduce some useful language
 for classifying RL algorithms.
 
@@ -53,13 +74,17 @@ for classifying RL algorithms.
 #### Notation
 
 To simplify our notation,
-we will assume that each state $s$ includes the current timestep $\hi$.
+we will assume that each state $s$ includes the current timestep $\step$.
 That is,
 if the original state space was $\mathcal{S}$,
-the augmented state space is $\mathcal{S} \times [\hor]$.
+the augmented state space is $\mathcal{S} \times [\Step]$.
 This allows us to treat all state-dependent quantities
-as possibly time-dependent
-without explicitly carrying around a subscript $\hi$.
+as time-dependent
+without explicitly carrying around a subscript $\step$.
+This also holds true in most real-world episodic tasks,
+where the state conveys how many timesteps have passed.
+For example, in tic-tac-toe,
+one can simply count the number of moves on the board.
 :::
 
 ```{python}
@@ -118,16 +143,17 @@ which expresses the expected total reward in a given starting state-action pair.
 In @sec-mdps,
 we sought to compute the _value function_ $V^\pi$.
 Here,
-we'll switch to the action-value function $Q^\pi$.
-This will make it more convenient
+we'll instead approximate the action-value function $Q^\pi$,
+since we'll need the ability
 to take the action with the maximum expected remaining reward.
 :::
 
 ::: {#rem-review-pe}
 #### Fixed-point policy evaluation review
 
-The fixed-point policy evaluation algorithm in @sec-iterative-pe
-makes use of the Bellman consistency equations (@thm-consistency):
+The fixed-point policy evaluation algorithm (@sec-iterative-pe)
+makes use of the Bellman consistency equations (@thm-consistency),
+restated here for the Q-function:
 
 $$
 Q^\pi(s, a) = r(s, a) + \E_{\substack{
@@ -138,18 +164,19 @@ $$ {#eq-consistency-q}
 
 In fixed-point iteration,
 we treat @eq-consistency-q not as an _equation,_
-but as an "operator" that takes in a function $q : \mathcal{S} \times \mathcal{A} \to \R$
-and returns an updated function by substituting $q$ in place of $Q^\pi$.
+but as an "operator" that takes in a function $q^i : \mathcal{S} \times \mathcal{A} \to \R$
+and returns an updated function $q^{i+1}$ by substituting $q^i$ in place of $Q^\pi$.
 
 $$
-q(s, a) \gets r(s, a) + \E_{\substack{
+q^{i+1}(s, a) := r(s, a) + \E_{\substack{
     s' \sim P(\cdot \mid s, a)\\
     a' \sim \pi(\cdot \mid s')
-}} [q(s', a')].
+}} [q^i(s', a')].
 $$ {#eq-consistency-q-op}
 
 Roughly speaking,
-this improves the estimate $q \approx Q^\pi$ by incorporating a single step of reward.
+$q^{i+1}$ approximates $Q^\pi$ slightly better than $q^i$
+since it incorporates a single step of reward from the environment.
 Since this operator is a contraction mapping (@thm-bellman-contraction),
 by iterating this process,
 $q$ will eventually converge to the true policy $Q^\pi$.
@@ -160,7 +187,7 @@ requires computing an expectation over the state transitions $s' \sim P(\cdot \m
 As mentioned in the introduction,
 this is intractable for most real-world tasks.
 Either the state space is too large,
-or we simply _don't know_ what $P$ is.
+or we simply don't know what $P$ is.
 Instead, we will apply _supervised learning_ methods
 to approximately solve the Bellman consistency equations
 using data.
@@ -169,14 +196,15 @@ Recall that supervised learning is good at learning _conditional expectations_
 of the form
 
 $$
-f(x) = \E[ y \mid x ].
+f(x) = \E[ y \mid x ],
 $$ {#eq-exm-cond-mean}
 
-Can we rewrite the r.h.s. of the Bellman consistency equations (@eq-consistency-q)
+where $x$ are the input features and $y$ is the scalar response.
+Can we rewrite the one-step value target (@eq-consistency-q)
 as a conditional expectation?
-In fact, it already is;
-let us use notation that makes this more clear.
-We explicitly write $s', a'$ as random variables
+In fact, it already is!
+Let us use notation that makes this more clear.
+We explicitly treat $s', a'$ as random variables
 and move the conditioning on $s, a$ into the brackets:
 
 $$
@@ -184,16 +212,17 @@ Q^\pi(s, a) = \E[ r(s, a) + Q^\pi(s', a') \mid s, a ].
 $$ {#eq-q-cond-mean}
 
 We can see that the input $x$ corresponds to $s, a$
-and the output $y$ corresponds to $r(s, a) + q(s', a')$.
+and the response $y$ corresponds to $r(s, a) + q^i(s', a')$,
+where $q^i$ is our current estimate of $Q^\pi$.
 Now we just need to obtain a dataset of input-output pairs
-and run empirical risk minimization.
+and run empirical risk minimization (@sec-erm).
 We can classify data collection strategies
 as either _offline_ or _online_.
 
 ::: {#def-offline-online}
 #### Offline and online algorithms
 
-We say that a learning algorithm is _offline_
+We say that a learning algorithm works _offline_
 if the learning is performed as a function of a static dataset,
 without requiring further interaction with the environment.
 In contrast,
@@ -213,24 +242,24 @@ to obtain a dataset of $N$ trajectories $\tau^1, \dots, \tau^N \sim \rho^{\pi}$.
 Let us indicate the trajectory index in the superscript, so that
 
 $$
-\tau^n = \{ s_0^n, a_0^n, r_0^n, s_1^n, a_1^n, r_1^n, \dots, s_{\hor-1}^n, a_{\hor-1}^n, r_{\hor-1}^n \}.
+\tau^n = \{ s_0^n, a_0^n, r_0^n, s_1^n, a_1^n, r_1^n, \dots, s_{\Step-1}^n, a_{\Step-1}^n, r_{\Step-1}^n \}.
 $$ {#eq-exm-trajectory}
 
-This would give us $N (\hor - 1)$ samples in the dataset.
+This would give us $N (\Step - 1)$ samples in the dataset.
 We subtract one from the horizon
 since each $(x, y)$ sample requires a _pair_
 of consecutive timesteps:
 
 $$
-x^n_{\hi} = (s_\hi^n, a_\hi^n) \qquad y^n_{\hi} = r(s_\hi^n, a_\hi^n) + q(s^n_{\hi + 1}, a^n_{\hi+1})
+x^n_{\step} = (s_\step^n, a_\step^n) \qquad y^n_{\step} = r(s_\step^n, a_\step^n) + q^i(s^n_{\step + 1}, a^n_{\step+1})
 $$ {#eq-def-x-y}
 
-Notice that $y_{n, \hi}$
-depends on the current guess $q \approx Q^\pi$.
-This makes our new algorithm a fixed-point algorithm as well.
+where $q^i$ is our current estimate of $Q^\pi$.
+This makes our new algorithm a fixed-point algorithm as well,
+since it uses $q^i$ to compute the next iterate $q^{i+1}$.
 
 Now we can use empirical risk minimization
-to find a function $\hat f$ that approximates the optimal Q-function.
+to find a function $q^I$ that approximates the optimal Q-function.
 
 ```{mermaid}
 %%| label: fig-fit-pe
@@ -245,19 +274,19 @@ graph LR
 ::: {#def-fit-evaluation}
 #### Fitted policy evaluation
 
-**Input:** Policy $\pi : \mathcal{S} \to \triangle(\mathcal{A})$ to be evaluated.
+Let $\pi : \mathcal{S} \to \triangle(\mathcal{A})$ be the policy we wish to evaluate.
+Our goal is to compute an approximation of its Q-function $Q^\pi$.
 
-**Output:** An approximation of the value function $Q^\pi$ of the policy.
-
-1. Collect a dataset $\tau^1, \dots, \tau^N \sim \rho^\pi$.
-1. Initialize some function $q^0 : \mathcal{S} \times \mathcal{A} \in \mathbb{R}$.
-1. For $t = 0, \dots, T-1$:
-   1. Generate labels $y$ from the trajectories and the current estimate $q^t$, where the labels come from the r.h.s. of the @thm-consistency for the given policy.
-   2. Set $q^{t+1}$ to the function that minimizes the empirical risk:
+1.  Collect a dataset $\tau^1, \dots, \tau^N \sim \rho^\pi$.
+1.  Initialize some function $q^0 : \mathcal{S} \times \mathcal{A} \in \mathbb{R}$.
+1.  For $i = 0, \dots, I-1$:
+    1.  Generate labels $y^1, \dots, y^N$ from the trajectories and the current estimate $q^i$,
+        where the labels come from @eq-consistency-q.
+    2.  Set $q^{i+1}$ to the function that minimizes the empirical risk:
 
 $$
-q \gets \arg\min_{q} \frac{1}{N \hor} \sum_{n=1}^N \sum_{\hi=1}^{\hor-2} (y^n_\hi - q(x^n_\hi))^2.
-$$
+q \gets \arg\min_{q} \frac{1}{N \Step} \sum_{n=1}^N \sum_{\step=1}^{\Step-2} (y^n_\step - q(x^n_\step))^2.
+$$ {#eq-fit-evaluation}
 :::
 
 ```{python}
@@ -282,25 +311,22 @@ def fitted_evaluation(
 latex(fitted_evaluation)
 ```
 
-<!-- Q_zero(get_num_actions(trajectories)) -->
-
-We call fitted policy evaluation an _offline algorithm_
+Fitted policy evaluation is offline
 since the "interaction phase" and the "learning phase" are disjoint.
-That is,
-another perspective on fitted policy evaluation is:
-given a dataset of trajectories collected by some unknown policy $\pi_\text{data}$,
-evaluate the Q function of $\pi_\text{data}$.
+In other words,
+we can think of fitted policy evaluation
+as taking a dataset of trajectories collected by some unknown policy $\pi_\text{data}$,
+and then approximating the Q function of $\pi_\text{data}$.
 
-We could also call fitted policy evaluation
-an _on-policy algorithm_
+Fitted policy evaluation is _on-policy_
 because the update rule uses trajectories sampled from $\pi$.
 Where do we need this assumption?
 Pay close attention to the target,
-and compare it to the true r.h.s. of the Bellman equation:
+and compare it to the true one-step value target (@eq-consistency-q):
 
 $$
 \begin{aligned}
-y_\hi &= r(s_\hi, a_\hi) + q(s_{\hi+1}, a_{\hi+1}) \\
+y_\step &= r(s_\step, a_\step) + q(s_{\step+1}, a_{\step+1}) \\
 Q^\pi(s, a) &= r(s, a) + \E_{\substack{
     s' \sim P(\cdot \mid s, a) \\
     a' \sim \pi(\cdot \mid s')
@@ -308,11 +334,11 @@ Q^\pi(s, a) &= r(s, a) + \E_{\substack{
 \end{aligned}
 $$ {#eq-compare}
 
-Notice that $(s_{\hi+1}, a_{\hi+1})$
+Notice that $(s_{\step+1}, a_{\step+1})$
 is a single sample from the joint distribution
 $s' \sim P(\cdot \mid s, a)$ and $a' \sim \pi(\cdot \mid s')$.
 If the trajectories were collected from a _different policy,_
-then $a_{\hi+1}$ would _not_ be a sample from $\pi(\cdot \mid s')$,
+then $a_{\step+1}$ would _not_ be a sample from $\pi(\cdot \mid s')$,
 making the target a biased sample for evaluating $\pi$.
 
 ::: {#def-on-off-policy}
@@ -388,14 +414,13 @@ def get_y(
     return np.array(y)
 ```
 
-### Bootstrapping and target networks
+### Bootstrapping and target networks {#sec-bootstrapping}
 
 Using the current guess $q$
 to compute the labels
 is known as **bootstrapping.**
-
 (This has nothing to do
-with bootstrapping in statistical inference.)
+with the term bootstrapping in statistical inference.)
 
 This term comes from the following metaphor:
 if you are trying to get on a horse,
@@ -412,9 +437,15 @@ the labels are also constantly changing,
 destabilizing learning.
 @sutton_reinforcement_2018
 calls bootstrapping one prong of the **deadly triad**
-of deep reinforcement learning
-(alongside function approximation and off-policy learning).
-One way to get around this in practice is to use a _target network._
+of deep reinforcement learning,
+alongside **function approximation** and **off-policy learning**.
+When an algorithm relies on all three of these properties,
+it is possible for learning to _diverge_,
+so that the fitted Q function
+is far from the true Q function [@van_hasselt_deep_2018].
+
+Many tricks exist to mitigate this issue in practice.
+One such trick is to use a _target network._
 That is,
 when computing $y$,
 instead of using $q$,
@@ -488,12 +519,12 @@ We'll now explore an algorithm for computing the _optimal_ value function $V^\st
 when the environment is unknown.
 This method is analogous to value iteration (@sec-vi),
 except instead of solving the Bellman optimality equations (@eq-bellman-opt) exactly,
-which is no longer assumed to be possible,
+which would require full knowledge of the environment,
 we will collect a dataset of trajectories and apply _supervised learning_
 to solve the Bellman optimality equations _approximately._
 This is exactly analogous to fitted policy evaluation (@sec-fit-pe),
-except we use the Bellman _optimality_ equations
-instead of the Bellman _consistency_ equations for a given policy.
+except we use the Bellman _optimality_ equations (@eq-bellman-opt)
+instead of the Bellman _consistency_ equations (@eq-consistency) for a given policy.
 
 | | Known environment | Unknown environment |
 | --- | --- | --- |
@@ -592,21 +623,21 @@ Suppose we have some dataset of trajectories $\tau^1, \dots, \tau^N$
 collected by interacting with the environment.
 
 1. Initialize some function $q^0(s, a, h) \in \mathbb{R}$.
-1. Compute $x^n_\hi = (s^n_\hi, a^n_\hi)$.
+1. Compute $x^n_\step = (s^n_\step, a^n_\step)$.
 1. For $t = 0, \dots, T-1$:
    1. Use $q^t$ to generate the targets
       $$
-      y^n_\hi = r^n_\hi + \max_{a'} q^t(s^n_\hi, a').
+      y^n_\step = r^n_\step + \max_{a'} q^t(s^n_\step, a').
       $$ {#eq-fit-vi-targets}
    2. Set $q^{t+1}$ to the function that minimizes the empirical risk:
 
 $$
-f^{t+1} \gets \arg\min_f \frac{1}{N (\hor-1)} \sum_{n=1}^N  \sum_{\hi=0}^{\hor-2} (y^n_\hi - f(x^n_\hi))^2,
+f^{t+1} \gets \arg\min_f \frac{1}{N (\Step-1)} \sum_{n=1}^N  \sum_{\step=0}^{\Step-2} (y^n_\step - f(x^n_\step))^2,
 $$ {#eq-fit-vi}
 :::
 
 ```{python}
-#| label: fig-code-fit-vi
+#| label: fig-alg-fit-vi
 #| fig-cap: Pseudocode for fitted value iteration.
 
 def fitted_q_iteration(
@@ -631,10 +662,11 @@ latex(fitted_q_iteration)
 
 ### Q-learning {#sec-q-learning}
 
-In the fitted value iteration algorithm above,
-we collect the whole dataset beforehand,
+In fitted value iteration (@fig-alg-fit-vi),
+we collect the whole dataset beforehand
 from some unknown policy (or policies).
-What could go wrong with this?
+This doesn't interact with the environment during the learning process.
+What could go wrong?
 Since the environment is unknown,
 the dataset only contains information
 about some portion of the environment.
@@ -644,8 +676,8 @@ for states that are in the initial dataset.
 It would be much better
 if $q$ was accurate
 in states that the policy will actually find itself in.
-This leads to the following simple shift:
-collect trajectories _inside_ the iteration loop!
+Given access to the environment,
+we can instead collect trajectories while learning.
 This turns fitted value interation
 into an _online_ algorithm
 known as **Q-learning.**
@@ -746,7 +778,7 @@ latex(fitted_policy_iteration, id_to_latex={"fitted_policy_iteration": r"\text{f
 ```
 
 ::: {#exr-pi-categorization}
-#### Classification
+#### Classification of fitted policy iteration
 
 Is fitted policy iteration online or offline?
 On-policy or off-policy?
@@ -773,12 +805,17 @@ that observe data by interacting with the environment.
 
 ## Bibliographic notes {#sec-fit-bib}
 
-from spinning up:
+Deep RL rose to prominence
+when @mnih_playing_2013 used a deep Q network
+to achieve state of the art performance on the Atari games.
 
-- @mnih_playing_2013
 - @hausknecht_deep_2017
 - @wang_dueling_2016
 - @hasselt_double_2010
 - @hasselt_deep_2016
 - @hessel_rainbow_2018
+
+@bertsekas_neuro-dynamic_1996 coined the term "neuro-dynamic programming"
+to refere to the combination of (artificial) neural networks
+with dynamic programming techniques.
 

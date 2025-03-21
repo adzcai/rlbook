@@ -122,7 +122,7 @@ and that the action space $\mathcal{A}$ is fixed.
 #### Performance of explore-then-exploit
 
 As long as every state can be reached from $s_0$ within a single episode,
-i.e. $|\mathcal{S}| \le \hor$,
+i.e. $|\mathcal{S}| \le \Step$,
 this will eventually be able to explore all $|\mathcal{S}| |\mathcal{A}|$ state-action pairs,
 adding one new transition per episode.
 Let $M$ denote the original MDP that we aim to solve.
@@ -130,11 +130,11 @@ We know it will take at most $|\mathcal{S}| |\mathcal{A}|$ iterations to explore
 after which $M_{\mathcal{D}} = M$ and $\pi^\star_{\mathcal{D}}$ is the optimal policy in $M$,
 incurring no additional regret.
 For each "shortest-path" policy $\pi^\star_{\mathcal{D}}$ up until then,
-its value will differ from that of $\pi^\star$ by at most $\hor$,
+its value will differ from that of $\pi^\star$ by at most $\Step$,
 since the policies will differ by at most $1$ reward at each timestep. So,
 
 $$
-\sum_{t=0}^{T-1} V^\star_0 - V_0^{\pi^t} \le |\mathcal{S}||\mathcal{A}| \hor.
+\sum_{t=0}^{T-1} V^\star_0 - V_0^{\pi^t} \le |\mathcal{S}||\mathcal{A}| \Step.
 $$ {#eq-explore-exploit-performance}
 
 (Note that this MDP and algorithm are deterministic, so the regret is not random.)
@@ -157,12 +157,13 @@ So if we want to apply MAB techniques to solving an MDP,
 it makes sense to draw an equivalence between *arms* and *policies*.
 We can summarize this equivalence in the following table:
 
-| MAB | MDP |
-| --- | --- |
-| $K$ arms | $(\vert\mathcal{A}\vert^{\vert\mathcal{S}\vert})^\hor$ deterministic policies |
-| unknown reward distributions $\nu^k$ | unknown trajectory distributions $\rho^\pi$ |
-| $k^\star = \arg\max_{k \in [K]} \E_{r \sim \nu^k} [r]$ | $\pi^\star = \arg\max_{\pi \in \Pi} \E_{\tau \sim \rho^\pi} \left[ \sum_{\hi=0}^{\hor-1} r(s_\hi, a_\hi) \right]$ |
-| pull arm $k$ and observe reward | roll out with $\pi$ and observe total reward |
+
+| MAB                                                    | MDP                                                                                                                          |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| $K$ arms                                               | $(\vert\mathcal{A}\vert^{\vert\mathcal{S}\vert})^\Step$ deterministic policies                                              |
+| unknown reward distributions $\nu^k$                   | unknown trajectory distributions $\rho^\pi$                                                                                  |
+| $k^\star = \arg\max_{k \in [K]} \E_{r \sim \nu^k} [r]$ | $\pi^\star = \arg\max_{\pi \in \Pi} \E_{\tau \sim \rho^\pi} \left[ \sum_{\step=0}^{\Step-1} r(s_\step, a_\step) \right]$ |
+| pull arm $k$ and observe reward                        | roll out with $\pi$ and observe total reward                                                                                 |
 
 : Treating an MDP with finite states and actions as a MAB. {#tbl-mdp-mab}
 
@@ -170,11 +171,11 @@ Recall that UCB incurs regret $\widetilde{O}(\sqrt{TK})$, where $T$ is the numbe
 
 $$
 \widetilde{O}\left(
-    \sqrt{|\mathcal{A}|^{|\mathcal{S}|\hor} T}
+    \sqrt{|\mathcal{A}|^{|\mathcal{S}|\Step} T}
 \right)
 $$ {#eq-mdp-as-mab}
 
-This scales *exponentially* in $|\mathcal{S}|$ and $\hor$,
+This scales *exponentially* in $|\mathcal{S}|$ and $\Step$,
 which quickly becomes intractable.
 Notably,
 this method treats each policy as entirely independent from the others,
@@ -187,7 +188,7 @@ We can illustrate this with the following example:
 #### Treating an MDP as a MAB
 
 Consider a "coin MDP" with two states "heads" and "tails",
-two actions "Y" and "N", and a time horizon of $\hor=2$.
+two actions "Y" and "N", and a time horizon of $\Step=2$.
 The state transition flips the coin,
 and doesn't depend on the action.
 The reward only depends on the action:
@@ -209,13 +210,13 @@ we ignore the known correlation between the action and the reward.
 
 ## Upper confidence bound value iteration {#sec-ucbvi}
 
-We shouldn't need to consider all $|\mathcal{A}|^{|\mathcal{S}| \hor}$ deterministic policies
+We shouldn't need to consider all $|\mathcal{A}|^{|\mathcal{S}| \Step}$ deterministic policies
 to achieve low regret.
 Rather, all we need to describe the optimal policy is $Q^\star$,
 which has $H |\mathcal{S}||\mathcal{A}|$ entries to be learned.
 In this section,
 we'll study the upper confidence bound value iteration (UCBVI) algorithm [@azar_minimax_2017],
-which indeed achieves _polynomial_ regret in $|\mathcal{S}|$, $|\mathcal{A}|$, and $\hor$.
+which indeed achieves _polynomial_ regret in $|\mathcal{S}|$, $|\mathcal{A}|$, and $\Step$.
 
 As its name suggests,
 UCBVI combines the upper confidence bound (UCB) algorithm
@@ -264,16 +265,16 @@ Then, we will use DP to solve for the optimal policy in $\widetilde{\mathcal{M}}
 VI is an algorithm for computing the optimal policy and value function
 in an MDP where the state transitions and reward function are known.
 We begin at the final timestep,
-where $V_\hor^\star(s) = 0$,
+where $V_\Step^\star(s) = 0$,
 and work backwards using Bellman's optimality equations (@thm-bellman-opt):
 
-For $\hi = \hor-1, \dots, 0$:
+For $\step = \Step-1, \dots, 0$:
 
 $$
 \begin{aligned}
-Q_\hi^\star(s, a) &= r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[V_{\hi+1}^\star(s')] \\
-\pi_\hi^\star(s) &= \arg\max_{a \in \mathcal{A}} Q_\hi^\star(s, a) \\
-V_\hi^\star(s) &= Q_\hi^\star(s, \pi_\hi^\star(s)).
+Q_\step^\star(s, a) &= r(s, a) + \E_{s' \sim P(\cdot \mid s, a)}[V_{\step+1}^\star(s')] \\
+\pi_\step^\star(s) &= \arg\max_{a \in \mathcal{A}} Q_\step^\star(s, a) \\
+V_\step^\star(s) &= Q_\step^\star(s, \pi_\step^\star(s)).
 \end{aligned}
 $$ {#eq-vi-review}
 :::
@@ -281,8 +282,8 @@ $$ {#eq-vi-review}
 **Assumptions**:
 We will consider the general case of a **time-varying** MDP
 where the transition and reward functions may change over time.
-Recall our convention that $P_\hi$ is the distribution of $s_{h+1} \mid s_{h}, a_{h}$
-and $r_\hi$ is applied to $s_\hi, a_\hi$.
+Recall our convention that $P_\step$ is the distribution of $s_{h+1} \mid s_{h}, a_{h}$
+and $r_\step$ is applied to $s_\step, a_\step$.
 
 
 ::: {#def-ucbvi}
@@ -291,12 +292,12 @@ and $r_\hi$ is applied to $s_\hi, a_\hi$.
 At a high level, the UCBVI algorithm can be described as follows:
 For $i = 0, \dots, I-1$:
 
-1.  **Modeling:** Use previously collected data to model the state transitions $\widehat{P}_0, \dots, \widehat{P}_{\hor-1}$ and reward functions $\widehat{r}_0, \dots, \widehat{r}_{\hor-1}$.
-2.  **Reward bonus:** Design a reward bonus $b_\hi(s, a) \in \mathbb{R}$ to encourage exploration, analogous to the UCB term.
+1.  **Modeling:** Use previously collected data to model the state transitions $\widehat{P}_0, \dots, \widehat{P}_{\Step-1}$ and reward functions $\widehat{r}_0, \dots, \widehat{r}_{\Step-1}$.
+2.  **Reward bonus:** Design a reward bonus $b_\step(s, a) \in \mathbb{R}$ to encourage exploration, analogous to the UCB term.
 3.  **Optimistic planning:** Use VI (i.e. DP) to compute the optimal policy $\widehat \pi$ in the modelled MDP
 
 $$
-\widetilde{\mathcal{M}} = (\mathcal{S}, \mathcal{A}, \{ \widehat{P}_\hi \}_{h \in [H]}, \{ \widehat{r}_\hi + b_\hi \}_{h \in [H]}, H).
+\widetilde{\mathcal{M}} = (\mathcal{S}, \mathcal{A}, \{ \widehat{P}_\step \}_{h \in [H]}, \{ \widehat{r}_\step + b_\step \}_{h \in [H]}, H).
 $$
 
 4.  **Execution:** Use $\widehat \pi$ to collect a new trajectory.
@@ -312,7 +313,7 @@ of the MDP we aim to solve.
 We seek to approximate
 
 $$
-P_\hi(s_{\hi + 1} \mid s_\hi, a_\hi) = \frac{\pr(s_\hi, a_\hi, s_{\hi + 1})}{\pr(s_\hi, a_\hi)},
+P_\step(s_{\step + 1} \mid s_\step, a_\step) = \frac{\pr(s_\step, a_\step, s_{\step + 1})}{\pr(s_\step, a_\step)},
 $$ {#eq-transitions-factor}
 
 where $\pr$ denotes the true joint probabilities.
@@ -321,8 +322,8 @@ That is, define
 
 $$
 \begin{aligned}
-    N_\hi^i(s, a, s') & := \sum_{i'=0}^{i-1} \ind{ (s_\hi^{i'}, a_\hi^{i'}, s_{h+1}^{i'}) = (s, a, s') } \\
-    N_\hi^i(s, a)     & := \sum_{i'=0}^{i-1} \ind{ (s_\hi^{i'}, a_\hi^{i'}) = (s, a) }                \\
+    N_\step^i(s, a, s') & := \sum_{i'=0}^{i-1} \ind{ (s_\step^{i'}, a_\step^{i'}, s_{h+1}^{i'}) = (s, a, s') } \\
+    N_\step^i(s, a)     & := \sum_{i'=0}^{i-1} \ind{ (s_\step^{i'}, a_\step^{i'}) = (s, a) }                \\
 \end{aligned}
 $$ {#eq-count-transitions}
 
@@ -331,13 +332,13 @@ and similar for the state-action pair $s, a$.
 Then we can model
 
 $$
-\widehat{P}_\hi^t(s' \mid s, a) = \frac{N_\hi^t(s, a, s')}{N_\hi^t(s, a)}.
+\widehat{P}_\step^t(s' \mid s, a) = \frac{N_\step^t(s, a, s')}{N_\step^t(s, a)}.
 $$ {#eq-average-transition}
 
 Similarly, we can model the rewards by the sample mean in each state-action pair:
 
 $$
-\widehat{r}_\hi^t(s, a) = \frac{N_\hi^t(s, a)} \sum_{t'=0}^{t-1} \ind{ (s_\hi^i, a_\hi^i) = (s, a) } r_\hi^i.
+\widehat{r}_\step^t(s, a) = \frac{N_\step^t(s, a)} \sum_{t'=0}^{t-1} \ind{ (s_\step^i, a_\step^i) = (s, a) } r_\step^i.
 $$ {#eq-average-reward}
 
 Note that this is a fairly naive, nonparametric estimator
@@ -362,13 +363,13 @@ recall how we designed the reward bonus term for UCB (@sec-ucb):
 
 We'd like to do the same for UCBVI,
 and construct the bonus term
-such that $V^\star_\hi(s) \le \widehat{V}_\hi^t(s)$ with high probability.
+such that $V^\star_\step(s) \le \widehat{V}_\step^t(s)$ with high probability.
 However, our construction will be more complex than the MAB case,
-since $\widehat{V}_\hi^t(s)$ depends on the bonus $b_\hi^t(s, a)$ implicitly via DP.
+since $\widehat{V}_\step^t(s)$ depends on the bonus $b_\step^t(s, a)$ implicitly via DP.
 We claim that the bonus term that gives the proper bound is
 
 $$
-b_\hi^t(s, a) = 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_\hi^t(s, a)}}.
+b_\step^t(s, a) = 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_\step^t(s, a)}}.
 $$ {#eq-ucbvi-bonus}
 
 We provide a heuristic sketch of the proof in @sec-ucbvi-proof; see @agarwal_reinforcement_2022, Section 7.3 for a full proof.
@@ -377,17 +378,17 @@ We provide a heuristic sketch of the proof in @sec-ucbvi-proof; see @agarwal_rei
 
 How exactly does UCBVI strike a good balance between exploration and exploitation? In UCB for MABs, the bonus exploration term is simple to interpret: It encourages the learner to take actions with a high exploration term. Here, the policy depends on the bonus term indirectly: The policy is obtained by planning in an MDP where the bonus term is added to the reward function. Note that the bonuses *propagate backwards* in DP, effectively enabling the learner to *plan to explore* unknown states. This effect takes some further interpretation.
 
-Recall we constructed $b^t_\hi$ so that, with high probability, $V^\star_\hi(s) \le \widehat{V}_\hi^t(s)$ and so
+Recall we constructed $b^t_\step$ so that, with high probability, $V^\star_\step(s) \le \widehat{V}_\step^t(s)$ and so
 
 $$
-V^\star_\hi(s) - V^{\pi^t}_\hi(s) \le \widehat{V}_\hi^t(s) - V^{\pi^t}_\hi(s).
+V^\star_\step(s) - V^{\pi^t}_\step(s) \le \widehat{V}_\step^t(s) - V^{\pi^t}_\step(s).
 $$
 
 That is, the l.h.s. measures how suboptimal policy $\pi^t$ is in the true environment, while the r.h.s. is the difference in the policy's value when acting in the modelled MDP $\widetilde{\mathcal{M}}^t$ instead of the true one $\mathcal{M}$.
 
 If the r.h.s. is *small*, this implies that the l.h.s. difference is also small, i.e. that $\pi^t$ is *exploiting* actions that are giving high reward.
 
-If the r.h.s. is *large*, then we have overestimated the value: $\pi^t$, the optimal policy of $\widetilde{\mathcal{M}}^t$, does not perform well in the true environment $\mathcal{M}$. This indicates that one of the $b_h^t(s, a)$ terms must be large, or some $\widehat P^t_\hi(\cdot \mid s, a)$ must be inaccurate, indicating a state-action pair with a low visit count $N^t_\hi(s, a)$ that the learner was encouraged to explore.
+If the r.h.s. is *large*, then we have overestimated the value: $\pi^t$, the optimal policy of $\widetilde{\mathcal{M}}^t$, does not perform well in the true environment $\mathcal{M}$. This indicates that one of the $b_h^t(s, a)$ terms must be large, or some $\widehat P^t_\step(\cdot \mid s, a)$ must be inaccurate, indicating a state-action pair with a low visit count $N^t_\step(s, a)$ that the learner was encouraged to explore.
 
 It turns out that UCBVI achieves a regret of
 
@@ -400,7 +401,7 @@ $$
 $$
 :::
 
-Comparing this to the UCB regret bound $\widetilde{O}(\sqrt{T K})$, where $K$ is the number of arms of the MAB, we see that we've reduced the number of effective arms from $|\mathcal{A}|^{|\mathcal{S}|\hor}$ (in @eq-mdp-as-mab) to $H^4 |\mathcal{S}||\mathcal{A}|$, which is indeed polynomial in $|\mathcal{S}|$, $|\mathcal{A}|$, and $H$, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret:
+Comparing this to the UCB regret bound $\widetilde{O}(\sqrt{T K})$, where $K$ is the number of arms of the MAB, we see that we've reduced the number of effective arms from $|\mathcal{A}|^{|\mathcal{S}|\Step}$ (in @eq-mdp-as-mab) to $H^4 |\mathcal{S}||\mathcal{A}|$, which is indeed polynomial in $|\mathcal{S}|$, $|\mathcal{A}|$, and $H$, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret:
 
 $$
 \frac{1}{T} \E[\text{Regret}_T] = \widetilde{O}\left(\sqrt{\frac{H^4 |\mathcal{S}||\mathcal{A}|}{T}}\right)
@@ -432,38 +433,38 @@ $\phi(s, a) \in \mathbb{R}^d$:
 
 $$
 \begin{aligned}
-        P_\hi(s' \mid s, a) & = \phi(s, a)^\top \mu^\star_\hi(s') \\
-        r_\hi(s, a)         & = \phi(s, a)^\top \theta_\hi^\star
+        P_\step(s' \mid s, a) & = \phi(s, a)^\top \mu^\star_\step(s') \\
+        r_\step(s, a)         & = \phi(s, a)^\top \theta_\step^\star
 \end{aligned}
 $$
 
-Note that we can also think of $P_\hi(\cdot \mid s, a) = \mu_\hi^\star$ as an $|\mathcal{S}| \times d$ matrix, and think of $\mu^\star_\hi(s')$ as indexing into the $s'$-th row of this matrix (treating it as a column vector). Thinking of $V^\star_{\hi+1}$ as an $|\mathcal{S}|$-dimensional vector, this allows us to write
+Note that we can also think of $P_\step(\cdot \mid s, a) = \mu_\step^\star$ as an $|\mathcal{S}| \times d$ matrix, and think of $\mu^\star_\step(s')$ as indexing into the $s'$-th row of this matrix (treating it as a column vector). Thinking of $V^\star_{\step+1}$ as an $|\mathcal{S}|$-dimensional vector, this allows us to write
 
 $$
-\E_{s' \sim P_\hi(\cdot \mid s, a)}[V^\star_{\hi+1}(s)] = (\mu^\star_\hi \phi(s, a))^\top V^\star_{\hi+1}.
+\E_{s' \sim P_\step(\cdot \mid s, a)}[V^\star_{\step+1}(s)] = (\mu^\star_\step \phi(s, a))^\top V^\star_{\step+1}.
 $$
 
-The $\phi$ feature mapping can be designed to capture interactions between the state $s$ and action $a$. In this book, we'll assume that the feature map $\phi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}^d$ and the reward function (described by $\theta_\hi^\star$) are known to the learner.
+The $\phi$ feature mapping can be designed to capture interactions between the state $s$ and action $a$. In this book, we'll assume that the feature map $\phi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}^d$ and the reward function (described by $\theta_\step^\star$) are known to the learner.
 :::
 
 ### Planning in a linear MDP
 
-It turns out that $Q^\star_\hi$ is also linear with respect to this feature mapping. We can prove this by simply computing it using DP. We initialize the value function at the end of the time horizon by setting $V_{H}^\star(s) = 0$ for all states $s$. Then we iterate:
+It turns out that $Q^\star_\step$ is also linear with respect to this feature mapping. We can prove this by simply computing it using DP. We initialize the value function at the end of the time horizon by setting $V_{H}^\star(s) = 0$ for all states $s$. Then we iterate:
 
 $$
 \begin{aligned}
-    Q^\star_\hi(s, a)  & = r_\hi(s, a) + \E_{s' \sim P_\hi(\cdot \mid s, a)} [V^\star_{h+1}(s')]                          \\
-                     & = \phi(s, a)^\top \theta_\hi^\star + (\mu_\hi^\star \phi(s, a))^\top V^\star_{h+1}               \\
-                     & = \phi(s, a)^\top \underbrace{( \theta_\hi^\star + (\mu_\hi^\star)^\top  V^\star_{h+1})}_{w_\hi} \\
-    V^\star_\hi(s)     & = \max_a Q^\star_\hi(s, a)                                                                       \\
-    \pi^\star_\hi(s) & = \arg\max_a Q^\star_\hi(s, a)
+    Q^\star_\step(s, a)  & = r_\step(s, a) + \E_{s' \sim P_\step(\cdot \mid s, a)} [V^\star_{h+1}(s')]                          \\
+                     & = \phi(s, a)^\top \theta_\step^\star + (\mu_\step^\star \phi(s, a))^\top V^\star_{h+1}               \\
+                     & = \phi(s, a)^\top \underbrace{( \theta_\step^\star + (\mu_\step^\star)^\top  V^\star_{h+1})}_{w_\step} \\
+    V^\star_\step(s)     & = \max_a Q^\star_\step(s, a)                                                                       \\
+    \pi^\star_\step(s) & = \arg\max_a Q^\star_\step(s, a)
 \end{aligned}
 $$
 
 ::: {#exr-linear-q}
 #### Action-value function is linear in features
 
-Show that $Q^\pi_\hi$ is also linear with respect to $\phi(s, a)$ for any policy $\pi$.
+Show that $Q^\pi_\step$ is also linear with respect to $\phi(s, a)$ for any policy $\pi$.
 :::
 
 
@@ -472,7 +473,7 @@ Show that $Q^\pi_\hi$ is also linear with respect to $\phi(s, a)$ for any policy
 
 #### Modeling the transitions
 
-This linear assumption on the MDP will also allow us to model the unknown dynamics $P^?_\hi(s' \mid s, a)$ with techniques from **supervised learning** (SL). Recall that SL is useful for estimating conditional expectations by minimizing mean squared error. We can rephrase the estimation of $P^?_\hi(s' \mid s, a)$ as a least-squares problem as follows: Write $\delta_s$ to denote a one-hot vector in $\mathbb{R}^{|\mathcal{S}|}$, with a $1$ in the $s$-th entry and $0$ everywhere else. Note that
+This linear assumption on the MDP will also allow us to model the unknown dynamics $P^?_\step(s' \mid s, a)$ with techniques from **supervised learning** (SL). Recall that SL is useful for estimating conditional expectations by minimizing mean squared error. We can rephrase the estimation of $P^?_\step(s' \mid s, a)$ as a least-squares problem as follows: Write $\delta_s$ to denote a one-hot vector in $\mathbb{R}^{|\mathcal{S}|}$, with a $1$ in the $s$-th entry and $0$ everywhere else. Note that
 
 $$
 \E_{s' \sim P_h(\cdot \mid s, a)} [\delta_{s'}] = P_h(\cdot \mid s, a) = \mu_h^\star \phi(s, a).
@@ -502,7 +503,7 @@ where we include a $\lambda I$ term to ensure that the matrix $A^t_h$ is inverti
 Now, to design the reward bonus, we can't apply Hoeffding's inequality anymore, since the terms no longer involve sample means of bounded random variables; Instead, we're incorporating information across different states and actions. Rather, we can construct an upper bound using *Chebyshev's inequality* in the same way we did for the LinUCB algorithm in the MAB setting @sec-lin-ucb:
 
 $$
-b^t_\hi(s, a) = \beta \sqrt{\phi(s, a)^\top (A^t_h)^{-1} \phi(s, a)}, \quad \beta = \widetilde O(d \hor).
+b^t_\step(s, a) = \beta \sqrt{\phi(s, a)^\top (A^t_h)^{-1} \phi(s, a)}, \quad \beta = \widetilde O(d \Step).
 $$
 
 Note that this isn't explicitly inversely proportional to $N_h^t(s, a)$ as in the original UCBVI bonus term @eq-ucbvi-bonus. Rather, it is inversely proportional to the amount that the direction $\phi(s, a)$ has been explored in the history. That is, if $A-h^t$ has a large component in the direction $\phi(s, a)$, implying that this direction is well explored, then the bonus term will be small, and vice versa.
