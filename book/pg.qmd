@@ -955,7 +955,7 @@ we can autoregressively write out the likelihood of a trajectory under the polic
 Taking the log of the trajectory likelihood turns the products into sums:
 
 $$
-\log \rho^{\pi_\theta}(\tau) = \log d_0(s_0) + \sum_{\hi=0}^{\hor-1} \Big(
+\log \rho^{\pi_\theta}(\tau) = \log P_0(s_0) + \sum_{\hi=0}^{\hor-1} \Big(
     \log \pi_\theta(a_\hi \mid s_\hi) + \log P(s_{\hi+1} \mid s_\hi, a_\hi)
 \Big)
 $$ {#eq-log-autoregressive}

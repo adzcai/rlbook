@@ -764,7 +764,7 @@ and so we must resort to various ways to reduce the number of states and actions
 and @sec-mcts -approximates- the value of states instead of evaluating them exactly.
 
 
-## References
+## Bibliographic notes {#sec-planning-bib}
 
 Chapter 5 of @russell_artificial_2021 provides an excellent overview of search methods in games.
 The original AlphaGo paper @silver_mastering_2016 was a groundbreaking application of these technologies.

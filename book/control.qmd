@@ -112,12 +112,12 @@ A continuous control environment is a special case of an MDP (@def-finite-horizo
 Recall that a finite-horizon MDP
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, P, r, \hor).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, P, r, \hor).
 $$ {#eq-recall-finite-mdp}
 
 is defined by its state space $\mathcal{S}$,
 action space $\mathcal{A}$,
-initial state distribution $d_0$,
+initial state distribution $P_0$,
 state transitions $P$,
 reward function $r$,
 and time horizon $\hor$.
@@ -134,7 +134,7 @@ A continuous control environment is defined by the following components:
     For example, in robotic control,
     $n_\st$ might be the number of sensors
     and $n_\act$ might be the number of actuators on the robot.
--   $d_0 \in \triangle(\mathcal{S})$ denotes the initial state distribution.
+-   $P_0 \in \triangle(\mathcal{S})$ denotes the initial state distribution.
 -   We call the state transitions the **dynamics** of the system and denote them by $f$:
     $$
     \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi),
@@ -148,7 +148,7 @@ A continuous control environment is defined by the following components:
 Together, these constitute a description of the environment
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, f, \nu, c, \hor).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, f, \nu, c, \hor).
 $$ {#eq-continuous-control}
 :::
 
@@ -167,7 +167,7 @@ $$
     \right] \\
     \text{where} \quad & \st_{\hi+1} = f_\hi(\st_\hi, \act_\hi, w_\hi), \\
     & \act_\hi = \pi_\hi(\st_\hi) \\
-    & \st_0 \sim d_0 \\
+    & \st_0 \sim P_0 \\
     & w_\hi \sim \nu_\hi.
 \end{aligned}
 $$ {#eq-optimal-control}
@@ -186,7 +186,7 @@ $$ {#eq-det-h-policy}
 To make the explicit conditioning more concise,
 we let $\rho^\pi$ denote the trajectory distribution
 induced by the policy $\pi$.
-That is, if we sample initial states from $d_0$,
+That is, if we sample initial states from $P_0$,
 act according to $\pi$,
 and transition according to the dynamics $f$,
 the resulting distribution over trajectories is $\rho^\pi$.
@@ -205,13 +205,13 @@ can be expressed as follows:
 $$
 \begin{aligned}
 \rho^{\pi}(\tau)
-&:= d_0(\st_0) \times \ind{\act_0 = \pi_0(\st_0)} \\
+&:= P_0(\st_0) \times \ind{\act_0 = \pi_0(\st_0)} \\
 &\quad {} \times \nu(w_0) \times \ind{\st_1 = f(\st_0, \act_0, w_0)} \\
 &\quad {} \times \cdots \\
 &\quad {} \times \nu(w_{\hor-2})
     \times \ind{\st_{\hor-1} = f(\st_{\hor-2}, \act_{\hor-2}, w_{\hor-2})}
     \times \ind{\act_{\hor-1} = \pi_{\hor-1}(\st_{\hor-1})} \\
-&= d_0(\st_0) \ind{\act_0 = \pi_0(\st_0)}
+&= P_0(\st_0) \ind{\act_0 = \pi_0(\st_0)}
     \prod_{\hi=1}^{\hor-1} \nu(w_{\hi-1})
     \ind{\st_{\hi} = f(\st_{\hi-1}, \act_{\hi-1}, w_{\hi-1})}
     \ind{\act_{\hi} = \pi_{\hi}(\st_{\hi})}
@@ -832,7 +832,7 @@ and ignore the terminal state for simplicity:
 $$
 \begin{aligned}
         \min_{\pi_0, \dots, \pi_{\hor-1} : \mathcal{S} \to \mathcal{A}} \quad
-        & \E_{\st_0 \sim d_0} \left[
+        & \E_{\st_0 \sim P_0} \left[
             \sum_{\hi=0}^{\hor-1} c(\st_\hi, \act_\hi)
         \right] \\
         \text{where} \quad                                  & \st_{\hi+1} = f(\st_\hi, \act_\hi)                                   \\

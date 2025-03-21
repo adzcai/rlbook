@@ -1,6 +1,5 @@
-# Markov Decision Processes {#sec-mdps}
-
 {{< include macros.qmd >}}
+# Markov Decision Processes {#sec-mdps}
 
 ## Introduction
 
@@ -11,11 +10,11 @@ without needing a programmer to implement handwritten "if statements".
 ::: {#exm-decision-problems layout-ncol="3"}
 #### Decision problems
 
-![Board games and video games, such as a game of chess, where a player character takes actions that update the state of the game. [@guy_chess_2006]](shared/chess-pieces.jpg)
+![Board games and video games, such as a game of chess, where a player character takes actions that update the state of the game [@guy_chess_2006].](shared/chess-pieces.jpg)
 
-![Inventory management, where a company must efficiently move resources from producers to consumers. [@frans_berkelaar_container_2009]](shared/cargo-ship.jpg)
+![Inventory management, where a company must efficiently move resources from producers to consumers [@frans_berkelaar_container_2009].](shared/cargo-ship.jpg)
 
-![Robotic control, where a robot can move and interact with the real world to complete some task. [@gpa_photo_archive_robotic_2017]](shared/robot-arm.jpg)
+![Robotic control, where a robot can move and interact with the real world to complete some task [@gpa_photo_archive_robotic_2017].](shared/robot-arm.jpg)
 :::
 
 All of these tasks involve taking a sequence of **actions**
@@ -33,31 +32,30 @@ graph LR
     Environment --"observes *state*, *reward*"--> Agent
 ```
 
-The strategy for choosing actions is called the *policy*.
-The goal of an RL algorithm is to find a policy that maximizes the total reward.
-This is a very general problem!
-How can we describe such tasks using mathematics in a way that is *general* yet also *structured* enough for us to analyze?
-
-This chapter will introduce the most popular formalization for such tasks:
+This chapter will introduce the most popular mathematical formalization for such tasks:
 **Markov decision processes (MDPs)**.
 We will study **dynamic programming (DP)** algorithms
-for solving *fully specified* tasks
-in which we completely understand the environment.
+for solving tasks when the rules of the environment are totally known.
 We'll describe how to _evaluate_ different policies
 and how to compute (or approximate)
 the **optimal policy** for a given MDP.
-We'll introduce the **Bellman consistency condition**, which allows us to analyze the whole sequence of interactions in terms of individual timesteps.
+We'll introduce the **Bellman consistency condition**,
+which allows us to analyze the whole sequence of interactions in terms of individual timesteps.
 
 ::: {#rem-complications}
 #### Further generalizations
 
-In the real world,
-we often *don't* know how the environment works,
-or it's too hard to represent the environment on a computer.
-We will study such tasks in future chapters.
+In most real tasks,
+we *don't* explicitly know the rules of the environment,
+or can't concisely represent them on a computer.
+We will deal with this in future chapters;
+this chapter assumes the environment is known and accessible,
+so there's nothing to _learn_ about the environment.
+
 Additionally, in many tasks,
 only a _subset_ of the state is visible to the observer.
-We won't discuss such *partially observed* environments in this course.
+Such *partially observed* environments are out of scope of this textbook;
+see @sec-mdps-bib for additional resources.
 :::
 
 ```{python}
@@ -67,7 +65,7 @@ import numpy as np
 from IPython.display import Markdown, display
 ```
 
-## Finite-horizon Markov decision processes {#sec-finite-horizon-mdps}
+## Introduction to Markov decision processes {#sec-finite-horizon-mdps}
 
 To gain a better grasp of decision processes
 and identify the key features that we want to formalize,
@@ -100,14 +98,24 @@ Describe the _state transitions_ heuristically,
 and a _reward function_ that describes how the task should be solved.
 :::
 
-In many decision problems,
+In many sequential decision-making problems,
 the state transitions only depend on the *current* state and action.
 For example, in @exm-mdp-robotics,
 if we use Newton's laws of physics to compute the state transitions,
 then just knowing the current positions and velocities is enough to calculate the next positions and velocities,
 since Newton's laws are second-order.
-We say that such state transitions satisfy the **Markov property**,
-which we will formally define in @def-markov-property after introducing some notation.
+We say that such state transitions satisfy the **Markov property**.
+
+::: {#def-markov-informal}
+#### Markov property (informal)
+
+An environment's state transitions satisfy the **Markov property**
+if "what happens next" only depends on the current state of the environment
+and not on the history of how we got here.
+:::
+
+We will formally define the Markov property in @def-markov-property
+after introducing some notation for describing MDPs.
 
 ::: {#exr-understanding-mdps}
 #### Checking for the Markov property
@@ -119,16 +127,60 @@ if the same position occurs three times during the game,
 either player may claim a draw.)
 :::
 
-**Markov decision processes** (MDPs), which satisfy the Markov property,
-are the most common formalization of decision problems.
-MDPs can be classified as **finite-horizon**,
-where the interactions end after some finite number of time steps,
-or **infinite-horizon**, where the interactions are allowed to continue indefinitely.
-We'll begin with the finite-horizon case and discuss the infinite-horizon case in @sec-infinite-horizon-mdps.
+Sequential decision-making problems that satisfy the Markov property
+are called **Markov decision processes** (MDPs).
+MDPs are the core setting of modern RL research.
+We can further classify MDPs based on whether or not the task eventually ends.
 
+::: {#def-episodic}
+#### Episodic tasks\index{episodic task}
+
+Tasks that have a well-defined start and end,
+such as a game of chess or a football match,
+are called **episodic**.
+Each episode starts afresh
+and ends once the environment reaches a **terminal state**.
+The number of steps in an episode is called its **horizon**.
+:::
+
+::: {#def-continuing}
+#### Continuing tasks\index{continuing task}
+
+On the other hand,
+**continuing tasks**,
+such as managing a business's inventory,
+have no clear start or end point.
+The agent interacts with the environment in an indefinite loop.
+:::
+
+Consider an episodic task where the horizon is fixed and known in advance.
+That is, the agent takes up to $\hor$ actions,
+where $\hor$ is some finite positive integer.
+We model such tasks with a **finite-horizon** MDP.
+Otherwise,
+if there's no limit to how long the episode can continue
+or if the task is continuing,
+we model the task with an **infinite-horizon** MDP.
+We'll begin with the finite-horizon case in @sec-finite-horizon-mdps
+and discuss the infinite-horizon case in @sec-infinite-horizon-mdps.
+
+## Finite-horizon Markov decision processes {#sec-finite-horizon-mdps}
+
+Many real-world tasks,
+such as most sports games or video games,
+end after a fixed number of actions from the agent.
+In each episode:
+
+1. The environment starts in some initial state $s_0$.
+2. The agent observes the state and takes an action $a_0$.
+3. The environment updates to state $s_1$ according to the action.
+
+Steps 2 and 3 are repeated $\hor$ times,
+resulting in a sequence of states and actions $s_0, a_0, \dots, s_{\hor-1}, a_{\hor-1}, s_\hor$,
+where $s_\hor$ is some **terminal state**.
+Here's the notation we will use to describe an MDP:
 
 ::: {#def-finite-horizon-mdp}
-
 #### Finite-horizon Markov decision process
 
 The components of a finite-horizon Markov decision process are:
@@ -140,10 +192,10 @@ The components of a finite-horizon Markov decision process are:
 
 2.  The **actions** that the agent can take.
     We use $a_\hi$ to denote the action at time $\hi$.
-    $\mathcal{A}$ denotes set of possible actions,
+    $\mathcal{A}$ denotes the set of possible actions,
     called the **action space**.
 
-3.  An **initial state distribution** $d_0 \in \triangle(\mathcal{S})$.
+3.  An **initial state distribution** $P_0 \in \triangle(\mathcal{S})$.
 
 4.  The **state transitions** (a.k.a. **dynamics**)
     $P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})$
@@ -178,7 +230,7 @@ Combined together, these objects specify a finite-horizon Markov
 decision process:
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, P, r, \hor).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, P, r, \hor).
 $$ {#eq-finite-horizon-mdp}
 :::
 
@@ -190,7 +242,7 @@ values):
 
 $$
 \begin{aligned}
-    d_0 &\in [0, 1]^{|\mathcal{S}|} &
+    P_0 &\in [0, 1]^{|\mathcal{S}|} &
     P &\in [0, 1]^{(|\mathcal{S} \times \mathcal{A}|) \times |\mathcal{S}|} &
     r &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}
 \end{aligned}
@@ -248,7 +300,7 @@ Your room has the possible states
 $\mathcal{S} = \{ \text{orderly}, \text{messy} \}.$
 You can take either of the actions $\mathcal{A} = \{ \text{ignore}, \text{tidy} \}.$
 The room starts off orderly,
-that is, $d_0(\text{orderly}) = 1$.
+that is, $P_0(\text{orderly}) = 1$.
 
 The **state transitions** are as follows:
 if you tidy the room, it becomes (or remains) orderly;
@@ -415,7 +467,7 @@ Once we've chosen a policy,
 we can sample trajectories by repeatedly choosing actions according to the policy
 and observing the rewards and updated states returned by the environment.
 This generative process induces a distribution $\rho^{\pi}$ over trajectories.
-(We assume that $d_0$ and $P$ are clear from context.)
+(We assume that $P_0$ and $P$ are clear from context.)
 :::
 
 :::: {#exm-tidy-traj}
@@ -446,7 +498,7 @@ over sequences of actions and states $(s_0, a_0, \dots, s_{\hor-1}, a_{\hor-1})$
 can be written as
 
 $$
-\rho^{\pi}(\tau) := d_0(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots
+\rho^{\pi}(\tau) := P_0(s_0) \pi_0(a_0 \mid s_0) P(s_1 \mid s_0, a_0) \cdots
 P(s_{\hor-1} \mid s_{\hor-2}, a_{\hor-2}) \pi_{\hor-1}(a_{\hor-1} \mid s_{\hor-1}).
 $$ {#eq-autoregressive-trajectories}
 
@@ -508,7 +560,7 @@ def trajectory_log_likelihood(
 For a deterministic policy $\pi$,
 we have that $\pi_\hi(a \mid s) = \ind{a = \pi_\hi(s)}$;
 that is, the probability of taking an action is $1$ if it's the unique action prescribed by the policy for that state and $0$ otherwise.
-In this case, the only randomness in sampling trajectories comes from the initial state distribution $d_0$ and the state transitions $P$.
+In this case, the only randomness in sampling trajectories comes from the initial state distribution $P_0$ and the state transitions $P$.
 
 ### Policy evaluation {#sec-eval-dp-finite-horizon}
 
@@ -1442,7 +1494,7 @@ the trajectory will likely continue for a long time.
 The other components of the MDP remain from the finite-horizon setting (@def-finite-horizon-mdp):
 
 $$
-\mathcal{M} = (\mathcal{S}, \mathcal{A}, d_0, P, r, \gamma).
+\mathcal{M} = (\mathcal{S}, \mathcal{A}, P_0, P, r, \gamma).
 $$
 
 ```{python}
@@ -1672,7 +1724,7 @@ for the rewards and state transitions:
 
 $$
 \begin{aligned}
-    r^{\pi} &\in \mathbb{R}^{|\mathcal{S}|} & P^{\pi} &\in [0, 1]^{|\mathcal{S}| \times |\mathcal{S}|} & d_0 &\in [0, 1]^{|\mathcal{S}|} \\
+    r^{\pi} &\in \mathbb{R}^{|\mathcal{S}|} & P^{\pi} &\in [0, 1]^{|\mathcal{S}| \times |\mathcal{S}|} & P_0 &\in [0, 1]^{|\mathcal{S}|} \\
     \pi &\in \mathcal{A}^{|\mathcal{S}|} & V^\pi &\in \mathbb{R}^{|\mathcal{S}|} & Q^\pi &\in \mathbb{R}^{|\mathcal{S}| \times |\mathcal{A}|}.
 \end{aligned}
 $$
@@ -1695,7 +1747,7 @@ r^{\pi} = \begin{bmatrix} 1 \\ 0 \end{bmatrix},
 \quad
 P^{\pi} = \begin{bmatrix} 0.7 & 0.3 \\ 1 & 0 \end{bmatrix},
 \quad
-d_0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
+P_0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
 $$
         
 We'll see how to
@@ -2177,7 +2229,7 @@ $$
 -   Markov decision processes (MDPs) are a framework for sequential
     decision making under uncertainty. They consist of a state space
     $\mathcal{S}$, an action space $\mathcal{A}$, an initial state distribution
-    $d_0 \in \Delta(\mathcal{S})$, a transition function $P(s' \mid s, a)$, and a
+    $P_0 \in \Delta(\mathcal{S})$, a transition function $P(s' \mid s, a)$, and a
     reward function $r(s, a)$. They can be finite-horizon (ends after
     $H$ timesteps) or infinite-horizon (where rewards scale by
     $\gamma \in (0, 1)$ at each timestep).
@@ -2202,9 +2254,18 @@ $$
 -   In the infinite-horizon setting, we can compute the optimal policy
     using **value iteration** or **policy iteration**.
 
-## References
+## Bibliographic notes {#sec-mdps-bib}
 
-The proof of @thm-optimal-greedy can also be found in @agarwal_reinforcement_2022.
+The MDP framework can be traced to @puterman_markov_1994.
+The proof of @thm-optimal-greedy can be found in @agarwal_reinforcement_2022.
+
+In most real-world problems,
+we don't observe the entire state of the environment.
+Instead, we only get access to what our senses can perceive.
+This is what makes games like hide-and-seek enjoyable.
+We can model such environment as **partially observed MDPs** (POMDPs).
+
+@powell_reinforcement_2022 presents a unified framework for sequential decision problems.
 
 
 ::: {.content-visible when-profile="thesis"}

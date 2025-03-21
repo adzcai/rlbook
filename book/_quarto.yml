@@ -5,8 +5,19 @@ book:
   title: "CS 1840: Introduction to Reinforcement Learning"
   author: "Alexander Cai"
   date: "2025-01-03"
+  favicon: shared/184.png
+  # cover-image: shared/184.png
+  search: true
+  open-graph: true
+  repo-url: https://github.com/adzcai/rlbook
+  repo-actions: [edit, issue, source]
+  downloads: [pdf, epub]
+  sharing: [twitter, facebook]
+  site-url: https://rlbook.adzc.ai
   chapters:
     - index.qmd
+    - notation.qmd
+    - introduction.qmd
     - mdps.qmd
     - control.qmd
     - bandits.qmd
@@ -20,6 +31,11 @@ book:
     - background.qmd
     - proofs.qmd
     - references.qmd
+  page-footer:
+    left: "Copyright 2025 Alexander Cai"
+    right:
+      - icon: github
+        href: https://github.com/adzcai/rlbook
 
 bibliography: references.bib
 csl: apa.csl
@@ -34,16 +50,24 @@ crossref:
   tbl-prefix: "tbl."
   sec-prefix: "sec."
   def-prefix: "def."
+  appendix-title: "App."
+  appendix-delim: ":"
 
 format:
   html:
-    theme: cosmo
+    theme:
+      light: cosmo
+      dark: [cosmo, theme-dark.scss]
     code-fold: true
     fig-width: 4
     fig-height: 3
   pdf:
     documentclass: scrreprt
     echo: false
-
-
-
+    include-in-header:
+      text: |
+        \usepackage{makeidx}
+        \makeindex
+    include-after-body:
+      text: |
+        \printindex

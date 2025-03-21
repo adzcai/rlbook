@@ -1,0 +1,62 @@
+# Preface {.unnumbered}
+
+Welcome to the study of reinforcement learning!
+This textbook accompanies the undergraduate course [CS 1840/STAT 184](http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html) taught at Harvard.
+It is intended to be a friendly and approachable yet rigorous introduction to this active subfield of machine learning.
+
+
+## Prerequisites
+
+This book assumes the same prerequisites as the course:
+You should be familiar with multivariable calculus, linear algebra, and probability.
+For Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents.
+Stat 111 is strongly recommended but not required.
+Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text or in @sec-background:
+
+-   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
+    inversion, eigenvalues and eigenvectors.
+-   **Multivariable Calculus:** Partial derivatives, the chain rule, Taylor series, _gradients, directional derivatives, Lagrange multipliers._
+-   **Probability:** Random variables, probability distributions,
+    expectation and variance, the law of iterated expectations (Adam's rule), covariance, conditional probability, Bayes's rule, and the law of total probability.
+
+You should also be familiar with basic programming concepts
+such as variables, functions, loops, etc.
+Pseudocode listings will be provided for certain algorithms.
+
+
+## Course overview
+
+The course will progress through the following units:
+
+@sec-mdps introduces **Markov Decision Processes,**
+the core mathematical framework for describing a large class of interactive environments.
+
+@sec-control is a standalone chapter on the **linear quadratic regulator** (LQR),
+an important tool for *continuous control*,
+in which the state and action spaces are no longer _finite_ but rather _continuous_.
+This has widespread applications in robotics.
+
+@sec-bandits introduces the **multi-armed bandit** (MAB) model for _stateless_ sequential decision-making tasks.
+In exploring a number of algorithms,
+we will see how each of them strikes a different balance between _exploring_ new options and _exploiting_ known options.
+This **exploration-exploitation tradeoff** is a core consideration in RL algorithm design.
+
+@sec-sl is a standalone crash course on some tools from supervised learning that we will use in later chapters.
+
+@sec-fit introduces **fitted dynamic programming** (fitted DP) algorithms for solving MDPs.
+These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.
+
+@sec-pg explores an important class of algorithms based on iteratively improving a policy.
+We will also encounter the use of _deep neural networks_ to express more complicated policies and approximate complicated functions.
+
+@sec-imitation-learning attempts to learn a good policy from expert demonstrations.
+At its most basic, this is an application of supervised learning to RL tasks.
+
+@sec-planning looks at ways to _explicitly_ plan ahead when the environment's dynamics are known.
+We will study the _Monte Carlo Tree Search_ heuristic,
+which has been used to great success in the famous AlphaGo algorithm and its successors.
+
+@sec-exploration continues to investigate the exploration-exploitation tradeoff.
+We will extend ideas from multi-armed bandits to the MDP setting.
+
+@sec-background contains an overview of selected background mathematical content and programming content.
