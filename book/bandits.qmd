@@ -1,4 +1,4 @@
-{{< include macros.qmd >}}
+{{< include _macros.tex >}}
 
 ::: {.hidden}
 \providecommand{\regret}{\text{Regret}_\Ep}

@@ -27,10 +27,10 @@ book:
     - imitation_learning.qmd
     - planning.qmd
     - exploration.qmd
+    - references.qmd
   appendices:
     - background.qmd
     - proofs.qmd
-    - references.qmd
   page-footer:
     left: "Copyright 2025 Alexander Cai"
     right:

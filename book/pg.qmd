@@ -1,4 +1,4 @@
-{{< include macros.qmd >}}
+{{< include _macros.tex >}}
 
 # Policy Gradient Methods {#sec-pg}
 
@@ -1906,7 +1906,7 @@ We can illustrate this with the following example:
 #### Natural gradient on a simple problem
 
 Let's step away from RL and consider a simple optimization problem
-over Bernoulli distributions $p_\theta \in \Delta(\{ 0, 1 \})$.
+over Bernoulli distributions $p_\theta \in \triangle(\{ 0, 1 \})$.
 This distribution space is parameterized by the success probability $\theta \in [0, 1]$.
 The per-sample objective function is $100$ if the Bernoulli trial succeeds
 and $1$ if the trial fails.

@@ -1,4 +1,4 @@
-{{< include macros.qmd >}}
+{{< include _macros.tex >}}
 
 # Supervised learning {#sec-sl}
 

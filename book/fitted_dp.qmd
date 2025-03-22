@@ -1,4 +1,4 @@
-{{< include macros.qmd >}}
+{{< include _macros.tex >}}
 
 # Fitted Dynamic Programming Algorithms {#sec-fit}
 

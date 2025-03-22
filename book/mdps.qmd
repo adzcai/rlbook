@@ -1,4 +1,5 @@
-{{< include macros.qmd >}}
+{{< include _macros.tex >}}
+
 # Markov Decision Processes {#sec-mdps}
 
 ## Introduction
@@ -404,7 +405,7 @@ their outputs, inputs, and time-dependence.
 ::::
 
 Note that for finite state and action spaces,
-we can represent a randomized mapping $\mathcal{S} \to \Delta(\mathcal{A})$
+we can represent a randomized mapping $\mathcal{S} \to \triangle(\mathcal{A})$
 as a matrix $\pi \in [0, 1]^{\mathcal{S} \times \mathcal{A}}$ where each row describes
 the policy's distribution over actions for the corresponding state.
 
@@ -2230,7 +2231,7 @@ $$
 -   Markov decision processes (MDPs) are a framework for sequential
     decision making under uncertainty. They consist of a state space
     $\mathcal{S}$, an action space $\mathcal{A}$, an initial state distribution
-    $P_0 \in \Delta(\mathcal{S})$, a transition function $P(s' \mid s, a)$, and a
+    $P_0 \in \triangle(\mathcal{S})$, a transition function $P(s' \mid s, a)$, and a
     reward function $r(s, a)$. They can be finite-horizon (ends after
     $H$ timesteps) or infinite-horizon (where rewards scale by
     $\gamma \in (0, 1)$ at each timestep).
