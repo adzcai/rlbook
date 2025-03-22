@@ -230,7 +230,7 @@ How might we use these to _approximate_ the generalization error?
 ## Empirical risk minimization {#sec-erm}
 
 To estimate the generalization error,
-we could simply take the _sample average_ of the loss over the training data.
+we could simply take the _sample mean_ of the loss over the training data.
 This is called the **training loss** or **empirical risk**:
 
 ::: {#def-empirical-risk}
@@ -422,7 +422,7 @@ can impact the performance of the chosen fitting method.
 What is the derivative of @eq-quadratic-1 with respect to $a, b, c$?
 Compare this to the derivative of @eq-quadratic-2 with respect to $a', b', c'$.
 This shows that gradient-based fitting methods
-may change their behavior depending on the parameterization.
+may change their behaviour depending on the parameterization.
 :::
 
 Using a parameterized function class allows us

@@ -298,7 +298,7 @@ $|\widetilde{\mathcal{S}}|^2 |\widetilde{\mathcal{A}}| = (100^{4})^2 (100^{4}) =
 What properties of the problem could we instead make use of?
 Note that by discretizing the state and action spaces,
 we implicitly assumed that rounding each state or action vector by some tiny amount $\varepsilon$
-wouldn't change the behavior of the system by much;
+wouldn't change the behaviour of the system by much;
 namely, that the cost and dynamics were relatively *continuous*.
 Can we use this continuous structure in other ways?
 Yes! We will see that the **linear quadratic regulator** makes better use of this assumption.

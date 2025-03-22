@@ -86,7 +86,7 @@ Suppose the goal is to move a robot to a certain position.
 - We **reward** positions that are closer to the desired position.
   To be more energy-efficient,
   we could also deduct reward for applying a lot of force,
-  or add other terms that describe the ideal behavior.
+  or add other terms that describe the ideal behaviour.
 :::
 
 ::: {#exr-decision-problems}
@@ -2279,10 +2279,6 @@ when asking a student to prove something,
 to some, it may seem trivial or unclear what we are trying to prove,
 since they saw the desired characterization as the original definition.
 
-- Satisfies Bellman optimality equations
-- Dominates all other policies
-- Dominates state-dependent, deterministic policies
-
 This textbook takes a slightly different pass.
 
 1. We first define what it means for a policy to be optimal:
@@ -2312,7 +2308,6 @@ We also clarify "Bellman _consistency_ equations" and "Bellman _optimality_ equa
 
 We also add some intuition for why policy iteration converges more quickly
 than value iteration.
-
 
 I also thought the motivation behind infinite-horizon setting could have been made more explicit,
 instead of treating it as simply another set of notation to work with.

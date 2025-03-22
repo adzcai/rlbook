@@ -525,30 +525,28 @@ since the chance of sticking with a suboptimal arm is nonzero.
 
 We can improve the pure greedy algorithm (@def-pure-greedy) as follows:
 let's reduce the variance of the reward estimates
-by pulling each arm $N_\text{explore}> 1$ times before committing.
+by pulling each arm $N_\text{explore} \ge 1$ times before committing.
 This is called the **explore-then-commit** strategy.
 
 ::: {#def-etc}
 #### Explore-then-commit
 
-On the $\ep$th pull,
-the arm $a_\ep$ is chosen according to
+The explore-then-commit algorithm first pulls each arm $N_\text{explore}$ times.
+Let
 
 $$
-a_\ep := \begin{cases}
-\ep \remainder \Arm & \ep < N_\text{explore} \Arm \\
-\arg\max_{\arm \in [\Arm]} \hat \mu^\arm & \ep \ge N_\text{explore} \Arm,
-\end{cases}
-$$ {#eq-etc}
-
-where $\ep \remainder \Arm$ indicates the remainder of $\ep$ when divided by $\Arm$,
-and
-
-$$
-\hat \mu^\arm := \frac{1}{N_\text{explore}} \sum_{n=0}^{N_\text{explore}} r_{n N_\text{explore} + \arm}
+\hat \mu^\arm := \frac{1}{N_\text{explore}} \sum_{n=0}^{N_\text{explore}-1} r_{\arm N_\text{explore} + n}
 $$ {#eq-etc-average}
 
-denotes the empirical mean reward of arm $\arm$.
+denote the empirical mean reward of arm $\arm$ during these pulls.
+Afterwards,
+on the $\ep$th pull
+(for $\ep \ge N_\text{explore} \Arm$),
+it chooses
+
+$$
+a_\ep := \arg\max_{\arm \in [\Arm]} \hat \mu^\arm.
+$$ {#eq-etc}
 :::
 
 Note that the “pure greedy” strategy above is just the special case where $N_\text{explore} = 1$.
@@ -742,7 +740,7 @@ We call this the **epsilon-greedy** algorithm.
 
 Let $N^\arm_\ep$ denote the number of times
 that arm $\arm$ is pulled within the first $\ep$ overall pulls,
-and let $\hat \mu^\arm_\ep$ denote the sample average of the corresponding rewards:
+and let $\hat \mu^\arm_\ep$ denote the sample mean of the corresponding rewards:
 
 $$
 \begin{aligned}
@@ -826,11 +824,22 @@ and explore *more* for arms that we're less certain about?
 
 ## Upper Confidence Bound (UCB) {#sec-ucb}
 
+The upper confidence bound algorithm is the first strategy we study
+that explores _adaptively_:
+it identifies arms it is less certain about,
+and explicitly trades off between learning more about these
+and exploiting arms that already seem good.
+
 To quantify how *certain* we are about the mean of each arm,
-we'll compute *confidence intervals* for our estimators,
-and then choose the arm with the highest *upper confidence bound*.
+UCB computes statistical *confidence intervals* (CIs) for the arm means,
+and then chooses the arm with the highest *upper confidence bound*
+(hence its name).
+Concretely, after $\ep$ pulls,
+we compute upper confidence bounds $M^\arm_\ep$ for each arm $\arm$
+such that $\mu^\arm \le M^\arm_\ep$ with high probability,
+and select $a_\ep := \arg \max_{\arm \in [\Arm]} M^\arm_\ep$.
 This operates on the principle of **the benefit of the doubt (i.e. optimism in the face of uncertainty)**:
-we'll choose the arm that we're most optimistic about.
+we'll choose the arm that we're most _optimistic_ about.
 
 ```{python}
 #| label: fig-ucb-example
@@ -856,136 +865,106 @@ fig.legend()
 plt.show()
 ```
 
-In particular, after $\ep$ overall pulls,
-we'd like to compute some upper confidence bound $M^\arm_\ep$ for each arm $\arm$
-such that $\mu^\arm_\ep \le M^\arm_\ep$ with high probability,
-and then choose $a_\ep := \arg \max_{\arm \in [\Arm]} M^\arm_\ep$.
-But how should we compute $M^\arm_\ep$?
-
 ::: {#thm-ucb-ci}
 #### Confidence intervals for arm means
 
 As in our definition of the epsilon-greedy algorithm (@def-epsilon-greedy),
 let $N^\arm_\ep$ denote the number of times
-we pull arm $\arm$ within the first $\ep$ overall pulls,
-and let $\hat \mu^\arm_\ep$ denote the sample average of the corresponding rewards.
+we pull arm $\arm$ within the first $\ep$ pulls,
+and let $\hat \mu^\arm_\ep$ denote the sample mean of the corresponding rewards.
 Then with probability at least $1 - \delta$,
-for all $\ep$,
+for all $\ep \ge \Arm$,
 
 $$
 \mu^\arm \in \left[
     \hat \mu^\arm_\ep - \sqrt{
-    \frac{\ln(2 \ep/\delta')}{2 N^\arm_\ep}
+    \frac{\ln(2 \ep/\delta)}{2 N^\arm_\ep}
     },
     \hat \mu^\arm_\ep + \sqrt{
-    \frac{\ln(2 \ep/\delta')}{2 N^\arm_\ep}
+    \frac{\ln(2 \ep/\delta)}{2 N^\arm_\ep}
     }
 \right].
 $$ {#eq-ucb-ci}
-:::
 
-::: {.proof}
-In the proof of the ETC regret bound (@thm-etc-regret),
-we used Hoeffding's inequality (@thm-hoeffding) to compute a CI for $\mu^\arm$
-given $N_\text{explore}$ samples from arm $\arm$.
-Hoeffding's inequality is useful for computing CIs of the mean of a bounded random variable
-given a fixed number of i.i.d. samples.
-
-However,
-we can't directly apply Hoeffding's inequality to $\hat \mu^\arm_\ep$,
-since $\hat \mu^\arm_\ep$ is the sample mean of a _random_ number $N^\arm_\ep$ of samples:
-the number of times we pull each arm depends on the agent's actions,
-which in turn depend on the random rewards.
-We must be careful to _condition_ on $N^\arm_\ep$
-before applying Hoeffding's inequality.
-That is,
-_conditioned_ on $N^\arm_\ep$,
-the $N^\arm_\ep$ pulls of arm $\arm$ are i.i.d.,
-in which case Hoeffding's inequality gives the bound
-
-$$
-\pr\left(| \hat \mu^\arm_\ep - \mu^\arm | > \sqrt{
-    \frac{\ln(2/\delta)}{2N^\arm_\ep}
-} \right) \le \delta.
-$$ {#eq-hoeffding-etc}
-
-But we need a bound that holds _unconditionally_ of $N^\arm_\ep$.
-Well, we know $N^\arm_\ep \le \ep$
-(where equality would be the case if and only if we pulled arm $\arm$ every time),
-so we can use the **union bound** to compute a *looser* bound
-that holds *uniformly* across all possible values of $N^\arm_\ep$:
-
-$$
-\begin{aligned}
-    \pr\left(
-        \forall N \le \ep, |\tilde \mu^\arm_N - \mu^\arm |
-        \le
-        \sqrt{\frac{\ln(2/\delta)}{2 N}}
-    \right) &\ge 1- \ep \delta.
-\end{aligned}
-$$ {#eq-bandits-uniform-count}
-
-where $\tilde \mu^\arm_n$ denotes the sample average of $n$ i.i.d. pulls of arm $\arm$.
-Concretely,
-
-$$
-\begin{aligned}
-\tilde \mu^\arm_N &:= \frac{1}{N} \sum_{n=0}^{N-1} \tilde r^\arm_n \\
-\text{where } \tilde r^\arm_0, \dots, \tilde r^\arm_{N-1}
-&\sim \text{arm } \arm \text{ i.i.d.}
-\end{aligned}
-$$ {#eq-arm-iid-samples}
-
-In particular, since $N^\arm_\ep \le \ep$,
-and $\widetilde \mu^\arm_{N^\arm_\ep} = \hat \mu^\arm_\ep$ by definition,
-we have
-
-$$
-\begin{aligned}
-    \pr\left(
-        |\hat \mu^\arm_\ep - \mu^\arm |
-        \le
-        \sqrt{
-        \frac{\ln(2 \ep/\delta')}{ 2N^\arm_\ep}
-        }
-    \right)
-    &\ge
-    1-\delta' \text{ where } \delta'
-    :=
-    \ep \delta.
-\end{aligned}
-$$ {#eq-hoeffding-bound}
-
-This bound would then suffice for applying the UCB algorithm!
-That is, the upper confidence bound for arm $\arm$ would be
-
-$$
-M^\arm_\ep := \hat \mu^\arm_\ep + \sqrt{\frac{\ln(2 \ep/\delta')}{2 N^\arm_\ep}},
-$$ {#eq-ucb-bound}
-
-where we can choose $\delta'$ depending on how tight we want the interval to be.
-
-- A smaller $\delta'$ would give us a larger and higher-confidence interval, emphasizing the exploration term.
-- A larger $\delta'$ would give a tighter and lower-confidence interval, prioritizing the current sample averages.
-
-We can now use this to define the UCB algorithm.
+We assume that during the first $\Arm$ pulls, we pull each arm once.
 :::
 
 ::: {#def-ucb}
 #### Upper confidence bound algorithm
 
-The upper confidence bound algorithm chooses the $\ep$th pull by taking
+The UCB algorithm first pulls each arm once.
+Then it chooses the $\ep$th pull (for $\ep \ge \Arm$) by taking
 
 $$
-\begin{aligned}
-a_\ep &:= \arg\max_{\arm \in [\Arm]} M^\arm_\ep, \\
-\text{where } M^\arm_\ep &:= \hat \mu^\arm_\ep + \sqrt{
-    \frac{\ln(2 \ep/\delta')}{2 N^\arm_\ep}
-}.
-\end{aligned},
+a_\ep := \arg\max_{\arm \in [\Arm]} \hat \mu^\arm_\ep + \sqrt{
+    \frac{\ln(2 \ep/\delta)}{2 N^\arm_\ep}
+},
 $$ {#eq-ucb-bound}
 
-where $\delta' \in (0, 1)$ is a parameter that controls the width of the confidence interval.
+where $\delta \in (0, 1)$ is a parameter that controls the width of the confidence interval.
+:::
+
+Intuitively, UCB prioritizes arms where:
+
+1.  $\hat \mu^\arm_\ep$ is large, i.e. the arm's corresponding sample mean is high,
+    and we'd choose it for *exploitation*, and
+2.  $\sqrt{\frac{\ln(2 \ep/\delta)}{2N^\arm_\ep}}$ is large,
+    i.e. $N^\arm_\ep$ is small and we're still uncertain about the arm,
+    and we'd choose it for *exploration*.
+
+$\delta$ is formally the coverage probability of the confidence interval,
+but we can also treat it as a parameter that trades off between exploration and exploitation:
+
+- A smaller $\delta$ would give us a larger interval, emphasizing the exploration term.
+- A larger $\delta$ would give a tighter interval, prioritizing the current sample means.
+
+We now prove @thm-ucb-ci.
+
+::: {.proof}
+Our proof is similar to that in @thm-etc-regret:
+we use Hoeffding's inequality to construct a CI for the mean
+of a bounded random variable
+(i.e. the rewards from a given arm).
+However, we must be careful,
+since the number of samples from arm $\arm$ up to time $\ep$,
+$N^\arm_\ep$,
+is a random variable.
+
+Hoeffding's inequality (@thm-hoeffding) tells us that,
+for $N$ i.i.d. samples $\tilde r_0, \dots, \tilde r_{N-1}$ from arm $\arm$,
+
+$$
+| \tilde \mu^\arm_N - \mu^\arm | \le \sqrt{
+    \frac{\ln( 2 / \delta )}{2 N}
+}
+$$ {#eq-hoeffding-ucb}
+
+with probability at least $1 - \delta$,
+where $\tilde \mu^\arm_N = \frac{1}{N} \sum_{n=0}^{N-1} \tilde r_n$.
+The union bound then tells us that with probability at least $1 - \delta'$,
+for all $N = 1, \dots, \ep$,
+
+$$
+\forall N = 1, \dots, \ep :
+| \tilde \mu^\arm_N - \mu^\arm | \le \sqrt{
+    \frac{\ln( 2 \ep / \delta' )}{2 N}
+}.
+$$ {#eq-ucb-union}
+
+Since $N^\arm_\ep \in \{ 1, \dots, \ep \}$
+(we assume each arm is pulled once at the start),
+@eq-ucb-union implies that
+
+$$
+| \tilde \mu^\arm_{N^\arm_\ep} - \mu^\arm | \le \sqrt{
+    \frac{\ln( 2 \ep / \delta' )}{N}
+}
+$$ {#eq-ucb-specific-arm}
+
+with probability at least $1 - \delta'$ as well.
+But notice that $\tilde \mu^\arm_{N^\arm_\ep}$ is identically distributed to $\hat \mu^\arm_\ep$:
+both refer to the sample mean of the first $N^\arm_\ep$ pulls from arm $\arm$.
+This gives the bound in @thm-ucb-ci (after relabelling $\delta' \mapsto \delta$).
 :::
 
 
@@ -999,16 +978,6 @@ class UCB(Agent):
         return solutions.ucb_choose_arm(self)
 ```
 
-Intuitively, UCB prioritizes arms where:
-
-1.  $\hat \mu^\arm_\ep$ is large, i.e. the arm has a high sample average, and
-    we'd choose it for *exploitation*, and
-2.  $\sqrt{\frac{\ln(2 \ep/\delta')}{2N^\arm_\ep}}$ is large, i.e. we're still
-    uncertain about the arm, and we'd choose it for *exploration*.
-
-As desired, this explores in a smarter, *adaptive* way compared to the
-previous algorithms. Does it achieve lower regret?
-
 ```{python}
 #| label: fig-ucb
 #| fig-cap: Reward and cumulative regret of the upper confidence bound algorithm
@@ -1018,8 +987,20 @@ mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
-### UCB regret analysis
+As desired, this explores in a smarter, *adaptive* way compared to the
+previous algorithms. Does it achieve lower regret?
 
+::: {#thm-ucb-regret}
+#### UCB high-probability regret bound
+
+With probability $1-\delta''$,
+
+$$
+    \regret = \widetilde O(\Arm \sqrt{\Ep})
+$$ {#eq-ucb-regret}
+:::
+
+::: {.proof}
 First we'll bound the regret incurred at each timestep. Then we'll bound
 the *total* regret across timesteps.
 
@@ -1064,18 +1045,20 @@ $$
 \end{aligned}
 $$
 
-Putting everything together gives
+Putting everything together gives, with probability $1-\delta''$,
 
 $$
 \begin{aligned}
-    \regret &\le 2 \Arm \sqrt{2 \Ep \ln(2 \Ep \Arm /\delta'')} && \text{with probability } 1-\delta'' \\
-    &= \widetilde O(K\sqrt{\Ep})
+    \regret &\le 2 \Arm \sqrt{2 \Ep \ln(2 \Ep \Arm /\delta'')} \\
+    &= \widetilde O(\Arm \sqrt{\Ep}),
 \end{aligned}
-$$ {#eq-ucb-regret}
+$$ {#eq-ucb-regret-final}
+
+as in @thm-ucb-regret.
+:::
 
 In fact, we can do a more sophisticated analysis to trim off a factor of $\sqrt{\Arm}$
 and show $\regret = \widetilde O(\sqrt{\Ep \Arm})$.
-
 
 
 ### Lower bound on regret (intuition)

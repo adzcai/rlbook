@@ -5,7 +5,7 @@
 ## O notation {#sec-o-notation}
 
 Throughout this chapter and the rest of the book, we will describe the
-asymptotic behavior of a function using $O$ notation.
+asymptotic behaviour of a function using $O$ notation.
 
 For two functions $f(t)$ and $g(t)$, we say that $f(t) \le O(g(t))$ if
 $f$ is asymptotically upper bounded by $g$. Formally, this means that

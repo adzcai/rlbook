@@ -9,7 +9,7 @@ that maximizes the **reward** it obtains from the environment.
 
 RL provides a powerful framework for attacking a wide variety of problems,
 including robotic control, video games and board games, resource management, language modeling, and more.
-It also provides an interdisciplinary paradigm for studying animal and human behavior.
+It also provides an interdisciplinary paradigm for studying animal and human behaviour.
 Many of the most stunning results in machine learning,
 ranging from AlphaGo [@silver_mastering_2016] to ChatGPT [@openai_introducing_2022],
 are built using RL algorithms.
@@ -41,7 +41,7 @@ We'll discuss these more concretely in @sec-intro-challenges.
 Why do we only focus on maximizing a _scalar_ reward signal?
 Surely a more descriptive or higher-dimensional signal would enable more efficient learning.
 Nonetheless, many (prominent) researchers hold that **scalar reward is enough**
-for developing behaviors that achieve a wide array of goals [@silver_reward_2021].
+for developing behaviours that achieve a wide array of goals [@silver_reward_2021].
 This idea is also termed the **reward hypothesis**,
 and goes back at least as far as Turing,
 who suggested that one could train a "universal machine" using one input signal for "pain"
