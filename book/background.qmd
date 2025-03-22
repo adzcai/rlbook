@@ -40,6 +40,41 @@ functions in $O(f(t))$ and $O(g(t))$ is in $O(f(t) + g(t))$.
 ## Linear algebra {#sec-bg-linear-algebra}
 
 
+## Union bound {#sec-bg-union-bound}
+
+::: {#thm-union-bound}
+#### Union bound
+
+Consider a set of events $A_0, \dots, A_{N-1}$. Then
+
+$$
+\pr\left(
+    \bigcup_{n=0}^{N-1} A_n
+\right) \le \sum_{n=0}^{N-1} \pr(A_n).
+$$ {#eq-union-1}
+
+In particular,
+if $\pr(A_n) \ge 1 - \delta$ for each $n \in [N]$,
+we have
+
+$$
+\pr\left(
+    \bigcap_{n=0}^{N-1} A_n
+\right) \ge 1 - N \delta.
+$$ {#eq-union-2}
+:::
+
+::: {#exr-union}
+#### Union bound for successes
+
+Prove the second statement above.
+:::
+
+In other words,
+if each event $A_n$ has a small probability $\delta$ of "failure",
+then to get the probability that there are _any_ failures out of all $N$ events,
+we multiply the failure probability by $N$.
+
 
 ### Review of Hessians and interpretation of the Fisher information matrix {#sec-hessians}
 

@@ -1,10 +1,10 @@
 ::: {.hidden}
 \providecommand{\step}{h}
 \providecommand{\Step}{H}
-\providecommand{\arm}{k}
-\providecommand{\Arm}{K}
-\providecommand{\ep}{t}
-\providecommand{\Ep}{T}
+\providecommand{\arm}{\text{arm}}
+\providecommand{\Arm}{\text{ARMS}}
+\providecommand{\ep}{\text{ep}}
+\providecommand{\Ep}{\text{EP}}
 \providecommand{\iter}{i}
 \providecommand{\Iter}{I}
 

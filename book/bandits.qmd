@@ -1,5 +1,10 @@
 {{< include macros.qmd >}}
 
+::: {.hidden}
+\providecommand{\regret}{\text{Regret}_\Ep}
+\providecommand{\remainder}{\mathbin{\%}}
+:::
+
 # Multi-Armed Bandits {#sec-bandits}
 
 ## Introduction
@@ -10,36 +15,40 @@ In this setting,
 an agent repeatedly chooses from a fixed set of actions,
 called **arms**,
 each of which has an associated reward distribution.
-The agent’s goal is to maximize the total reward it receives over some time period.
+The agent's goal is to maximize the total reward it receives over some time period.
 Here are a few examples:
 
 
-::: {#exm-advertising layout-ncol="2"}
+:::: {layout-ncol="2"}
+::: {#exm-advertising}
 #### Online advertising
 
-Let’s suppose you, the agent, are an advertising company.
-You have $\arm$ different ads that you can show to users;
-For concreteness, let’s suppose there’s just a single user.
+Let's suppose you, the agent, are an advertising company.
+You have $\Arm$ different ads that you can show to users.
+Let's suppose you are targeting a single user.
 You receive $1$ reward if the user clicks the ad, and $0$ otherwise.
 Thus, the unknown *reward distribution* associated to each ad
 is a Bernoulli distribution defined by the probability that the user clicks on the ad.
 Your goal is to maximize the total number of clicks by the user.
-
-![Deciding which ad to put on a billboard can be treated as a MAB problem [@negative_space_photo_2015].](shared/advertisements.jpg)
 :::
 
-::: {#exm-clinical-trials layout-ncol="2"}
+![Deciding which ad to put on a billboard can be treated as a MAB problem. Image from @negative_space_photo_2015.](shared/advertisements.jpg)
+::::
+
+:::: {layout-ncol="2"}
+::: {#exm-clinical-trials}
 #### Clinical trials
 
-Suppose you’re a pharmaceutical company, and you’re testing a new drug.
-You have $\arm$ different dosages of the drug that you can administer to patients.
+Suppose you're a pharmaceutical company, and you're testing a new drug.
+You have $\Arm$ different dosages of the drug that you can administer to patients.
 You receive $1$ reward if the patient recovers, and $0$ otherwise.
-Thus, the unknown *reward distribution* associated to each dosage
+Thus, the unknown reward distribution associated with each dosage
 is a Bernoulli distribution defined by the probability that the patient recovers.
 Your goal is to maximize the total number of patients that recover.
-
-![Optimizing between different medications can be treated as a multi-armed bandit problem [@pixabay_20_2016].](shared/medication.jpg)
 :::
+
+![Optimizing between different medications can be treated as a MAB problem. Image from @pixabay_20_2016.](shared/medication.jpg)
+::::
 
 The MAB is the simplest setting for exploring the **exploration-exploitation tradeoff**:
 should the agent choose new actions to learn more about the environment,
@@ -92,13 +101,14 @@ the outcome of each decision is binary (i.e. $0$ or $1$).
 This is the **Bernoulli bandit** problem,
 which we'll use throughout the chapter.
 
+:::: {layout-ncol="2"}
 ::: {#def-bernoulli-bandit}
 #### Bernoulli bandit problem\index{Bernoulli bandit}
 
 Let $\Arm$ denote the number of arms.
-We’ll label them $0, \dots, \Arm-1$ and use *superscripts* to indicate the arm index.
+We'll label them $0, \dots, \Arm-1$ and use *superscripts* to indicate the arm index $\arm$.
 Since we seldom need to raise a number to a power,
-this won’t cause much confusion.
+this won't cause much confusion.
 
 Let $\mu^\arm$ be the mean of arm $\arm$,
 such that pulling arm $\arm$ either returns reward $1$ with probability $\mu^\arm$ or $0$ otherwise.
@@ -106,6 +116,9 @@ such that pulling arm $\arm$ either returns reward $1$ with probability $\mu^\ar
 The agent gets $\Ep$ chances to pull an arm.
 The task is to determine a strategy for maximizing the total reward.
 :::
+
+![Each arm $\arm$ in a Bernoulli bandit is a biased coin with probability $\mu^\arm$ of showing heads. Each "pull" corresponds to flipping a coin. The goal is to maximize the number of heads given $\Ep$ flips. Image from @pixabay_coins_2016.](shared/flipping-coins.jpg)
+::::
 
 ```{python}
 class MAB:
@@ -132,10 +145,13 @@ class MAB:
 mab = MAB(means=np.array([0.1, 0.8, 0.4]), T=100)
 ```
 
-In pseudocode, the agent’s interaction with the MAB environment
+In pseudocode, the agent's interaction with the MAB environment
 can be described by the following process:
 
 ```{python}
+#| label: fig-mab-interaction
+#| fig-cap: The MAB interaction loop. $a_\ep \in [\Arm]$ denotes the $\ep$th arm pulled.
+
 def mab_loop(mab: MAB, agent: "Agent") -> int:
     for t in range(mab.T):
         arm = agent.choose_arm()  # in 0, ..., K-1
@@ -176,7 +192,7 @@ class Agent:
         self.history[arm, reward] += 1
 ```
 
-What’s the *optimal* strategy for the agent,
+What's the *optimal* strategy for the agent,
 i.e. the one that achieves the highest expected reward?
 Convince yourself that the agent should try
 to always pull the arm with the highest expected reward:
@@ -189,27 +205,50 @@ the **optimal arm**:
 
 $$
 \begin{aligned}
-\arm^\star &:= \arg\max_{\arm \in [\Arm]} \mu^\arm
+\arm^\star &:= \arg\max_{\arm \in [\Arm]} \mu^\arm \\
 \mu^\star &:= \mu^{\arm^\star} = \max_{\arm \in [\Arm]} \mu^\arm.
 \end{aligned}
 $$ {#eq-optimal-arm}
 :::
+
+### Regret
 
 When analyzing an MAB algorithm,
 rather than measuring its performance in terms of the (expected) total reward,
 we instead compare it to the "oracle" strategy
 that knows the optimal arm in advance.
 This gives rise to a measure of performance
-known as **regret**:
+known as **regret**,
+which answers,
+how much better _could_ you have done
+had you known the optimal arm from the beginning?
+This provides a more meaningful baseline than the expected total reward,
+whose magnitude may vary widely depending on the bandit problem.
+
+::: {#exm-regret}
+#### Regret provides a more meaningful baseline
+
+Consider the problem of grade inflation or deflation.
+If you went to a different school or university,
+you might have gotten a very different grade,
+independently of your actual ability.
+This is like comparing bandit algorithms based on the expected total reward:
+the baseline varies depending on the problem (i.e. school),
+making it hard to compare the algorithms (i.e. students) themselves.
+Instead, it makes more sense to measure you relative to the (theoretical) best student from your school.
+This is analogous to measuring algorithm performance using regret.
+:::
 
 :::: {#def-regret}
 #### Regret\index{regret}
 
-The agent’s **regret** after $\Ep$ timesteps is defined as
+The agent's (cumulative) **regret** after $\Ep$ pulls is defined as
 
 $$
-\text{Regret}_\Ep := \sum_{\ep=0}^{\Ep-1} \mu^\star - \mu^{a_\ep}.
+\regret := \sum_{\ep=0}^{\Ep-1} \mu^\star - \mu^{a_\ep},
 $$ {#eq-regret}
+
+where $a_\ep \in [\Arm]$ is the arm chosen on the $\ep$th pull.
 ::::
 
 ```{python}
@@ -220,21 +259,21 @@ def regret_per_step(mab: MAB, agent: Agent):
 
 Note that this depends on the *true means* of the pulled arms,
 and is independent of the observed rewards.
-The regret $\text{Regret}_\Ep$ is a random variable
-where the randomness comes from the agent’s strategy
+The regret $\regret$ is a random variable
+where the randomness comes from the agent's strategy
 (i.e. the sequence of actions $a_0, \dots, a_{\Arm-1}$).
 
 Also note that we care about the _total_ regret across all decisions,
 rather than just the final decision.
-If we only cared about the final decision,
+If we only cared about the quality of the final decision,
 the best strategy would be to learn as much as possible about the environment,
-and then use that knowledge at the last step [@bubeck_pure_2011].
+and then use that knowledge to make the best possible decision at the last step [@bubeck_pure_2011].
 This is a **pure exploration** problem
-since the agent is never explicitly penalized
-for any actions taken before the final decision.
-Minimizing the _total_ regret (or maximizing the _total_ reward)
+since the agent is never penalized
+for taking suboptimal actions up to the final decision.
+Minimizing the _cumulative_ regret (or maximizing the _cumulative_ reward)
 means we must strike a balance between _exploration_ and _exploitation_
-throughout the decision-making process.
+throughout the entire decision-making process.
 
 Throughout the chapter,
 we will try to upper bound the regret of various algorithms in two different senses:
@@ -242,22 +281,22 @@ we will try to upper bound the regret of various algorithms in two different sen
 1.  Upper bound the *expected regret*,
     i.e. show that for some upper bound $M_\Ep$,
     $$
-    \E[\text{Regret}_\Ep] \le M_\Ep.
+    \E[\regret] \le M_\Ep.
     $$ {#eq-expected-regret-bound}
 2.  Find a *high-probability* upper bound on the regret,
     i.e. show that for some small _failure probability_ $\delta > 0$,
     $$
-    \pr(\text{Regret}_\Ep \le M_{\Ep, \delta}) \ge 1-\delta
+    \pr(\regret \le M_{\Ep, \delta}) \ge 1-\delta
     $$ {#eq-probabilistic-regret-bound}
     for some upper bound $M_{\Ep, \delta}$.
 
-Note that these two approaches say very different things about the regret.
-The first approach says that the *average* regret is at most $M_\Ep$.
-However, the agent might still achieve a higher regret on a particular randomization.
-The second approach says that, *with high probability*,
+The first approach says that the regret is at most $M_\Ep$ in expectation.
+However, the agent might still achieve a higher or lower regret
+on a particular randomization.
+The second approach says that, with probability at least $1-\delta$,
 the agent will achieve regret at most $M_{\Ep, \delta}$.
-However, it doesn’t say anything about the regret in the remaining $\delta$ fraction of runs,
-which might be arbitrarily high.
+However, it doesn't say anything about the regret in the remaining $\delta$ fraction of runs,
+which could be arbitrarily high.
 
 ::: {#exr-markov-expected}
 #### Expected regret bounds yield probabilistic regret bounds
@@ -265,57 +304,67 @@ which might be arbitrarily high.
 Suppose we have an upper bound $M_\Ep$ on the expected regret.
 Show that, with probability $1-\delta$,
 $M_{\Ep, \delta} := M_\Ep / \delta$ upper bounds the regret.
+Note this is a much higher bound!
+For example, if $\delta = 0.01$,
+the high-probability bound is $100$ times as large.
 :::
 
 ::: {#rem-pac-bounds}
 #### Issues with regret
 
 Is regret the right way to measure performance?
-An algorithm which sometimes chooses very bad arms
-can achieve the same regret
-as an algorithm which often chooses slightly suboptimal arms.
-We might care about this distinction in practice,
+Consider the following two algorithms:
+
+1.  An algorithm which sometimes chooses very bad arms.
+2.  An algorithm which often chooses slightly suboptimal arms.
+
+We might care a lot about this distinction in practice,
 for example, in healthcare,
 where an occasional very bad decision could have extreme consequences.
+However, these two algorithms could achieve the exact same expected total regret.
 
-Other performance measures are used to evaluate algorithms:
+Other performance measures include
 **probably approximately correct** (PAC) bounds
 and **uniform** high-probability regret bounds.
 For a stronger guarantee,
-@dann_unifying_2017 introduces the **Uniform-PAC** bound.
+@dann_unifying_2017 introduced the **Uniform-PAC** bound.
 We won't discuss these in detail here.
 :::
 
-We’d like to achieve **sublinear regret** in expectation:
+We'd like to achieve **sublinear regret** in expectation:
 
 $$
-\E[\text{Regret}_\Ep] = o(\Ep).
+\E[\regret] = o(\Ep).
 $$ {#eq-sublinear-regret}
 
 (See @sec-o-notation if you're unfamiliar with big-oh notation.)
-This means that, as $\Ep \to \infty$,
-an algorithm with sublinear regret will eventually do as well as the oracle strategy.
+An algorithm with sublinear regret
+will eventually do as well as the oracle strategy
+as $\Ep \to \infty$.
 
 ::: {#rem-sublinear-issues}
 #### Interpreting sublinear regret
 
-Note that an algorithm with sublinear regret in expectation
+An algorithm with sublinear regret in expectation
 doesn't necessarily always choose the correct arm.
 In fact, such an algorithm can still choose a suboptimal arm infinitely many times.
 Consider a two-armed Bernoulli bandit with $\mu^0 = 0$ and $\mu^1 = 1$.
 An algorithm that chooses arm $0$ $\sqrt{\Ep}$ times out of $\Ep$
 still achieves $O(\sqrt{\Ep})$ regret in expectation.
+
+Also, sublinear regret measures the _asymptotic_ performance of the algorithm
+as $\Ep \to \infty$.
+It doesn't tell us about the _rate_ at which the algorithm approaches optimality.
 :::
 
-The rest of the chapter will walk through a series
-of MAB algorithms.
-We will see how different algorithms make different tradeoffs
+In the remaining sections,
+we'll walk through a series of MAB algorithms
+and see how they make different tradeoffs
 between exploration and exploitation.
 
 ```{python}
-
 def plot_strategy(mab: MAB, agent: Agent):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(6, 4))
 
     # plot reward and cumulative regret
     plt.plot(np.arange(mab.T), np.cumsum(agent.rewards), label="reward")
@@ -332,9 +381,8 @@ def plot_strategy(mab: MAB, agent: Agent):
         plt.scatter([], [], c=color, label=f'arm {i}')
 
     # labels and title
-    plt.xlabel("timestep")
+    plt.xlabel("Pull index")
     plt.legend()
-    # plt.title(f"{agent.__class__.__name__} reward and regret")
     plt.show()
 ```
 
@@ -342,15 +390,32 @@ def plot_strategy(mab: MAB, agent: Agent):
 
 A trivial strategy is to always choose arms at random (i.e. "pure exploration").
 
+::: {#def-pure-exploration}
+#### Pure exploration
+
+On the $\ep$th pull,
+the arm $a_\ep$ is sampled uniformly at random
+from all arms:
+
+$$
+a_\ep \sim \text{Unif}([\Arm])
+$$ {#eq-pure-exploration}
+:::
+
 ```{python}
 class PureExploration(Agent):
     def choose_arm(self):
         """Choose an arm uniformly at random."""
         return solutions.pure_exploration_choose_arm(self)
-
-latex(solutions.pure_exploration_choose_arm)
 ```
 
+::: {#thm-pure-exploration-regret}
+#### Pure exploration expected regret
+
+The pure exploration strategy achieves regret $\Theta(\Ep)$ in expectation.
+:::
+
+::: {.proof}
 Note that
 
 $$
@@ -358,37 +423,58 @@ $$
 =
 \bar \mu
 :=
-\frac{1}{\Arm} \sum_{\arm=1}^\Arm \mu^\arm
-$$
+\frac{1}{\Arm} \sum_{\arm=0}^{\Arm-1} \mu^\arm
+$$ {#eq-pure-exploration-1}
 
 so the expected regret is simply
 
 $$
 \begin{aligned}
-    \E[\text{Regret}_\Ep]
+    \E[\regret]
     &= \sum_{\ep = 0}^{\Ep-1} \E[\mu^\star - \mu^{a_\ep}]
     \\
-    &= \Ep (\mu^\star - \bar \mu) > 0.
+    &= \Ep \cdot (\mu^\star - \bar \mu).
 \end{aligned}
-$$
+$$ {#eq-pure-exploration-2}
 
-This scales as $\Theta(T)$, i.e. *linear* in the number of timesteps $\Ep$. There’s no learning here: the agent doesn’t use any information about the environment to improve its strategy. You can see that the distribution over its arm choices always appears "(uniformly) random".
+This scales as $\Theta(\Ep)$ in expectation,
+i.e. *linear* in the number of pulls $\Ep$.
+:::
 
 ```{python}
 #| label: fig-pure-exploration
-#| fig-cap: Reward and cumulative regret of the pure exploration algorithm
+#| fig-cap: Reward and cumulative regret of the pure exploration algorithm.
 
 agent = PureExploration(mab.K, mab.T)
 mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
+Pure exploration doesn't use any information about the environment to improve its strategy.
+The distribution over its arm choices always appears "(uniformly) random".
+
 ## Pure greedy {#sec-pure-greedy}
 
 How might we improve on pure exploration?
 Instead, we could try each arm once,
 and then commit to the one with the highest observed reward.
-We’ll call this the **pure greedy** strategy.
+We'll call this the **pure greedy** strategy.
+
+::: {#def-pure-greedy}
+#### Pure greedy
+
+On the $\ep$th pull,
+the arm $a_\ep$ is chosen according to
+
+$$
+a_\ep := \begin{cases}
+\ep & \ep < \Arm \\
+\arg\max_{\arm \in [\Arm]} r_\arm & \ep \ge \Arm
+\end{cases}
+$$ {#eq-pure-greedy}
+
+where $r_\ep$ denotes the reward obtained on the $\ep$th pull.
+:::
 
 ```{python}
 class PureGreedy(Agent):
@@ -397,43 +483,39 @@ class PureGreedy(Agent):
         return solutions.pure_greedy_choose_arm(self)
 ```
 
-Note we’ve used superscripts $r^\arm$ during the exploration phase to
-indicate that we observe exactly one reward for each arm. Then we use
-subscripts $r_\ep$ during the exploitation phase to indicate that we
-observe a sequence of rewards from the chosen greedy arm $\hat \arm$.
-
-How does the expected regret of this strategy compare to that of pure
-exploration? We’ll do a more general analysis in the following section.
-Now, for intuition, suppose there’s just $K=2$ arms, with Bernoulli
-reward distributions with means $\mu^0 > \mu^1$.
-
-Let’s let $r^0$ be the random reward from the first arm
-and $r^1$ be the random reward from the second.
-If $r^0 > r^1$, then we achieve zero regret.
-Otherwise, we achieve regret $\Ep (\mu^0 - \mu^1)$. Thus, the
-expected regret is simply:
+How does the expected regret of this strategy
+compare to that of pure exploration?
+We'll do a more general analysis in the following section.
+Now, for intuition, suppose there's just $K=2$ arms with means $\mu^1 > \mu^0$.
+If $r_1 > r_0$,
+then we repeatedly pull arm $1$ and achieve zero regret per pull.
+If $r_0 > r_1$,
+then we repeatedly pull arm $0$ and incur $\mu^1 - \mu^0$ regret per pull.
+Accounting for the first two pulls
+and the case of a tie,
+we obtain the following lower bound:
 
 $$
-\begin{aligned}
-    \E[\text{Regret}_\Ep] &= \pr(r^0 < r^1) \cdot \Ep (\mu^0 - \mu^1) + c \\
-    &= (1 - \mu^0) \mu^1 \cdot \Ep (\mu^0 - \mu^1) + c
-\end{aligned}
-$$
+\E[\regret] \ge \pr(r^0 > r^1) \Ep \cdot (\mu^1 - \mu^0)
+$$ {#eq-pure-greedy-regret}
 
-Which is still $\Theta(\Ep)$, the same as pure exploration!
+This is still $\Theta(\Ep)$,
+the same as pure exploration!
 
 ```{python}
 #| label: fig-pure-greedy
-#| fig-cap: Reward and cumulative regret of the pure greedy algorithm
+#| fig-cap: Reward and cumulative regret of the pure greedy algorithm.
 
 agent = PureGreedy(mab.K, mab.T)
 mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
-The cumulative regret is a straight line because the regret only depends on the arms chosen and not the actual reward observed.
-In fact, if the greedy algorithm happens to get lucky on the first set of pulls,
-it may act entirely optimally for that episode!
+The cumulative regret is a straight line
+because the regret only depends on the arms chosen and not the actual reward observed.
+In fact, we see in @fig-pure-greedy
+that the greedy algorithm can get lucky on the first set of pulls
+and act entirely optimally for that experiment!
 But its _average_ regret is still linear,
 since the chance of sticking with a suboptimal arm is nonzero.
 
@@ -441,11 +523,35 @@ since the chance of sticking with a suboptimal arm is nonzero.
 
 ## Explore-then-commit {#sec-etc}
 
-We can improve the pure greedy algorithm as follows:
-let’s reduce the variance of the reward estimates
-by pulling each arm $\Ep_\text{explore}> 1$ times before committing.
+We can improve the pure greedy algorithm (@def-pure-greedy) as follows:
+let's reduce the variance of the reward estimates
+by pulling each arm $N_\text{explore}> 1$ times before committing.
 This is called the **explore-then-commit** strategy.
-Note that the “pure greedy” strategy above is just the special case where $\Ep_\text{explore} = 1$.
+
+::: {#def-etc}
+#### Explore-then-commit
+
+On the $\ep$th pull,
+the arm $a_\ep$ is chosen according to
+
+$$
+a_\ep := \begin{cases}
+\ep \remainder \Arm & \ep < N_\text{explore} \Arm \\
+\arg\max_{\arm \in [\Arm]} \hat \mu^\arm & \ep \ge N_\text{explore} \Arm,
+\end{cases}
+$$ {#eq-etc}
+
+where $\ep \remainder \Arm$ indicates the remainder of $\ep$ when divided by $\Arm$,
+and
+
+$$
+\hat \mu^\arm := \frac{1}{N_\text{explore}} \sum_{n=0}^{N_\text{explore}} r_{n N_\text{explore} + \arm}
+$$ {#eq-etc-average}
+
+denotes the empirical mean reward of arm $\arm$.
+:::
+
+Note that the “pure greedy” strategy above is just the special case where $N_\text{explore} = 1$.
 
 ```{python}
 class ExploreThenCommit(Agent):
@@ -466,49 +572,58 @@ mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
-Notice that now, the graphs are much more consistent,
-and the algorithm finds the true optimal arm and sticks with it much more frequently.
-We would expect ETC to then have a better (i.e. lower) average regret. Can we prove this?
+This algorithm finds the true optimal arm
+more frequently than the pure greedy strategy.
+We would expect ETC to then have a lower expected regret.
+We will show that ETC achieves the following regret bound:
 
+::: {#thm-etc-regret}
+#### ETC high-probability regret bound
 
+The regret of ETC satisfies, with high probability,
 
-### ETC regret analysis {#sec-etc-regret-analysis}
+$$
+\regret = \widetilde{O}(\Ep^{2/3} \Arm^{1/3}),
+$$ {#eq-etc-regret}
 
-Let’s analyze the expected regret of the explore-then-commit strategy by splitting it up
+where the tilde means we ignore logarithmic factors.
+:::
+
+:::: {.proof}
+
+Let's analyze the expected regret of the explore-then-commit strategy by splitting it up
 into the exploration and exploitation phases.
 
-#### Exploration phase.
-
-This phase takes $\Ep_\text{explore} \Arm$ timesteps.
+**Exploration phase**.
+This phase takes $N_\text{explore} \Arm$ pulls.
 Since at each step we incur at most $1$ regret,
-the total regret is at most $\Ep_\text{explore} \Arm$.
+the total regret is at most $N_\text{explore} \Arm$.
 
-#### Exploitation phase.
-
+**Exploitation phase**.
 This will take a bit more effort.
-We’ll prove that for any total time $\Ep$,
-we can choose $\Ep_\text{explore}$ such that with arbitrarily high probability,
+We'll prove that for any total time $\Ep$,
+we can choose $N_\text{explore}$ such that with arbitrarily high probability,
 the regret is sublinear.
 
-Let $\hat \arm$ denote the arm chosen after the exploration phase.
+Let $\widehat{\arm}$ denote the arm chosen after the exploration phase.
 We know the regret from the exploitation phase is
 
 $$
-\Ep_\text{exploit} (\mu^\star - \mu^{\hat \arm}) \qquad \text{where} \qquad \Ep_\text{exploit} := \Ep - \Ep_\text{explore} \Arm.
+\Ep_\text{exploit} (\mu^\star - \mu^{\widehat{\arm}}) \qquad \text{where} \qquad \Ep_\text{exploit} := \Ep - N_\text{explore} \Arm.
 $$ {#eq-etc-exploit-regret}
 
-So we’d like to bound $\mu^\star - \mu^{\hat \arm} = o(1)$
-(as a function of $\Ep$)
+So we'd need $\mu^\star - \mu^{\widehat{\arm}} \to 0$
+as $\Ep \to \infty$
 in order to achieve sublinear regret.
 How can we do this?
 
-Let’s define $\Delta^\arm := \hat \mu^\arm - \mu^\arm$
+Let's define $\Delta^\arm := \hat \mu^\arm - \mu^\arm$
 to denote how far the mean estimate for arm $\arm$ is from the true mean.
 How can we bound this quantity?
-We’ll use the following useful inequality for i.i.d. bounded random variables:
+We'll use the following useful inequality for i.i.d. bounded random variables:
 
 ::: {#thm-hoeffding}
-#### Hoeffding’s inequality
+#### Hoeffding's inequality
 
 Let $X_0, \dots, X_{N-1}$ be i.i.d. random variables
 with $X_n \in [0, 1]$ almost surely for each $n \in [N]$.
@@ -531,79 +646,61 @@ since the rewards from that arm are i.i.d.:
 
 $$
 \pr\left(|\Delta^\arm | > \sqrt{
-    \frac{\ln(2/\delta)}{2\Ep_\text{explore}}
+    \frac{\ln(2/\delta)}{2N_\text{explore}}
 } \right) \le \delta.
 $$ {#eq-hoeffding-etc}
 
-But note that we can’t apply this to arm $\hat \arm$ directly
-since $\hat \arm$ is itself a random variable.
+This can be thought of as a $1-\delta$ confidence interval for the true arm mean $\mu^\arm$.
+But we can't apply this to arm $\widehat{\arm}$ directly
+since $\widehat{\arm}$ is itself a random variable.
 Instead, we need to bound the error across all the arms simultaneously,
 so that the resulting bound will apply
-*no matter what* $\hat \arm$ “crystallizes” to.
-The **union bound** provides a simple way to do this:
+*no matter what* $\widehat{\arm}$ “crystallizes” to.
+The **union bound** provides a simple way to do this.
+(See @thm-union-bound for a review.)
 
-::: {#thm-union-bound}
-#### Union bound
-
-Consider a set of events $A_0, \dots, A_{N-1}$. Then
-
-$$
-\pr(\exists n \in [N]. A_n) \le \sum_{n=0}^{N-1} \pr(A_n).
-$$ {#eq-union-1}
-
-In particular,
-if $\pr(A_n) \ge 1 - \delta$ for each $n \in [N]$,
-we have
-
-$$
-\pr(\forall n \in [N]. A_n) \ge 1 - N \delta.
-$$ {#eq-union-2}
-:::
-
-::: {#exr-union}
-#### Union bound for successes
-
-Prove the second statement above.
-:::
-
-Applying the union bound across the arms for the l.h.s. event of @eq-hoeffding-etc, we have
+In our case,
+we have one event per arm,
+stating that the CI for that arm contains the true mean.
+The probability that _all_ of the CIs are accurate is then
 
 $$
 \begin{aligned}
     \pr\left(
-        \forall \arm \in [\Arm], |\Delta^\arm|
+        \forall \arm \in [\Arm] : |\Delta^\arm|
         \le
-        \sqrt{\frac{\ln(2/\delta)}{2\Ep_\text{explore}}}
-    \right) &\ge 1- \Arm \delta
+        \sqrt{\frac{\ln(2/\delta)}{2N_\text{explore}}}
+    \right) &\ge 1- \Arm \delta.
 \end{aligned}
 $$ {#eq-hoeffding-union}
 
-Then to apply this bound to $\hat \arm$ in particular, we
-can apply the useful trick of “adding zero”:
+This lower-bounds the probability that the CI for arm $\widehat{\arm}$ is accurate.
+Let us return to our original task of bounding $\mu^\star - \mu^{\widehat{\arm}}$.
+We apply the useful trick of “adding zero”:
 
 $$
 \begin{aligned}
-    \mu^{\arm^\star} - \mu^{\hat \arm} &= \mu^{\arm^\star} - \mu^{\hat \arm} + (\hat \mu^{\arm^\star} - \hat \mu^{\arm^\star}) + (\hat \mu^{\hat \arm} - \hat \mu^{\hat \arm}) \\
-    &= \Delta^{\hat \arm} - \Delta^{\arm^\star} + \underbrace{(\hat \mu^{\arm^\star} - \hat \mu^{\hat \arm})}_{\le 0 \text{ by definition of } \hat \arm} \\
-    &\le 2 \sqrt{\frac{\ln(2 \Arm / \delta')}{2\Ep_\text{explore}}} \text{ with probability at least } 1-\delta'
+    \mu^{\arm^\star} - \mu^{\widehat{\arm}} &= \mu^{\arm^\star} - \mu^{\widehat{\arm}} + (\hat \mu^{\arm^\star} - \hat \mu^{\arm^\star}) + (\hat \mu^{\widehat{\arm}} - \hat \mu^{\widehat{\arm}}) \\
+    &= \Delta^{\widehat{\arm}} - \Delta^{\arm^\star} + \underbrace{(\hat \mu^{\arm^\star} - \hat \mu^{\widehat{\arm}})}_{\le 0 \text{ by definition of } \widehat{\arm}} \\
+    &\le 2 \sqrt{\frac{\ln(2 \Arm / \delta')}{2N_\text{explore}}} \text{ with probability at least } 1-\delta'
 \end{aligned}
 $$ {#eq-hoeffding-trick}
 
-where we’ve set $\delta' = \Arm \delta$. Putting this all
-together, we’ve shown that, with probability $1 - \delta'$,
+where we've set $\delta' := \Arm \delta$. Putting this all
+together, we've shown that, with probability $1 - \delta'$,
 
 $$
-\text{Regret}_\Ep \le \Ep_\text{explore} \Arm + \Ep_\text{exploit} \cdot \sqrt{\frac{2\ln(2 \Arm/\delta')}{\Ep_\text{explore}}}.
+\regret \le N_\text{explore} \Arm + \Ep_\text{exploit} \cdot \sqrt{\frac{2\ln(2 \Arm/\delta')}{N_\text{explore}}}.
 $$ {#eq-etc-regret-1}
 
-Note that it suffices for $\Ep_\text{explore}$ to be on the order of $\sqrt{\Ep}$ to achieve sublinear regret.
-In particular, we can find the optimal $\Ep_\text{explore}$
-by setting the derivative of the r.h.s. to zero:
+Note that it suffices for $N_\text{explore}$ to be on the order of $\sqrt{\Ep}$ to achieve sublinear regret.
+In particular, we can find the optimal $N_\text{explore}$
+by setting the derivative of @eq-etc-regret-1 with respect to $N_\text{explore}$ to zero:
 
 $$
 \begin{aligned}
-    0 &= \Arm - \Ep_\text{exploit} \cdot \frac{1}{2} \sqrt{\frac{2\ln(2 \Arm /\delta')}{\Ep_\text{explore}^3}} \\
-    \Ep_\text{explore} &= \left(
+    0 &= \Arm - \Ep_\text{exploit} \cdot \frac{1}{2} \sqrt{\frac{2\ln(2 \Arm /\delta')}{N_\text{explore}^3}} \\
+    N_\text{explore} &= \left(
         \Ep_\text{exploit} \cdot \frac{\sqrt{\ln(2 \Arm / \delta')/2}}{ \Arm }
     \right)^{2/3}
 \end{aligned}
@@ -614,10 +711,13 @@ we have (still with probability $1-\delta'$):
 
 $$
 \begin{aligned}
-    \text{Regret}_\Ep &\le 3 \Ep^{2/3} \sqrt[3]{\Arm \ln(2 \Arm /\delta') / 2} \\
-    &= \widetilde{O}(\Ep^{2/3} \Arm^{1/3}).
+    \regret &\le 3 \Ep^{2/3} \sqrt[3]{\Arm \ln(2 \Arm /\delta') / 2} \\
+    &= \widetilde{O}(\Ep^{2/3} \Arm^{1/3}),
 \end{aligned}
 $$ {#eq-etc-bound}
+
+satisfying @thm-etc-regret.
+::::
 
 The ETC algorithm is rather "abrupt"
 in that it switches from exploration to exploitation after a fixed number of pulls.
@@ -629,11 +729,40 @@ which brings us to the *epsilon-greedy* algorithm.
 
 ## Epsilon-greedy {#sec-epsilon-greedy}
 
-Instead of doing all of the exploration and then all of the exploitation
-separately – which additionally requires knowing the time horizon
-beforehand – we can instead interleave exploration and exploitation by,
-at each timestep, choosing a random action with some probability. We
-call this the **epsilon-greedy** algorithm.
+Instead of doing all of the exploration and then all of the exploitation in separate phases,
+which requires knowing the time horizon
+beforehand,
+we can instead _interleave_ exploration and exploitation by,
+at each pull,
+choosing a random action with some probability.
+We call this the **epsilon-greedy** algorithm.
+
+::: {#def-epsilon-greedy}
+#### Epsilon-greedy
+
+Let $N^\arm_\ep$ denote the number of times
+that arm $\arm$ is pulled within the first $\ep$ overall pulls,
+and let $\hat \mu^\arm_\ep$ denote the sample average of the corresponding rewards:
+
+$$
+\begin{aligned}
+    N^\arm_\ep &:= \sum_{\ep' = 0}^{\ep-1} \mathbf{1} \{ a_{\ep'} = \arm \}, \\
+    \hat \mu^\arm_\ep &:= \frac{1}{N^\arm_\ep} \sum_{\ep' = 0}^{\ep-1} \mathbf{1} \{ a_{\ep'} = \arm \} r_{\ep'}. \\
+\end{aligned}
+$$ {#eq-bandits-count}
+
+On the $\ep$th pull,
+the arm $a_\ep$ is chosen according to
+
+$$
+a_\ep := \begin{cases}
+\text{sample from } \text{Unif}([K]) & \text{with probability } \epsilon_\ep \\
+\arg\max_{\arm \in [K]} \hat \mu^\arm_\ep & \text{with probability } 1 - \epsilon_\ep,
+\end{cases}
+$$ {#eq-epsilon-greedy}
+
+where $\epsilon_\ep \in [0, 1]$ is the probability of choosing a random action.
+:::
 
 ```{python}
 class EpsilonGreedy(Agent):
@@ -659,91 +788,153 @@ mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
-Note that we let $\epsilon$ vary over time. In particular, we might want to gradually *decrease* $\epsilon$ as we learn more about the reward distributions and no longer need to spend time exploring.
+Note that we let the exploration probability $\epsilon_\ep$ vary over time.
+This lets us gradually *decrease* $\epsilon_\ep$
+as we learn more about the reward distributions
+and no longer need to explore as much.
 
 ::: {#exr-constant-eps}
 #### Regret for constant epsilon
 
 What is the asymptotic expected regret of the algorithm if we set $\epsilon$ to be a constant?
+Is this different from pure exploration (@def-pure-exploration)?
 :::
 
-It turns out that setting $\epsilon_\ep = \sqrt[3]{\Arm \ln(\ep) / \ep}$
-also achieves a regret of $\widetilde O(\ep^{2/3} \Arm^{1/3})$ (ignoring the logarithmic factors).
-(We will not prove this here; a proof can be found in @agarwal_reinforcement_2022.)
+::: {#thm-epsilon-greedy-regret}
+#### Epsilon-greedy expected regret
 
-In ETC, we had to set $\Ep_\text{explore}$ based on the total number of timesteps $\Ep$.
-But the epsilon-greedy algorithm actually handles the exploration *automatically*:
+Let $\epsilon_\ep := \sqrt[3]{\Arm \ln(\ep) / \ep}$.
+Then the epsilon-greedy achieves a regret of $\widetilde O(\ep^{2/3} \Arm^{1/3})$ in expectation (ignoring logarithmic factors).
+:::
+
+::: {.proof}
+We won't prove this here.
+See @agarwal_reinforcement_2022 for a proof.
+:::
+
+In ETC, we had to set $N_\text{explore}$ based on the total number of pulls $\Ep$.
+But the epsilon-greedy algorithm handles the exploration incrementally:
 the regret rate holds for *any* $\ep$,
-and doesn’t depend on the final horizon $\Ep$.
+and doesn't depend on the total number of pulls $\Ep$.
 
-But the way these algorithms explore is rather naive:
-we’ve been exploring *uniformly* across all the arms.
+But the way epsilon-greedy and ETC explore is rather naive:
+they explore *uniformly* across all the arms.
 But what if we could be smarter about it,
-and explore *more* for arms that we’re less certain about?
+and explore *more* for arms that we're less certain about?
 
 
 
 ## Upper Confidence Bound (UCB) {#sec-ucb}
 
 To quantify how *certain* we are about the mean of each arm,
-we’ll compute *confidence intervals* for our estimators,
+we'll compute *confidence intervals* for our estimators,
 and then choose the arm with the highest *upper confidence bound*.
 This operates on the principle of **the benefit of the doubt (i.e. optimism in the face of uncertainty)**:
-we’ll choose the arm that we’re most optimistic about.
+we'll choose the arm that we're most optimistic about.
 
-In particular, for each arm $\arm$ at time $\ep$,
-we’d like to compute some upper confidence bound $M^\arm_\ep$
-such that $\hat \mu^\arm_\ep \le M^\arm_\ep$ with high probability,
+```{python}
+#| label: fig-ucb-example
+#| fig-cap: Visualization of confidence intervals for the arm means. UCB would choose arm $0$ since it has the highest upper confidence bound.
+
+means = [0.1, 0.8, 0.4]
+lower_bounds = [-0.4745434, 0.2002283, 0.04175852]
+upper_bounds = [0.9745434, 0.9247717, 0.95824148]
+
+whiskers = np.array([lower_bounds, upper_bounds])
+
+fig, ax = plt.subplots()
+for i in range(len(means)):
+    ax.plot([i, i], [whiskers[0, i], whiskers[1, i]], color='black')
+    ax.plot([i - 0.1, i + 0.1], [whiskers[0, i], whiskers[0, i]], color='black')
+    ax.plot([i - 0.1, i + 0.1], [whiskers[1, i], whiskers[1, i]], color='blue')
+
+ax.scatter(range(len(means)), means, color='red', zorder=5, label="$\mu^k$")
+ax.set_xticks(range(len(means)))
+ax.set_xticklabels([f'Arm {i}' for i in range(3)])
+ax.set_ylabel(r'Mean reward')
+fig.legend()
+plt.show()
+```
+
+In particular, after $\ep$ overall pulls,
+we'd like to compute some upper confidence bound $M^\arm_\ep$ for each arm $\arm$
+such that $\mu^\arm_\ep \le M^\arm_\ep$ with high probability,
 and then choose $a_\ep := \arg \max_{\arm \in [\Arm]} M^\arm_\ep$.
 But how should we compute $M^\arm_\ep$?
 
-In @sec-etc-regret-analysis,
-we were able to compute this bound using Hoeffding’s inequality,
-which assumes that the number of samples is *fixed*.
-This was the case in ETC (where we pull each arm $\Ep_\text{explore}$ times),
-but in UCB, the number of times we pull each arm depends on the agent’s actions,
-which in turn depend on the random rewards and are therefore stochastic.
-So we *can’t* use Hoeffding’s inequality directly.
+::: {#thm-ucb-ci}
+#### Confidence intervals for arm means
 
-Instead, we’ll apply the same trick we used in the ETC analysis:
-we’ll use the **union bound** to compute a *looser* bound
-that holds *uniformly* across all timesteps and arms.
-Let’s introduce some notation to discuss this.
-
-Let $N^\arm_\ep$ denote the (random) number of times
-that arm $\arm$ has been pulled within the first $\ep$ timesteps,
-and $\hat \mu^\arm_\ep$ denote the sample average of those pulls.
-That is,
+As in our definition of the epsilon-greedy algorithm (@def-epsilon-greedy),
+let $N^\arm_\ep$ denote the number of times
+we pull arm $\arm$ within the first $\ep$ overall pulls,
+and let $\hat \mu^\arm_\ep$ denote the sample average of the corresponding rewards.
+Then with probability at least $1 - \delta$,
+for all $\ep$,
 
 $$
-\begin{aligned}
-    N^\arm_\ep &:= \sum_{\tau=0}^{\ep-1} \mathbf{1} \{ a_\tau = \arm \} \\
-    \hat \mu^\arm_\ep &:= \frac{1}{N^\arm_\ep} \sum_{\tau=0}^{\ep-1} \mathbf{1} \{ a_\tau = \arm \} r_\tau.
-\end{aligned}
-$$ {#eq-bandits-count}
+\mu^\arm \in \left[
+    \hat \mu^\arm_\ep - \sqrt{
+    \frac{\ln(2 \ep/\delta')}{2 N^\arm_\ep}
+    },
+    \hat \mu^\arm_\ep + \sqrt{
+    \frac{\ln(2 \ep/\delta')}{2 N^\arm_\ep}
+    }
+\right].
+$$ {#eq-ucb-ci}
+:::
 
-To achieve the "fixed sample size" assumption,
-we’ll need to shift our index from *time* to *number of samples from each arm*.
-In particular, we’ll define $\widetilde r^\arm_n$ to be the $n$th sample from arm $\arm$,
-and $\widetilde \mu^\arm_n$ to be the sample average of the first $n$ samples from arm $\arm$.
-Then, for a fixed $n$, this satisfies the "fixed sample size" assumption,
-and we can apply Hoeffding’s inequality to get a bound on $\widetilde \mu^\arm_n$.
+::: {.proof}
+In the proof of the ETC regret bound (@thm-etc-regret),
+we used Hoeffding's inequality (@thm-hoeffding) to compute a CI for $\mu^\arm$
+given $N_\text{explore}$ samples from arm $\arm$.
+Hoeffding's inequality is useful for computing CIs of the mean of a bounded random variable
+given a fixed number of i.i.d. samples.
 
-So how can we extend our bound on $\widetilde\mu^\arm_n$ to $\hat \mu^\arm_\ep$?
+However,
+we can't directly apply Hoeffding's inequality to $\hat \mu^\arm_\ep$,
+since $\hat \mu^\arm_\ep$ is the sample mean of a _random_ number $N^\arm_\ep$ of samples:
+the number of times we pull each arm depends on the agent's actions,
+which in turn depend on the random rewards.
+We must be careful to _condition_ on $N^\arm_\ep$
+before applying Hoeffding's inequality.
+That is,
+_conditioned_ on $N^\arm_\ep$,
+the $N^\arm_\ep$ pulls of arm $\arm$ are i.i.d.,
+in which case Hoeffding's inequality gives the bound
+
+$$
+\pr\left(| \hat \mu^\arm_\ep - \mu^\arm | > \sqrt{
+    \frac{\ln(2/\delta)}{2N^\arm_\ep}
+} \right) \le \delta.
+$$ {#eq-hoeffding-etc}
+
+But we need a bound that holds _unconditionally_ of $N^\arm_\ep$.
 Well, we know $N^\arm_\ep \le \ep$
-(where equality would be the case if and only if we pulled arm $\arm$ every time).
-So we can apply the same trick as last time,
-where we uniform-ize across all possible values of $N^\arm_\ep$:
+(where equality would be the case if and only if we pulled arm $\arm$ every time),
+so we can use the **union bound** to compute a *looser* bound
+that holds *uniformly* across all possible values of $N^\arm_\ep$:
 
 $$
 \begin{aligned}
     \pr\left(
-        \forall n \le \ep, |\widetilde \mu^\arm_n - \mu^\arm |
+        \forall N \le \ep, |\tilde \mu^\arm_N - \mu^\arm |
         \le
-        \sqrt{\frac{\ln(2/\delta)}{2n}}
+        \sqrt{\frac{\ln(2/\delta)}{2 N}}
     \right) &\ge 1- \ep \delta.
 \end{aligned}
 $$ {#eq-bandits-uniform-count}
+
+where $\tilde \mu^\arm_n$ denotes the sample average of $n$ i.i.d. pulls of arm $\arm$.
+Concretely,
+
+$$
+\begin{aligned}
+\tilde \mu^\arm_N &:= \frac{1}{N} \sum_{n=0}^{N-1} \tilde r^\arm_n \\
+\text{where } \tilde r^\arm_0, \dots, \tilde r^\arm_{N-1}
+&\sim \text{arm } \arm \text{ i.i.d.}
+\end{aligned}
+$$ {#eq-arm-iid-samples}
 
 In particular, since $N^\arm_\ep \le \ep$,
 and $\widetilde \mu^\arm_{N^\arm_\ep} = \hat \mu^\arm_\ep$ by definition,
@@ -778,6 +969,25 @@ where we can choose $\delta'$ depending on how tight we want the interval to be.
 - A larger $\delta'$ would give a tighter and lower-confidence interval, prioritizing the current sample averages.
 
 We can now use this to define the UCB algorithm.
+:::
+
+::: {#def-ucb}
+#### Upper confidence bound algorithm
+
+The upper confidence bound algorithm chooses the $\ep$th pull by taking
+
+$$
+\begin{aligned}
+a_\ep &:= \arg\max_{\arm \in [\Arm]} M^\arm_\ep, \\
+\text{where } M^\arm_\ep &:= \hat \mu^\arm_\ep + \sqrt{
+    \frac{\ln(2 \ep/\delta')}{2 N^\arm_\ep}
+}.
+\end{aligned},
+$$ {#eq-ucb-bound}
+
+where $\delta' \in (0, 1)$ is a parameter that controls the width of the confidence interval.
+:::
+
 
 ```{python}
 class UCB(Agent):
@@ -792,9 +1002,9 @@ class UCB(Agent):
 Intuitively, UCB prioritizes arms where:
 
 1.  $\hat \mu^\arm_\ep$ is large, i.e. the arm has a high sample average, and
-    we’d choose it for *exploitation*, and
-2.  $\sqrt{\frac{\ln(2 \ep/\delta')}{2N^\arm_\ep}}$ is large, i.e. we’re still
-    uncertain about the arm, and we’d choose it for *exploration*.
+    we'd choose it for *exploitation*, and
+2.  $\sqrt{\frac{\ln(2 \ep/\delta')}{2N^\arm_\ep}}$ is large, i.e. we're still
+    uncertain about the arm, and we'd choose it for *exploration*.
 
 As desired, this explores in a smarter, *adaptive* way compared to the
 previous algorithms. Does it achieve lower regret?
@@ -810,12 +1020,12 @@ plot_strategy(mab, agent)
 
 ### UCB regret analysis
 
-First we’ll bound the regret incurred at each timestep. Then we’ll bound
+First we'll bound the regret incurred at each timestep. Then we'll bound
 the *total* regret across timesteps.
 
-For the sake of analysis, we’ll use a slightly looser bound that applies
-across the whole time horizon and across all arms. We’ll omit the
-derivation since it’s very similar to the above (walk through it
+For the sake of analysis, we'll use a slightly looser bound that applies
+across the whole time horizon and across all arms. We'll omit the
+derivation since it's very similar to the above (walk through it
 yourself for practice).
 
 $$
@@ -842,7 +1052,7 @@ Summing this across timesteps gives
 
 $$
 \begin{aligned}
-    \text{Regret}_\Ep &\le \sum_{\ep = 0}^{\Ep-1} 2 B^{a_\ep}_\ep \\
+    \regret &\le \sum_{\ep = 0}^{\Ep-1} 2 B^{a_\ep}_\ep \\
     &= \sqrt{2\ln(2 \Ep \Arm/\delta'')} \sum_{\ep = 0}^{\Ep-1} (N^{a_\ep}_\ep)^{-1/2} \\
     \sum_{\ep = 0}^{\Ep-1} (N^{a_\ep}_\ep)^{-1/2} &= \sum_{\ep = 0}^{\Ep-1} \sum_{\arm=0}^{\Arm-1} \mathbf{1}\{ a_\ep = k \} (N^\arm_\ep)^{-1/2} \\
     &= \sum_{\arm=0}^{\Arm-1} \sum_{n=1}^{N_\Ep^\arm} n^{-1/2} \\
@@ -858,13 +1068,13 @@ Putting everything together gives
 
 $$
 \begin{aligned}
-    \text{Regret}_\Ep &\le 2 \Arm \sqrt{2 \Ep \ln(2 \Ep \Arm /\delta'')} && \text{with probability } 1-\delta'' \\
+    \regret &\le 2 \Arm \sqrt{2 \Ep \ln(2 \Ep \Arm /\delta'')} && \text{with probability } 1-\delta'' \\
     &= \widetilde O(K\sqrt{\Ep})
 \end{aligned}
 $$ {#eq-ucb-regret}
 
 In fact, we can do a more sophisticated analysis to trim off a factor of $\sqrt{\Arm}$
-and show $\text{Regret}_\Ep = \widetilde O(\sqrt{\Ep \Arm})$.
+and show $\regret = \widetilde O(\sqrt{\Ep \Arm})$.
 
 
 
@@ -872,18 +1082,18 @@ and show $\text{Regret}_\Ep = \widetilde O(\sqrt{\Ep \Arm})$.
 
 Is it possible to do better than $\Omega(\sqrt{\Ep})$ in general? In fact,
 no! We can show that any algorithm must incur $\Omega(\sqrt{\Ep})$ regret
-in the worst case. We won’t rigorously prove this here, but the
+in the worst case. We won't rigorously prove this here, but the
 intuition is as follows.
 
 The Central Limit Theorem tells us that with $\Ep$ i.i.d. samples from
 some distribution, we can only learn the mean of the distribution to
 within $\Omega(1/\sqrt{\Ep})$ (the standard deviation). Then, since we get
-$\Ep$ samples spread out across the arms, we can only learn each arm’s
+$\Ep$ samples spread out across the arms, we can only learn each arm's
 mean to an even looser degree.
 
 That is, if two arms have means that are within about $1/\sqrt{\Ep}$, we
-won’t be able to confidently tell them apart, and will sample them about
-equally. But then we’ll incur regret
+won't be able to confidently tell them apart, and will sample them about
+equally. But then we'll incur regret
 $$
 \Omega((\Ep/2) \cdot (1/\sqrt{\Ep})) = \Omega(\sqrt{\Ep}).
 $$ {#eq-regret-lower-bound}
@@ -892,7 +1102,7 @@ $$ {#eq-regret-lower-bound}
 
 ## Thompson sampling and Bayesian bandits {#sec-thompson-sampling}
 
-So far, we’ve treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the reward distributions as *fixed*.
+So far, we've treated the parameters $\mu^0, \dots, \mu^{K-1}$ of the reward distributions as *fixed*.
 Instead, we can take a **Bayesian** approach
 where we treat them as random variables from some **prior distribution**.
 Then, upon pulling an arm and observing a reward,
@@ -933,15 +1143,15 @@ class ThompsonSampling(Agent):
 
 In other words, we sample each arm proportionally to how likely we think
 it is to be optimal, given the observations so far. This strikes a good
-exploration-exploitation tradeoff: we explore more for arms that we’re
-less certain about, and exploit more for arms that we’re more certain
+exploration-exploitation tradeoff: we explore more for arms that we're
+less certain about, and exploit more for arms that we're more certain
 about. Thompson sampling is a simple yet powerful algorithm that
 achieves state-of-the-art performance in many settings.
 
 ::: {#exm-bayesian-bernoulli}
 #### Bayesian Bernoulli bandit
 
-We’ve been working in the Bernoulli bandit setting,
+We've been working in the Bernoulli bandit setting,
 where arm $\arm$ yields a reward of $1$ with probability $\mu^\arm$ and no reward otherwise.
 The vector of success probabilities $\boldsymbol{\mu} = (\mu^0, \dots, \mu^{\Arm-1})$ thus describes the entire MAB.
 
@@ -957,7 +1167,7 @@ p(\boldsymbol{\mu}) = \begin{cases}
 \end{cases}
 $$ {#eq-hypercube-uniform}
 
-In this case, upon viewing some reward, we can exactly calculate the **posterior** distribution of $\boldsymbol{\mu}$ using Bayes’s rule (i.e. the definition of conditional probability):
+In this case, upon viewing some reward, we can exactly calculate the **posterior** distribution of $\boldsymbol{\mu}$ using Bayes's rule (i.e. the definition of conditional probability):
 
 $$
 \begin{aligned}
@@ -1238,4 +1448,8 @@ We can approach these problems through **supervised learning** approaches.
 This chapter remained nearly identical to the way it was taught in the course.
 We progress through a sequence of algorithms
 to highlight the exploration-exploitation tradeoff.
+
+I decided to include some more discussion of how to interpret asymptotic regret bounds:
+It's simple to look at a plot and see that the expected regret is sublinear,
+but it's important to understand the consequences of this in applications.
 :::
