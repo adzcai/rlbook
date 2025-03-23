@@ -28,6 +28,8 @@ Pseudocode listings will be provided for certain algorithms.
 
 The course will progress through the following units:
 
+@sec-intro presents motivation for the RL problem and compares RL to other fields of machine learning.
+
 @sec-mdps introduces **Markov Decision Processes,**
 the core mathematical framework for describing a large class of interactive environments.
 
@@ -60,3 +62,15 @@ which has been used to great success in the famous AlphaGo algorithm and its suc
 We will extend ideas from multi-armed bandits to the MDP setting.
 
 @sec-background contains an overview of selected background mathematical content and programming content.
+
+```{mermaid}
+graph TD
+    Intro --> MDPs & Bandits
+    MDPs --> Control & PG & Tree & Fitted & Exploration
+    Control
+    Bandits --> Exploration
+    PG["Policy gradient methods"]
+    Tree["Tree search methods"]
+    SL["Supervised learning"] --> IL["Imitation learning"] & Fitted
+    Fitted["Fitted DP"]
+```

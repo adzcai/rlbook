@@ -93,17 +93,24 @@ The name “multi-armed bandits” comes from slot machines in casinos,
 which are often called “one-armed bandits” since they have one arm (the lever) and rob money from the player.
 ::::
 
+| Environment is...                                 | known (planning/optimal control)   | unknown (learning from experience) |
+| ------------------------------------------------- | ---------------------------------- | ---------------------------------- |
+| stateless/invariant ($\vert\mathcal{S}\vert = 1$) | (not interesting)                  | multi-armed bandits                |
+| stateful/dynamic                                  | MDP planning (dynamic programming) | "full" RL                          |
+
+: How bandits leads into the full RL problem. {#tbl-bandits-full}
+
 ## The multi-armed bandit problem {#sec-bandits-problem}
 
 Let's frame the MAB problem mathematically.
 In both @exm-advertising and @exm-clinical-trials,
 the outcome of each decision is binary (i.e. $0$ or $1$).
-This is the **Bernoulli bandit** problem,
+This is the **Bernoulli bandits** problem,
 which we'll use throughout the chapter.
 
 :::: {layout-ncol="2"}
 ::: {#def-bernoulli-bandit}
-#### Bernoulli bandit problem\index{Bernoulli bandit}
+#### Bernoulli bandits problem\index{Bernoulli bandits}
 
 Let $\Arm$ denote the number of arms.
 We'll label them $0, \dots, \Arm-1$ and use *superscripts* to indicate the arm index $\arm$.
@@ -117,7 +124,7 @@ The agent gets $\Ep$ chances to pull an arm.
 The task is to determine a strategy for maximizing the total reward.
 :::
 
-![Each arm $\arm$ in a Bernoulli bandit is a biased coin with probability $\mu^\arm$ of showing heads. Each "pull" corresponds to flipping a coin. The goal is to maximize the number of heads given $\Ep$ flips. Image from @pixabay_coins_2016.](shared/flipping-coins.jpg)
+![Each arm $\arm$ in a Bernoulli bandits is a biased coin with probability $\mu^\arm$ of showing heads. Each "pull" corresponds to flipping a coin. The goal is to maximize the number of heads given $\Ep$ flips. Image from @pixabay_coins_2016.](shared/flipping-coins.jpg)
 ::::
 
 ```{python}
@@ -348,7 +355,7 @@ as $\Ep \to \infty$.
 An algorithm with sublinear regret in expectation
 doesn't necessarily always choose the correct arm.
 In fact, such an algorithm can still choose a suboptimal arm infinitely many times.
-Consider a two-armed Bernoulli bandit with $\mu^0 = 0$ and $\mu^1 = 1$.
+Consider a two-armed Bernoulli bandits with $\mu^0 = 0$ and $\mu^1 = 1$.
 An algorithm that chooses arm $0$ $\sqrt{\Ep}$ times out of $\Ep$
 still achieves $O(\sqrt{\Ep})$ regret in expectation.
 
@@ -877,11 +884,11 @@ for all $\ep \ge \Arm$,
 
 $$
 \mu^\arm \in \left[
-    \hat \mu^\arm_\ep - \sqrt{
-    \frac{\ln(2 \ep/\delta)}{2 N^\arm_\ep}
+    \hat \mu^\arm_\ep - \frac{1}{\sqrt{N^\arm_\ep}} \cdot \sqrt{
+    \frac{\ln(2 \ep/\delta)}{2}
     },
-    \hat \mu^\arm_\ep + \sqrt{
-    \frac{\ln(2 \ep/\delta)}{2 N^\arm_\ep}
+    \hat \mu^\arm_\ep + \frac{1}{\sqrt{N^\arm_\ep}} \cdot \sqrt{
+    \frac{\ln(2 \ep/\delta)}{2}
     }
 \right].
 $$ {#eq-ucb-ci}
@@ -996,18 +1003,18 @@ previous algorithms. Does it achieve lower regret?
 With probability $1-\delta''$,
 
 $$
-    \regret = \widetilde O(\Arm \sqrt{\Ep})
+\regret = \widetilde O(\Arm \sqrt{\Ep})
 $$ {#eq-ucb-regret}
 :::
 
 ::: {.proof}
-First we'll bound the regret incurred at each timestep. Then we'll bound
-the *total* regret across timesteps.
+First we'll bound the regret incurred at each timestep.
+Then we'll bound the *total* regret across timesteps.
 
-For the sake of analysis, we'll use a slightly looser bound that applies
-across the whole time horizon and across all arms. We'll omit the
-derivation since it's very similar to the above (walk through it
-yourself for practice).
+For the sake of analysis, we'll use a slightly looser bound
+that applies across the whole time horizon and across all arms.
+We'll omit the derivation since it's very similar to the above
+(walk through it yourself for practice).
 
 $$
 \begin{aligned}
@@ -1132,9 +1139,9 @@ about. Thompson sampling is a simple yet powerful algorithm that
 achieves state-of-the-art performance in many settings.
 
 ::: {#exm-bayesian-bernoulli}
-#### Bayesian Bernoulli bandit
+#### Bayesian Bernoulli bandits
 
-We've been working in the Bernoulli bandit setting,
+We've been working in the Bernoulli bandits setting,
 where arm $\arm$ yields a reward of $1$ with probability $\mu^\arm$ and no reward otherwise.
 The vector of success probabilities $\boldsymbol{\mu} = (\mu^0, \dots, \mu^{\Arm-1})$ thus describes the entire MAB.
 
@@ -1217,143 +1224,323 @@ the *constant factor* is optimal as well.
 
 
 
-## Contextual bandits
+## Contextual bandits {#sec-contextual-bandits}
 
-In the above MAB environment, the reward distributions of the arms
-remain constant. However, in many real-world settings, we might receive
-additional information that affects these distributions. For example, in
-the online advertising case where each arm corresponds to an ad we could
-show the user, we might receive information about the user's preferences
-that changes how likely they are to click on a given ad. We can model
-such environments using **contextual bandits**.
+In the multi-armed bandits setting described above,
+each pull is exactly the same.
+We don't obtain any prior information about the reward distributions.
+However, consider the online advertising example (@exm-advertising),
+where each arm corresponds to an ad we could show a given user,
+and we receive a reward if and only if the user clicks on the ad.
+Suppose Alice is interested in sports and politics,
+while Bob is interested in news and entertainment.
+The ads that Alice is likely to click
+differ from those that Bob is likely to click.
+That is,
+the reward distributions of the arms
+depend on some prior _context_.
+We can model such environments using **contextual bandits**.
+
 
 ::: {#def-contextual-bandit}
 #### Contextual bandit
 
 At each pull $\ep$,
-a *context* $x_\ep$ is drawn from some distribution $\nu_{\text{x}}$.
-The learner gets to observe the context,
-and choose an action $a_\ep$ according to some context-dependent policy $\pi_\ep(x_\ep)$.
-Then, the learner observes the reward from the chosen arm $r_\ep \sim \nu^{a_\ep}(x_\ep)$.
-The reward distribution also depends on the context.
+a *context* $x_\ep$ is chosen from the set $\mathcal{X}$ of all possible contexts.
+The learner gets to observe the context
+_before_ they choose an action.
+That is, we treat the action chosen on the $\ep$th pull
+as a function of the context: $a_\ep(x_\ep)$.
+Then, the learner observes the reward from the chosen arm,
+where the reward distribution also depends on the context.
 :::
 
+::: {#exm-advertising-contextual}
+#### Online advertising as a contextual bandit problem
 
-Assuming our context is *discrete*,
-we can just perform the same algorithms,
-treating each context-arm pair as its own arm.
-This gives us an enlarged MAB of $K |\mathcal{X}|$ arms.
+Suppose you represent an online advertising company
+and you are tasked with placing ads on the New York Times website.
+Articles are categorized into six sections,
+each with its own web page:
+U.S., World, Business, Arts, Lifestyle, and Opinion.
+You might decide to frame this as a contextual bandits problem
+with $|\mathcal{X}| = 6$.
+This is because the demographic of readers likely differs across the different pages,
+and so the reward distributions differ across pages accordingly.
+:::
+
+Suppose our context is *discrete*,
+as in @exm-advertising-contextual.
+Then we could treat each context as its own MAB,
+assigning each context-arm pair to a distinct arm
+in an enlarged MAB of $\Arm |\mathcal{X}|$ arms.
 
 ::: {#exr-ucb-contextual}
 #### Naive UCB for contextual bandits
 
-Write down the UCB algorithm for this enlarged MAB. That is, write an
-expression for $\pi_\ep(x_\ep) = \arg\max_a \dots$.
+Write down the UCB algorithm for this enlarged MAB.
+That is, write an expression $M^\arm_\ep$ in terms of $\Arm$ and $|\mathcal{X}|$
+such that $a_\ep(x_\ep) = \arg\max_{\arm \in [\Arm]} M^\arm_\ep$.
 :::
 
-Recall that running UCB for $\Ep$ timesteps on an MAB with $K$ arms achieves a regret bound of $\widetilde{O}(\sqrt{\Ep \Arm})$.
+Recall that executing UCB for $\Ep$ timesteps on an MAB with $\Arm$ arms
+achieves a regret bound of $\widetilde{O}(\sqrt{\Ep \Arm})$ (@thm-ucb-regret).
 So in this problem,
 we would achieve regret $\widetilde{O}(\sqrt{\Ep \Arm |\mathcal{X}|})$ in the contextual MAB,
 which has a polynomial dependence on $|\mathcal{X}|$.
-But in a situation where we have large,
-or even infinitely many contexts,
-e.g. in the case where our context is a continuous value,
-this becomes intractable.
+But in a situation where we have too many possible contexts,
+or the context is a continuous value,
+this algorithm no longer works.
 
 Note that this "enlarged MAB" treats the different contexts as entirely unrelated to each other,
-while in practice, often contexts are *related* to each other in some way:
-for example, we might want to advertise similar products to users with similar preferences.
+while in practice, often contexts are *related* to each other in some way.
+In the medical trial example (@exm-clinical-trial),
+clients with similar health situations may benefit from the same medications.
 How can we incorporate this structure into our solution?
 
 
 
 ### Linear contextual bandits {#sec-lin-ucb}
 
-We want to model the *mean reward* of arm $\arm$ as a function of the context,
-i.e. $\mu^\arm(x)$.
-One simple model is the *linear* one:
+::: {#rem-sl-contextual-dependence}
+#### Supervised learning
+
+The material in this section depends on basic knowledge of supervised learning (@sec-sl).
+:::
+
+Suppose now that we observe a vector-valued context,
+that is, $\mathcal{X} = \mathbb{R}^D$.
+For example, in a medical trial (@exm-clinical-trials),
+we might know the patient's height, age, blood pressure, etc.,
+each of which would be a separate element of the vector.
+The approach of treating each context as its own MAB problem
+no longer works out-of-the-box
+since the number of contexts is infinite.
+Instead, we assume that the mean reward of each arm $\arm$
+is a function of the context: $\mu^\arm : \mathcal{X} \to \R$.
+
+Rather than the Bernoulli bandits problem (@def-bernoulli-bandit),
+we'll assume that the mean reward is _linear_ in the context.
+(This model is easier to work with for our purposes.)
+That is, a reward $r^\arm$ from arm $\arm$ is drawn according to
 
 $$
-\mu^\arm(x) = x^\top \theta^\arm,
+r^\arm = x^\top \theta^\arm + \varepsilon,
+$$ {#eq-linear-reward-model}
+
+where $\theta^\arm \in \mathbb{R}^D$ describes a *feature direction* for arm $\arm$
+and $\varepsilon$ is some independent noise with mean $0$ and variance $\sigma^2$.
+This clearly has
+
+$$
+\mu^\arm(x) = x^\top \theta^\arm.
+$$ {#eq-contextual-true-mean}
+
+Then, on the $\ep$th pull,
+given context $x_\ep$,
+we can model the mean reward from arm $\arm$ as
+
+$$
+\hat \mu^\arm_\ep(x_\ep) := x_\ep^\top \hat \theta^\arm_\ep,
 $$ {#eq-linear-contextual}
 
-where $x \in \mathcal{X} = \mathbb{R}^D$
-and $\theta^\arm \in \mathbb{R}^D$ describes a *feature direction* for arm $\arm$.
-**Supervised learning** (see @sec-sl) gives us a way to estimate a conditional expectation from samples.
-We learn a *least squares* estimator from the timesteps where arm $\arm$ was selected:
+where $\hat \theta^\arm_\ep$ is some estimator of $\theta^\arm$
+computed from the first $\ep$ pulls.
+
+::: {#rem-bernoulli-linear}
+#### Assumptions for linear models
+
+Why did we switch from Bernoulli reward distributions
+to the additive model in @eq-linear-reward-model?
+The estimator @eq-linear-contextual is a bit odd
+for the Bernoulli bandits problem:
+since $\mu^\arm$ is the success probability of arm $\arm$,
+it would have to lie between $0$ and $1$,
+but $\hat \mu^\arm_\ep(x_\ep)$ extends outside this interval.
+The question of how to model the unknown parameters of a distribution
+is a **supervised learning** problem (@sec-sl).
+For instance, in Bernoulli bandits,
+we could instead use a _logistic regression_ model for each arm's success probability.
+We won't dive into more advanced supervised learning topics here.
+:::
+
+Our goal is still to develop an algorithm
+that chooses an arm $a_\ep(x_\ep)$ to pull
+based on the experience gained during the first $\ep$ trials.
+We will use _supervised learning_,
+in particular, empirical risk minimization (@sec-erm),
+to estimate $\theta^\arm$ for each arm.
+That is, we compute $\hat \theta^\arm_\ep$ as the vector
+that minimizes squared error from the observed rewards:
 
 $$
-\hat \theta_\ep^\arm = \arg\min_{\theta \in \mathbb{R}^d} \sum_{\{ i \in [\ep] : a_i = k \}} (r_i - x_i^\top \theta)^2.
+\hat \theta_\ep^\arm := \arg\min_{\theta \in \mathbb{R}^D}
+    \sum_{\ep' \in \mathcal{I}^\arm_\ep}
+    (r_{\ep'} - x_{\ep'}^\top \theta)^2,
 $$ {#eq-contextual-bandits-estimator}
-
-This has the closed-form solution known as the *ordinary least squares*
-(OLS) estimator:
-
-$$
-\begin{aligned}
-    \hat \theta_\ep^\arm          & = (A_\ep^\arm)^{-1} \sum_{\{ i \in [\ep] : a_i = \arm \}} x_i r_i \\
-    \text{where} \quad A_\ep^\arm & = \sum_{\{ i \in [\ep] : a_i = \arm \}} x_i x_i^\top.
-\end{aligned}
-$$ {#eq-ols-bandit}
-
-We can now apply the UCB algorithm in this environment in order to
-balance *exploration* of new arms and *exploitation* of arms that we
-believe to have high reward. But how should we construct the upper
-confidence bound? Previously, we treated the pulls of an arm as i.i.d.
-samples and used Hoeffding's inequality to bound the distance of the
-sample mean, our estimator, from the true mean. However, now our
-estimator is not a sample mean, but rather the OLS estimator above @eq-ols-bandit. Instead, we'll use **Chebyshev's
-inequality** to construct an upper confidence bound.
-
-::: {#thm-chebyshev}
-#### Chebyshev's inequality
-
-For a random variable $Y$ such that
-$\E Y = 0$ and $\E Y^2 = \sigma^2$,
-
-$$
-|Y| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
-$$ {#eq-chebyshev}
-:::
-
-Since the OLS estimator is known to be unbiased (try proving this
-yourself), we can apply Chebyshev's inequality to
-$x_\ep^\top (\hat \theta_\ep^\arm - \theta^\arm)$:
-
-$$
-\begin{aligned}
-    x_\ep^\top \theta^\arm \le x_\ep^\top \hat \theta_\ep^\arm + \beta \sqrt{x_\ep^\top (A_\ep^\arm)^{-1} x_\ep} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
-\end{aligned}
-$$ {#eq-ols-chebyshev}
-
-::: {#exr-variance-ols}
-#### Variance of OLS estimator
-
-Show that $x_\ep^\top (A_\ep^\arm)^{-1} x_\ep$ is the variance of $x_\ep^\top \hat \theta_\ep^\arm$.
-This result follows from some algebra on the definition of the OLS estimator @eq-ols-bandit.
-:::
-
-The first term is exactly our predicted reward $\hat \mu^\arm_\ep(x_\ep)$.
-To interpret the second term, note that
-
-$$
-x_\ep^\top (A_\ep^\arm)^{-1} x_\ep = \frac{1}{N_\ep^\arm} x_\ep^\top (\Sigma_\ep^\arm)^{-1} x_\ep,
-$$ {#eq-contextual-1}
 
 where
 
 $$
-\Sigma_\ep^\arm = \frac{1}{N_\ep^\arm} \sum_{\{ i \in [t] : a_i = k \}} x_i x_i^\top
-$$ {#eq-contextual-2}
+\mathcal{I}^\arm_\ep := \{ \ep' \in [\ep] \mid a_{\ep'} = \arm \}
+$$ {#eq-arm-indices}
 
-is the empirical covariance matrix of the contexts
-(assuming that the context has mean zero).
-That is, the learner is encouraged to choose arms
-when $x_\ep$ is *not aligned* with the data seen so far,
-or if arm $\arm$ has not been explored much
-and so $N_\ep^\arm$ is small.
+denotes the subset of $[\ep]$ at which arm $\arm$ was pulled.
+Note that $|\mathcal{I}^\arm_\ep| = N^\arm_\ep$
+as defined in @eq-bandits-count.
+The ERM problem in @eq-contextual-bandits-estimator
+has the closed-form solution known as the **ordinary least squares** (OLS\index{ordinary least squares}) estimator:
 
-We can now substitute these quantities into UCB to get the **LinUCB** algorithm:
+$$
+\begin{aligned}
+    \hat \theta_\ep^\arm &= (\widehat \Sigma_\ep^\arm)^{-1}\left(
+        \frac{1}{N^\arm_\ep} \sum_{\ep' \in \mathcal{I}^\arm_\ep} x_{\ep'} r_{\ep'}
+    \right) \\
+    \text{where} \quad \widehat \Sigma_\ep^\arm &= \frac{1}{N^\arm_\ep} \sum_{\ep' \in \mathcal{I}^\arm_\ep} x_{\ep'} x_{\ep'}^\top.
+\end{aligned}
+$$ {#eq-ols-bandit}
+
+$\widehat \Sigma_\ep^\arm$ is the (biased) empirical covariance matrix of the contexts
+across the trials where arm $\arm$ was pulled (out of the first $\ep$ trials).
+
+::: {#rem-invertible}
+#### Invertibility
+
+Note that $\widehat \Sigma_\ep^\arm$ might not be invertible.
+When does this occur?
+One way to address this is to include a $\lambda I$ regularization term
+to ensure that $A_\ep^\arm$ is invertible.
+This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem.
+:::
+
+Now, given a sequence of $\ep$ contexts, pulls, and rewards
+$x_0, a_0, r_0, \dots, x_{\ep-1}, a_{\ep-1}, r_{\ep-1}$,
+we can estimate $\mu^\arm(x_\ep)$ for each arm.
+This is helpful,
+but we haven't yet solved the problem of _deciding_ which arms to pull in each context
+to trade off between exploration and exploitation.
+
+The upper confidence bound (UCB) algorithm (@def-ucb)
+was a useful strategy.
+What would we need to adapt UCB to this new setting?
+Recall that at each step,
+UCB estimates a _confidence interval_ for each arm mean,
+and chooses the arm with the highest upper confidence bound.
+We already have an estimator $\hat \mu^\arm_\ep(x_\ep)$ of each arm mean,
+so all that is left is to compute the width of the confidence interval itself.
+
+::: {#thm-lin-ucb-ci}
+#### LinUCB confidence interval
+
+Suppose we pull each arm once during the first $\Arm$ trials.
+Then at each pull $\ep \ge \Arm$,
+for all arms $\arm \in [\Arm]$ and all contexts $x \in \mathcal{X}$,
+we have that with probability at least $1 - 1/\beta^2$,
+
+$$
+\mu^\arm(x) \in \left[
+    x^\top \hat \theta^\arm_\ep
+    - \beta \frac{\sigma}{\sqrt{N^\arm_\ep}} \cdot \sqrt{x^\top (\widehat \Sigma^\arm_\ep)^{-1} x},
+    x^\top \hat \theta^\arm_\ep
+    + \beta \frac{\sigma}{\sqrt{N^\arm_\ep}} \cdot \sqrt{x^\top (\widehat \Sigma^\arm_\ep)^{-1} x}
+\right],
+$$ {#eq-lin-ucb-ci}
+
+where
+
+- $\sigma$ is the standard deviation of the reward (@eq-linear-reward-model),
+- $N^\arm_\ep$ is the number of times arm $\arm$ was pulled in the first $\ep$ pulls (@eq-bandits-count),
+- $\hat \theta^\arm_\ep$ is the OLS estimator for arm $\arm$ (@eq-ols-bandit),
+- and $\widehat \Sigma^\arm_\ep$ is the sample covariance matrix of the contexts given arm $\arm$ (@eq-ols-bandit).
+:::
+
+We can then plug this interval into the UCB strategy (@def-ucb)
+to obtain what is known as the LinUCB algorithm:
+
+::: {#def-lin-ucb}
+#### LinUCB [@li_contextual-bandit_2010]
+
+LinUCB first pulls each arm once.
+Then, for pull $\ep \ge \Arm$,
+LinUCB chooses an arm according to
+
+$$
+a_\ep(x_\ep) := \arg\max_{\arm \in [\Arm]}
+    x^\top \hat \theta^\arm_\ep
+    +
+    \beta \frac{\sigma}{\sqrt{N^\arm_\ep}} \sqrt{x_\ep^\top (\widehat \Sigma^\arm_\ep)^{-1} x_\ep},
+$$ {#eq-lin-ucb}
+
+where $\sigma, N^\arm_\ep, \hat \theta^\arm_\ep, \widehat \Sigma^\arm_\ep$ are defined as in @thm-lin-ucb-ci,
+and $\beta > 0$ controls the width of the confidence interval
+(and thereby the exploration-exploitation tradeoff).
+:::
+
+The first term is exactly our predicted mean reward $\hat \mu^\arm_\ep(x_\ep)$.
+We can think of it as the term encouraging _exploitation_ of an arm
+if its predicted mean reward is high.
+The second term is the width of the confidence interval given by @thm-lin-ucb-ci.
+This is the _exploration_ term
+that encourages an arm when $x_\ep$
+is *not aligned* with the data seen so far,
+or if arm $\arm$ has not been explored much and so $N_\ep^\arm$ is small.
+
+Now we prove @thm-lin-ucb-ci.
+
+:::: {.proof}
+How can we construct the upper confidence bound in @thm-lin-ucb-ci?
+Previously, we treated the pulls of an arm as i.i.d. samples
+and used Hoeffding's inequality to bound the distance of the sample mean, our estimator, from the true mean.
+However, now our estimator is not a sample mean,
+but rather the OLS estimator above @eq-ols-bandit.
+We will construct the confidence interval using **Chebyshev's inequality**,
+which gives a confidence interval for the mean of a distribution based on that distribution's _variance_.
+
+::: {#thm-chebyshev}
+#### Chebyshev's inequality
+
+For a random variable $Y$ with mean $\mu$ and variance $\sigma^2$,
+
+$$
+|Y - \mu| \le \beta \sigma \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
+$$ {#eq-chebyshev}
+:::
+
+We want to construct a CI for $x^\top \theta^\arm$,
+the mean reward from arm $\arm$.
+Our estimator is $x^\top \hat \theta^\arm_\ep$.
+Applying Chebyshev's inequality requires us to compute the variance of our estimator.
+
+::: {#thm-variance-ols}
+#### Variance of OLS
+
+Given the linear reward model in @eq-linear-reward-model,
+
+$$
+\text{Var}(x^\top \hat \theta_\ep^\arm)
+=
+\frac{\sigma^2}{N^\arm_\ep} x^\top (\widehat \Sigma^\ep_\arm)^{-1} x,
+$$ {#eq-variance-ols}
+
+where $\widehat \Sigma^\ep_\arm$ is defined in @eq-ols-bandit.
+:::
+
+::: {.proof}
+We leave the proof as an exercise.
+It follows from applications of the law of iterated expectations.
+:::
+
+Now we can substitute @eq-variance-ols into @eq-chebyshev
+to obtain the desired CI:
+
+$$
+\begin{aligned}
+    x_\ep^\top \theta^\arm \le x_\ep^\top \hat \theta_\ep^\arm
+    + \beta \sqrt{x_\ep^\top (A_\ep^\arm)^{-1} x_\ep} \quad \text{with probability} \ge 1 - \frac{1}{\beta^2}
+\end{aligned}
+$$ {#eq-ols-chebyshev}
+::::
+
 
 ```{python}
 class LinUCBPseudocode(Agent):
@@ -1381,27 +1568,6 @@ class LinUCBPseudocode(Agent):
         self.w[arm] = np.linalg.solve(self.A[arm], self.targets[arm])
 ```
 
-::: {#rem-invertible}
-#### Invertibility
-
-Note that the matrix $A_\ep^\arm$ above might not be invertible.
-When does this occur?
-One way to address this is to include a $\lambda I$ regularization term
-to ensure that $A_\ep^\arm$ is invertible.
-This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem.
-:::
-
-
-
-$c_\ep$ is similar to the $\log (2 \ep/\delta')$ term of UCB:
-It controls the width of the confidence interval.
-Here, we treat it as a tunable parameter, though in a theoretical analysis,
-it would depend on $A_\ep^\arm$
-and the probability $\delta$ with which the bound holds.
-
-Using similar tools for UCB,
-we can also prove an $\widetilde{O}(\sqrt{\Ep})$ regret bound.
-The full details of the analysis can be found in Section 3 of @agarwal_reinforcement_2022.
 
 ## Key takeaways
 
@@ -1428,11 +1594,35 @@ We can approach these problems through **supervised learning** approaches.
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
 
-This chapter remained nearly identical to the way it was taught in the course.
+The core material in this chapter is essentially identical to the way it was taught in the course,
+with some additions and clarifications.
 We progress through a sequence of algorithms
 to highlight the exploration-exploitation tradeoff.
 
-I decided to include some more discussion of how to interpret asymptotic regret bounds:
-It's simple to look at a plot and see that the expected regret is sublinear,
+One interesting choice is whether to introduce bandits before or after MDPs.
+Bandits are simpler due to the lack of state,
+and serve as a useful setting to investigate the exploration-exploitation tradeoff,
+while MDPs are the primary framework for RL
+and serve as the setting for much more diverse and interesting problems.
+We summarize this in @tbl-bandits-full to make this picture clear for students
+and tie these distinct settings together.
+
+How do other textbooks present this material?
+@sutton_reinforcement_2018 begins with bandits and proceeds to finite MDPs.
+@mannor_reinforcement_2024 saves bandits until the very last chapter.
+In the first iteration of the course in Fall 2022,
+we began with bandits;
+we changed to beginning with MDPs in Fall 2023 and 2024.
+Overall, I hold that as long as the relationship between the settings is presented clearly,
+either order makes sense,
+and so @sec-bandits and @sec-mdps are essentially independent.
+
+I include some more discussion of how to interpret asymptotic regret bounds:
+it's simple to look at a plot and see that the expected regret is sublinear,
 but it's important to understand the consequences of this in applications.
+
+I also focus exclusively on Bernoulli bandits for the majority of the chapter
+(up until contextual bandits).
+This is arguably the simplest bandit environment
+and also enjoys the Beta-Binomial conjugacy in the Thompson sampling algorithm.
 :::

@@ -3,7 +3,7 @@
 # Tree Search Methods {#sec-planning}
 
 
-## Introduction
+## Introduction {#sec-planning-intro}
 
 Have you ever lost a strategy game against a skilled opponent?
 It probably seemed like they were _ahead of you at every turn_.
@@ -64,7 +64,7 @@ the fastest processor can achieve almost 10 GHz (10 billion operations per secon
 so to fully solve chess using minimax is many, many orders of magnitude out of reach.
 
 It is thus intractable, in any realistic setting, to solve the complete game tree exactly.
-Luckily, only a small fraction of those games ever occur in reality;
+Luckily, only a small fraction of those games ever occur in reality.
 Later in this chapter,
 we will explore ways to _prune away_ parts of the tree that we know we can safely ignore.
 We can also _approximate_ the value of a state without fully evaluating it.
@@ -775,3 +775,10 @@ namely shogi and chess,
 also learning from scratch.
 In MuZero @schrittwieser_mastering_2020,
 this was further extended by learning a model of the game dynamics.
+
+
+::: {.content-visible when-profile="thesis"}
+## Differences from course
+
+
+:::

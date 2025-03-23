@@ -631,33 +631,6 @@ graph LR
     classDef reward fill: lightblue;
 ```
 
-```{python}
-def q_to_v(
-    policy: Float[Array, "S A"],
-    q: Float[Array, "S A"],
-) -> Float[Array, " S"]:
-    """
-    Compute the value function for a given policy in a known finite MDP
-    at a single timestep from its action-value function.
-    """
-    return jnp.average(q, weights=policy, axis=1)
-
-def v_to_q(
-    mdp: MDP,
-    v_next: Float[Array, " S"],
-) -> Float[Array, "S A"]:
-    """
-    Compute the action-value function in a known finite MDP
-    at a single timestep from the corresponding value function.
-    """
-    # the discount factor is relevant later
-    return mdp.r + mdp.gamma * mdp.P @ v_next
-
-
-# convert a list of v functions to a list of q functions
-v_ary_to_q_ary = jax.vmap(v_to_q, in_axes=(None, 0))
-```
-
 ```{mermaid}
 %%| label: fig-action-value-trajectory
 %%| fig-cap: The policy starts in state $s$ at time $h$ and takes action $a$. Then the expected remaining reward is computed.
@@ -686,9 +659,7 @@ graph LR
     classDef reward fill: lightblue;
 ```
 
-These two functions can be thought of
-as describing the same information,
-in the sense that they define each other
+These two functions define each other
 in the following way:
 
 ::: {#thm-relating-v-q}
@@ -700,7 +671,7 @@ in that state
 over actions drawn from the policy:
 
 $$
-V_\step^\pi(s) = \E_{a \sim \pi_\step(s)} [Q_\step^\pi(s, a)].
+V_\step^\pi(s) = \E_{a \sim \pi_\step(\cdot \mid s)} [Q_\step^\pi(s, a)].
 $$ {#eq-relating-v-q}
 
 The value of a state-action pair
@@ -720,6 +691,21 @@ to show @eq-relating-v-q.
 Now apply linearity of expectation to show @eq-relating-q-v.
 Where did you use the assumption that $\pi$
 doesn't depend on the past states and actions?
+:::
+
+::: {#rem-q-v-asymmetry}
+#### Computing $Q^\pi$ from $V^\pi$ requires environment
+
+Note that all you need to compute $V_\step^\pi$ from $Q_\step^\pi$ (@eq-relating-v-q)
+is knowledge of the policy $\pi$.
+On the other hand,
+to compute $Q_\step^\pi$ from $V_{\step+1}^\pi$ (@eq-relating-q-v),
+you need knowledge of the reward function and state transitions
+to look ahead one step.
+In later chapters,
+we'll study problems where the environment is _unknown_,
+making it more useful to approximate $Q_\step^\pi$
+than $V_\step^\pi$.
 :::
 
 ```{python}
@@ -2269,11 +2255,14 @@ We can model such environment as **partially observed MDPs** (POMDPs).
 
 @powell_reinforcement_2022 presents a unified framework for sequential decision problems.
 
+Another important bandit algorithm is **Gittins indices** [@gittins_multi-armed_2011].
+The derivation of this algorithm is out of scope of this course.
+
 
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
 
-I have found that students struggle with the concept of an optimal policy and related concepts.
+Many students initially struggle with the concept of an optimal policy.
 Since there are many equivalent definitions,
 it can be confusing which definition to reach for in particular proof;
 when asking a student to prove something,

@@ -3,13 +3,14 @@
 # Fitted Dynamic Programming Algorithms {#sec-fit}
 
 In @sec-mdps,
-we discussed how to solve Markov decision processes
-where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite and small.
-Solving known, tabular MDPs isn't usually considered an "RL problem" because,
-put simply, it's too easy!
-The assumption that we know the environment
-and can compute expected values over the state transitions
-ends up being too strict for most real-world tasks.
+we discussed how to solve "tabular" Markov decision processes
+where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite and small
+and we knew the reward function and state transitions of the environment.
+For most interesting tasks,
+however,
+we don't know the analytical form of the reward functions or state transitions.
+In such settings,
+we must _learn_ through interaction with the environment.
 
 ::: {#rem-model-free-model-based}
 #### Tackling unknown environments
@@ -819,3 +820,10 @@ to achieve state of the art performance on the Atari games.
 to refere to the combination of (artificial) neural networks
 with dynamic programming techniques.
 
+
+
+::: {.content-visible when-profile="thesis"}
+## Differences from course
+
+
+:::

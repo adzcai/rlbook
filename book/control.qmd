@@ -368,7 +368,13 @@ Show that replacing $Q$ and $R$ with $(Q + Q^\top) / 2$ and $(R + R^\top) / 2$ (
 :::
 
 ::: {#exm-lqr-system}
+#### Example LQR system
 
+Consider a ball moving along a line.
+From elementary physics,
+its velocity $\dot x$ is the instantaneous change in its position,
+and its acceleration $\ddot x$ is the instantaneous change in its velocity.
+Suppose we can apply a force to accelerate the ball.
 :::
 
 ```{python}
@@ -1090,3 +1096,10 @@ LQR and we solved for the optimal policy using dynamic programming. We
 then extended these results to the more general nonlinear case via local
 linearization. We finally saw the iterative LQR algorithm for solving
 nonlinear control problems.
+
+
+::: {.content-visible when-profile="thesis"}
+## Differences from course
+
+This chapter is presented 
+:::

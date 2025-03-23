@@ -1,6 +1,6 @@
 {{< include _macros.tex >}}
 
-# Introduction
+# Introduction {#sec-intro}
 
 Reinforcement learning (RL) is a branch of machine learning
 that studies **sequential decision-making** in **unknown environments.**

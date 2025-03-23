@@ -39,44 +39,69 @@ where the randomness is in the trajectory rollouts.
 
 ### Sparse reward {#sec-sparse-reward}
 
-Exploration is crucial in unknown **sparse reward** problems
-where reward doesn't come until after many steps,
-and algorithms which do not *systematically* explore new states
-may fail to learn anything meaningful within a reasonable amount of time.
+Exploration is crucial in **sparse reward** problems
+where $r(s, a) = 0$ for most (or nearly all) states and actions.
+Often, the agent must take a specific sequence of actions
+before any reward is observed.
 
 :::: {#exm-sparse-reward-mdp}
-#### Sparse Reward MDP
+#### Strip MDP
 
-Here's a simple example of an MDP with sparse reward:
+Here's a simple example of an MDP with sparse rewards:
 
 ![image](shared/sparse_reward_mdp.png)
 
-There are $|\mathcal{S}|$ states.
-The agent starts in the leftmost state.
+There are $|\mathcal{S}|$ cells arranged in a strip.
+The agent starts in the leftmost cell.
+The rightmost state is a terminal state.
 In every state, there are three possible actions,
 two of which move the agent left and one which moves the agent right.
-The reward function assigns $r=1$ to the rightmost cell.
+(The two "left" actions do nothing in the leftmost cell.)
+The reward function gives a reward of $1$
+for taking the action that enters the rightmost cell,
+and zero otherwise.
 ::::
+
+The problem of sparse rewards is especially prevalent in RL
+compared to supervised learning.
+In most supervised learning tasks,
+every labelled sample provides some useful signal.
+However, in RL,
+algorithms that don't *systematically* explore new states
+may fail to learn anything meaningful within a reasonable amount of time.
 
 Consider the algorithms we've covered so far:
 policy gradient methods (@sec-pg)
 and fitted DP methods (@sec-fit).
 How would these do on this problem?
 
--   Policy gradient algorithms require the gradient to be *nonzero* in order to learn.
-    If we never observe any reward,
-    the gradient will always be zero,
-    and the policy will never change or improve.
--   Fitted DP algorithms run into a similar issue:
-    as we randomly interact with the environment,
-    we will never observe any reward,
-    and so the reward model simply gives zero for every state-action pair.
-    In expectation,
-    it would take a computationally infeasible number of rollouts
-    to observe the reward by chance.
+::: {#rem-sparse-rl}
+#### Policy gradient methods fail on sparse reward
+
+Policy gradient algorithms require the gradient to be *nonzero* in order to learn.
+If we never observe any reward,
+the gradient will always be zero,
+and the policy will never change or improve.
+If we think of the expected total reward as a function $J(\theta)$ of the policy parameters,
+we can visualize the _graph_ of $J$ as being mostly flat,
+making it impossible to "climb the hill"
+from almost every random initialization.
+:::
+
+::: {#rem-fitted-dp-sparse}
+#### Fitted DP methods fail on sparse reward
+
+Fitted DP algorithms run into a similar issue:
+as we randomly interact with the environment,
+we never observe any reward,
+and so the reward model simply gives zero for every state-action pair.
+In expectation,
+it would take a computationally infeasible number of rollouts
+to observe the reward by chance.
+:::
 
 Of course,
-a simple way to solve @exm-sparse-reward-mdp
+a simple way to solve the "strip MDP" in @exm-sparse-reward-mdp
 is to actively visit unseen states.
 For a policy that visits a new state in each rollout,
 the final cell can be reached in $O(|\mathcal{S}|)$ rollouts
@@ -87,7 +112,8 @@ to _explicitly_ explore unknown environments.
 
 ## Exploration in deterministic MDPs {#sec-explore-det-mdp}
 
-Let us address the exploration problem in a *deterministic* MDP, that is, where taking action $a$ in state $s$ always leads to the state $P(s, a) \in \mathcal{S}$.
+Let us address the exploration problem in a *deterministic* MDP,
+that is, where taking action $a$ in state $s$ always leads to the state $P(s, a) \in \mathcal{S}$.
 How can we methodically visit every single state-action pair?
 In the multi-armed bandit setting (@sec-bandits),
 it was trivial to "visit every action":
@@ -98,12 +124,13 @@ one must plan out a path from the initial state.
 In fact, navigation is a complex sequential decision problem!
 
 :::: {#def-explore-then-exploit}
+#### Explore-then-exploit algorithm
 
-We'll keep a set $\mathcal{D}$ of all the $(s, a, r, s')$ pairs we've observed.
+We keep a set $\mathcal{D}$ of all the $(s, a, r, s')$ pairs we've observed.
 Each episode,
-we'll use $\mathcal{D}$ to construct a fully known MDP, $M_{\mathcal{D}}$,
-in which unseen state-action pairs are rewarded.
-We'll then use the planning algorithms from @sec-finite-opt-dp to reach the unknown states in $M-{\mathcal{D}}$.
+we use $\mathcal{D}$ to construct a fully known MDP, $M_{\mathcal{D}}$,
+in which only unseen state-action pairs are rewarded.
+We then use the planning algorithms from @sec-finite-opt-dp to reach the unknown states in $M_{\mathcal{D}}$.
 
 We assume that every state can be reached from the initial state within a single episode,
 and that the action space $\mathcal{A}$ is fixed.
@@ -167,7 +194,13 @@ We can summarize this equivalence in the following table:
 
 : Treating an MDP with finite states and actions as a MAB. {#tbl-mdp-mab}
 
-Recall that UCB incurs regret $\widetilde{O}(\sqrt{TK})$, where $T$ is the number of pulls and $K$ is the number of arms. So in the MDP-as-MAB problem, using UCB for $T$ episodes would achieve regret
+(For the sake of this example,
+assume that the MDP's reward function is stochastic,
+so that the MAB reward distributions are nondegenerate.)
+
+Recall that UCB incurs regret $\widetilde{O}(\sqrt{TK})$,
+where $T$ is the number of pulls and $K$ is the number of arms.
+So in the MDP-as-MAB problem, using UCB for $T$ episodes would achieve regret
 
 $$
 \widetilde{O}\left(
@@ -528,9 +561,17 @@ Comparing this to our bound for UCBVI in an environment without this linear assu
 In this chapter, we've explored how to explore in an unknown MDP.
 
 - We first discussed the explore-then-exploit algorithm @def-explore-then-exploit, a simple way to explore a deterministic MDP by visiting all state-action pairs.
-
 - We then discussed how to treat an unknown MDP as a MAB @sec-mdp-mab, and how this approach is inefficient since it doesn't make use of relationships between policies.
-
 - We then introduced the UCBVI algorithm @fig-alg-ucbvi, which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration.
-
 - Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCBVI algorithm @sec-lin-ucbvi, which has a sample complexity independent of the size of the state and action spaces.
+
+
+## Bibliographic notes
+
+
+
+::: {.content-visible when-profile="thesis"}
+## Differences from course
+
+
+:::
