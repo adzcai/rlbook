@@ -89,7 +89,7 @@ latex = latexify.algorithmic(
 :::: {#rem-multi-armed}
 #### Etymology
 
-The name “multi-armed bandits” comes from slot machines in casinos,
+The name “multi-armed bandit” comes from slot machines in casinos,
 which are often called “one-armed bandits” since they have one arm (the lever) and rob money from the player.
 ::::
 
@@ -100,17 +100,17 @@ which are often called “one-armed bandits” since they have one arm (the leve
 
 : How bandits leads into the full RL problem. {#tbl-bandits-full}
 
-## The multi-armed bandit problem {#sec-bandits-problem}
+## The multi-armed bandit problem {#sec-bandit-problem}
 
 Let's frame the MAB problem mathematically.
 In both @exm-advertising and @exm-clinical-trials,
 the outcome of each decision is binary (i.e. $0$ or $1$).
-This is the **Bernoulli bandits** problem,
+This is the **Bernoulli bandit** problem,
 which we'll use throughout the chapter.
 
 :::: {layout-ncol="2"}
 ::: {#def-bernoulli-bandit}
-#### Bernoulli bandits problem\index{Bernoulli bandits}
+#### Bernoulli bandit problem\index{Bernoulli bandit}
 
 Let $\Arm$ denote the number of arms.
 We'll label them $0, \dots, \Arm-1$ and use *superscripts* to indicate the arm index $\arm$.
@@ -124,18 +124,19 @@ The agent gets $\Ep$ chances to pull an arm.
 The task is to determine a strategy for maximizing the total reward.
 :::
 
-![Each arm $\arm$ in a Bernoulli bandits is a biased coin with probability $\mu^\arm$ of showing heads. Each "pull" corresponds to flipping a coin. The goal is to maximize the number of heads given $\Ep$ flips. Image from @pixabay_coins_2016.](shared/flipping-coins.jpg)
+![Each arm $\arm$ in a Bernoulli bandit is a biased coin with probability $\mu^\arm$ of showing heads. Each "pull" corresponds to flipping a coin. The goal is to maximize the number of heads given $\Ep$ flips. Image from @pixabay_coins_2016.](shared/flipping-coins.jpg)
 ::::
 
 ```{python}
 class MAB:
-    """The Bernoulli multi-armed bandit environment.
-
-    :param means: the means (success probabilities) of the reward distributions for each arm
-    :param T: the time horizon
-    """
+    """The Bernoulli multi-armed bandit environment."""
 
     def __init__(self, means: Float[Array, " K"], T: int):
+        """Constructor.
+
+        :param means: the means (success probabilities) of the reward distributions for each arm
+        :param T: the time horizon
+        """
         assert all(0 <= p <= 1 for p in means)
         self.means = means
         self.T = T
@@ -173,7 +174,7 @@ latex(mab_loop)
 class Agent:
     """Stores the pull history and uses it to decide which arm to pull next.
         
-    Since we are working with Bernoulli bandits,
+    Since we are working with Bernoulli bandit,
     we can summarize the pull history concisely in a (K, 2) array.
     """
 
@@ -264,7 +265,7 @@ def regret_per_step(mab: MAB, agent: Agent):
     return [mab.means[mab.best_arm] - mab.means[arm] for arm in agent.choices]
 ```
 
-Note that this depends on the *true means* of the pulled arms,
+This depends on the *true means* of the pulled arms,
 and is independent of the observed rewards.
 The regret $\regret$ is a random variable
 where the randomness comes from the agent's strategy
@@ -355,7 +356,7 @@ as $\Ep \to \infty$.
 An algorithm with sublinear regret in expectation
 doesn't necessarily always choose the correct arm.
 In fact, such an algorithm can still choose a suboptimal arm infinitely many times.
-Consider a two-armed Bernoulli bandits with $\mu^0 = 0$ and $\mu^1 = 1$.
+Consider a two-armed Bernoulli bandit with $\mu^0 = 0$ and $\mu^1 = 1$.
 An algorithm that chooses arm $0$ $\sqrt{\Ep}$ times out of $\Ep$
 still achieves $O(\sqrt{\Ep})$ regret in expectation.
 
@@ -423,7 +424,7 @@ The pure exploration strategy achieves regret $\Theta(\Ep)$ in expectation.
 :::
 
 ::: {.proof}
-Note that
+By choosing arms uniformly at random,
 
 $$
 \E_{a_\ep \sim \text{Unif}([\Arm])}[\mu^{a_\ep}]
@@ -793,7 +794,7 @@ mab_loop(mab, agent)
 plot_strategy(mab, agent)
 ```
 
-Note that we let the exploration probability $\epsilon_\ep$ vary over time.
+We let the exploration probability $\epsilon_\ep$ vary over time.
 This lets us gradually *decrease* $\epsilon_\ep$
 as we learn more about the reward distributions
 and no longer need to explore as much.
@@ -897,7 +898,7 @@ We assume that during the first $\Arm$ pulls, we pull each arm once.
 :::
 
 ::: {#def-ucb}
-#### Upper confidence bound algorithm
+#### Upper confidence bound algorithm [@auer_using_2002]
 
 The UCB algorithm first pulls each arm once.
 Then it chooses the $\ep$th pull (for $\ep \ge \Arm$) by taking
@@ -1139,9 +1140,9 @@ about. Thompson sampling is a simple yet powerful algorithm that
 achieves state-of-the-art performance in many settings.
 
 ::: {#exm-bayesian-bernoulli}
-#### Bayesian Bernoulli bandits
+#### Bayesian Bernoulli bandit
 
-We've been working in the Bernoulli bandits setting,
+We've been working in the Bernoulli bandit setting,
 where arm $\arm$ yields a reward of $1$ with probability $\mu^\arm$ and no reward otherwise.
 The vector of success probabilities $\boldsymbol{\mu} = (\mu^0, \dots, \mu^{\Arm-1})$ thus describes the entire MAB.
 
@@ -1294,7 +1295,7 @@ this algorithm no longer works.
 
 Note that this "enlarged MAB" treats the different contexts as entirely unrelated to each other,
 while in practice, often contexts are *related* to each other in some way.
-In the medical trial example (@exm-clinical-trial),
+In the medical trial example (@exm-clinical-trials),
 clients with similar health situations may benefit from the same medications.
 How can we incorporate this structure into our solution?
 
@@ -1319,7 +1320,7 @@ since the number of contexts is infinite.
 Instead, we assume that the mean reward of each arm $\arm$
 is a function of the context: $\mu^\arm : \mathcal{X} \to \R$.
 
-Rather than the Bernoulli bandits problem (@def-bernoulli-bandit),
+Rather than the Bernoulli bandit problem (@def-bernoulli-bandit),
 we'll assume that the mean reward is _linear_ in the context.
 (This model is easier to work with for our purposes.)
 That is, a reward $r^\arm$ from arm $\arm$ is drawn according to
@@ -1353,13 +1354,13 @@ computed from the first $\ep$ pulls.
 Why did we switch from Bernoulli reward distributions
 to the additive model in @eq-linear-reward-model?
 The estimator @eq-linear-contextual is a bit odd
-for the Bernoulli bandits problem:
+for the Bernoulli bandit problem:
 since $\mu^\arm$ is the success probability of arm $\arm$,
 it would have to lie between $0$ and $1$,
 but $\hat \mu^\arm_\ep(x_\ep)$ extends outside this interval.
 The question of how to model the unknown parameters of a distribution
 is a **supervised learning** problem (@sec-sl).
-For instance, in Bernoulli bandits,
+For instance, in Bernoulli bandit,
 we could instead use a _logistic regression_ model for each arm's success probability.
 We won't dive into more advanced supervised learning topics here.
 :::
@@ -1406,10 +1407,15 @@ across the trials where arm $\arm$ was pulled (out of the first $\ep$ trials).
 ::: {#rem-invertible}
 #### Invertibility
 
-Note that $\widehat \Sigma_\ep^\arm$ might not be invertible.
-When does this occur?
-One way to address this is to include a $\lambda I$ regularization term
-to ensure that $A_\ep^\arm$ is invertible.
+In @eq-ols-bandit,
+we write the expression $(\widehat \Sigma_\ep^\arm)^{-1}$,
+assuming that $\widehat \Sigma_\ep^\arm$ is invertible.
+This only holds if the context features are linearly independent,
+that is,
+there does not exist some coordinate $d \in [D]$
+that can be written as a linear combination of the other coordinates.
+One way to ensure that $\widehat \Sigma_\ep^\arm$ is invertible
+is to add a $\lambda I$ regularization term to it.
 This is equivalent to solving a *ridge regression* problem instead of the unregularized least squares problem.
 :::
 
@@ -1590,6 +1596,40 @@ in which the agent gets to observe some _context_ that affects the reward distri
 We can approach these problems through **supervised learning** approaches.
 
 
+## Bibliographic notes
+
+The problem that a bandit algorithm faces after $\ep$ pulls
+is to infer differences between the means of a set of distributions
+given $\ep$ samples spread out across those distributions.
+This is a well-studied problem in statistics.
+
+A common practice in various fields such as psychology
+is to compare within-group variances to the variance of the group means.
+This popular class of methods is known as **analysis of variance** (ANOVA).
+It has been studied at least since Laplace in the 1770s [@stigler_history_2003]
+and was further popularized by @fisher_statistical_1925.
+William Thompson studied the two-armed mean distinction problem in @thompson_likelihood_1933 and @thompson_theory_1935.
+Our focus has been on the decision-making aspect of the bandit problem,
+rather than the hypothesis testing aspect.
+
+Adding the sequential decision-making aspect turns the above into the full multi-armed bandit problem.
+@wald_statistical_1949 studies the sequential analysis problem in depth.
+@robbins_aspects_1952 then builds on Wald's work
+and provides a clear exposition of the bandit problem
+in the form presented in this chapter.
+
+
+
+::: {#rem-etymology-lin-ucb}
+#### Disambiguation of LinUCB
+
+The name "LinUCB" is used for various similar algorithms throughout the literature.
+Here we use it as defined in @li_contextual-bandit_2010.
+This algorithm was also considered in @auer_using_2002,
+the paper that introduced UCB,
+under the name "Associative Reinforcement Learning with Linear Value Functions".
+:::
+
 
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
@@ -1621,8 +1661,8 @@ I include some more discussion of how to interpret asymptotic regret bounds:
 it's simple to look at a plot and see that the expected regret is sublinear,
 but it's important to understand the consequences of this in applications.
 
-I also focus exclusively on Bernoulli bandits for the majority of the chapter
-(up until contextual bandits).
+I also focus exclusively on Bernoulli bandit for the majority of the chapter
+(up until contextual bandits, when I switch to the linear case).
 This is arguably the simplest bandit environment
 and also enjoys the Beta-Binomial conjugacy in the Thompson sampling algorithm.
 :::

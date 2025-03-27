@@ -236,7 +236,8 @@ This is called the **training loss** or **empirical risk**:
 ::: {#def-empirical-risk}
 #### Empirical risk
 
-Given a dataset $(x_1, y_1), \dots, (x_N, y_N)$,
+Given a dataset $(x_1, y_1), \dots, (x_N, y_N)$
+sampled i.i.d. from the data generating process,
 and a loss function $\ell$,
 the empirical risk of the prediction rule $\hat f$
 is the average loss across the dataset:
@@ -248,7 +249,7 @@ $$ {#eq-training-loss}
 
 By the law of large numbers,
 as $N$ grows to infinity,
-the training loss converges to the generalization error.
+the training loss converges to the generalization error (@def-test-err).
 
 The **empirical risk minimization** (ERM) approach is to find a prediction rule that minimizes the empirical risk.
 
@@ -376,7 +377,7 @@ We need an efficient algorithm to actually compute the function in the class tha
 This point should not be underestimated!
 The success of modern deep learning, for example,
 is in large part due to hardware developments
-that have made certain parallelizable operations more efficient.
+that have made certain operations more efficient than others.
 
 ### Parameterized function classes {#sec-sl-parameterized}
 
@@ -647,10 +648,23 @@ linear regression and neural networks.
 @hastie_elements_2013 examines the subject in even further depth
 and covers many relevant supervised learning methods.
 @nielsen_neural_2015 provides a comprehensive introduction to neural networks and backpropagation.
-
+@vapnik_nature_2000 is another prominent textbook on classical statistical learning
+from before the "deep learning era".
+@bishop_pattern_2006 focuses on the Bayesian perspective.
 
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
+
+In how much detail should we explain supervised learning?
+Our goal in this course is to make it accessible to students who have not previously taken a supervised learning course
+or would like to review the fundamental concepts.
+For our case,
+the key ideas are _empirical risk minimization_ and the notion of a "loss function" or "risk function",
+which we use later in the the chapter on policy gradient methods (@sec-pg).
+
+We also aim to convey some of the basic intuition around statistical learning,
+including the bias-variance tradeoff and overfitting.
+
 
 
 In the supervised learning chapter,

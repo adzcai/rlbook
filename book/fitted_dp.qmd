@@ -3,7 +3,7 @@
 # Fitted Dynamic Programming Algorithms {#sec-fit}
 
 In @sec-mdps,
-we discussed how to solve "tabular" Markov decision processes
+we discussed how to solve known tabular Markov decision processes
 where the state and action spaces $\mathcal{S}$ and $\mathcal{A}$ were finite and small
 and we knew the reward function and state transitions of the environment.
 For most interesting tasks,

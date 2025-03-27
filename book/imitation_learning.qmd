@@ -31,7 +31,7 @@ called **behaviour cloning** (or "behaviour cloning"),
 is really an application of supervised learning to interactive tasks.
 We'll then explore **dataset aggregation** (DAgger) as a way to query an expert and learn even more effectively.
 
-## behaviour cloning
+## Behaviour cloning
 
 This notion of "learning from human-provided data" may remind you of the basic premise of @sec-sl.
 In supervised learning,

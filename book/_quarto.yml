@@ -16,6 +16,7 @@ book:
   site-url: https://rlbook.adzc.ai
   chapters:
     - index.qmd
+    - acknowledgements.qmd
     - notation.qmd
     - introduction.qmd
     - mdps.qmd
@@ -53,14 +54,15 @@ crossref:
   appendix-title: "App."
   appendix-delim: ":"
 
+fig-width: 4
+fig-height: 3
+
 format:
   html:
     theme:
       light: cosmo
       dark: [cosmo, theme-dark.scss]
     code-fold: true
-    fig-width: 4
-    fig-height: 3
   pdf:
     documentclass: scrreprt
     echo: false

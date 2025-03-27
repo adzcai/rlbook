@@ -2307,10 +2307,13 @@ All policy gradient methods can be parallelized in this way.
 - @haarnoja_soft_2018
 
 
-
-
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
+
+I kept the overall structure of this chapter the same as it was presented in class,
+which has remained relatively consistent throughout the years:
+we begin by reviewing gradient descent,
+followed by 
 
 
 :::

@@ -236,16 +236,6 @@ This might remind you
 of policy evaluation in finite-horizon MDPs
 (@sec-eval-dp-finite-horizon).
 
-```{mermaid}
-%%| label: fig-dp-min-max
-%%| fig-cap: We can compute the value of each state
-%%|          by starting at the terminal states
-%%|          and working backwards.
-graph RL
-    V0["$$\texttt{|X| |X|}$$"] --> V1
-    V1["$$V$$"]
-```
-
 This translates directly into a recursive depth-first search algorithm for searching the complete game tree.
 
 ```{python}
@@ -272,7 +262,7 @@ def minimax_search(s, player) -> tuple["Action", "Value"]:
 latex(minimax_search, id_to_latex={"env.step": "P", "env.action_space": r"\mathcal{A}"})
 ```
 
-::: {#exm-min-max}
+::: {#exm-min-max layout-ncol="3"}
 #### Min-max search for a simple game
 
 Consider a simple game with just two steps: Max chooses one of three possible actions (A, B, C),

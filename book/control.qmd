@@ -140,7 +140,7 @@ A continuous control environment is defined by the following components:
     \st_{\step+1} = f_\step(\st_\step, \act_\step, w_\step),
     $$ {#eq-lqr-dynamics}
     where $w_\step$ denotes noise drawn from the distribution $\nu_\step \in \triangle(\mathbb{R}^{n_w})$.
-    Note that the dynamics may vary at each timestep $\step$.
+    We allow the dynamics to vary at each timestep $\step$.
 -   Instead of maximizing the reward function, we seek to minimize the **cost function** $c_\step: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$.
     Often, the cost function describes *how far away* we are from a **target state-action pair** $(\st^\star, \act^\star)$.
 -   The agent acts over a *finite time horizon* $\Step \in \mathbb{N}$.
@@ -257,7 +257,7 @@ Q^\pi_\step (\st, \act) = \E_{\tau \sim \rho^\pi} \left[
 $$ {#eq-q-lqr}
 :::
 
-Note that since we use a _cost function_ $c$ instead of a _reward function_ $r$,
+Since we use a _cost function_ $c$ instead of a _reward function_ $r$,
 the best policies in a given state (or state-action pair) are the ones with _smaller_ $V^\pi$ and $Q^\pi$.
 
 ### A first attempt: Discretization
@@ -623,10 +623,10 @@ which is often used in high-stakes circumstances such as aviation or architectur
 it is important to understand the way the state evolves
 under the proposed controls.
 
-How can we compute the expected state at time $\step$ when acting
-according to the optimal policy? Let's first express $\st_\step$ in a
-cleaner way in terms of the history. Note that having linear dynamics
-makes it easy to expand terms backwards in time: 
+How can we compute the expected state at time $\step$
+when acting according to the optimal policy?
+Let's first express $\st_\step$ in a cleaner way in terms of the history.
+Having linear dynamics makes it easy to expand terms backwards in time: 
 
 $$
 \begin{aligned}
@@ -771,9 +771,9 @@ $$
 c_\step(\st_\step, \act_\step) = ( \st_\step^\top Q_\step \st_\step + \st_\step^\top M_\step \act_\step + \act_\step^\top R_\step \act_\step ) + (\st_\step^\top q_\step + \act_\step^\top r_\step) + c_\step.
 $$ {#eq-general-quadratic-cost}
 
-Similarly, we can also include a
-constant term $v_\step \in \mathbb{R}^{n_\st}$ in the dynamics (note that this is
-*deterministic* at each timestep, unlike the stochastic noise $w_\step$):
+Similarly, we can also include a constant term $v_\step \in \mathbb{R}^{n_\st}$ in the dynamics.
+This is *deterministic*,
+unlike the stochastic noise $w_\step$:
 
 
 $$
@@ -914,6 +914,7 @@ $$
 
 ::: {#exr-quadratic}
 #### Expressing as quadratic
+
 Note that this cost can be expressed in the general quadratic form seen in @eq-general-quadratic-cost.
 Derive the corresponding quantities $Q, R, M, q, r, c$.
 :::
@@ -932,9 +933,9 @@ $$
 $$
 
 
-Note that this only requires us to be able to *query* the function, not
-to have an analytical expression for it, which is why it's so useful in
-practice.
+This only requires us to be able to *query* the function,
+not to have an analytical expression for it,
+which is why it's so useful in practice.
 
 ### Local convexification
 
@@ -1101,5 +1102,5 @@ nonlinear control problems.
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
 
-This chapter is presented 
+I kept
 :::
