@@ -28,14 +28,6 @@ We will see that many key ideas and algorithms,
 in particular dynamic programming algorithms (@sec-finite-opt-dp),
 carry over to this new setting.
 
-
-| Chapter | State space | Action space | Policies | Knowledge of environment | Key algorithms |
-| --- | --- | --- | --- | --- |
-| @sec-mdps (MDPs) | $\{1, \dots, \vert \mathcal{S} \vert \}$ | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | known | dynamic programming, policy iteration |
-| @sec-control (Control) | $\R^{n_\st}$ | $\R^{n_\act}$ | deterministic | unknown | (iterative) linear quadratic regulator |
-
-: A comparison of the control setting with the MDP setting. {#tbl-overview-chapters-control}
-
 This chapter introduces a fundamental tool to solve a simple class of continuous control problems:
 the **linear quadratic regulator** (LQR).
 We can use the LQR model as a building block for solving more complex problems.
@@ -54,10 +46,6 @@ and with rather different problem settings,
 and use different mathematical terminology as a result.
 
 Control theory has close ties to electrical and mechanical engineering.
-Humans have been designing control systems since antiquity.
-The first attempt to formalize control theory as a field is attributed to @maxwell_governors_1867.
-Maxwell (well known for Maxwell's equations) demonstrated the utility
-of analyzing mathematical models to design stable systems.
 Control theorists typically work in a _continuous-time_ setting
 in which the dynamics can be described by systems of differential equations.
 The goal is typically to ensure _stability_ of the system
@@ -66,9 +54,9 @@ and minimize some notion of "cost"
 Rather than learning the system from data,
 one typically supposes a particular structure of the environment
 and solves for the optimal controller using analytical or numerical methods.
-As such, control theory algorithms are more accurately referred to as _planning methods_
-that do not depend on _data_;
-that is, there is no "learning" patterns from data involved.
+As such, most control theory algorithms,
+like the ones we will explore in this chapter,
+are _planning methods_ that do not require learning from data.
 :::
 
 ```{python}
@@ -354,7 +342,7 @@ although the optimal value function and Q-function do.
 (We will show this in a later derivation.)
 
 The LQR cost function attempts to stabilize the state and action
-to $(s^\star, a^\star) = (0, 0)$.
+to $(\st^\star, \act^\star) = (0, 0)$.
 We require $Q$ and $R$ to both be _positive definite_ matrices
 so that $c$ has a unique minimum.
 We can furthermore assume without loss of generality that they are both _symmetric_ (see exercise below).
@@ -364,85 +352,141 @@ This greatly simplifies later computations.
 ::: {#exr-symmetric-q-r}
 #### Symmetric $Q$ and $R$
 
-Show that replacing $Q$ and $R$ with $(Q + Q^\top) / 2$ and $(R + R^\top) / 2$ (which are symmetric) yields the same cost function.
+Show that replacing $Q$ and $R$ with $(Q + Q^\top) / 2$ and $(R + R^\top) / 2$
+(which are symmetric) yields the same cost function.
 :::
 
 ::: {#exm-lqr-system}
-#### Example LQR system
+#### Double integrator
 
 Consider a ball moving along a line.
+Let's first frame this as a continuous-time dynamical system,
+which is often more natural for physical phenomena,
+and then discretize it to solve it with the discrete-time LQR.
+
 From elementary physics,
-its velocity $\dot x$ is the instantaneous change in its position,
-and its acceleration $\ddot x$ is the instantaneous change in its velocity.
-Suppose we can apply a force to accelerate the ball.
-:::
+the ball's velocity $\dot p(t)$ is the instantaneous change in its position,
+and its acceleration $\ddot p(t)$ is the instantaneous change in its velocity.
+Suppose we can apply a force $\act(t)$ to accelerate the ball.
+This dynamical system is known as the **double integrator**.
+Our goal is to move the ball so that it is stationary at position $p^\star = 0$.
+
+How would we frame this as an LQR problem?
+The effect of the control on the ball's position is nonlinear.
+However, if we define our state as including both the position and velocity,
+i.e.
+
+$$
+\st(t) = \begin{pmatrix}
+p(t) \\
+\dot p(t)
+\end{pmatrix},
+$$ {#eq-double-integrator-state}
+
+then we end up with the following first-order linear differential equation:
+
+$$
+\dot \st(t) = \begin{pmatrix}
+0 & 1 \\
+0 & 0
+\end{pmatrix}
+\st(t)
++
+\begin{pmatrix}
+0 \\
+1
+\end{pmatrix}
+\act(t).
+$$ {#eq-double-integrator-system}
+
+There are many ways to turn this into a discrete-time problem.
+The simplest way is the (forward) _Euler method_,
+where we choose a small step size $\Delta t$,
+and explicitly use the limit definition of the derivative to obtain
+
+$$
+\st(t + \Delta t) \approx \st(t) + \Delta t \cdot \dot \st(t).
+$$ {#eq-euler-discretization}
+
+Applying this to @eq-double-integrator-system gives the system
+
+$$
+\st_{\step+1} = \begin{pmatrix}
+1 & \Delta t \\
+0 & 1
+\end{pmatrix}
+\st_\step
++
+\begin{pmatrix}
+0 \\
+\Delta t
+\end{pmatrix}
+\act_\step,
+$$ {#eq-discrete-double-integrator-system}
+
+or explicitly in terms of the position and velocity,
+
+$$
+\begin{aligned}
+p_{\step+1} &= p_\step + \Delta t \cdot \dot p_\step, \\
+\dot p_{\step + 1} &= \dot p_\step + \Delta t \cdot \act_\step.
+\end{aligned}
+$$ {#eq-discrete-double-integrator-system-explicit}
 
 ```{python}
 #| label: fig-lqr-accelerate
-#| fig-cap: Visualization of an LQR system.
+#| layout-ncol: 2
+#| fig-cap: Visualization of a double integrator LQR system.
+#| fig-subcap:
+#| - The state and control input over time.
+#| - The trajectory of $\st_\step$ plotted in the phase space.
 
-# 1. Continuous-time double integrator
-A_c = np.array([[0, 1],
-                [0, 0]])
-B_c = np.array([[0],
-                [1]])
-
-# 2. Discretize the system
 dt = 0.1
-sys_c = control.ss(A_c, B_c, np.eye(2), 0)
-sys_d = control.c2d(sys_c, dt)
-A_d, B_d, C_d, D_d = control.ssdata(sys_d)
 
-# 3. Define LQR cost (discrete-time) and compute gain
+A = np.array([
+    [1, dt],
+    [0, 1]
+])
+B = np.array([
+    [0],
+    [dt]
+])
+
 Q = np.eye(2)
 R = np.array([[0.1]])
-K, S, E = control.dlqr(A_d, B_d, Q, R)
+K, S, E = control.dlqr(A, B, Q, R)
 
-# 4. Simulate discrete-time closed-loop system
 N = 50                 # number of discrete steps
 x = np.zeros((2, N+1)) # state array: 2 rows (pos & vel), N+1 columns (time steps)
 x[:, 0] = [1.0, 0.0]   # initial condition: position=1, velocity=0
 u = np.zeros((N, 1))   # control input array with correct shape (N, 1)
 
 for k in range(N):
-    # u[k] = -K x[k]
-    u[k] = -K @ x[:, k].reshape(2, 1)  # Reshape state to column vector
-    # x[k+1] = A_d x[k] + B_d u[k]
-    x[:, k+1] = A_d @ x[:, k] + B_d @ u[k].flatten()  # Flatten u[k] to make dimensions compatible
+    u[k] = -K @ x[:, k].reshape(2, 1)
+    x[:, k+1] = A @ x[:, k] + B @ u[k].flatten()
 
-# 5. Plot states over time and control input
 time = np.arange(N+1) * dt
 
-plt.figure(figsize=(10,6))
+fig, ax = plt.subplots(2, 1, figsize=(10,6))
 
-# (A) Position and velocity vs. time
-plt.subplot(2,1,1)
-plt.plot(time, x[0, :], 'b-o', label='Position')
-plt.plot(time, x[1, :], 'g-o', label='Velocity')
-plt.title('Discrete-Time LQR: State Evolution Over Time')
-plt.xlabel('Time [s]')
-plt.ylabel('State Values')
-plt.grid(True)
-plt.legend()
+ax[0].plot(time, x[0, :], '-o', label='position $p_h$')
+ax[0].plot(time, x[1, :], '-o', label='velocity $\dot p_h$')
+ax[0].set_title('State evolution')
+ax[0].set_xlabel('Time')
+ax[0].grid(True)
+ax[0].legend()
 
-# (B) Control input vs. time
-# We only have N control values for the N intervals
-plt.subplot(2,1,2)
-plt.step(time[:-1], u.flatten(), where='post', color='r', label='Control Input')
-plt.title('Control Input Over Time')
-plt.xlabel('Time [s]')
-plt.ylabel('u(k)')
-plt.grid(True)
-plt.legend()
+ax[1].step(time[:-1], u.flatten(), where='post', label='Control input $u_h$')
+ax[1].set_title('Control input')
+ax[1].set_xlabel('Time')
+ax[1].grid(True)
+ax[1].legend()
 
-plt.tight_layout()
+fig.tight_layout()
 plt.show()
 
-# 6. Phase-plane plot (position vs. velocity) to visualize discrete steps
-plt.figure(figsize=(6,6))
-plt.plot(x[0, :], x[1, :], 'o-', label='State Trajectory')
+plt.plot(x[0, :], x[1, :], 'o-', label='state $x_h$')
 for k in range(N):
-    # Draw an arrow from x[k] to x[k+1]
     dx = x[0, k+1] - x[0, k]
     dy = x[1, k+1] - x[1, k]
     plt.arrow(x[0, k], x[1, k], dx, dy, 
@@ -451,10 +495,13 @@ for k in range(N):
 plt.grid(True)
 plt.xlabel('Position')
 plt.ylabel('Velocity')
-plt.title('Phase-Plane Trajectory (Discrete Steps)')
 plt.legend()
 plt.show()
 ```
+
+We see that the LQR control
+smoothly controls the position of the ball.
+:::
 
 ## Optimality and the Riccati Equation {#sec-optimal-lqr}
 
@@ -588,7 +635,7 @@ The scalars $p_\step$ obey the recurrence relation
 
 $$
 p_\step = \mathrm{Tr}(\sigma^2 P_{\step+1}) + p_{\step+1}
-$$ {#eq-lqr-proof-scalar}
+$$ {#eq-lqr-scalar}
 
 and the matrices $K_0, \dots, K_{\Step-1}$ for defining the policy satisfy
 
@@ -610,9 +657,20 @@ def dp_lqr(A, B, Q, R, sigma, H):
         P_ary.append(P)
         p_ary.append(p)
     return reversed(P_ary), reversed(p)
-
-latex(dp_lqr)
 ```
+
+::: {#def-lqr-solution}
+#### Dynamic programming in LQR
+
+Let $A, B, Q, R$ be the matrices that define the LQR problem,
+and let $\sigma^2$ be the variance of the noise in the dynamics (@def-lqr).
+
+1.  Initialize $P_\Step = 0, p_\Step = 0$.
+2.  For each $\step = \Step - 1, \dots, 0$:
+    1.  Compute $P_\step$ using the Riccati equation (@def-riccati) and $p_\step$ using @eq-lqr-scalar.
+    2.  Compute $K_\step$ using @eq-k-pi.
+    3.  These define the functions $V^\star_\step$ and $\pi^\star_\step$ by @thm-optimal-value-lqr-quadratic and @thm-optimal-policy-lqr-linear.
+:::
 
 ### Expected state at time $\step$
 
@@ -686,10 +744,8 @@ are relaxed. Specifically, we'll consider:
 
 1.  **Time-dependency**, where the dynamics and cost function might
     change depending on the timestep.
-
 2.  **General quadratic cost**, where we allow for linear terms and a
     constant term.
-
 3.  **Tracking a goal trajectory** rather than aiming for a single goal
     state-action pair.
 
@@ -868,7 +924,7 @@ How can we adapt LQR to this more general nonlinear case?
 ### Local linearization
 
 How can we apply LQR when the dynamics are nonlinear or the cost function is more complex?
-We'll exploit the useful fact that we can take a function that's *locally continuous* around $(s^\star, a^\star)$ and
+We'll exploit the useful fact that we can take a function that's *locally continuous* around $(\st^\star, \act^\star)$ and
 approximate it nearby with low-order polynomials (i.e. its Taylor
 approximation). In particular, as long as the dynamics $f$ are
 differentiable around $(\st^\star, \act^\star)$ and the cost function
@@ -957,8 +1013,8 @@ $$
 
 
 
-**Exercise:** Convince yourself that $\widetilde{D}$ is indeed positive
-definite.
+**Exercise:**
+Convince yourself that $\widetilde{D}$ is indeed positive definite.
 
 Note that Hessian matrices are generally symmetric, so we can apply this
 process to $Q$ and $R$ to obtain the positive definite approximations
@@ -979,24 +1035,32 @@ point of linearization](shared/log_taylor.png)
 
 ### Iterative LQR {#sec-iterative-lqr}
 
-To address these issues with local linearization, we'll use an iterative
-approach, where we repeatedly linearize around different points to
-create a *time-dependent* approximation of the dynamics, and then solve
-the resulting time-dependent LQR problem to obtain a better policy. This
-is known as **iterative LQR** or **iLQR**:
+To address these issues with local linearization,
+we'll use an iterative approach,
+where we repeatedly linearize around different points to create a *time-dependent* approximation of the dynamics,
+and then solve the resulting time-dependent LQR problem to obtain a better policy.
+This is known as **iterative LQR** or **iLQR**:
 
 ::: {#def-ilqr}
 #### Iterative LQR
 
 For each iteration of the algorithm:
 
-1. Form a time-dependent LQR problem around the current candidate
-trajectory using local linearization.
-2. Compute the optimal policy using @sec-time-dep-lqr.
-3. Generate a new series of actions using this policy.
-4. Compute a better candidate trajectory by interpolating between the
-current and proposed actions.
+1.  Form a time-dependent LQR problem (@sec-time-dep-lqr) around the current candidate trajectory
+    using local linearization.
+2.  Compute the optimal policy of the time-dependent LQR problem.
+3.  Sample a trajectory using this optimal policy.
+4.  Compute a better candidate trajectory
+    by interpolating between the current and proposed actions.
 :::
+
+```{mermaid}
+%%| label: fig-ilqr
+%%| fig-cap: iLQR can be phrased in the style of policy iteration (@sec-pi). It alternates between computing a locally linear model around the current policy's trajectories and computing the optimal policy that solves the linear model.
+graph LR
+    Approx["Locally approximate a linear model of the environment"] --["$$f, c$$"]--> Opt
+    Opt["Solve for the optimal policy in the model"] --["$$\pi^\star$$"]--> Approx
+```
 
 Now let's go through the details of each step. We'll use superscripts to
 denote the iteration of the algorithm. We'll also denote
@@ -1007,10 +1071,10 @@ At iteration $i$ of the algorithm, we begin with a **candidate**
 trajectory
 $\bar \tau^i = (\bar \st^i_0, \bar \act^i_0, \dots, \bar \st^i_{\Step-1}, \bar \act^i_{\Step-1})$.
 
-**Step 1: Form a time-dependent LQR problem.** At each timestep
-$\step \in [\Step]$, we use the techniques from
-[](#approx_nonlinear) to linearize the dynamics and
-quadratize the cost function around $(\bar \st^i_\step, \bar \act^i_\step)$:
+**Step 1: Form a time-dependent LQR problem.**
+At each timestep $\step \in [\Step]$,
+we use the techniques from @sec-approx-nonlinear to linearize the dynamics
+and quadratize the cost function around $(\bar \st^i_\step, \bar \act^i_\step)$:
 
 
 $$
@@ -1037,13 +1101,14 @@ $$
 
 
 
-**Step 2: Compute the optimal policy.** We can now solve the
-time-dependent LQR problem using the Riccati equation from
-@sec-time-dep-lqr to compute the optimal policy
+**Step 2: Compute the optimal policy.**
+We solve the time-dependent LQR problem using
+the time-dependent algebraic Riccati equation (@def-riccati-time-dependent)
+to compute the optimal policy
 $\pi^i_0, \dots, \pi^i_{\Step-1}$.
 
-**Step 3: Generate a new series of actions.** We can then generate a new
-sample trajectory by taking actions according to this optimal policy:
+**Step 3: Generate a new series of actions.**
+We generate a new sample trajectory by taking actions according to this optimal policy:
 
 
 $$
@@ -1054,19 +1119,25 @@ $$
 Note that the states are sampled according to the *true* dynamics, which
 we assume we have query access to.
 
-**Step 4: Compute a better candidate trajectory.**, Note that we've
-denoted these actions as $\widetilde \act_\step$ and aren't directly using
-them for the next iteration $\bar \act^{i+1}_\step$. Rather, we want to
-*interpolate* between them and the actions from the previous iteration
-$\bar \act^i_0, \dots, \bar \act^i_{\Step-1}$. This is so that the cost
-will *increase monotonically,* since if the new policy turns out to
-actually be worse, we can stay closer to the previous trajectory. (Can
-you think of an intuitive example where this might happen?)
+**Step 4: Compute a better candidate trajectory.**
+Note that we've denoted these actions as $\widetilde \act_\step$
+and aren't directly using them for the next iteration $\bar \act^{i+1}_\step$.
+Rather, we want to *interpolate* between them and the actions from the previous iteration
+$\bar \act^i_0, \dots, \bar \act^i_{\Step-1}$.
+This is so that the cost will *increase monotonically,*
+since if the new policy turns out to actually be worse,
+we can stay closer to the previous trajectory.
+The new policy might be worse,
+for example,
+if the states in the new trajectory
+are far enough from the original states
+that the local linearization is no longer accurate.
 
-Formally, we want to find $\alpha \in [0, 1]$ to generate the next
-iteration of actions
-$\bar \act^{i+1}_0, \dots, \bar \act^{i+1}_{\Step-1}$ such that the cost
-is minimized: 
+Formally,
+we want to find $\alpha \in [0, 1]$
+to generate the next iteration of actions
+$\bar \act^{i+1}_0, \dots, \bar \act^{i+1}_{\Step-1}$
+such that the cost is minimized: 
 
 $$
 \begin{aligned}
@@ -1081,26 +1152,91 @@ $$
 $[0, 1]$, so by the Extreme Value Theorem, it's guaranteed to have a
 global maximum.
 
-The final output of this algorithm is a policy $\pi^{n_\text{steps}}$
-derived after $n_\text{steps}$ of the algorithm. Though the proof is
-somewhat complex, one can show that for many nonlinear control problems,
-this solution converges to a locally optimal solution (in the policy
-space).
+The final output of this algorithm
+is a policy $\pi^{n_\text{steps}}$ derived after $n_\text{steps}$ of the algorithm.
+Though the proof is somewhat complex,
+one can show that for many nonlinear control problems,
+this solution converges to a locally optimal solution (in the policy space).
+
 
 ## Key takeaways
 
-This chapter introduced some approaches to solving different variants of
-the optimal control problem
-@def-optimal-control. We began with the simple case of linear
-dynamics and an upward-curved quadratic cost. This model is called the
-LQR and we solved for the optimal policy using dynamic programming. We
-then extended these results to the more general nonlinear case via local
-linearization. We finally saw the iterative LQR algorithm for solving
-nonlinear control problems.
+This chapter introduced some approaches to solving simple variants of
+the optimal control problem @def-optimal-control.
+We began with the simple case of linear dynamics and an upward-curved quadratic cost.
+This model is called the linear quadratic regulator (LQR).
+The optimal policy can be solved using dynamic programming.
+We then extended these results to the more general nonlinear case via local linearization.
+We finally studied the iterative LQR algorithm for solving nonlinear control problems.
+
+In the big picture,
+the LQR algorithm can be seen as an extension of the dynamic programming algorithms in @sec-mdps
+to continuous state and action spaces.
+Both of these methods assume that the environment is fully known.
+iLQR loosens this assumption slightly:
+as long as we have "query access" to the environment,
+that is,
+we can efficiently sample the state following any given state-action pair,
+we can locally approximate the dynamics using finite differences.
+
+
+
+## Bibliographic notes and further reading {#sec-control-bib}
+
+The field of control theory generally predates that of RL
+and can be seen as a precursor to the model-based planning algorithms
+used for RL tasks.
+People have attempted to solve the optimal control problem
+since antiquity:
+the first recorded control device (i.e. our notion of a policy,
+put into practice)
+is thought to be a water clock from the third century BCE
+that kept time by controlling the amount of water
+flowing out of a vessel [@mayr_populations_1970, @keviczky_control_2019].
+
+Watt's 1788 centrifugal governor
+for controlling the pace of a steam engine
+was one of the greatest inventions in control at the time.
+We refer the reader to [@macfarlane_development_1979, @bellman_adaptive_1961].
+for more on the history of control systems.
+
+The first attempt to formalize control theory as a field is attributed to @maxwell_governors_1867.
+Maxwell (well known for Maxwell's equations) demonstrated the utility
+of analyzing mathematical models to design stable systems.
+Other researchers also studied the stability of differential equations.
+The work of @lyapunov_general_1892 has been widely influential in this field;
+his seminal work did not appear in English until @ljapunov_general_1992.
+
+A number of excellent textbooks have been published
+on optimal control [@bellman_dynamic_1957, @athans_optimal_1966, @berkovitz_optimal_1974, @lewis_optimal_2012].
+We refer interested readers to these for further reading,
+particularly about the continuous-time case.
 
 
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
 
-I kept
+The presentation of material in this chapter follows the same flow that it did in the course.
+I decided to move the derivation of the LQR solution to the appendix
+due to student feedback that the linear algebra derivations were
+dense and not especially insightful,
+though I leave the discrete-time algebraic Riccati equation in the main text
+to define the actual recursion.
+I also include an example of LQR for the double integrator,
+a canonical dynamical system in control theory.
+
+Teaching about optimal control and LQR
+is fairly unique to our course
+among other RL courses;
+a discussion at this level of detail is absent from
+the textbooks mentioned in @sec-intro-bib.
+I strongly believe that our inclusion of this material is well-justified:
+it ties in as a natural extension of the planning algorithms in @sec-mdps
+and highlights the efficiency of planning approaches
+when the environment is known (or a model can be easily approximated).
+It also gives students more exposure to linear algebra
+and continuous environments.
+
+The bibliographic notes give a brief history of control systems and control theory
+and include pointers to optimal control textbooks.
 :::
