@@ -591,9 +591,13 @@ when starting in a specific state:
 $$
 V_\step^\pi(s) := \E_{\tau \sim \rho^\pi} [r_\step + \cdots + r_{H-1} \mid s_\step = s]
 $$ {#eq-v}
+:::
+
+::: {#def-q}
+#### Action-value function
 
 Similarly,
-a history-independent policy's **action-value function** (aka Q function)
+a history-independent policy $\pi$'s **action-value function** (aka Q function)
 at time $\step$ returns its expected remaining reward,
 starting in a specific state
 _and_ taking a specific action:
@@ -2242,7 +2246,7 @@ $$
 -   In the infinite-horizon setting, we can compute the optimal policy
     using **value iteration** or **policy iteration**.
 
-## Bibliographic notes {#sec-mdps-bib}
+## Bibliographic notes and further reading {#sec-mdps-bib}
 
 The MDP framework can be traced to @puterman_markov_1994.
 The proof of @thm-optimal-greedy can be found in @agarwal_reinforcement_2022.

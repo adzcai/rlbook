@@ -95,7 +95,7 @@ which are often called “one-armed bandits” since they have one arm (the leve
 
 | Environment is...                                 | known (planning/optimal control)   | unknown (learning from experience) |
 | ------------------------------------------------- | ---------------------------------- | ---------------------------------- |
-| stateless/invariant ($\vert\mathcal{S}\vert = 1$) | (not interesting)                  | multi-armed bandits                |
+| stateless/invariant ($\vert\mathcal{S}\vert = 1$) | (trivial)                          | multi-armed bandits                |
 | stateful/dynamic                                  | MDP planning (dynamic programming) | "full" RL                          |
 
 : How bandits leads into the full RL problem. {#tbl-bandits-full}
@@ -152,6 +152,27 @@ class MAB:
 ```{python}
 mab = MAB(means=np.array([0.1, 0.8, 0.4]), T=100)
 ```
+
+::: {#rem-mab-mdp-connection}
+#### Connection between MAB and MDP settings
+
+A multi-armed bandit is a special case of a finite-horizon Markov decision process
+with a single state ($|\mathcal{S}| = 1$) and a horizon of $\hor = 1$.
+(Conceptually speaking, the environment is "stateless",
+but an MDP with "no states" doesn't make sense.)
+As such,
+Each arm is an action: $|\mathcal{A}| = \Arm$.
+the expected value of pulling arm $\arm$,
+which we denote $\mu^\arm$ in this chapter,
+is exactly the Q-function (@def-q):
+
+$$
+\mu^\arm = Q(\arm)
+$$ {#eq-q-mean}
+
+Note that we omit the arguments for $\pi, \step$, and $s$,
+which are meaningless in the MAB setting.
+:::
 
 In pseudocode, the agent's interaction with the MAB environment
 can be described by the following process:
@@ -1596,7 +1617,7 @@ in which the agent gets to observe some _context_ that affects the reward distri
 We can approach these problems through **supervised learning** approaches.
 
 
-## Bibliographic notes
+## Bibliographic notes and further reading
 
 The problem that a bandit algorithm faces after $\ep$ pulls
 is to infer differences between the means of a set of distributions
@@ -1608,7 +1629,8 @@ is to compare within-group variances to the variance of the group means.
 This popular class of methods is known as **analysis of variance** (ANOVA).
 It has been studied at least since Laplace in the 1770s [@stigler_history_2003]
 and was further popularized by @fisher_statistical_1925.
-William Thompson studied the two-armed mean distinction problem in @thompson_likelihood_1933 and @thompson_theory_1935.
+William Thompson studied the two-armed mean distinction problem
+in @thompson_likelihood_1933 and @thompson_theory_1935.
 Our focus has been on the decision-making aspect of the bandit problem,
 rather than the hypothesis testing aspect.
 
@@ -1617,6 +1639,8 @@ Adding the sequential decision-making aspect turns the above into the full multi
 @robbins_aspects_1952 then builds on Wald's work
 and provides a clear exposition of the bandit problem
 in the form presented in this chapter.
+@berry_bandit_1985 is a comprehensive treatment of bandit problems from a statistical perspective.
+
 
 
 

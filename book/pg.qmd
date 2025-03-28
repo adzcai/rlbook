@@ -2291,20 +2291,84 @@ and the PPO-Clip update (@sec-ppo-clip).
 These are still popular methods to this day,
 especially because they efficiently integrate with *deep neural networks* for representing complex functions.
 
-## Bibliographic notes {#sec-pg-bib}
+## Bibliographic notes and further reading {#sec-pg-bib}
 
-- @kakade_approximately_2002
+@sutton_policy_1999 popularized the term "policy gradient methods".
+Policy gradient methods,
+including REINFORCE [@williams_simple_1992],
+were some of the earliest reinforcement learning methods
+[@witten_adaptive_1977, @barto_neuronlike_1983, @sutton_temporal_1984].
 
-from spinning up:
-- @mnih_asynchronous_2016 present multi-threaded variants of one-step Sarsa, n-step Q-learning, and advantage actor-critic.
-The gradient estimates are accumulated across learners and periodically updated and synchronized across all learners.
-All policy gradient methods can be parallelized in this way.
-- @schulman_trust_2015
-- @schulman_high-dimensional_2016
-- @schulman_proximal_2017
-- @wu_scalable_2017
-- @wang_sample_2017
-- @haarnoja_soft_2018
+@kakade_approximately_2002 introduced the performance difference lemma,
+which was used to prove theoretical guarantees in several later works.
+
+The expression of the policy gradient in terms of the Q-function
+was simultaneously observed by @marbach_simulation-based_2001
+and @sutton_policy_1999.
+
+The natural gradient was suggested by @amari_natural_1998 for general optimization problems
+and then applied to the policy gradient by @kakade_natural_2001.
+The **Natural Actor-Critic** algorithm combines actor-critic learning
+with the natural policy gradient estimator [@peters_natural_2005, @peters_natural_2008, @bhatnagar_natural_2009].
+
+Natural gradient descent is effective
+because it accounts for the _geometry_ induced by the parameterization
+and thereby optimizes over the _distributions_ themselves.
+Another optimization algorithm that accounts for parameter-space geometry
+is **mirror descent** [@nemirovskij_problem_1983, @beck_mirror_2003].
+At each optimization step,
+this maps the parameter vector to a _dual space_
+defined to capture the desired geometry.
+It then takes a gradient descent step on the dual parameters
+and maps the result back to an updated "primal" parameter vector.
+One can also apply mirror descent to policy gradient algorithms [@mahadevan_sparse_2012, @mahadevan_basis_2013].
+
+A key reason for the popularity of policy gradient methods
+is that they are easily _parallelizable_ across multiple computing threads.
+Each thread collects rollouts and computes its own gradient estimates,
+and every once in a while,
+these are accumulated across threads and used to perform an update of the parameters,
+which are then synchronized across the different threads.
+@mnih_asynchronous_2016 present multi-threaded variants of policy gradient methods
+as well as several algorithms from @sec-fit.
+@schulman_trust_2015 proposed TRPO (@def-trpo-update).
+@schulman_high-dimensional_2016 introduced
+**generalized advantage estimation** (GAE),
+which accepts some bias in the gradient estimate
+in exchange for lower variance.
+This tradeoff is controlled by the parameter $\lambda$,
+the same parameter as in $\text{TD}(\lambda)$.
+@schulman_proximal_2017 introduced the PPO-KL and PPO-Clip algorithms.
+@wu_scalable_2017 introduced the ACKTR algorithm,
+which seeks to scale NPG up to deep learning models
+where naively approximating the Fisher information matrix
+is impractical.
+It does so using the Kronecker-factored approximation proposed in @martens_optimizing_2015.
+
+Policy gradient methods, being on-policy algorithms,
+inherently have worse sample efficiency than off-policy algorithms,
+since naively each sample can only be used to update at the value of the parameter vector
+that it was sampled at.
+@wang_sample_2017 introduce the **actor-critic with experience replay** (ACER) algorithm,
+which builds on the **Retrace** Q function estimator [@munos_safe_2016]
+to estimate policy gradients using previously collected experience [@lin_self-improving_1992].
+
+The **soft Q-learning** and **soft actor-critic** algorithms introduced in @haarnoja_reinforcement_2017 and @haarnoja_soft_2018 respectively
+add the **entropy** of the policy
+to the objective function.
+This practice is known as **maximum entropy reinforcement learning**
+since we seek to maximize the policy entropy
+alongside the expected total reward.
+This encourages policies that "act more randomly",
+which aids exploration.
+The maximum energy principle
+
+
+
+@shao_deepseekmath_2024 introduce a variant of PPO known as **Group Relative Policy Optimization**\index{group relative policy optimization} (GRPO).
+
+
+
 
 
 ::: {.content-visible when-profile="thesis"}
@@ -2313,7 +2377,20 @@ All policy gradient methods can be parallelized in this way.
 I kept the overall structure of this chapter the same as it was presented in class,
 which has remained relatively consistent throughout the years:
 we begin by reviewing gradient descent,
-followed by 
+followed by the REINFORCE algorithm,
+and then more recent trust region-based methods.
 
+I build up to REINFORCE with baselines
+a little more explicitly than was done in the course,
+by framing the statement of unbiasedness
+for the different estimators
+as explicit "theorems".
+The proofs of these "theorems" have been left to a homework exercise.
+This emphasizes that the fundamental framework for policy gradient methods,
+i.e. weighting the gradient-log-probability of actions by some measure of the action's quality,
+remains the same.
 
+In constructing the bibliographic notes (@sec-pg-bib),
+I referred to the references in @achiam_spinning_2018
+and the citations in @sutton_reinforcement_2018 [ch. 13].
 :::

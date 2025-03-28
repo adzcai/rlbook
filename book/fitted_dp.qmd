@@ -146,7 +146,9 @@ we sought to compute the _value function_ $V^\pi$.
 Here,
 we'll instead approximate the action-value function $Q^\pi$,
 since we'll need the ability
-to take the action with the maximum expected remaining reward.
+to take the _action_ with the maximum expected remaining reward.
+If we don't know the environment,
+we can't compute the action-values using only $V^\pi$.
 :::
 
 ::: {#rem-review-pe}
@@ -467,7 +469,7 @@ where $\lambda_\text{target} \in (0, 1)$ is some mixing parameter:
 the larger it is,
 the more we update towards the current estimate $q$.
 
-### Online fitted policy evaluation
+### Online fitted policy evaluation {#sec-td-0}
 
 In the offline algorithm above,
 we collect the whole dataset
@@ -513,6 +515,20 @@ latex(fitted_policy_evaluation_online)
 
 Note that we explicitly write out one step of gradient descent
 on the squared "temporal difference error".
+
+::: {#rem-td-zero}
+#### On notation
+
+What does $\text{TD}(0)$ stand for?
+This notation suggests the existence of other $\text{TD}(\lambda)$ algorithms.
+In fact, $\text{TD}(\lambda)$ is a well-studied algorithm with a parameter $\lambda \in [0, 1]$,
+and $\text{TD}(0)$ is simply the special case $\lambda = 0$.
+TD stands for "temporal difference":
+we use the value function at a different point in time
+to estimate the value of the current state at the current time step.
+The parameter $\lambda$ is one way to average between the _near-term_ estimates
+and the _long-term_ estimates at later timesteps.
+:::
 
 ## Fitted value iteration {#sec-fit-vi}
 
@@ -787,16 +803,24 @@ On-policy or off-policy?
 
 ## Key takeaways
 
-In most real-world settings,
-we don't know the state transitions $P$.
+In a finite MDP where the environment is known,
+we can apply **dynamic programming** (@sec-finite-opt-dp)
+to compute the optimal policy.
+But in most real-world settings,
+we _don't_ know the state transitions $P$.
 This means we can't _exactly_ compute
-the Bellman consistency or optimality equations,
+the Bellman consistency or optimality equations (@thm-consistency),
 which require taking an expectation
 over the next state.
-The best we can do
-in terms of DP algorithms
-is to _approximately_ solve the system
-with supervised learning.
+
+In an unknown environment,
+we must learn from data collected from the environment.
+**Model-based methods** learn a model of the environment,
+and then plan within that model to choose the best action.
+**Model-free methods** instead use the data
+to approximate quantities of interest
+(e.g. the optimal Q function or optimal policy)
+directly.
 
 We began by considering _offline_ algorithms
 that used a dataset of interactions
@@ -804,26 +828,62 @@ to learn some quantity of interest.
 We then saw the _online_ equivalents
 that observe data by interacting with the environment.
 
-## Bibliographic notes {#sec-fit-bib}
+## Bibliographic notes and further reading {#sec-fit-bib}
+
+The fitted dynamic programming algorithms we discuss in this chapter
+are a special case of _temporal difference_ (TD) methods,
+an important class of reinforcement learning algorithms.
+In particular,
+this chapter only discusses one-step methods,
+which can be directly generalized to $n$-step methods
+and the $\lambda$-return,
+the formulation most commonly used in practice.
+This allows us to draw direct parallels to the tabular DP methods of @sec-mdps (see @tbl-fit-overview).
+TD learning is perhaps the "central and novel [idea of] reinforcement learning" [@sutton_reinforcement_2018, ch. 6].
+
+TD methods are based in the psychology of animal learning
+
+@witten_adaptive_1977, which proposed the tabular $\text{TD}(0)$ method,
+appears to be the earliest instance of a temporal difference algorithm.
+
+Richard Sutton's PhD thesis [@sutton_learning_1988]
+proved theoretical guarantees for many of the algorithms presented here.
+@sutton_reinforcement_2018 gives a comprehensive discussion of the methods discussed here.
+
+In later work,
+@hausknecht_deep_2017 made the Q-function recurrent,
+so that it depends on the past history of states.
+The resulting policy is non-Markovian,
+which additionally accounts for the partial observability of the environment.
+
+@maei_convergent_2009 further discusses the **deadly triad**
+of off-policy sampling,
+function approximation,
+and value bootstrapping.
+
 
 Deep RL rose to prominence
 when @mnih_playing_2013 used a deep Q network
 to achieve state of the art performance on the Atari games.
-
-- @hausknecht_deep_2017
-- @wang_dueling_2016
-- @hasselt_double_2010
-- @hasselt_deep_2016
-- @hessel_rainbow_2018
+However, the combination of deep learning
+and the underlying variance in RL problems
+made it challenging to optimize these neural networks.
+Many changes have been proposed.
+@wang_dueling_2016 suggests learning the value function and advantage function separately
+in a "dueling" architecture.
+@hasselt_double_2010 suggested the "double learning" algorithm
+to compensate for Q-learning's tendency to overestimate the true values.
+@hasselt_deep_2016 applied double learning to deep neural networks.
+@hessel_rainbow_2018 combined
 
 @bertsekas_neuro-dynamic_1996 coined the term "neuro-dynamic programming"
 to refere to the combination of (artificial) neural networks
 with dynamic programming techniques.
 
 
-
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
 
-
+Most introductions of temporal difference algorithms (@sutton_reinforcement_2018)
+begin by introducing Monte Carlo returns
 :::

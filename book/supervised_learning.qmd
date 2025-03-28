@@ -642,7 +642,7 @@ to find one that minimizes the **empirical risk** over the training dataset.
 We finally saw two popular examples of **parameterized** function classes:
 linear regression and neural networks.
 
-## Bibliographic notes {#sec-sl-bib}
+## Bibliographic notes and further reading {#sec-sl-bib}
 
 @james_introduction_2023 provides an accessible introduction to supervised learning.
 @hastie_elements_2013 examines the subject in even further depth

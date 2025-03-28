@@ -10,21 +10,21 @@ I shall be eternally grateful to the faculty mentors
 who have guided my journey as an undergraduate researcher.
 Thank you, Professor Janson and Professor Sham Kakade,
 for bringing a course on reinforcement learning to Harvard
-and having the boldness to hire me as an undergraduate course assistant
-in my sophomore year.
+and for inviting me as an undergraduate course assistant.
 I hope this work is faithful
 in conveying your deep insights
 in statistics and machine learning
 and passing on your vibrant curiosity.
 Thank you, Professor Cengiz Pehlevan,
-for teaching my favourite course in these years
-and for your unwavering encouragement.
+for teaching my favourite course, APMTH 226,
+and for your unwavering encouragement as a research mentor.
 Thank you, Professor Sarah Dean,
-for trialling a draft of this textbook for your Introduction to Reinforcement Learning course at Cornell,
-and thanks to the TAs and students thereof for your patience and helpful feedback.
+for trialling a draft of this textbook for your Introduction to Reinforcement Learning course at Cornell.
+To the TAs and students thereof,
+thank you as well for your patience and helpful feedback.
 
 To the "daniel wang" blocking group,
-Gabe, Oliver, Yusuf, Joel, Ezra, Nick, and Eric,
+Gabe, Oliver, Eric, Nick, Joel, Ezra, and Yusuf,
 thank you for your friendship these four years.
 I count it as a miracle to have my life illuminated by your brightness
 in this time when kindness seems to be running scarce in our world.
@@ -32,7 +32,7 @@ Conversations with you have opened my mind
 in ways that no course assignment ever could.
 
 Thank you to Currier for feeling like home.
-Jocelyn, Jude, Kelly, Kenny, Rave, Madison, Jess, Kyra, Rick, Luke, Sarah, Jack,
+Jack, Jess, Jocelyn, Jude, Kelly, Kenny, Kyra, Luke, Madison, Rave, Rick, Sarah,
 I am so blessed to be in your company.
 I cannot wait, years down the line,
 to point in the news and tell people "Hey, I was their friend!"

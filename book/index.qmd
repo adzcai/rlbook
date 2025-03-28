@@ -49,7 +49,8 @@ This **exploration-exploitation tradeoff** is a core consideration in RL algorit
 These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.
 
 @sec-pg explores an important class of algorithms based on iteratively improving a policy.
-We will also encounter the use of _deep neural networks_ to express more complicated policies and approximate complicated functions.
+We will also encounter the use of _deep neural networks_
+to express nonlinear policies and approximate nonlinear functions with many inputs and outputs.
 
 @sec-imitation-learning attempts to learn a good policy from expert demonstrations.
 At its most basic, this is an application of supervised learning to RL tasks.
@@ -63,16 +64,7 @@ We will extend ideas from multi-armed bandits to the MDP setting.
 
 @sec-background contains an overview of selected background mathematical content and programming content.
 
-```{mermaid}
-graph TD
-    Intro --> MDPs & Bandits
-    MDPs --> Control & PG & Tree & Fitted & Exploration
-    Control
-    Bandits --> Exploration
-    PG["Policy gradient methods"]
-    Tree["Tree search methods"]
-    SL["Supervised learning"] --> IL["Imitation learning"] & Fitted
-    Fitted["Fitted DP"]
-```
 
+
+## Contributions
 
