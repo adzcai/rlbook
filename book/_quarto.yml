@@ -2,7 +2,7 @@ project:
   type: book
 
 book:
-  title: "CS 1840: Introduction to Reinforcement Learning"
+  title: "An Introduction to Reinforcement Learning"
   author: "Alexander Cai"
   date: "2025-01-03"
   favicon: shared/184.png
@@ -15,8 +15,9 @@ book:
   sharing: [twitter, facebook]
   site-url: https://rlbook.adzc.ai
   chapters:
-    - index.qmd
+    - abstract.qmd
     - acknowledgements.qmd
+    - index.qmd
     - notation.qmd
     - introduction.qmd
     - mdps.qmd
