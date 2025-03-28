@@ -41,16 +41,6 @@ by collecting data through interaction
 and then applying _supervised learning_ (see @sec-sl)
 to approximate relevant functions.
 
-| Chapter | State space | Action space | Policies | Knowledge of environment | Key algorithms |
-| --- | --- | --- | --- | --- |
-| @sec-mdps (MDPs) | $\{1, \dots, \vert \mathcal{S} \vert \}$ | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | known | dynamic programming, policy iteration |
-| @sec-control (Control) | $\R^{n_\st}$ | $\R^{n_\act}$ | deterministic | unknown | (iterative) linear quadratic regulator |
-| @sec-bandits (MABs) | none | $\{ 1, \dots, K \}$ | deterministic or stochastic | unknown | upper confidence bound, Thompson sampling |
-| This chapter (Fitted DP) | arbitrary | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic | unknown | Q-learning, fitted policy iteration |
-
-: How this chapter extends to more general settings. {#tbl-fit-ctx}
-
-Here's an outline for the rest of the chapter.
 Each of the algorithms we'll cover
 is analogous to one of the algorithms from @sec-mdps:
 
@@ -882,7 +872,7 @@ with dynamic programming techniques.
 
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 Most introductions of temporal difference algorithms (@sutton_reinforcement_2018)
 begin by introducing Monte Carlo returns

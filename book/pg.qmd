@@ -34,21 +34,6 @@ If we think of the expected total reward as a function of the policy,
 we can repeatedly shift the policy by the gradient of that function
 to obtain policies that achieve higher expected total rewards.
 
-| Algorithm                                                   | State space                              | Action space                              | Policies                      | Knowledge of environment |
-| ----------------------------------------------------------- | ---------------------------------------- | ----------------------------------------- | ----------------------------- | ------------------------ |
-| dynamic programming (@sec-finite-opt-dp)                    | finite | finite | deterministic                 | known                    |
-| policy iteration (@sec-pi)                                  | finite | finite | deterministic                 | known                    |
-| linear quadratic regulator (@sec-lqr)                       | $\R^{n_\st}$                             | $\R^{n_\act}$                             | deterministic                 | known                    |
-| (iterative) linear quadratic regulator (@sec-iterative-lqr) | $\R^{n_\st}$                             | $\R^{n_\act}$                             | deterministic                 | unknown                  |
-| upper confidence bound (@sec-ucb)                           | none                                     | $\{ 1, \dots, K \}$                       | deterministic or stochastic   | unknown                  |
-| Thompson sampling (@sec-thompson-sampling)                  | none                                     | $\{ 1, \dots, K \}$                       | deterministic or stochastic   | unknown                  |
-| fitted policy iteration (@sec-fit-pi)                       | arbitrary                                | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic                 | unknown                  |
-| Q-learning (@sec-q-learning)                                | arbitrary                                | $\{ 1, \dots, \vert \mathcal{A} \vert \}$ | deterministic                 | unknown                  |
-| REINFORCE (@sec-reinforce)                                  | arbitrary                                | arbitrary                                 | stochastic (or deterministic) | unknown                  |
-| Natural policy gradient (@sec-npg)                          | arbitrary                                | arbitrary                                 | stochastic (or deterministic) | unknown                  |
-
-: An overview of problem settings discussed so far. {#tbl-overview-chapters-pg}
-
 Policy gradient methods are responsible for groundbreaking applications including AlphaGo,
 OpenAI Five,
 and large language models.
@@ -2379,7 +2364,7 @@ The maximum energy principle
 
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 I kept the overall structure of this chapter the same as it was presented in class,
 which has remained relatively consistent throughout the years:

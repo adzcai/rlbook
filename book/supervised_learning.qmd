@@ -657,7 +657,7 @@ from before the "deep learning era".
 @bishop_pattern_2006 focuses on the Bayesian perspective.
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 In how much detail should we explain supervised learning?
 Our goal with this chapter

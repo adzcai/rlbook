@@ -140,7 +140,7 @@ There are a number of recent textbooks that cover the field of RL:
 @kochenderfer_algorithms_2022 provides a more probabilistic perspective alongside Julia code for various RL algorithms.
 
 There are also a number of review articles that summarize recent advances.
-@murphy_reinforcement_2024 gives an overview of the past decade of advancements in RL.
+@murphy_reinforcement_2025 gives an overview of the past decade of advancements in RL.
 @ivanov_modern_2019 lists many popular algorithms.
 
 Other textbooks focus on specific RL techniques

@@ -1213,7 +1213,7 @@ particularly about the continuous-time case.
 
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 The presentation of material in this chapter follows the same flow that it did in the course.
 I decided to move the derivation of the LQR solution to the appendix

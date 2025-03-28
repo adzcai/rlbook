@@ -1656,7 +1656,7 @@ under the name "Associative Reinforcement Learning with Linear Value Functions".
 
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 The core material in this chapter is essentially identical to the way it was taught in the course,
 with some additions and clarifications.

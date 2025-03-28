@@ -767,7 +767,7 @@ In MuZero [@schrittwieser_mastering_2020],
 this was further extended by _learning_ a model of the game dynamics.
 EfficientZero [@ye_mastering_2021] presented a more sample-efficient algorithm
 based on MuZero.
-Gumbel MuZero [@daniheika_policy_2021] greatly improved the computational efficiency of MuZero
+Gumbel MuZero [@danihelka_policy_2021] greatly improved the computational efficiency of MuZero
 by reducing the number of rollouts required.
 Stochastic MuZero [@antonoglou_planning_2021] extends MuZero to stochastic environments.
 
@@ -783,7 +783,7 @@ provides usable implementations of MuZero and its variants above.
 
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 My main addition to the course material in this chapter is a new section on min-max search.
 In previous chapters,

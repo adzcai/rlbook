@@ -2,7 +2,7 @@
 
 Welcome to the study of reinforcement learning!
 This textbook accompanies the undergraduate course [CS 1840/STAT 184](http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html) taught at Harvard.
-It is intended to be a friendly and approachable yet rigorous introduction to this active subfield of machine learning.
+It is intended to be an approachable yet rigorous introduction to this active subfield of machine learning.
 
 
 ## Prerequisites
@@ -11,13 +11,14 @@ This book assumes the same prerequisites as the course:
 You should be familiar with multivariable calculus, linear algebra, and probability.
 For Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents.
 Stat 111 is strongly recommended but not required.
-Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text or in @sec-background:
+Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text:
 
 -   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
     inversion, eigenvalues and eigenvectors.
 -   **Multivariable Calculus:** Partial derivatives, the chain rule, Taylor series, _gradients, directional derivatives, Lagrange multipliers._
 -   **Probability:** Random variables, probability distributions,
-    expectation and variance, the law of iterated expectations (Adam's rule), covariance, conditional probability, Bayes's rule, and the law of total probability.
+    expectation and variance, the law of iterated expectations (Adam's rule), covariance,
+    conditional probability, Bayes's rule, and the law of total probability.
 
 You should also be familiar with basic programming concepts
 such as variables, functions, loops, etc.
@@ -66,4 +67,51 @@ We will extend ideas from multi-armed bandits to the MDP setting.
 
 
 
+
+::: {.content-visible when-profile="thesis"}
+## Contributions
+
+At the end of each chapter,
+I have included a section in the first-person
+detailing my contributions beyond what was presented in the course material.
+The planning and the design of the course is due to Professor Lucas Janson
+and Professor Sham Kakade,
+who taught the first iteration of the course in Fall 2022.
+
+I agree with most of the high-level course design,
+and so my core novel contributions in this thesis
+have been putting time into the low-level details
+required to compile the material into a textbook
+rather than a set of scribe notes.
+These contributions include:
+
+-   Adding discussion of relevant material that was not covered in class
+    but would aid student understanding or curiosity;
+-   Inserting illustrations, including tables and figures,
+    that summarize and demonstrate the key ideas;
+-   Compiling references to the sources for the material
+    and to recent related work.
+
+But there are already many high-quality textbooks in the literature;
+a list is compiled in @sec-intro-bib.
+Why write a new one?
+
+-   Many existing textbooks provide descriptions of algorithms,
+    but no theoretical guarantees of their performance.
+    We believe that an understanding of _why_ certain algorithms outperform others
+    is crucial for interpreting, debugging, and designing algorithm behaviours in practice.
+-   We include a unit on optimal control and the linear quadratic regulator
+    to introduce students to the types of problems studied in optimal control
+    and highlight the similarities to reinforcement learning problems.
+    Most introductory RL textbooks omit this material.
+-   The field of RL is very new and moves at a very fast pace.
+    As such, there are new methods that have been developed since the writing of many of the existing textbooks,
+    and new ideas that deserve to be emphasized.
+
+As such, we hope that this textbook serves a useful role
+in introducing students to RL in both theory and practice.
+We used the textbook in the Fall 2024 iteration of the course;
+students found it to be a helpful reference.
+This draft has been much improved from their feedback.
+:::
 

@@ -101,7 +101,7 @@ The rest of this chapter will consider ways
 to _explicitly_ explore unknown states.
 
 
-### Reward shaping
+### Reward shaping {#sec-reward-shaping}
 
 One workaround to sparse reward problems in practice
 is to _shape_ the reward function using domain knowledge.
@@ -124,8 +124,15 @@ However, the algorithm found that it could achieve higher reward
 by refusing to go around the racetrack
 and instead collecting bonus points in a loop!
 
-![An RL agent collects bonus points instead of participating in the race. Image from @clark_faulty_2024.](./shared/faulty-reward-functions.jpg.webp)
+![An RL agent collects bonus points instead of participating in the race. Image from @clark_faulty_2024.](shared/reward-hacking.jpg)
 
+This phenomenon is known as **reward hacking** or **Goodhart's law**.
+Reward hacking is essentially a special case of "finding loopholes" around the written guidelines
+(or in this case, the reward signal used for training);
+think of folk stories such as King Midas or the Monkey's Paw.
+When RL algorithms are deployed in high-stakes scenarios,
+it is crucial to verify the learned policy's behaviour
+and ensure that it is aligned to the designer's intentions.
 
 
 
@@ -145,11 +152,11 @@ one must plan out a path from the initial state.
 
 We can do this by constructing an MDP where only unseen state-action pairs are rewarded,
 and using value iteration/dynamic programming (@sec-finite-opt-dp)
-to reach the unknown states in $M_\mathcal{D}$.
+to reach the unknown states in $M_{\mathcal{D}}$.
 Concretely,
 we keep a set $\mathcal{D}$ of all the $(s, a, r, s')$ tuples we've observed.
 Each episode,
-we use $\mathcal{D}$ to construct a fully known MDP, $M_\mathcal{D}$,
+we use $\mathcal{D}$ to construct a fully known MDP, $M_{\mathcal{D}}$,
 in which only unseen state-action pairs are rewarded.
 
 :::: {#def-explore-then-exploit}
@@ -159,9 +166,9 @@ Suppose that every state can be reached from the initial state within a single e
 
 1. $\mathcal{D} \gets \emptyset$
 2.  For $T = 0, 1, 2, \dots$ (until the entire MDP has been explored):
-    1. Construct $M_\mathcal{D}$ using $\mathcal{D}$. That is, the state transitions are set to those observed in $\mathcal{D}$, and the reward is set to $0$ for all state-action pairs in $\mathcal{D}$, and $1$ otherwise.
-    2. Execute DP (@sec-finite-opt-dp) on the known MDP $M_\mathcal{D}$ to compute the optimal policy $\pi^\star_{\mathcal{D}}$.
-    3. Execute $\pi^\star_{\mathcal{D}}$ in $M_\mathcal{D}$. This will visit some $(s, a)$ not yet in $\mathcal{D}$,
+    1. Construct $M_{\mathcal{D}}$ using $\mathcal{D}$. That is, the state transitions are set to those observed in $\mathcal{D}$, and the reward is set to $0$ for all state-action pairs in $\mathcal{D}$, and $1$ otherwise.
+    2. Execute DP (@sec-finite-opt-dp) on the known MDP $M_{\mathcal{D}}$ to compute the optimal policy $\pi^\star_{\mathcal{D}}$.
+    3. Execute $\pi^\star_{\mathcal{D}}$ in $M_{\mathcal{D}}$. This will visit some $(s, a)$ not yet in $\mathcal{D}$,
         and observe the reward $r(s, a)$ and next state $P(s, a)$.
     4. $\mathcal{D} \gets \mathcal{D} \cup \{ (s, a, r, s') \}$, where $s' = P(s, a), r = r(s, a)$ are the observed state transition and reward.
 ::::
@@ -170,7 +177,7 @@ Suppose that every state can be reached from the initial state within a single e
 #### Path planning is graph traversal
 
 Review the dynamic programming algorithm for a finite-horizon MDP (@sec-finite-opt-dp).
-Note that in the constructed MDP $M_\mathcal{D}$,
+Note that in the constructed MDP $M_{\mathcal{D}}$,
 this is identical to a **breadth-first search**
 beginning from the desired state at the final timestep:
 each state-timestep pair is a node in the graph,
@@ -228,7 +235,7 @@ adding one new transition per episode.
 
 Let $M$ denote the original MDP that we aim to solve.
 We know it will take at most $|\mathcal{S}| |\mathcal{A}|$ iterations to explore the entire MDP,
-after which $M_\mathcal{D} = M$ and $\pi^\star_{\mathcal{D}}$ is the optimal policy in $M$,
+after which $M_{\mathcal{D}} = M$ and $\pi^\star_{\mathcal{D}}$ is the optimal policy in $M$,
 incurring no additional regret.
 For each "shortest-path" policy $\pi^\star_{\mathcal{D}}$ up until then,
 its value will differ from that of $\pi^\star$ by at most $\Step$,
@@ -644,7 +651,11 @@ Sparse reward problems are frequent throughout reinforcement learning.
 The chain MDP example is from @thrun_efficient_1992.
 One of the most famous sparse reward problems is **Montezuma's Revenge**,
 one of the tasks in the popular **arcade learning environment** (ALE) benchmark of Atari 2600 games [@bellemare_arcade_2013, @machado_revisiting_2018].
-These were first solved by algorithms that explicitly encourage exploration [@burda_exploration_2018].
+These were first solved by algorithms that explicitly encourage exploration [@bellemare_unifying_2016, @burda_exploration_2018].
+
+The issue of **reward hacking** is one of many possible concerns relating to AI safety.
+We refer the reader to @amodei_concrete_2016 for an overview of such risks.
+Reward hacking has been empirically demonstrated in large language model training [@gao_scaling_2023].
 
 The UCBVI algorithm was first presented in @azar_minimax_2017.
 UCBVI extends the UCB algorithm from multi-armed bandits
@@ -661,18 +672,34 @@ It is also possible to encourage model-free algorithms to strategically explore.
 @badia_agent57_2020 designed a Q-learning algorithm with exploration incentives
 that surpassed the human baseline on the challenging Atari tasks.
 
-We refer the reader to @ladosz_exploration_2022 for a recent survey of exploration in RL.
+**Intrinsic motivation** is another family of approaches to strategic exploration.
+In some sense, intrinsic motivation approaches are to RL as self-supervised approaches are to unsupervised learning:
+typically, we add some _intrinsic reward_ to the objective function
+that encourages the policy to explore.
+See @schmidhuber_formal_2010 and @aubret_survey_2019 for a recent survey on this family of methods.
+
+We refer the reader to the survey article @ladosz_exploration_2022 for further reading on exploration in RL.
 
 
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 The first example in this chapter,
 that of the "chain MDP",
 serves to disillusion students from the excitement of the previous chapters:
 though the methods we discussed up to now are quite sophisticated,
 they fail to solve such a simple problem!
+This is a crucial example to highlight that RL is not a magical one-size-fits-all tool
+and takes significant careful design to solve real problems.
 
-
+The section on reward shaping (@sec-reward-shaping) was not covered in the course.
+I believe it is important to mention,
+both as a useful and common technique in practice,
+but also as a chance to refer to the issues associated with naively applying RL to real problems.
+We also spend more time explicitly spelling out the treatment
+of MDPs as MABs;
+this was initially confusing to some students,
+since we stated earlier that MABs are a special case of MDPs,
+and now we seek to generalize MAB methods to MDPs.
 :::
