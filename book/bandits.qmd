@@ -960,22 +960,22 @@ $N^\arm_\ep$,
 is a random variable.
 
 Hoeffding's inequality (@thm-hoeffding) tells us that,
-for $N$ i.i.d. samples $\tilde r_0, \dots, \tilde r_{N-1}$ from arm $\arm$,
+for $N$ i.i.d. samples $\widetilde r_0, \dots, \widetilde r_{N-1}$ from arm $\arm$,
 
 $$
-| \tilde \mu^\arm_N - \mu^\arm | \le \sqrt{
+| \widetilde \mu^\arm_N - \mu^\arm | \le \sqrt{
     \frac{\ln( 2 / \delta )}{2 N}
 }
 $$ {#eq-hoeffding-ucb}
 
 with probability at least $1 - \delta$,
-where $\tilde \mu^\arm_N = \frac{1}{N} \sum_{n=0}^{N-1} \tilde r_n$.
+where $\widetilde \mu^\arm_N = \frac{1}{N} \sum_{n=0}^{N-1} \widetilde r_n$.
 The union bound then tells us that with probability at least $1 - \delta'$,
 for all $N = 1, \dots, \ep$,
 
 $$
 \forall N = 1, \dots, \ep :
-| \tilde \mu^\arm_N - \mu^\arm | \le \sqrt{
+| \widetilde \mu^\arm_N - \mu^\arm | \le \sqrt{
     \frac{\ln( 2 \ep / \delta' )}{2 N}
 }.
 $$ {#eq-ucb-union}
@@ -985,13 +985,13 @@ Since $N^\arm_\ep \in \{ 1, \dots, \ep \}$
 @eq-ucb-union implies that
 
 $$
-| \tilde \mu^\arm_{N^\arm_\ep} - \mu^\arm | \le \sqrt{
+| \widetilde \mu^\arm_{N^\arm_\ep} - \mu^\arm | \le \sqrt{
     \frac{\ln( 2 \ep / \delta' )}{N}
 }
 $$ {#eq-ucb-specific-arm}
 
 with probability at least $1 - \delta'$ as well.
-But notice that $\tilde \mu^\arm_{N^\arm_\ep}$ is identically distributed to $\hat \mu^\arm_\ep$:
+But notice that $\widetilde \mu^\arm_{N^\arm_\ep}$ is identically distributed to $\hat \mu^\arm_\ep$:
 both refer to the sample mean of the first $N^\arm_\ep$ pulls from arm $\arm$.
 This gives the bound in @thm-ucb-ci (after relabelling $\delta' \mapsto \delta$).
 :::

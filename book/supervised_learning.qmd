@@ -628,9 +628,9 @@ allows us to use the chain rule to compute the gradient of the output with respe
 
 ## Key takeaways
 
-We have now gotten a glimpse into **supervised learning**,
-which seeks to learn about some input-output relationship
-using a dataset of example points.
+**Supervised learning** is a field of machine learning
+that seeks to approximate some unknown function
+given a dataset of example input-output pairs from that function.
 In particular, we typically seek to compute a **prediction rule**
 that takes in an input value and returns a good guess for the corresponding output.
 We score prediction rules using a **loss function**
@@ -644,6 +644,10 @@ linear regression and neural networks.
 
 ## Bibliographic notes and further reading {#sec-sl-bib}
 
+Supervised learning is the largest subfield of machine learning;
+we do not attempt to comprehensively survey recent progress here.
+Rather, here are some textbooks for interested students to read further.
+
 @james_introduction_2023 provides an accessible introduction to supervised learning.
 @hastie_elements_2013 examines the subject in even further depth
 and covers many relevant supervised learning methods.
@@ -656,23 +660,22 @@ from before the "deep learning era".
 ## Differences from course
 
 In how much detail should we explain supervised learning?
-Our goal in this course is to make it accessible to students who have not previously taken a supervised learning course
+Our goal with this chapter
+is to make this course accessible to students
+who have not previously taken a supervised learning course
 or would like to review the fundamental concepts.
 For our case,
 the key ideas are _empirical risk minimization_ and the notion of a "loss function" or "risk function",
 which we use later in the the chapter on policy gradient methods (@sec-pg).
-
 We also aim to convey some of the basic intuition around statistical learning,
 including the bias-variance tradeoff and overfitting.
 
-
-
-In the supervised learning chapter,
+Compared to the course,
 I provide a bit more detailed of an example of a supervised learning task
 (image classification of handwritten digits).
-
 I add an example illustrating parameterized function classes.
 Students without prior experience in machine learning might not be familiar with the concept of parameters.
 They are often introduced in terms of "knobs that you can turn to improve the model",
 but this doesn't really accurately describe them at all.
 :::
+

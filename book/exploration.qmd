@@ -606,7 +606,7 @@ In this chapter, we've explored how to explore in an unknown MDP.
 - Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCBVI algorithm @sec-lin-ucbvi, which has a sample complexity independent of the size of the state and action spaces.
 
 
-## Bibliographic notes and further reading
+## Bibliographic notes and further reading {#sec-exploration-bib}
 
 
 
