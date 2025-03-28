@@ -31,7 +31,7 @@ Often, the agent must take a specific sequence of actions
 before any reward is observed.
 
 :::: {#exm-sparse-reward-mdp}
-#### Strip MDP
+#### Chain MDP
 
 Here's a simple example of an MDP with sparse rewards:
 
@@ -92,13 +92,41 @@ which can exceed human-level performance on a wide variety of tasks,
 fail on this problem that seems almost trivial.
 
 Of course,
-a simple way to solve the "strip MDP" in @exm-sparse-reward-mdp
+a simple way to solve the "chain MDP" in @exm-sparse-reward-mdp
 is to actively visit unseen states.
 For a policy that visits a new state in each rollout,
 the final cell can be reached in $O(|\mathcal{S}|)$ rollouts
 (i.e. $O(|\mathcal{S}|^2)$ time).
 The rest of this chapter will consider ways
-to _explicitly_ explore unknown environments.
+to _explicitly_ explore unknown states.
+
+
+### Reward shaping
+
+One workaround to sparse reward problems in practice
+is to _shape_ the reward function using domain knowledge.
+For example, in @exm-sparse-reward-mdp,
+we (that is, the practitioners)
+know that travelling to the right is the correct action,
+so we could design a reward function that provides a reward of $0.1$
+for the action that moves to the right.
+A similar strategy is used in practice for many chess or board game algorithms
+where capturing the opponent's pieces earns some positive reward.
+
+Though this might seem obvious,
+designing a useful reward function can be challenging in practice.
+The agent may learn to exploit the intermediate rewards
+rather than solve the original goal.
+A famous example is the agent trained to play the CoastRunners game,
+in which players race boats around a racetrack.
+However, the algorithm found that it could achieve higher reward
+(i.e. in-game score)
+by refusing to go around the racetrack
+and instead collecting bonus points in a loop!
+
+![An RL agent collects bonus points instead of participating in the race. Image from @clark_faulty_2024.](./shared/faulty-reward-functions.jpg.webp)
+
+
 
 
 ## Exploration in deterministic MDPs {#sec-explore-det-mdp}
@@ -608,6 +636,9 @@ In this chapter, we've explored how to explore in an unknown MDP.
 
 ## Bibliographic notes and further reading {#sec-exploration-bib}
 
+The UCBVI algorithm was first presented in @azar_minimax_2017.
+
+We refer the reader to @ladosz_exploration_2022 for a recent survey of exploration in RL.
 
 
 
@@ -615,7 +646,7 @@ In this chapter, we've explored how to explore in an unknown MDP.
 ## Differences from course
 
 The first example in this chapter,
-that of the "strip MDP",
+that of the "chain MDP",
 serves to disillusion students from the excitement of the previous chapters:
 though the methods we discussed up to now are quite sophisticated,
 they fail to solve such a simple problem!
