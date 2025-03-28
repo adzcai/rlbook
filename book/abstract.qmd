@@ -15,7 +15,7 @@ Our contribution to the RL literature
 is an approachable and concise presentation of core RL algorithms
 that balances practical considerations with theoretical rigour.
 Each chapter includes extensive bibliographic notes that survey recent advances.
-We hope this textbook will equip readers
+We hope this textbook will equip the reader
 with a workable mental model
 for navigating modern RL research.
 
