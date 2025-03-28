@@ -58,11 +58,11 @@ This is called **behaviour cloning**.
 2. Use a supervised learning algorithm $\texttt{fit} : \mathcal{D} \mapsto \widetilde{\pi}$ to extract a policy $\widetilde{\pi}$ that approximates the expert policy.
 :::
 
-Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in @sec-sl-parameterized:
+Typically, this second task can be framed as **empirical risk minimization** (which we previously saw in @sec-sl-parameterized):
 
 $$
 \widetilde{\pi} = \arg\min_{\pi \in \Pi} \sum_{n=0}^{N-1} \text{loss}(\pi(s^n), a^n)
-$$
+$$ {#eq-erm-bc}
 
 where $\Pi$ is some class of possible policies, $\text{loss}$ is the loss function to measure how different the policy's prediction is from the true observed action,
 and the supervised learning algorithm itself, also known as the **fitting method**, tells us how to compute this $\arg\min$.
@@ -78,15 +78,17 @@ as if the state-action pairs are independent:
 
 $$
 \pr_\pi(\mathcal{D}) = \prod_{n=1}^{N} \pi(a_n \mid s_n)
-$$
+$$ {#eq-erm-likelihood}
 
-Note that the states and actions are _not_, however, actually independent! A key property of interactive tasks is that the agent's output -- the action that it takes -- may influence its next observation.
+Note that the states and actions are _not_, however, actually independent!
+A key property of interactive tasks is that the agent's output
+-- the action that it takes -- may influence its next observation.
 We want to find a policy under which the training dataset $\mathcal{D}$ is the most likely.
 This is called the **maximum likelihood estimate** of the policy that generated the dataset:
 
 $$
 \widetilde{\pi} = \arg\max_{\pi \in \Pi} \pr_{\pi}(\mathcal{D})
-$$
+$$ {#eq-mle-bc}
 
 This is also equivalent to doing empirical risk minimization with the **negative log likelihood** as the loss function:
 
@@ -95,33 +97,34 @@ $$
 \widetilde{\pi} &= \arg\min_{\pi \in \Pi} - \log \pr_\pi(\mathcal{D}) \\
 &= \arg\min_{\pi \in \Pi} \sum_{n=1}^N - \log \pi(a_n \mid s_n)
 \end{aligned}
-$$
-
-### Performance of behaviour cloning
+$$ {#eq-erm-nll-bc}
 
 Can we quantify how well this algorithm works?
 For simplicity, let's consider the case where the action space is _finite_ and both the expert policy and learned policy are deterministic.
+
+::: {#thm-bc-performance}
+#### Performance of behaviour cloning
+
 Suppose the learned policy obtains $\varepsilon$ _classification error_.
 That is, for trajectories drawn from the expert policy,
 the learned policy chooses a different action at most $\varepsilon$ of the time:
 
 $$
 \mathbb{E}_{\tau \sim \rho^{\pi_{\text{expert}}}} \left[ \frac 1 \Step \sum_{\step=0}^{\Step-1} \ind{ \widetilde{\pi}(s_\step) \ne \pi_{\text{expert}} (s_\step) } \right] \le \varepsilon
-$$
+$$ {#eq-classification-error}
 
 Then, their value functions differ by
 
 $$
-| V^{\pi_{\text{expert}}} - V^{\widetilde{\pi}} | \le H^2 \varepsilon
+| V^{\pi_{\text{expert}}} - V^{\widetilde{\pi}} | \le \Step^2 \varepsilon
 $$
 
-where $H$ is the horizon.
+where $\Step$ is the horizon of the problem.
+:::
 
-::: {thm-bc-performance}
-#### Performance of behaviour cloning
-
-Recall the Performance Difference Lemma (@thm-pdl)
-allows us to express the difference between $\pi-{\text{expert}}$ and $\widetilde{\pi}$ as
+::: {.proof}
+Recall the Performance Difference Lemma (@thm-pdl).
+The Performance Difference Lemma allows us to express the difference between $\pi-{\text{expert}}$ and $\widetilde{\pi}$ as
 
 $$
 V_0^{\pi_{\text{expert}}}(s) - V_0^{\widetilde{\pi}} (s) = \E_{\tau \sim \rho^{\pi_{\text{expert}}} \mid s_0 = s} \left[ \sum_{\step=0}^{\Step-1} A_\step^{\widetilde{\pi}} (s_\step, a_\step) \right].
@@ -134,7 +137,7 @@ the advantage of the chosen action is exactly zero:
 
 $$
 A^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) = Q^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) - V^{\pi_{\text{expert}}}(s) = 0.
-$$
+$$ {#eq-bc-adv-zero}
 
 But the right-hand-side of @eq-pdl-rhs uses $A^{\widetilde{\pi}}$, not $A^{\pi-{\text{expert}}}$.
 To bridge this gap,
@@ -278,6 +281,17 @@ simultaneously learns the reward function
 and the optimal policy,
 leading to improved performance.
 
+We can infer a reward function from other expert data besides demonstrations.
+Expert demonstrations provide a lot of signal
+but can be prohibitively expensive to collect for some tasks.
+It is often easier to _recognize_ a good solution than to _generate_ one.
+This leads to the related approach of **reinforcement learning from human feedback** (RLHF).
+Instead of inferring a reward function from expert demonstrations,
+we instead infer a reward function from a dataset of expert _rankings_
+of trajectories.
+This is the dominant approach used in RL finetuning of large language models [@ziegler_fine-tuning_2020, @ouyang_training_2022].
+We recommend @lambert_reinforcement_2024 for a comprehensive treatment of RLHF.
+
 @piot_bridging_2017 unifies imitation learning and IRL
 in the **set-policy** framework.
 @gleave_imitation_2022 is a library of modular implementations of imitation learning algorithms in PyTorch.
@@ -286,11 +300,12 @@ of imitation learning.
 
 
 ::: {.content-visible when-profile="thesis"}
-## Differences from course
+## Contributions
 
 Our course only provides a brief introduction to imitation learning;
 I didn't make major additions to the main material.
 The bibliographic notes highlight some recent developments
-and present inverse reinforcement learning as an alternative approach
+and present inverse reinforcement learning
+and reinforcement learning from human feedback as alternative approaches
 for learning behaviour without a given reward function.
 :::

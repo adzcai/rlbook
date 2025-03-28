@@ -1724,6 +1724,14 @@
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/#Exploration (2017) - Tang et al.pdf}
 }
 
+@book{lambert_reinforcement_2024,
+  title = {Reinforcement Learning from Human Feedback},
+  author = {Lambert, Nathan},
+  date = {2024},
+  publisher = {Online},
+  url = {https://rlhfbook.com}
+}
+
 @book{berry_bandit_1985,
   title = {Bandit Problems},
   author = {Berry, Donald A. and Fristedt, Bert},
@@ -1865,6 +1873,21 @@
   eventtitle = {Proceedings of the 28th {{IEEE Conference}} on {{Decision}} and {{Control}},},
   keywords = {Biological neural networks,Computer architecture,Control systems,Control theory,Educational institutions,Hardware,Neural engineering,Neural networks,Optical computing,System identification},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1989/Neural networks for control and system identification (1989) - Werbos.pdf;/Users/adzcai/Zotero/storage/AQB9V93Y/70114.html}
+}
+
+@inproceedings{hessel_rainbow_2018,
+  title = {Rainbow: Combining Improvements in Deep Reinforcement Learning},
+  shorttitle = {Rainbow},
+  booktitle = {Proceedings of the {{Thirty-Second AAAI Conference}} on {{Artificial Intelligence}} and {{Thirtieth Innovative Applications}} of {{Artificial Intelligence Conference}} and {{Eighth AAAI Symposium}} on {{Educational Advances}} in {{Artificial Intelligence}}},
+  author = {Hessel, Matteo and Modayil, Joseph and family=Hasselt, given=Hado, prefix=van, useprefix=true and Schaul, Tom and Ostrovski, Georg and Dabney, Will and Horgan, Dan and Piot, Bilal and Azar, Mohammad and Silver, David},
+  date = {2018-02-02},
+  series = {{{AAAI}}'18/{{IAAI}}'18/{{EAAI}}'18},
+  pages = {3215--3222},
+  publisher = {AAAI Press},
+  location = {New Orleans, Louisiana, USA},
+  abstract = {The deep reinforcement learning community has made several independent improvements to the DQN algorithm. However, it is unclear which of these extensions are complementary and can be fruitfully combined. This paper examines six extensions to the DQN algorithm and empirically studies their combination. Our experiments show that the combination provides state-of-the-art performance on the Atari 2600 benchmark, both in terms of data efficiency and final performance. We also provide results from a detailed ablation study that shows the contribution of each component to overall performance.},
+  isbn = {978-1-57735-800-8},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Rainbow (2018) - Hessel et al_1.pdf}
 }
 
 @article{mnih_human-level_2015,
@@ -2608,7 +2631,7 @@
 }
 
 @incollection{meyer_possibility_1991,
-  title = {A {{Possibility}} for {{Implementing Curiosity}} and {{Boredom}} in {{Model-Building Neural Controllers}}},
+  title = {A Possibility for Implementing Curiosity and Boredom in Model-Building Neural Controllers},
   booktitle = {From {{Animals}} to {{Animats}}: {{Proceedings}} of the {{First International Conference}} on {{Simulation}} of {{Adaptive Behavior}}},
   author = {Meyer, Jean-Arcady and Wilson, Stewart W.},
   date = {1991},
@@ -2633,4 +2656,95 @@
   eventtitle = {International {{Conference}} on {{Learning Representations}}},
   langid = {english},
   file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Exploration by random network distillation (2018) - Burda, Edwards, Storkey, Klimov.pdf}
+}
+
+@inproceedings{bellemare_unifying_2016,
+  title = {Unifying Count-Based Exploration and Intrinsic Motivation},
+  booktitle = {Proceedings of the 30th {{International Conference}} on {{Neural Information Processing Systems}}},
+  author = {Bellemare, Marc G. and Srinivasan, Sriram and Ostrovski, Georg and Schaul, Tom and Saxton, David and Munos, Rémi},
+  date = {2016-12-05},
+  series = {{{NIPS}}'16},
+  pages = {1479--1487},
+  publisher = {Curran Associates Inc.},
+  location = {Red Hook, NY, USA},
+  abstract = {We consider an agent's uncertainty about its environment and the problem of generalizing this uncertainty across states. Specifically, we focus on the problem of exploration in non-tabular reinforcement learning. Drawing inspiration from the intrinsic motivation literature, we use density models to measure uncertainty, and propose a novel algorithm for deriving a pseudo-count from an arbitrary density model. This technique enables us to generalize count-based exploration algorithms to the non-tabular case. We apply our ideas to Atari 2600 games, providing sensible pseudo-counts from raw pixels. We transform these pseudo-counts into exploration bonuses and obtain significantly improved exploration in a number of hard games, including the infamously difficult MONTEZUMA'S REVENGE.},
+  isbn = {978-1-5108-3881-9},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Unifying count-based exploration and intrinsic motivation (2016) - Bellemare et al.pdf}
+}
+
+@inproceedings{gao_scaling_2023,
+  title = {Scaling Laws for Reward Model Overoptimization},
+  booktitle = {Proceedings of the 40th {{International Conference}} on {{Machine Learning}}},
+  author = {Gao, Leo and Schulman, John and Hilton, Jacob},
+  date = {2023-07-23},
+  series = {{{ICML}}'23},
+  volume = {202},
+  pages = {10835--10866},
+  publisher = {JMLR.org},
+  location = {Honolulu, Hawaii, USA},
+  abstract = {In reinforcement learning from human feedback, it is common to optimize against a reward model trained to predict human preferences. Because the reward model is an imperfect proxy, optimizing its value too much can hinder ground truth performance, in accordance with Goodhart's law. This effect has been frequently observed, but not carefully measured due to the expense of collecting human preference data. In this work, we use a synthetic setup in which a fixed "gold-standard" reward model plays the role of humans, providing labels used to train a proxy reward model. We study how the gold reward model score changes as we optimize against the proxy reward model using either reinforcement learning or best-of-n sampling. We find that this relationship follows a different functional form depending on the method of optimization, and that in both cases its coefficients scale smoothly with the number of reward model parameters. We also study the effect on this relationship of the size of the reward model dataset, the number of reward model and policy parameters, and the coefficient of the KL penalty added to the reward in the reinforcement learning setup. We explore the implications of these empirical results for theoretical considerations in AI alignment.}
+}
+
+@online{aubret_survey_2019,
+  title = {A Survey on Intrinsic Motivation in Reinforcement Learning},
+  author = {Aubret, Arthur and Matignon, Laetitia and Hassas, Salima},
+  date = {2019-11-19},
+  eprint = {1908.06976},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  doi = {10.48550/arXiv.1908.06976},
+  url = {http://arxiv.org/abs/1908.06976},
+  urldate = {2025-03-28},
+  abstract = {The reinforcement learning (RL) research area is very active, with an important number of new contributions; especially considering the emergent field of deep RL (DRL). However a number of scientific and technical challenges still need to be addressed, amongst which we can mention the ability to abstract actions or the difficulty to explore the environment which can be addressed by intrinsic motivation (IM). In this article, we provide a survey on the role of intrinsic motivation in DRL. We categorize the different kinds of intrinsic motivations and detail for each category, its advantages and limitations with respect to the mentioned challenges. Additionnally, we conduct an in-depth investigation of substantial current research questions, that are currently under study or not addressed at all in the considered research area of DRL. We choose to survey these research works, from the perspective of learning how to achieve tasks. We suggest then, that solving current challenges could lead to a larger developmental architecture which may tackle most of the tasks. We describe this developmental architecture on the basis of several building blocks composed of a RL algorithm and an IM module compressing information.},
+  pubstate = {prepublished},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2019/A survey on intrinsic motivation in reinforcement learning (2019) - Aubret, Matignon, Hassas.pdf;/Users/adzcai/Zotero/storage/MJGEULCL/1908.html}
+}
+
+@article{schmidhuber_formal_2010,
+  title = {Formal Theory of Creativity, Fun, and Intrinsic Motivation (1990–2010)},
+  author = {Schmidhuber, Jürgen},
+  date = {2010-09},
+  journaltitle = {IEEE Transactions on Autonomous Mental Development},
+  volume = {2},
+  number = {3},
+  pages = {230--247},
+  issn = {1943-0612},
+  doi = {10.1109/TAMD.2010.2056368},
+  url = {https://ieeexplore.ieee.org/document/5508364},
+  urldate = {2025-03-28},
+  abstract = {The simple, but general formal theory of fun and intrinsic motivation and creativity (1990-2010) is based on the concept of maximizing intrinsic reward for the active creation or discovery of novel, surprising patterns allowing for improved prediction or data compression. It generalizes the traditional field of active learning, and is related to old, but less formal ideas in aesthetics theory and developmental psychology. It has been argued that the theory explains many essential aspects of intelligence including autonomous development, science, art, music, and humor. This overview first describes theoretically optimal (but not necessarily practical) ways of implementing the basic computational principles on exploratory, intrinsically motivated agents or robots, encouraging them to provoke event sequences exhibiting previously unknown, but learnable algorithmic regularities. Emphasis is put on the importance of limited computational resources for online prediction and compression. Discrete and continuous time formulations are given. Previous practical, but nonoptimal implementations (1991, 1995, and 1997-2002) are reviewed, as well as several recent variants by others (2005-2010). A simplified typology addresses current confusion concerning the precise nature of intrinsic motivation.},
+  eventtitle = {{{IEEE Transactions}} on {{Autonomous Mental Development}}},
+  keywords = {Active learning,aesthetics theory,art,Art,attention,Computational intelligence,Data compression,developmental psychology,Eyes,Feedback,Fingers,formal theory of creativity,fun,humor,Intelligent robots,limited computational resources,music,novel patterns,novelty,Pediatrics,Predictive models,Psychology,science,surprise,typology of intrinsic motivation},
+  file = {/Users/adzcai/Zotero/storage/P43FPJ9B/5508364.html}
+}
+
+@online{ziegler_fine-tuning_2020,
+  title = {Fine-{{Tuning Language Models}} from {{Human Preferences}}},
+  author = {Ziegler, Daniel M. and Stiennon, Nisan and Wu, Jeffrey and Brown, Tom B. and Radford, Alec and Amodei, Dario and Christiano, Paul and Irving, Geoffrey},
+  date = {2020-01-08},
+  eprint = {1909.08593},
+  eprinttype = {arXiv},
+  eprintclass = {cs},
+  doi = {10.48550/arXiv.1909.08593},
+  url = {http://arxiv.org/abs/1909.08593},
+  urldate = {2025-03-28},
+  abstract = {Reward learning enables the application of reinforcement learning (RL) to tasks where reward is defined by human judgment, building a model of reward by asking humans questions. Most work on reward learning has used simulated environments, but complex information about values is often expressed in natural language, and we believe reward learning for language is a key to making RL practical and safe for real-world tasks. In this paper, we build on advances in generative pretraining of language models to apply reward learning to four natural language tasks: continuing text with positive sentiment or physically descriptive language, and summarization tasks on the TL;DR and CNN/Daily Mail datasets. For stylistic continuation we achieve good results with only 5,000 comparisons evaluated by humans. For summarization, models trained with 60,000 comparisons copy whole sentences from the input but skip irrelevant preamble; this leads to reasonable ROUGE scores and very good performance according to our human labelers, but may be exploiting the fact that labelers rely on simple heuristics.},
+  pubstate = {prepublished},
+  keywords = {Computer Science - Computation and Language,Computer Science - Machine Learning,Statistics - Machine Learning},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2020/Fine-Tuning Language Models from Human Preferences (2020) - Ziegler et al.pdf;/Users/adzcai/Zotero/storage/SVGVH9JZ/1909.html}
+}
+
+@inproceedings{ouyang_training_2022,
+  title = {Training Language Models to Follow Instructions with Human Feedback},
+  booktitle = {Proceedings of the 36th {{International Conference}} on {{Neural Information Processing Systems}}},
+  author = {Ouyang, Long and Wu, Jeff and Jiang, Xu and Almeida, Diogo and Wainwright, Carroll L. and Mishkin, Pamela and Zhang, Chong and Agarwal, Sandhini and Slama, Katarina and Ray, Alex and Schulman, John and Hilton, Jacob and Kelton, Fraser and Miller, Luke and Simens, Maddie and Askell, Amanda and Welinder, Peter and Christiano, Paul and Leike, Jan and Lowe, Ryan},
+  date = {2022-11-28},
+  series = {{{NIPS}} '22},
+  pages = {27730--27744},
+  publisher = {Curran Associates Inc.},
+  location = {Red Hook, NY, USA},
+  abstract = {Making language models bigger does not inherently make them better at following a user's intent. For example, large language models can generate outputs that are untruthful, toxic, or simply not helpful to the user. In other words, these models are not aligned with their users. In this paper, we show an avenue for aligning language models with user intent on a wide range of tasks by fine-tuning with human feedback. Starting with a set of labeler-written prompts and prompts submitted through a language model API, we collect a dataset of labeler demonstrations of the desired model behavior, which we use to fine-tune GPT-3 using supervised learning. We then collect a dataset of rankings of model outputs, which we use to further fine-tune this supervised model using reinforcement learning from human feedback. We call the resulting models InstructGPT. In human evaluations on our prompt distribution, outputs from the 1.3B parameter InstructGPT model are preferred to outputs from the 175B GPT-3, despite having 100x fewer parameters. Moreover, InstructGPT models show improvements in truthfulness and reductions in toxic output generation while having minimal performance regressions on public NLP datasets. Even though InstructGPT still makes simple mistakes, our results show that fine-tuning with human feedback is a promising direction for aligning language models with human intent.},
+  isbn = {978-1-7138-7108-8},
+  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Training language models to follow instructions with human feedback (2022) - Ouyang et al.pdf}
 }
