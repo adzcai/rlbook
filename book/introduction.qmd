@@ -96,6 +96,7 @@ means that the results of RL experiments can be challenging to reproduce.
 Even when averaging across multiple random seeds,
 the same algorithm can achieve drastically different-seeming results [@agarwal_deep_2021].
 
+::: {.content-hidden when-profile="thesis"}
 ## Programming {#sec-programming}
 
 Why include code in a textbook?
@@ -120,6 +121,7 @@ It uses the [JAX](https://jax.readthedocs.io/en/latest/index.html) library for n
 JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem,
 sustained in large part by the Google DeepMind research group and a large body of open-source contributors.
 We use the standard [Gymnasium](https://gymnasium.farama.org/) library for interfacing with RL environments.
+:::
 
 ## Bibliographic notes and further reading {#sec-intro-bib}
 

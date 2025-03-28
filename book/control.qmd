@@ -596,6 +596,7 @@ which involves a significant amount of linear algebra,
 to @sec-proof-lqr.
 
 ```{mermaid}
+%%| fig-width: 6
 %%| label: fig-lqr-dp-optimal-finite
 %%| fig-cap: Illustrating a dynamic programming algorithm for computing the optimal policy
 %%|          in an LQR environment.
@@ -1029,8 +1030,7 @@ accurate in a *local* region around the point of linearization, so the
 performance of our LQR controller will degrade as we move further away.
 We'll see how to address this in the next section using the **iterative LQR** algorithm.
 
-![Local linearization might only be accurate in a small region around the
-point of linearization](shared/log_taylor.png)
+![Local linearization might only be accurate in a small region around the point of linearization.](shared/log_taylor.png){width="3in"}
 
 ### Iterative LQR {#sec-iterative-lqr}
 
@@ -1054,11 +1054,12 @@ For each iteration of the algorithm:
 :::
 
 ```{mermaid}
+%%| fig-width: 6
 %%| label: fig-ilqr
 %%| fig-cap: iLQR can be phrased in the style of policy iteration (@sec-pi). It alternates between computing a locally linear model around the current policy's trajectories and computing the optimal policy that solves the linear model.
 graph LR
-    Approx["Locally approximate a linear model of the environment"] --["$$f, c$$"]--> Opt
-    Opt["Solve for the optimal policy in the model"] --["$$\pi^\star$$"]--> Approx
+    Approx["Locally approximate a linear model of the environment"] -- "$$f, c$$" --> Opt
+    Opt["Solve for the optimal policy in the model"] -- "$$\pi^\star$$" --> Approx
 ```
 
 Now let's go through the details of each step. We'll use superscripts to
@@ -1191,12 +1192,12 @@ the first recorded control device (i.e. our notion of a policy,
 put into practice)
 is thought to be a water clock from the third century BCE
 that kept time by controlling the amount of water
-flowing out of a vessel [@mayr_populations_1970, @keviczky_control_2019].
+flowing out of a vessel [@mayr_populations_1970; @keviczky_control_2019].
 
 Watt's 1788 centrifugal governor
 for controlling the pace of a steam engine
 was one of the greatest inventions in control at the time.
-We refer the reader to [@macfarlane_development_1979, @bellman_adaptive_1961].
+We refer the reader to [@macfarlane_development_1979; @bellman_adaptive_1961]
 for more on the history of control systems.
 
 The first attempt to formalize control theory as a field is attributed to @maxwell_governors_1867.
@@ -1207,7 +1208,7 @@ The work of @lyapunov_general_1892 has been widely influential in this field;
 his seminal work did not appear in English until @ljapunov_general_1992.
 
 A number of excellent textbooks have been published
-on optimal control [@bellman_dynamic_1957, @athans_optimal_1966, @berkovitz_optimal_1974, @lewis_optimal_2012].
+on optimal control [@bellman_dynamic_1957; @athans_optimal_1966; @berkovitz_optimal_1974; @lewis_optimal_2012].
 We refer interested readers to these for further reading,
 particularly about the continuous-time case.
 

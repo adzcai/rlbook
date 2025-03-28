@@ -4,7 +4,7 @@ project:
 book:
   title: "An Introduction to Reinforcement Learning"
   author: "Alexander Cai"
-  date: "2025-01-03"
+  date: "2025-03-28"
   favicon: shared/184.png
   search: true
   open-graph: true
@@ -14,9 +14,9 @@ book:
   sharing: [twitter, facebook]
   site-url: https://rlbook.adzc.ai
   chapters:
-    - abstract.qmd
-    - acknowledgements.qmd
     - index.qmd
+    - acknowledgements.qmd
+    - preface.qmd
     - notation.qmd
     - introduction.qmd
     - mdps.qmd

@@ -122,7 +122,7 @@ $$
 0 & \hat y = y \\
 1 & \hat y \ne y
 \end{cases}
-$$
+$$ {#eq-zero-one}
 
 to measure the accuracy of the prediction rule.
 That is,
@@ -138,7 +138,7 @@ we typically use the **squared difference** as the loss function:
 
 $$
 \ell(\hat y, y) = (\hat y - y)^2
-$$
+$$ {#eq-square}
 
 The square loss is nice to work with analytically
 since its derivative with respect to $\hat y$ is simply $2 (\hat y - y)$.
@@ -151,6 +151,7 @@ scaling the loss by some constant scalar has no practical effect.)
 #| label: fig-squared-loss
 #| fig-cap: Square loss.
 #| fig-align: center
+#| fig-width: 3
 x = np.linspace(-1, 1, 20)
 y = x ** 2
 plt.plot(x, y)
@@ -200,7 +201,7 @@ the optimal prediction rule is the **conditional expectation**:
 
 $$
 \arg\min_{f} \E[(y - f(x))^2] = (x \mapsto \E[y \mid x])
-$$
+$$ {#eq-opt-cond}
 :::
 
 ::: {.proof}
@@ -212,7 +213,7 @@ $$
 &= \E[ (y - \E[y \mid x])^2 ] + \E[ (\E[y \mid x] - f(x))^2 ] \\
 &\quad {} + 2 \E[ (y - \E[y \mid x])(\E[y \mid x] - f(x)) ] \\
 \end{aligned}
-$$
+$$ {#eq-decompose-mse}
 
 We leave it as an exercise to show that the last term is zero.
 (Hint: use the law of iterated expectations.)

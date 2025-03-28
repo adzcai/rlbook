@@ -1,117 +1,21 @@
-# Preface {.unnumbered}
+# Abstract {.unnumbered}
 
-Welcome to the study of reinforcement learning!
-This textbook accompanies the undergraduate course [CS 1840/STAT 184](http://lucasjanson.fas.harvard.edu/courses/CS_Stat_184_0.html) taught at Harvard.
-It is intended to be an approachable yet rigorous introduction to this active subfield of machine learning.
-
-
-## Prerequisites
-
-This book assumes the same prerequisites as the course:
-You should be familiar with multivariable calculus, linear algebra, and probability.
-For Harvard undergraduates, this is fulfilled by Math 21a, Math 21b, and Stat 110, or their equivalents.
-Stat 111 is strongly recommended but not required.
-Specifically, we will assume that you know the following topics. The _italicized terms_ have brief re-introductions in the text:
-
--   **Linear Algebra:** Vectors and matrices, matrix multiplication, matrix
-    inversion, eigenvalues and eigenvectors.
--   **Multivariable Calculus:** Partial derivatives, the chain rule, Taylor series, _gradients, directional derivatives, Lagrange multipliers._
--   **Probability:** Random variables, probability distributions,
-    expectation and variance, the law of iterated expectations (Adam's rule), covariance,
-    conditional probability, Bayes's rule, and the law of total probability.
-
-You should also be familiar with basic programming concepts
-such as variables, functions, loops, etc.
-Pseudocode listings will be provided for certain algorithms.
-
-
-## Course overview
-
-The course will progress through the following units:
-
-@sec-intro presents motivation for the RL problem and compares RL to other fields of machine learning.
-
-@sec-mdps introduces **Markov Decision Processes,**
-the core mathematical framework for describing a large class of interactive environments.
-
-@sec-control is a standalone chapter on the **linear quadratic regulator** (LQR),
-an important tool for *continuous control*,
-in which the state and action spaces are no longer _finite_ but rather _continuous_.
-This has widespread applications in robotics.
-
-@sec-bandits introduces the **multi-armed bandit** (MAB) model for _stateless_ sequential decision-making tasks.
-In exploring a number of algorithms,
-we will see how each of them strikes a different balance between _exploring_ new options and _exploiting_ known options.
-This **exploration-exploitation tradeoff** is a core consideration in RL algorithm design.
-
-@sec-sl is a standalone crash course on some tools from supervised learning that we will use in later chapters.
-
-@sec-fit introduces **fitted dynamic programming** (fitted DP) algorithms for solving MDPs.
-These algorithms use supervised learning to approximately evaluate policies when they cannot be evaluated exactly.
-
-@sec-pg explores an important class of algorithms based on iteratively improving a policy.
-We will also encounter the use of _deep neural networks_
-to express nonlinear policies and approximate nonlinear functions with many inputs and outputs.
-
-@sec-imitation-learning attempts to learn a good policy from expert demonstrations.
-At its most basic, this is an application of supervised learning to RL tasks.
-
-@sec-planning looks at ways to _explicitly_ plan ahead when the environment's dynamics are known.
-We will study the _Monte Carlo Tree Search_ heuristic,
-which has been used to great success in the famous AlphaGo algorithm and its successors.
-
-@sec-exploration continues to investigate the exploration-exploitation tradeoff.
-We will extend ideas from multi-armed bandits to the MDP setting.
-
-@sec-background contains an overview of selected background mathematical content and programming content.
-
-
-
-
-::: {.content-visible when-profile="thesis"}
-## Contributions
-
-At the end of each chapter,
-I have included a section in the first-person
-detailing my contributions beyond what was presented in the course material.
-The planning and the design of the course is due to Professor Lucas Janson
-and Professor Sham Kakade,
-who taught the first iteration of the course in Fall 2022.
-
-I agree with most of the high-level course design,
-and so my core novel contributions in this thesis
-have been putting time into the low-level details
-required to compile the material into a textbook
-rather than a set of scribe notes.
-These contributions include:
-
--   Adding discussion of relevant material that was not covered in class
-    but would aid student understanding or curiosity;
--   Inserting illustrations, including tables and figures,
-    that summarize and demonstrate the key ideas;
--   Compiling references to the sources for the material
-    and to recent related work.
-
-But there are already many high-quality textbooks in the literature;
-a list is compiled in @sec-intro-bib.
-Why write a new one?
-
--   Many existing textbooks provide descriptions of algorithms,
-    but no theoretical guarantees of their performance.
-    We believe that an understanding of _why_ certain algorithms outperform others
-    is crucial for interpreting, debugging, and designing algorithm behaviours in practice.
--   We include a unit on optimal control and the linear quadratic regulator
-    to introduce students to the types of problems studied in optimal control
-    and highlight the similarities to reinforcement learning problems.
-    Most introductory RL textbooks omit this material.
--   The field of RL is very new and moves at a very fast pace.
-    As such, there are new methods that have been developed since the writing of many of the existing textbooks,
-    and new ideas that deserve to be emphasized.
-
-As such, we hope that this textbook serves a useful role
-in introducing students to RL in both theory and practice.
-We used the textbook in the Fall 2024 iteration of the course;
-students found it to be a helpful reference.
-This draft has been much improved from their feedback.
-:::
+This thesis presents a new course textbook on reinforcement learning (RL)
+with a focus on algorithms and their properties.
+The textbook is suitable for a one-semester introductory undergraduate course on RL
+for students with prior experience in basic probability, linear algebra, and multivariable calculus.
+We systematically cover the fundamentals of Markov decision processes,
+optimal control,
+multi-armed bandits,
+fitted dynamic programming algorithms,
+policy gradient methods,
+imitation learning,
+and tree search-based planning methods.
+Our contribution to the RL literature
+is an approachable and concise presentation of core RL algorithms
+that balances practical considerations with theoretical rigour.
+Each chapter includes extensive bibliographic notes that survey recent advances.
+We hope this textbook will equip the reader
+with a workable mental model
+for navigating modern RL research.
 

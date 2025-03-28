@@ -262,7 +262,7 @@ def minimax_search(s, player) -> tuple["Action", "Value"]:
 latex(minimax_search, id_to_latex={"env.step": "P", "env.action_space": r"\mathcal{A}"})
 ```
 
-::: {#exm-min-max layout-ncol="3"}
+::: {#exm-min-max}
 #### Min-max search for a simple game
 
 Consider a simple game with just two steps: Max chooses one of three possible actions (A, B, C),
@@ -746,12 +746,12 @@ when discussing MDPs (@sec-mdps).
 
 In this chapter,
 we explored tree search-based algorithms for deterministic, zero sum, fully observable two-player games.
-We began with @sec-min-max-search,
+We began with min-max search (@sec-min-max-search),
 an algorithm for exactly solving the game value of every possible state.
 However, this is impossible to execute in practice,
 and so we must resort to various ways to reduce the number of states and actions that we must explore.
-@sec-alpha-beta-search does this by _pruning_ away states that we already know to be suboptimal,
-and @sec-mcts _approximates_ the value of states instead of evaluating them exactly.
+Alpha-beta search (@sec-alpha-beta-search) does this by _pruning_ away states that we already know to be suboptimal,
+and MCTS (@sec-mcts) _approximates_ the value of states instead of evaluating them exactly.
 
 
 ## Bibliographic notes and further reading {#sec-planning-bib}

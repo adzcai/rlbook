@@ -258,7 +258,7 @@ def f(x, y):
 X, Y = jnp.mgrid[0:1:40j, 0:1:40j]
 Z = f(X, Y)
 
-fig, ax = plt.subplots(figsize=(6, 4))
+fig, ax = plt.subplots(figsize=(4, 3))
 contourf = ax.contourf(X, Y, Z, levels=20, alpha=0.6)
 fig.colorbar(contourf, ax=ax)
 
@@ -1458,14 +1458,14 @@ Can we constrain the distance between the resulting distributions more *explicit
 
 This brings us to the following local policy optimization methods:
 
-1.  **trust region policy optimization** (TRPO) [@schulman_trust_2015],
+1.  **trust region policy optimization** (TRPO),
     which explicitly constrains the difference between the distributions
     before and after each step;
-2.  the **natural policy gradient** (NPG) [@kakade_natural_2001],
+2.  the **natural policy gradient** (NPG),
     a first-order approximation of TRPO;
-3.  **proximal policy optimization** (PPO-penalty) [@schulman_proximal_2017],
+3.  **proximal policy optimization** (PPO-penalty),
     a "soft relaxation" of TRPO;
-4.  the **clipped surrogate objective** (PPO-clip) [@schulman_proximal_2017],
+4.  the **clipped surrogate objective** (PPO-clip),
     a version of PPO that is popular in practice.
 
 ::: {#rem-ppo-ordering}
@@ -1571,7 +1571,7 @@ init_params = [0.0, 0.0]  # mu=0, log_sigma=0 -> sigma=1
 res_min_PQ = minimize(kl_objective_PQ, x0=init_params, args=(x_grid, Q_vals), method='L-BFGS-B')
 res_min_QP = minimize(kl_objective_QP, x0=init_params, args=(x_grid, Q_vals), method='L-BFGS-B')
 
-plt.figure(figsize=(6, 4))
+plt.figure(figsize=(4, 2))
 plt.plot(x_grid, Q_vals, '-', label="q")
 plt.plot(x_grid, single_gaussian_pdf(x_grid, res_min_QP.x), '--', label=r"$\arg\min_q \text{KL}(p \parallel q)$")
 plt.plot(x_grid, single_gaussian_pdf(x_grid, res_min_PQ.x), '--', label=r"$\arg\min_p \text{KL}(p \parallel q)$")
@@ -1923,15 +1923,15 @@ $$ {#eq-natural-reward-objective}
 We can think of the space of such distributions as the line between $(0, 1)$ to $(1, 0)$ on the Cartesian plane:
 
 ```{python}
-#| fig-cap: A line from (0, 1) to (1, 0)
+#| fig-cap: The space of Bernoulli distributions.
 #| fig-align: center
 
 x = jnp.linspace(0, 1, 50)
 y = 1 - x
+plt.figure(figsize=(3, 2))
 plt.plot(x, y)
 plt.xlabel(r"$\pi(0)$")
 plt.ylabel(r"$\pi(1)$")
-plt.title("Space of Bernoulli distributions")
 plt.show()
 ```
 
@@ -2289,7 +2289,7 @@ especially because they efficiently integrate with *deep neural networks* for re
 Policy gradient methods,
 including REINFORCE [@williams_simple_1992],
 were some of the earliest reinforcement learning methods
-[@witten_adaptive_1977, @barto_neuronlike_1983, @sutton_temporal_1984].
+[@witten_adaptive_1977; @barto_neuronlike_1983; @sutton_temporal_1984].
 
 @kakade_approximately_2002 introduced the performance difference lemma,
 which was used to prove theoretical guarantees in several later works.
@@ -2301,19 +2301,19 @@ and @sutton_policy_1999.
 The natural gradient was suggested by @amari_natural_1998 for general optimization problems
 and then applied to the policy gradient by @kakade_natural_2001.
 The **Natural Actor-Critic** algorithm combines actor-critic learning
-with the natural policy gradient estimator [@peters_natural_2005, @peters_natural_2008, @bhatnagar_natural_2009].
+with the natural policy gradient estimator [@peters_natural_2005; @peters_natural_2008; @bhatnagar_natural_2009].
 
 Natural gradient descent is effective
 because it accounts for the _geometry_ induced by the parameterization
 and thereby optimizes over the _distributions_ themselves.
 Another optimization algorithm that accounts for parameter-space geometry
-is **mirror descent** [@nemirovskij_problem_1983, @beck_mirror_2003].
+is **mirror descent** [@nemirovskij_problem_1983; @beck_mirror_2003].
 At each optimization step,
 this maps the parameter vector to a _dual space_
 defined to capture the desired geometry.
 It then takes a gradient descent step on the dual parameters
 and maps the result back to an updated "primal" parameter vector.
-One can also apply mirror descent to policy gradient algorithms [@mahadevan_sparse_2012, @mahadevan_basis_2013].
+One can also apply mirror descent to policy gradient algorithms [@mahadevan_sparse_2012; @mahadevan_basis_2013].
 
 A key reason for the popularity of policy gradient methods
 is that they are easily _parallelizable_ across multiple computing threads.
@@ -2336,6 +2336,7 @@ which seeks to scale NPG up to deep learning models
 where naively approximating the Fisher information matrix
 is impractical.
 It does so using the Kronecker-factored approximation proposed in @martens_optimizing_2015.
+@shao_deepseekmath_2024 introduce a variant of PPO known as **Group Relative Policy Optimization**\index{group relative policy optimization} (GRPO).
 
 Policy gradient methods, being on-policy algorithms,
 inherently have worse sample efficiency than off-policy algorithms,
@@ -2353,12 +2354,6 @@ since we seek to maximize the policy entropy
 alongside the expected total reward.
 This encourages policies that "act more randomly",
 which aids exploration.
-The maximum energy principle
-
-
-
-@shao_deepseekmath_2024 introduce a variant of PPO known as **Group Relative Policy Optimization**\index{group relative policy optimization} (GRPO).
-
 
 
 
@@ -2384,5 +2379,6 @@ remains the same.
 
 In constructing the bibliographic notes (@sec-pg-bib),
 I referred to the references in @achiam_spinning_2018
-and the citations in @sutton_reinforcement_2018 [ch. 13].
+and the citations in @sutton_reinforcement_2018 [ch. 13],
+including recent developments such as GRPO.
 :::

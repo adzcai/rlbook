@@ -296,7 +296,7 @@ Also note that we care about the _total_ regret across all decisions,
 rather than just the final decision.
 If we only cared about the quality of the final decision,
 the best strategy would be to learn as much as possible about the environment,
-and then use that knowledge to make the best possible decision at the last step [@bubeck_pure_2011].
+and then use that knowledge to make the best possible decision at the last step.
 This is a **pure exploration** problem
 since the agent is never penalized
 for taking suboptimal actions up to the final decision.
@@ -355,9 +355,9 @@ However, these two algorithms could achieve the exact same expected total regret
 Other performance measures include
 **probably approximately correct** (PAC) bounds
 and **uniform** high-probability regret bounds.
-For a stronger guarantee,
-@dann_unifying_2017 introduced the **Uniform-PAC** bound.
-We won't discuss these in detail here.
+There is also a **Uniform-PAC** bound.
+We won't discuss these in detail here;
+see the bibliographic notes for more details.
 :::
 
 We'd like to achieve **sublinear regret** in expectation:
@@ -393,7 +393,7 @@ between exploration and exploitation.
 
 ```{python}
 def plot_strategy(mab: MAB, agent: Agent):
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(4, 2))
 
     # plot reward and cumulative regret
     plt.plot(np.arange(mab.T), np.cumsum(agent.rewards), label="reward")
@@ -1641,9 +1641,7 @@ and provides a clear exposition of the bandit problem
 in the form presented in this chapter.
 @berry_bandit_1985 is a comprehensive treatment of bandit problems from a statistical perspective.
 
-
-
-
+:::: {.content-visible unless-profile="thesis"}
 ::: {#rem-etymology-lin-ucb}
 #### Disambiguation of LinUCB
 
@@ -1653,7 +1651,7 @@ This algorithm was also considered in @auer_using_2002,
 the paper that introduced UCB,
 under the name "Associative Reinforcement Learning with Linear Value Functions".
 :::
-
+::::
 
 ::: {.content-visible when-profile="thesis"}
 ## Contributions

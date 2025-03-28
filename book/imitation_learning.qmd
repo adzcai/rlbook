@@ -256,7 +256,7 @@ The performance guarantee is stated as @ross_reduction_2010 [thm. 3.4].
 Another approach is to infer the reward function
 from the expert trajectories.
 This is known as the **inverse reinforcement learning**\index{inverse reinforcement learning} (IRL) problem
-[@russell_learning_1998, @ng_algorithms_2000, @abbeel_apprenticeship_2004].
+[@russell_learning_1998; @ng_algorithms_2000; @abbeel_apprenticeship_2004].
 The typical RL problem is going from a reward function to an optimal policy,
 so the inverse problem is going from an optimal policy to the underlying reward function.
 One can then use typical RL techniques
@@ -267,12 +267,12 @@ since any policy is optimal for infinitely many possible reward functions.
 This means that the researcher must come up with a useful "regularization" assumption
 to select which of the possible reward functions is the most plausible.
 Three common modelling assumptions are
-**maximum-margin IRL** [@ng_algorithms_2000, @ratliff_maximum_2006],
+**maximum-margin IRL** [@ng_algorithms_2000; @ratliff_maximum_2006],
 **Bayesian IRL** [@ramachandran_bayesian_2007],
-and **maximum-entropy IRL** [@ziebart_maximum_2008, @ziebart_modeling_2010].
+and **maximum-entropy IRL** [@ziebart_maximum_2008; @ziebart_modeling_2010].
 
 Another framework for learning behaviour from expert demonstrations
-is **generative adversarial imitation learning** [@ho_generative_2016, @orsini_what_2021],
+is **generative adversarial imitation learning** [@ho_generative_2016; @orsini_what_2021],
 inspired by generative adversarial networks (GANs) [@goodfellow_generative_2020].
 Rather than first learning a reward function from expert data
 and then optimizing the policy in a separate phase,
@@ -289,7 +289,7 @@ This leads to the related approach of **reinforcement learning from human feedba
 Instead of inferring a reward function from expert demonstrations,
 we instead infer a reward function from a dataset of expert _rankings_
 of trajectories.
-This is the dominant approach used in RL finetuning of large language models [@ziegler_fine-tuning_2020, @ouyang_training_2022].
+This is the dominant approach used in RL finetuning of large language models [@ziegler_fine-tuning_2020; @ouyang_training_2022].
 We recommend @lambert_reinforcement_2024 for a comprehensive treatment of RLHF.
 
 @piot_bridging_2017 unifies imitation learning and IRL

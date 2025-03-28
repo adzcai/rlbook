@@ -650,8 +650,8 @@ that have a simple underlying structure.
 Sparse reward problems are frequent throughout reinforcement learning.
 The chain MDP example is from @thrun_efficient_1992.
 One of the most famous sparse reward problems is **Montezuma's Revenge**,
-one of the tasks in the popular **arcade learning environment** (ALE) benchmark of Atari 2600 games [@bellemare_arcade_2013, @machado_revisiting_2018].
-These were first solved by algorithms that explicitly encourage exploration [@bellemare_unifying_2016, @burda_exploration_2018].
+one of the tasks in the popular **arcade learning environment** (ALE) benchmark of Atari 2600 games [@bellemare_arcade_2013; @machado_revisiting_2018].
+These were first solved by algorithms that explicitly encourage exploration [@bellemare_unifying_2016; @burda_exploration_2018].
 
 The issue of **reward hacking** is one of many possible concerns relating to AI safety.
 We refer the reader to @amodei_concrete_2016 for an overview of such risks.

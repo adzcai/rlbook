@@ -255,6 +255,7 @@ Now we can use empirical risk minimization
 to find a function $q^I$ that approximates the optimal Q-function.
 
 ```{mermaid}
+%%| fig-width: 6
 %%| label: fig-fit-pe
 %%| fig-cap: Fitted policy evaluation.
 
@@ -282,6 +283,7 @@ q \gets \arg\min_{q} \frac{1}{N \Step} \sum_{n=1}^N \sum_{\step=1}^{\Step-2} (y^
 $$ {#eq-fit-evaluation}
 :::
 
+::: {.content-visible unless-profile="thesis"}
 ```{python}
 def fitted_evaluation(
     trajectories: list[Trajectory],
@@ -303,6 +305,7 @@ def fitted_evaluation(
 
 latex(fitted_evaluation)
 ```
+:::
 
 Fitted policy evaluation is offline
 since the "interaction phase" and the "learning phase" are disjoint.
@@ -607,6 +610,7 @@ In other words,
 fitted value iteration is an _off-policy_ algorithm.
 
 ```{mermaid}
+%%| fig-width: 6
 %%| label: fig-fit-vi
 %%| fig-cap: Fitted policy evaluation.
 
@@ -648,15 +652,11 @@ $$ {#eq-fit-vi}
 #| fig-cap: Pseudocode for fitted value iteration.
 
 def fitted_q_iteration(
-    trajectories: list[Trajectory],
-    fit: FittingMethod,
-    epochs: int,
-    Q_init: Optional[QFunction] = None,
+    trajectories,
+    fit,
+    epochs,
+    Q_init,
 ) -> QFunction:
-    """
-    Run fitted Q-function iteration using the given dataset.
-    Returns an estimate of the optimal Q-function.
-    """
     Q_hat = Q_init or Q_zero(get_num_actions(trajectories))
     X = get_X(trajectories)
     for _ in range(epochs):
@@ -690,6 +690,7 @@ into an _online_ algorithm
 known as **Q-learning.**
 
 ```{mermaid}
+%%| fig-width: 6
 %%| label: fig-fit-q-viz
 %%| fig-cap: Fitted value iteration
 graph LR
@@ -699,6 +700,7 @@ graph LR
 ```
 
 ```{mermaid}
+%%| fig-width: 6
 %%| label: fig-q-learning-viz
 %%| fig-cap: Q learning
 graph LR
