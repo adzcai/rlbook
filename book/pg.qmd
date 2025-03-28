@@ -1783,8 +1783,15 @@ when working with parameterized distributions.
 It has many possible interpretations.
 The first expression in @eq-fisher-matrix shows that it is the covariance matrix of the gradient-log-probability
 (also known as the **score**),
-and the second expression shows that it is the expected Hessian matrix of the negative-log-likelihood.
-See @sec-hessians for more details.
+and the second expression shows that it is the expected Hessian matrix of the negative-log-likelihood of the underlying distribution.
+It can also be shown that it is precisely the Hessian of the KL divergence (with respect to either one of the parameters).
+
+Recall that the Hessian of a function describes its _curvature_.
+Concretely, suppose we have some parameter vector $\theta \in \R^D$
+and we seek to measure how much $p_\theta$ changes
+if we shift $\theta$ by $\delta \in \R^D$.
+The quantity $\delta^\top F_\theta \delta$ describes how rapidly the negative log-likelihood changes if we move by $\delta$.
+(The zeroth and first order terms are both zero in our case due to properties of the KL divergence.)
 :::
 
 Putting this together results in the following update rule:

@@ -35,9 +35,9 @@ before any reward is observed.
 
 Here's a simple example of an MDP with sparse rewards:
 
-![image](shared/sparse_reward_mdp.png)
+![An illustration of the chain MDP environment.](shared/sparse_reward_mdp.png)
 
-There are $|\mathcal{S}|$ cells arranged in a strip.
+There are $|\mathcal{S}|$ cells arranged in a chain.
 The agent starts in the leftmost cell.
 The rightmost state is a terminal state.
 In every state, there are three possible actions,
@@ -388,7 +388,7 @@ and $r_\step$ is applied to $s_\step, a_\step$.
 
 
 ::: {#def-ucbvi}
-#### UCBVI [@azar_minimax_2017]
+#### UCBVI
 
 At a high level, the UCBVI algorithm can be described as follows:
 For $i = 0, \dots, I-1$:
@@ -403,7 +403,7 @@ $$
 
 4.  **Execution:** Use $\widehat \pi$ to collect a new trajectory.
 
-We detail each of these steps below. The full pseudocode follows in @fig-alg-ucbvi.
+We detail each of these steps below.
 :::
 
 
@@ -470,7 +470,7 @@ since $\widehat{V}_\step^t(s)$ depends on the bonus $b_\step^t(s, a)$ implicitly
 We claim that the bonus term that gives the proper bound is
 
 $$
-b_\step^t(s, a) = 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_\step^t(s, a)}}.
+b_\step^\iter(s, a) = 2 \Step \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|\Step \Iter/\delta )}{N_\step^t(s, a)}}.
 $$ {#eq-ucbvi-bonus}
 
 We provide a heuristic sketch of the proof in @sec-ucbvi-proof; see @agarwal_reinforcement_2022, Section 7.3 for a full proof.
@@ -497,12 +497,17 @@ It turns out that UCBVI achieves a regret of
 ::: {#thm-ucbvi-regret}
 #### UCBVI regret
 
+The expected regret of UCBVI satisfies
+
 $$
-\E \left[ \sum_{\ep = 0}^{\Ep - 1} \left(V^\star_0(s_0) - V^{\pi^\ep}_0(s_0) \right) \right] = \widetilde{O}(H^2 \sqrt{|\mathcal{S}| |\mathcal{A}| T})
+\E \left[
+    \sum_{\ep = 0}^{\Ep - 1} \left(V^\star_0(s_0) - V^{\pi^\ep}_0(s_0) \right)
+\right] =
+\widetilde{O}(\Step^2 \sqrt{|\mathcal{S}| |\mathcal{A}| \Iter})
 $$
 :::
 
-Comparing this to the UCB regret bound $\widetilde{O}(\sqrt{T K})$, where $K$ is the number of arms of the MAB, we see that we've reduced the number of effective arms from $|\mathcal{A}|^{|\mathcal{S}|\Step}$ (in @eq-mdp-as-mab) to $H^4 |\mathcal{S}||\mathcal{A}|$, which is indeed polynomial in $|\mathcal{S}|$, $|\mathcal{A}|$, and $H$, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret:
+Comparing this to the UCB regret bound $\widetilde{O}(\sqrt{T K})$, where $K$ is the number of arms of the MAB, we see that we've reduced the number of effective arms from $|\mathcal{A}|^{|\mathcal{S}|\Step}$ (in @eq-mdp-as-mab) to $H^4 |\mathcal{S}||\mathcal{A}|$, which is indeed polynomial in $|\mathcal{S}|$, $|\mathcal{A}|$, and $\Step$, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret:
 
 $$
 \frac{1}{T} \E[\text{Regret}_\Ep] = \widetilde{O}\left(\sqrt{\frac{H^4 |\mathcal{S}||\mathcal{A}|}{T}}\right)
@@ -510,16 +515,6 @@ $$
 
 Note that the time-dependent transition matrix has $H |\mathcal{S}|^2 |\mathcal{A}|$ entries. Assuming $H \ll |\mathcal{S}|$, this shows that it's possible to achieve low regret, and achieve a near-optimal policy, while only understanding a $1/|\mathcal{S}|$ fraction of the world's dynamics.
 
-
-```{python}
-#| label: fig-alg-ucbvi
-#| fig-cap: Pseudocode for the UCBVI algorithm.
-
-def ucbvi():
-    ...
-
-latex(ucbvi)
-```
 
 ## Linear MDPs
 
@@ -609,7 +604,7 @@ $$
 
 Note that this isn't explicitly inversely proportional to $N_h^t(s, a)$ as in the original UCBVI bonus term @eq-ucbvi-bonus. Rather, it is inversely proportional to the amount that the direction $\phi(s, a)$ has been explored in the history. That is, if $A-h^t$ has a large component in the direction $\phi(s, a)$, implying that this direction is well explored, then the bonus term will be small, and vice versa.
 
-We can now plug in these transition estimates and reward bonuses into the UCBVI algorithm @fig-alg-ucbvi.
+We can now plug in these transition estimates and reward bonuses into the UCBVI algorithm @def-ucbvi.
 
 
 ::: {#thm-lin-ucbvi-regret}
@@ -626,17 +621,45 @@ Comparing this to our bound for UCBVI in an environment without this linear assu
 
 ## Key takeaways
 
-In this chapter, we've explored how to explore in an unknown MDP.
-
-- We first discussed the explore-then-exploit algorithm @def-explore-then-exploit, a simple way to explore a deterministic MDP by visiting all state-action pairs.
-- We then discussed how to treat an unknown MDP as a MAB @sec-mdp-mab, and how this approach is inefficient since it doesn't make use of relationships between policies.
-- We then introduced the UCBVI algorithm @fig-alg-ucbvi, which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration.
-- Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCBVI algorithm @sec-lin-ucbvi, which has a sample complexity independent of the size of the state and action spaces.
+We first discussed the explore-then-exploit algorithm (@def-explore-then-exploit),
+a simple way to explore a deterministic MDP by visiting all state-action pairs.
+This is essentially a graph traversal algorithm,
+where each state represents an edge of the graph.
+We then discussed how to treat an unknown MDP as a MAB (@sec-mdp-mab),
+and how this approach is inefficient since it doesn't make use of correlations between different policies.
+We then introduced the UCBVI algorithm (@def-ucbvi),
+the key algorithm of this chapter,
+which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration.
+Finally, assuming that the transitions and rewards are linear
+with respect to a feature transformation of the state and action,
+we introduced the LinUCBVI algorithm (@sec-lin-ucbvi),
+which has a sample complexity independent of the size of the state and action spaces.
+This makes it possible to scale up UCBVI to large problems
+that have a simple underlying structure.
 
 
 ## Bibliographic notes and further reading {#sec-exploration-bib}
 
+Sparse reward problems are frequent throughout reinforcement learning.
+The chain MDP example is from @thrun_efficient_1992.
+One of the most famous sparse reward problems is **Montezuma's Revenge**,
+one of the tasks in the popular **arcade learning environment** (ALE) benchmark of Atari 2600 games [@bellemare_arcade_2013, @machado_revisiting_2018].
+These were first solved by algorithms that explicitly encourage exploration [@burda_exploration_2018].
+
 The UCBVI algorithm was first presented in @azar_minimax_2017.
+UCBVI extends the UCB algorithm from multi-armed bandits
+to the MDP
+by estimating a model of the environment.
+Later work by @drago_refined_2025 improved the regret bound on UCBVI.
+Other model-based methods for strategic exploration
+have been studied at least since @schmidhuber_curious_1991 and @meyer_possibility_1991.
+UCBVI computes the reward bonus using the _count_ of the number of times
+that state-action pair has been visited.
+@tang_exploration_2017 surveys other such count-based exploration algorithms.
+
+It is also possible to encourage model-free algorithms to strategically explore.
+@badia_agent57_2020 designed a Q-learning algorithm with exploration incentives
+that surpassed the human baseline on the challenging Atari tasks.
 
 We refer the reader to @ladosz_exploration_2022 for a recent survey of exploration in RL.
 
@@ -650,7 +673,6 @@ that of the "chain MDP",
 serves to disillusion students from the excitement of the previous chapters:
 though the methods we discussed up to now are quite sophisticated,
 they fail to solve such a simple problem!
-
 
 
 :::

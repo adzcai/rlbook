@@ -750,25 +750,52 @@ We began with @sec-min-max-search,
 an algorithm for exactly solving the game value of every possible state.
 However, this is impossible to execute in practice,
 and so we must resort to various ways to reduce the number of states and actions that we must explore.
-@sec-alpha-beta-search does this by -pruning- away states that we already know to be suboptimal,
-and @sec-mcts -approximates- the value of states instead of evaluating them exactly.
+@sec-alpha-beta-search does this by _pruning_ away states that we already know to be suboptimal,
+and @sec-mcts _approximates_ the value of states instead of evaluating them exactly.
 
 
 ## Bibliographic notes and further reading {#sec-planning-bib}
 
-Chapter 5 of @russell_artificial_2021 provides an excellent overview of search methods in games.
+@russell_artificial_2021 [ch. 5] provides an excellent overview of search methods in games.
 The original AlphaGo paper @silver_mastering_2016 was a groundbreaking application of these technologies.
 @silver_mastering_2017 removed the imitation learning phase,
-learning from scratch.
-AlphaZero @silver_general_2018 then extended to other games beyond Go,
+learning the optimal policy from scratch using self-play.
+AlphaZero [@silver_general_2018] then extended to other games beyond Go,
 namely shogi and chess,
 also learning from scratch.
-In MuZero @schrittwieser_mastering_2020,
-this was further extended by learning a model of the game dynamics.
+In MuZero [@schrittwieser_mastering_2020],
+this was further extended by _learning_ a model of the game dynamics.
+EfficientZero [@ye_mastering_2021] presented a more sample-efficient algorithm
+based on MuZero.
+Gumbel MuZero [@daniheika_policy_2021] greatly improved the computational efficiency of MuZero
+by reducing the number of rollouts required.
+Stochastic MuZero [@antonoglou_planning_2021] extends MuZero to stochastic environments.
+
+While search methods are extremely powerful,
+they are also computationally intensive,
+and have therefore historically been written in lower-level languages such as C or C++
+rather than Python.
+The development of the JAX framework addresses this issue
+by providing a readable high-level Python library
+that compiles to code optimized for specific hardware.
+In particular, the Mctx library [@babuschkin_deepmind_2020]
+provides usable implementations of MuZero and its variants above.
 
 
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
 
+My main addition to the course material in this chapter is a new section on min-max search.
+In previous chapters,
+we discussed the "optimal" solution to a problem
+and then presented other methods as ways to approximate this optimal solution;
+for instance,
+we discussed computing the optimal policy in a finite MDP by planning
+and later introduced fitted DP methods as an approximation.
+I took a similar approach in this chapter,
+first presenting min-max search as an intractable algorithm for computing the optimal solution,
+and then presenting alpha-beta search and MCTS as approximations.
 
+The bibliography mentions recent works in tree search-based planning methods,
+including later improvements to AlphaGo and MuZero.
 :::

@@ -66,5 +66,4 @@ We will extend ideas from multi-armed bandits to the MDP setting.
 
 
 
-## Contributions
 

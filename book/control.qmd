@@ -324,7 +324,6 @@ c(\st_\step, \act_\step) = \st_\step^\top Q \st_\step + \act_\step^\top R \act_\
 $$ {#eq-lqr-cost-quadratic}
 
 for all $\step \in [\Step]$.
-(See @sec-bg-linear-algebra if you're unfamiliar with symmetric positive definite matrices.)
 We use the same letter as the Q-function (@def-q-lqr);
 the context should make it clear which is intended.
 :::

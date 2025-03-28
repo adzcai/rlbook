@@ -310,7 +310,6 @@ $$
 so it suffices to bound the difference between the two inner expectations. There are two sources of error:
 
 1.  The value functions $\widehat{V}^t_{h+1}$ v.s. $V^\star_{h+1}$
-
 2.  The transition probabilities $\widehat{P}_\step^t$ v.s. $P^?_\step$.
 
 We can bound these individually, and then combine them by the triangle inequality. For the former, we can simply bound the difference by $H$, assuming that the rewards are within $[0, 1]$. Now, all that is left is to bound the error from the transition probabilities:

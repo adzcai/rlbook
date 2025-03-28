@@ -157,7 +157,7 @@ mab = MAB(means=np.array([0.1, 0.8, 0.4]), T=100)
 #### Connection between MAB and MDP settings
 
 A multi-armed bandit is a special case of a finite-horizon Markov decision process
-with a single state ($|\mathcal{S}| = 1$) and a horizon of $\hor = 1$.
+with a single state ($|\mathcal{S}| = 1$) and a horizon of $\Step = 1$.
 (Conceptually speaking, the environment is "stateless",
 but an MDP with "no states" doesn't make sense.)
 As such,
@@ -366,7 +366,7 @@ $$
 \E[\regret] = o(\Ep).
 $$ {#eq-sublinear-regret}
 
-(See @sec-o-notation if you're unfamiliar with big-oh notation.)
+(See @sec-bg-o-notation if you're unfamiliar with big-oh notation.)
 An algorithm with sublinear regret
 will eventually do as well as the oracle strategy
 as $\Ep \to \infty$.

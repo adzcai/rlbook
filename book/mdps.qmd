@@ -1258,7 +1258,6 @@ we would condition on the observed rewards as well.)
 :::
 
 We will now prove by induction that $\pi^{Q^\star}$ is optimal.
-(See @sec-induction if you're unfamiliar with inductive proofs.)
 Essentially,
 we begin at the _end_ of the trajectory,
 where the optimal action is simply the one that yields highest immediate reward.

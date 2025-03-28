@@ -14,7 +14,7 @@ Luckily, there are already people in the world who know how to drive who can get
 In almost every challenge we face,
 we "stand on the shoulders of giants" and learn skills from experts who have already mastered them.
 
-![A robot imitating the pose of a young child @danilyuk_robot_2021](./shared/robot-imitation-learning.jpg)
+![A robot imitating the pose of a young child. Image from @danilyuk_robot_2021.](./shared/robot-imitation-learning.jpg)
 
 In machine learning,
 we often try to teach machines to accomplish tasks
@@ -29,7 +29,7 @@ or difficult to specify a reward function
 that captures the desired behaviour.
 
 We'll see that the most naive form of imitation learning,
-called **behaviour cloning** (or "behaviour cloning"),
+called **behaviour cloning**,
 is really an application of supervised learning to interactive tasks.
 We'll then explore **dataset aggregation** (DAgger) as a way to query an expert and learn even more effectively.
 
@@ -212,11 +212,11 @@ How well does DAgger perform?
 
 Let $\pi_\text{expert}$ be the expert policy
 and $\pi_\text{DAgger}$ be the policy resulting from DAgger.
-In $\Iter = \widetilde O(\hor^2)$ iterations,
+In $\Iter = \widetilde O(\Step^2)$ iterations,
 with high probability,
 
 $$
-|V^{\pi_{\text{expert}}} - V^{\pi_{\text{DAgger}}}| \le \hor \varepsilon,
+|V^{\pi_{\text{expert}}} - V^{\pi_{\text{DAgger}}}| \le \Step \varepsilon,
 $$ {#eq-dagger-performance}
 
 where $\varepsilon$ is the "classification error" guaranteed by the supervised learning algorithm.
@@ -269,13 +269,18 @@ Three common modelling assumptions are
 and **maximum-entropy IRL** [@ziebart_maximum_2008, @ziebart_modeling_2010].
 
 Another framework for learning behaviour from expert demonstrations
-is **generative adversarial RL** [@ho_generative_2016, @orsini_what_2021],
+is **generative adversarial imitation learning** [@ho_generative_2016, @orsini_what_2021],
+inspired by generative adversarial networks (GANs) [@goodfellow_generative_2020].
+Rather than first learning a reward function from expert data
+and then optimizing the policy in a separate phase,
+generative adversarial imitation learning
+simultaneously learns the reward function
+and the optimal policy,
+leading to improved performance.
 
 @piot_bridging_2017 unifies imitation learning and IRL
 in the **set-policy** framework.
-
 @gleave_imitation_2022 is a library of modular implementations of imitation learning algorithms in PyTorch.
-
 We recommend @zare_survey_2024 for a more comprehensive survey
 of imitation learning.
 
@@ -283,7 +288,7 @@ of imitation learning.
 ::: {.content-visible when-profile="thesis"}
 ## Differences from course
 
-Our course only provides a brief discussion of imitation learning;
+Our course only provides a brief introduction to imitation learning;
 I didn't make major additions to the main material.
 The bibliographic notes highlight some recent developments
 and present inverse reinforcement learning as an alternative approach

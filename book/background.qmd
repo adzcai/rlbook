@@ -2,7 +2,7 @@
 
 # Background {#sec-background}
 
-## O notation {#sec-o-notation}
+## O notation {#sec-bg-o-notation}
 
 Throughout this chapter and the rest of the book, we will describe the
 asymptotic behaviour of a function using $O$ notation.
@@ -33,15 +33,6 @@ as shorthand to manipulate function classes. For example, we might write
 $O(f(t)) + O(g(t)) = O(f(t) + g(t))$ to mean that the sum of two
 functions in $O(f(t))$ and $O(g(t))$ is in $O(f(t) + g(t))$.
 
-
-## Inductive proofs {#sec-induction}
-
-
-
-
-## Linear algebra {#sec-bg-linear-algebra}
-
-
 ## Union bound {#sec-bg-union-bound}
 
 ::: {#thm-union-bound}
@@ -66,27 +57,9 @@ $$
 $$ {#eq-union-2}
 :::
 
-::: {#exr-union}
-#### Union bound for successes
-
-Prove the second statement above.
-:::
-
 In other words,
 if each event $A_n$ has a small probability $\delta$ of "failure",
 then to get the probability that there are _any_ failures out of all $N$ events,
 we multiply the failure probability by $N$.
 
-
-### Review of Hessians and interpretation of the Fisher information matrix {#sec-hessians}
-
-Recall that the Hessian of a function describes its _curvature_.
-Concretely, suppose we have some parameter vector $\theta \in \R^D$
-and we seek to measure how much $p_\theta$ changes
-if we shift $\theta$ by $\delta \in \R^D$.
-That is, we seek to measure
-
-
-the quantity $\delta^\top F_\theta \delta$ describes how rapidly the negative log-likelihood changes if we move by $\delta$.
-The Fisher information matrix is precisely the Hessian of the KL divergence (with respect to either one of the parameters).
 
