@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; Imitation Learning – CS 1840: Introduction to Reinforcement Learning</title>
+<title>8&nbsp; Imitation Learning – An Introduction to Reinforcement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -52,15 +52,18 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./planning.html" rel="next">
 <link href="./pg.html" rel="prev">
+<link href="./shared/184.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e39e07555a3cad66df478e90649eca5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -119,6 +122,10 @@ window.Quarto = {
 };
 </script>
 
+<meta property="og:title" content="8&nbsp; Imitation Learning – An Introduction to Reinforcement Learning">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://rlbook.adzc.ai/shared/robot-imitation-learning.jpg">
+<meta property="og:site_name" content="An Introduction to Reinforcement Learning">
 </head>
 
 <body class="nav-sidebar floating">
@@ -130,7 +137,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./imitation_learning.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./imitation_learning.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -145,7 +152,45 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">CS 1840: Introduction to Reinforcement Learning</a> 
+      <a href="./">An Introduction to Reinforcement Learning</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/adzcai/rlbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -158,67 +203,73 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mdps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./control.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./bandits.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./planning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -227,6 +278,29 @@ window.Quarto = {
  <span class="menu-text">References</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proofs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Proofs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -237,23 +311,21 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">7.1</span> Introduction</a></li>
-  <li><a href="#behavioral-cloning" id="toc-behavioral-cloning" class="nav-link" data-scroll-target="#behavioral-cloning"><span class="header-section-number">7.2</span> Behavioral cloning</a>
-  <ul class="collapse">
-  <li><a href="#performance-of-behavioral-cloning" id="toc-performance-of-behavioral-cloning" class="nav-link" data-scroll-target="#performance-of-behavioral-cloning"><span class="header-section-number">7.2.1</span> Performance of behavioral cloning</a></li>
-  </ul></li>
-  <li><a href="#distribution-shift" id="toc-distribution-shift" class="nav-link" data-scroll-target="#distribution-shift"><span class="header-section-number">7.3</span> Distribution shift</a></li>
-  <li><a href="#dataset-aggregation-dagger" id="toc-dataset-aggregation-dagger" class="nav-link" data-scroll-target="#dataset-aggregation-dagger"><span class="header-section-number">7.4</span> Dataset aggregation (DAgger)</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">7.5</span> Summary</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">8.1</span> Introduction</a></li>
+  <li><a href="#behaviour-cloning" id="toc-behaviour-cloning" class="nav-link" data-scroll-target="#behaviour-cloning"><span class="header-section-number">8.2</span> Behaviour cloning</a></li>
+  <li><a href="#distribution-shift" id="toc-distribution-shift" class="nav-link" data-scroll-target="#distribution-shift"><span class="header-section-number">8.3</span> Distribution shift</a></li>
+  <li><a href="#dataset-aggregation-dagger" id="toc-dataset-aggregation-dagger" class="nav-link" data-scroll-target="#dataset-aggregation-dagger"><span class="header-section-number">8.4</span> Dataset aggregation (DAgger)</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways"><span class="header-section-number">8.5</span> Key takeaways</a></li>
+  <li><a href="#sec-il-bib" id="toc-sec-il-bib" class="nav-link" data-scroll-target="#sec-il-bib"><span class="header-section-number">8.6</span> Bibliographic notes and further reading</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/imitation_learning.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/imitation_learning.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-imitation-learning" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></h1>
+<h1 class="title"><span id="sec-imitation-learning" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></h1>
 </div>
 
 
@@ -270,123 +342,181 @@ window.Quarto = {
 </header>
 
 
-<hr>
-<hr>
-<div class="hidden">
-
-</div>
-<section id="introduction" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">7.1</span> Introduction</h2>
+<section id="introduction" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">8.1</span> Introduction</h2>
 <p>Imagine you are tasked with learning how to drive. How do, or did, you go about it? At first, this task might seem insurmountable: there are a vast array of controls, and the cost of making a single mistake could be extremely high, making it hard to explore by trial and error. Luckily, there are already people in the world who know how to drive who can get you started. In almost every challenge we face, we “stand on the shoulders of giants” and learn skills from experts who have already mastered them.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./shared/robot-imitation-learning.jpg" class="img-fluid figure-img"></p>
-<figcaption>a robot imitating the pose of a young child (Photo by Pavel Danilyuk: https://www.pexels.com/photo/a-robot-imitating-a-girl-s-movement-8294811/)</figcaption>
+<figcaption>A robot imitating the pose of a young child. Image from <span class="citation" data-cites="danilyuk_robot_2021">Danilyuk (<a href="references.html#ref-danilyuk_robot_2021" role="doc-biblioref">2021</a>)</span>.</figcaption>
 </figure>
 </div>
-<p>Now in machine learning, we are often trying to teach machines to accomplish tasks that humans are already proficient at. In such cases, the machine learning algorithm is the one learning the new skill, and humans are the “experts” that can demonstrate how to perform the task. <strong>Imitation learning</strong> is an approach to reinforcement learning where we aim to learn a policy that performs at least as well as the expert. It is often used as a first step for complex tasks where it is impractical to learn from scratch.</p>
-<p>We’ll see that the most naive form of imitation learning, called <strong>behavioral cloning</strong> (or “behavior cloning”), is really an application of supervised learning to interactive tasks. We’ll then explore <strong>dataset aggregation</strong> (DAgger) as a way to query an expert and learn even more effectively.</p>
+<p>In machine learning, we often try to teach machines to accomplish tasks that humans are already proficient at. In such cases, the machine learning algorithm is the one learning the new skill, and humans are the “experts” that can demonstrate how to perform the task. <strong>Imitation learning</strong> is an approach to sequential decision-making where we aim to learn a policy that performs at least as well as the expert. It is often used as a first step for complex tasks where it is too challenging to learn from scratch or difficult to specify a reward function that captures the desired behaviour.</p>
+<p>We’ll see that the most naive form of imitation learning, called <strong>behaviour cloning</strong>, is really an application of supervised learning to interactive tasks. We’ll then explore <strong>dataset aggregation</strong> (DAgger) as a way to query an expert and learn even more effectively.</p>
 </section>
-<section id="behavioral-cloning" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="behavioral-cloning"><span class="header-section-number">7.2</span> Behavioral cloning</h2>
-<p>This notion of “learning from human-provided data” may remind you of the basic premise of <a href="supervised_learning.html" class="quarto-xref"><span>Chapter 4</span></a>. In supervised learning, there is some mapping from <em>inputs</em> to <em>outputs</em>, such as the task of assigning the correct label to an image, that humans can implicitly compute. To teach a machine to calculate this mapping, we first collect a large <em>training dataset</em> by getting people to label a lot of inputs, and then use some optimization algorithm to produce a predictor that maps from the inputs to the outputs as closely as possible.</p>
-<p>How does this relate to interactive tasks? Here, the input is the observation seen by the agent and the output is the action it selects, so the mapping is the agent’s <em>policy</em>. What’s stopping us from applying supervised learning techniques to mimic the expert’s policy? In principle, nothing! This is called <strong>behavioral cloning</strong>.</p>
-<div id="def-behavioral-cloning" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7.1 (Behavioral cloning)</strong></span> &nbsp;</p>
+<section id="behaviour-cloning" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="behaviour-cloning"><span class="header-section-number">8.2</span> Behaviour cloning</h2>
+<p>This notion of “learning from human-provided data” may remind you of the basic premise of <a href="supervised_learning.html" class="quarto-xref"><span>Chapter 5</span></a>. In supervised learning, there is some mapping from <em>inputs</em> to <em>outputs</em>, such as the task of assigning the correct label to an image, that humans can implicitly compute. To teach a machine to calculate this mapping, we first collect a large <em>training dataset</em> by getting people to label a lot of inputs, and then use some optimization algorithm to produce a predictor that maps from the inputs to the outputs as closely as possible.</p>
+<p>How does this relate to interactive tasks? Here, the input is the observation seen by the agent and the output is the action it selects, so the mapping is the agent’s <em>policy</em>. What’s stopping us from applying supervised learning techniques to mimic the expert’s policy? In principle, nothing! This is called <strong>behaviour cloning</strong>.</p>
+<div id="def-behaviour-cloning" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8.1 (Behaviour cloning)</strong></span> &nbsp;</p>
 <ol type="1">
 <li>Collect a training dataset of trajectories <span class="math inline">\(\mathcal{D} = (s^n, a^n)_{n=1}^{N}\)</span> generated by an <strong>expert policy</strong> <span class="math inline">\(\pi_\text{expert}\)</span>. (For example, if the dataset contains <span class="math inline">\(M\)</span> trajectories, each with a finite horizon <span class="math inline">\(H\)</span>, then <span class="math inline">\(N = M \times H\)</span>.)</li>
 <li>Use a supervised learning algorithm <span class="math inline">\(\texttt{fit} : \mathcal{D} \mapsto \widetilde{\pi}\)</span> to extract a policy <span class="math inline">\(\widetilde{\pi}\)</span> that approximates the expert policy.</li>
 </ol>
 </div>
-<p>Typically, this second task can be framed as <strong>empirical risk minimization</strong> (which we previously saw in <a href="supervised_learning.html#sec-sl-parameterized" class="quarto-xref"><span>Section 4.3.2</span></a>:</p>
-<p><span class="math display">\[
+<p>Typically, this second task can be framed as <strong>empirical risk minimization</strong> (which we previously saw in <a href="supervised_learning.html#sec-sl-parameterized" class="quarto-xref"><span>Section 5.3.2</span></a>):</p>
+<p><span id="eq-erm-bc"><span class="math display">\[
 \widetilde{\pi} = \arg\min_{\pi \in \Pi} \sum_{n=0}^{N-1} \text{loss}(\pi(s^n), a^n)
-\]</span></p>
+\tag{8.1}\]</span></span></p>
 <p>where <span class="math inline">\(\Pi\)</span> is some class of possible policies, <span class="math inline">\(\text{loss}\)</span> is the loss function to measure how different the policy’s prediction is from the true observed action, and the supervised learning algorithm itself, also known as the <strong>fitting method</strong>, tells us how to compute this <span class="math inline">\(\arg\min\)</span>.</p>
 <p>How should we choose the loss function? In supervised learning, we saw that the <strong>mean squared error</strong> is a good choice for continuous outputs. However, how should we measure the difference between two actions in a <em>discrete</em> action space? In this setting, the policy acts more like a <em>classifier</em> that picks the best action in a given state. Rather than considering a deterministic policy that just outputs a single action, we’ll consider a stochastic policy <span class="math inline">\(\pi\)</span> that outputs a <em>distribution</em> over actions. This allows us to assign a <em>likelihood</em> to observing the entire dataset <span class="math inline">\(\mathcal{D}\)</span> under the policy <span class="math inline">\(\pi\)</span>, as if the state-action pairs are independent:</p>
-<p><span class="math display">\[
+<p><span id="eq-erm-likelihood"><span class="math display">\[
 \mathbb{P}_\pi(\mathcal{D}) = \prod_{n=1}^{N} \pi(a_n \mid s_n)
-\]</span></p>
+\tag{8.2}\]</span></span></p>
 <p>Note that the states and actions are <em>not</em>, however, actually independent! A key property of interactive tasks is that the agent’s output – the action that it takes – may influence its next observation. We want to find a policy under which the training dataset <span class="math inline">\(\mathcal{D}\)</span> is the most likely. This is called the <strong>maximum likelihood estimate</strong> of the policy that generated the dataset:</p>
-<p><span class="math display">\[
+<p><span id="eq-mle-bc"><span class="math display">\[
 \widetilde{\pi} = \arg\max_{\pi \in \Pi} \mathbb{P}_{\pi}(\mathcal{D})
-\]</span></p>
+\tag{8.3}\]</span></span></p>
 <p>This is also equivalent to doing empirical risk minimization with the <strong>negative log likelihood</strong> as the loss function:</p>
-<p><span class="math display">\[
+<p><span id="eq-erm-nll-bc"><span class="math display">\[
 \begin{aligned}
 \widetilde{\pi} &amp;= \arg\min_{\pi \in \Pi} - \log \mathbb{P}_\pi(\mathcal{D}) \\
 &amp;= \arg\min_{\pi \in \Pi} \sum_{n=1}^N - \log \pi(a_n \mid s_n)
 \end{aligned}
-\]</span></p>
-<section id="performance-of-behavioral-cloning" class="level3" data-number="7.2.1">
-<h3 data-number="7.2.1" class="anchored" data-anchor-id="performance-of-behavioral-cloning"><span class="header-section-number">7.2.1</span> Performance of behavioral cloning</h3>
-<p>Can we quantify how well this algorithm works? For simplicity, let’s consider the case where the action space is <em>finite</em> and both the expert policy and learned policy are deterministic. Suppose the learned policy obtains <span class="math inline">\(\varepsilon\)</span> <em>classification error</em>. That is, for trajectories drawn from the expert policy, the learned policy chooses a different action at most <span class="math inline">\(\varepsilon\)</span> of the time:</p>
-<p><span class="math display">\[
-\mathbb{E}_{\tau \sim \rho_{\pi_{\text{expert}}}} \left[ \frac 1 H\sum_{h=0}^{H-1} \mathbf{1}\left\{ \widetilde{\pi}(s_h) \ne \pi_{\text{expert}} (s_h) \right\} \right] \le \varepsilon
-\]</span></p>
+\tag{8.4}\]</span></span></p>
+<p>Can we quantify how well this algorithm works? For simplicity, let’s consider the case where the action space is <em>finite</em> and both the expert policy and learned policy are deterministic.</p>
+<div id="thm-bc-performance" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 8.1 (Performance of behaviour cloning)</strong></span> Suppose the learned policy obtains <span class="math inline">\(\varepsilon\)</span> <em>classification error</em>. That is, for trajectories drawn from the expert policy, the learned policy chooses a different action at most <span class="math inline">\(\varepsilon\)</span> of the time:</p>
+<p><span id="eq-classification-error"><span class="math display">\[
+\mathbb{E}_{\tau \sim \rho^{\pi_{\text{expert}}}} \left[ \frac 1 H\sum_{h=0}^{H-1} \mathbf{1}\left\{ \widetilde{\pi}(s_h) \ne \pi_{\text{expert}} (s_h) \right\} \right] \le \varepsilon
+\tag{8.5}\]</span></span></p>
 <p>Then, their value functions differ by</p>
 <p><span class="math display">\[
 | V^{\pi_{\text{expert}}} - V^{\widetilde{\pi}} | \le H^2 \varepsilon
 \]</span></p>
-<p>where <span class="math inline">\(H\)</span> is the horizon.</p>
-<section id="performance-of-behavioral-cloning-1" class="level4 {thm-bc-performance}" data-number="7.2.1.1">
-<h4 data-number="7.2.1.1" class="anchored" data-anchor-id="performance-of-behavioral-cloning-1"><span class="header-section-number">7.2.1.1</span> Performance of behavioral cloning</h4>
-<p>Recall the Performance Difference Lemma (<a href="pg.html#thm-pdl" class="quarto-xref">Theorem&nbsp;<span>6.1</span></a>) allows us to express the difference between <span class="math inline">\(\pi-{\text{expert}}\)</span> and <span class="math inline">\(\widetilde{\pi}\)</span> as</p>
+<p>where <span class="math inline">\(H\)</span> is the horizon of the problem.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Recall the Performance Difference Lemma (<a href="pg.html#thm-pdl" class="quarto-xref">Theorem&nbsp;<span>7.8</span></a>). The Performance Difference Lemma allows us to express the difference between <span class="math inline">\(\pi-{\text{expert}}\)</span> and <span class="math inline">\(\widetilde{\pi}\)</span> as</p>
 <p><span id="eq-pdl-rhs"><span class="math display">\[
-V_0^{\pi_{\text{expert}}}(s) - V_0^{\widetilde{\pi}} (s) = \mathbb{E}_{\tau \sim \rho^{\pi_{\text{expert}}} \mid s_0 = s} \left[ \sum_{h=0}^{H-1} A_h^{\widetilde{\pi}} (s_h, a_h) \right].
-\tag{7.1}\]</span></span></p>
+V_0^{\pi_{\text{expert}}}(s) - V_0^{\widetilde{\pi}} (s) = \mathop{\mathbb{E}}_{\tau \sim \rho^{\pi_{\text{expert}}} \mid s_0 = s} \left[ \sum_{h=0}^{H-1} A_h^{\widetilde{\pi}} (s_h, a_h) \right].
+\tag{8.6}\]</span></span></p>
 <p>Now since the expert policy is deterministic, we can substitute <span class="math inline">\(a_h= \pi_{\text{expert}}(s_h)\)</span>. This allows us to make a further simplification: since <span class="math inline">\(\pi_{\text{expert}}\)</span> is deterministic, the advantage of the chosen action is exactly zero:</p>
-<p><span class="math display">\[
+<p><span id="eq-bc-adv-zero"><span class="math display">\[
 A^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) = Q^{\pi_{\text{expert}}}(s, \pi_{\text{expert}}(s)) - V^{\pi_{\text{expert}}}(s) = 0.
-\]</span></p>
-<p>But the right-hand-side of <a href="#eq-pdl-rhs" class="quarto-xref">Equation&nbsp;<span>7.1</span></a> uses <span class="math inline">\(A^{\widetilde{\pi}}\)</span>, not <span class="math inline">\(A^{\pi-{\text{expert}}}\)</span>. To bridge this gap, we now use the assumption that <span class="math inline">\(\widetilde{\pi}\)</span> obtains <span class="math inline">\(\varepsilon\)</span> classification error. Note that <span class="math inline">\(A_h^{\widetilde{\pi}}(s_h, \pi_{\text{expert}}(s_h)) = 0\)</span> when <span class="math inline">\(\pi_{\text{expert}}(s_h) = \widetilde{\pi}(s_h)\)</span>. In the case where the two policies differ on <span class="math inline">\(s_h\)</span>, which occurs with probability <span class="math inline">\(\varepsilon\)</span>, the advantage is naively upper bounded by <span class="math inline">\(H\)</span> (assuming rewards are bounded between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>). Taking the final sum gives the desired bound.</p>
+\tag{8.7}\]</span></span></p>
+<p>But the right-hand-side of <a href="#eq-pdl-rhs" class="quarto-xref">eq.&nbsp;<span>8.6</span></a> uses <span class="math inline">\(A^{\widetilde{\pi}}\)</span>, not <span class="math inline">\(A^{\pi-{\text{expert}}}\)</span>. To bridge this gap, we now use the assumption that <span class="math inline">\(\widetilde{\pi}\)</span> obtains <span class="math inline">\(\varepsilon\)</span> classification error. Note that <span class="math inline">\(A_h^{\widetilde{\pi}}(s_h, \pi_{\text{expert}}(s_h)) = 0\)</span> when <span class="math inline">\(\pi_{\text{expert}}(s_h) = \widetilde{\pi}(s_h)\)</span>. In the case where the two policies differ on <span class="math inline">\(s_h\)</span>, which occurs with probability <span class="math inline">\(\varepsilon\)</span>, the advantage is naively upper bounded by <span class="math inline">\(H\)</span> (assuming rewards are bounded between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>). Taking the final sum gives the desired bound.</p>
+</div>
 </section>
-<!-- TODO ADD DISTRIBUTION SHIFT EXAMPLE FROM SLIDES -->
-</section>
-</section>
-<section id="distribution-shift" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="distribution-shift"><span class="header-section-number">7.3</span> Distribution shift</h2>
-<p>Let us return to the driving analogy. Suppose you have taken some driving lessons and now feel comfortable in your neighbourhood. But today you have to travel to an area you haven’t visited before, such as a highway, where it would be dangerous to try and apply the techniques you’ve already learned. This is the issue of <em>distribution shift</em>: a policy learned under a certain distribution of states may not perform well if this distribution changes.</p>
-<p>This is already a common issue in supervised learning, where the training dataset for a model might not resemble the environment where it gets deployed. In interactive environments, this issue is further exacerbated by the dependency between the observations and the agent’s behavior; if you take a wrong turn early on, it may be difficult or impossible to recover in that trajectory.</p>
+<section id="distribution-shift" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="distribution-shift"><span class="header-section-number">8.3</span> Distribution shift</h2>
+<p>Let us return to the driving analogy. Suppose you have taken some driving lessons and now feel comfortable in your neighbourhood. But today you have to travel to an area you haven’t visited before, such as a highway, where it would be dangerous to try and apply the techniques you’ve already learned. This is the issue of <em>distribution shift</em>: a policy learned under a certain distribution of states may perform poorly if the distribution of states changes.</p>
+<p>This is already a common issue in supervised learning, where the training dataset for a model might not resemble the environment where it gets deployed. In interactive environments, this issue is further exacerbated by the dependency between the observations and the agent’s behaviour; if you take a wrong turn early on, it may be difficult or impossible to recover in that trajectory.</p>
 <p>How could you learn a strategy for these new settings? In the driving example, you might decide to install a dashcam to record the car’s surroundings. That way, once you make it back to safety, you can show the recording to an expert, who can provide feedback at each step of the way. Then the next time you go for a drive, you can remember the expert’s advice, and take a safer route. You could then repeat this training as many times as desired, thereby collecting the expert’s feedback over a diverse range of locations. This is the key idea behind <em>dataset aggregation</em>.</p>
 </section>
-<section id="dataset-aggregation-dagger" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="dataset-aggregation-dagger"><span class="header-section-number">7.4</span> Dataset aggregation (DAgger)</h2>
-<p>The DAgger algorithm (<span class="citation" data-cites="ross_reduction_2010">Ross, Gordon, and Bagnell (<a href="references.html#ref-ross_reduction_2010" role="doc-biblioref">2010</a>)</span>) assumes that we have <em>query access</em> to the expert policy. That is, for a given state <span class="math inline">\(s\)</span>, we can ask for the expert’s action <span class="math inline">\(\pi_{\text{expert}}(s)\)</span> in that state. We also need access to the environment for rolling out policies. This makes DAgger an <strong>online</strong> algorithm, as opposed to pure behavioral cloning, which is <strong>offline</strong> since we don’t need to act in the environment at all.</p>
+<section id="dataset-aggregation-dagger" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="dataset-aggregation-dagger"><span class="header-section-number">8.4</span> Dataset aggregation (DAgger)</h2>
+<p>The DAgger algorithm assumes that we have <em>query access</em> to the expert policy. That is, for a given state <span class="math inline">\(s\)</span>, we can ask for the expert’s action <span class="math inline">\(\pi_{\text{expert}}(s)\)</span> in that state. We also need access to the environment for rolling out policies. This makes DAgger an <strong>online</strong> algorithm, as opposed to pure behaviour cloning, which is <strong>offline</strong> since we don’t need to act in the environment at all.</p>
 <p>You can think of DAgger as a specific way of collecting the dataset <span class="math inline">\(\mathcal{D}\)</span>.</p>
 <div id="def-dagger-alg" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7.2 (DAgger algorithm)</strong></span> Inputs: <span class="math inline">\(\pi_{\text{expert}}\)</span>, an initial policy <span class="math inline">\(\pi_{\text{init}}\)</span>, the number of iterations <span class="math inline">\(T\)</span>, and the number of trajectories <span class="math inline">\(N\)</span> to collect per iteration.</p>
+<p><span class="theorem-title"><strong>Definition 8.2 (DAgger algorithm)</strong></span> Inputs: <span class="math inline">\(\pi_{\text{expert}}\)</span>, an initial policy <span class="math inline">\(\pi_{\text{init}}\)</span>, the number of iterations <span class="math inline">\(T\)</span>, and the number of trajectories <span class="math inline">\(N\)</span> to collect per iteration.</p>
 <ol type="1">
 <li>Initialize <span class="math inline">\(\mathcal{D} = \{\}\)</span> (the empty set) and <span class="math inline">\(\pi = \pi_{\text{init}}\)</span>.</li>
-<li>For <span class="math inline">\(t = 1, \dots, T\)</span>:
+<li>For <span class="math inline">\(i= 1, \dots, I\)</span>:
 <ul>
-<li>Collect <span class="math inline">\(N\)</span> trajectories <span class="math inline">\(\tau_1, \dots, \tau_N\)</span> using the current policy <span class="math inline">\(\pi\)</span>.</li>
+<li>Collect <span class="math inline">\(T\)</span> trajectories <span class="math inline">\(\tau_0, \dots, \tau_{T-1}\)</span> using the current policy <span class="math inline">\(\pi\)</span>.</li>
 <li>For each trajectory <span class="math inline">\(\tau_n\)</span>:
 <ul>
 <li>Replace each action <span class="math inline">\(a_h\)</span> in <span class="math inline">\(\tau_n\)</span> with the <strong>expert action</strong> <span class="math inline">\(\pi_{\text{expert}}(s_h)\)</span>.</li>
 <li>Call the resulting trajectory <span class="math inline">\(\tau^{\text{expert}}_n\)</span>.</li>
 </ul></li>
 <li><span class="math inline">\(\mathcal{D} \gets \mathcal{D} \cup \{ \tau^{\text{expert}}_1, \dots, \tau^{\text{expert}}_n \}\)</span>.</li>
-<li>Let <span class="math inline">\(\pi \gets \texttt{fit}(\mathcal{D})\)</span>, where <span class="math inline">\(\texttt{fit}\)</span> is a behavioral cloning algorithm.</li>
+<li>Let <span class="math inline">\(\pi \gets \texttt{fit}(\mathcal{D})\)</span>, where <span class="math inline">\(\texttt{fit}\)</span> is a behaviour cloning algorithm.</li>
 </ul></li>
 <li>Return <span class="math inline">\(\pi\)</span>.</li>
 </ol>
 </div>
-<p>We leave the implementation as an exercise. How well does DAgger perform? A full proof can be found in <span class="citation" data-cites="ross_reduction_2010">Ross, Gordon, and Bagnell (<a href="references.html#ref-ross_reduction_2010" role="doc-biblioref">2010</a>)</span> that under certain assumptions, the DAgger algorithm can better approximate the expert policy:</p>
-<p><span class="math display">\[
-|V^{\pi_{\text{expert}}} - V^{\pi_{\text{DAgger}}}| \le H \varepsilon
-\]</span></p>
+<p>We leave the implementation as an exercise. How well does DAgger perform?</p>
+<div id="thm-dagger-performance" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 8.2 (Performance of DAgger)</strong></span> Let <span class="math inline">\(\pi_\text{expert}\)</span> be the expert policy and <span class="math inline">\(\pi_\text{DAgger}\)</span> be the policy resulting from DAgger. In <span class="math inline">\(I= \widetilde O(H^2)\)</span> iterations, with high probability,</p>
+<p><span id="eq-dagger-performance"><span class="math display">\[
+|V^{\pi_{\text{expert}}} - V^{\pi_{\text{DAgger}}}| \le H\varepsilon,
+\tag{8.8}\]</span></span></p>
 <p>where <span class="math inline">\(\varepsilon\)</span> is the “classification error” guaranteed by the supervised learning algorithm.</p>
+</div>
 </section>
-<section id="summary" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="summary"><span class="header-section-number">7.5</span> Summary</h2>
-<p>For tasks where it is too difficult or expensive to learn from scratch, we can instead start off with a collection of <strong>expert demonstrations</strong>. Then we can use supervised learning techniques to find a policy that imitates the expert demonstrations.</p>
-<p>The simplest way to do this is to apply a supervised learning algorithm to an already-collected dataset of expert state-action pairs. This is called <strong>behavioral cloning</strong>. However, given query access to the expert policy, we can do better by integrating its feedback in an online loop. The <strong>DAgger</strong> algorithm is one way of doing this, where we use the expert policy to augment trajectories and then learn from this augmented dataset using behavioral cloning.</p>
+<section id="key-takeaways" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="key-takeaways"><span class="header-section-number">8.5</span> Key takeaways</h2>
+<p>Given a task where learning from scratch is too challenging, if we have access to <em>expert data</em>, we can use supervised learning to find a policy that imitates the expert demonstrations.</p>
+<p>The simplest way to do this is to apply a supervised learning algorithm to an already-collected dataset of expert state-action pairs. This is called <strong>behaviour cloning</strong>. However, given query access to the expert policy, we can do better by integrating its feedback in an online loop. The <strong>DAgger</strong> algorithm is one way of doing this, where we use the expert policy to augment trajectories and then learn from this augmented dataset using behaviour cloning.</p>
+</section>
+<section id="sec-il-bib" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="sec-il-bib"><span class="header-section-number">8.6</span> Bibliographic notes and further reading</h2>
+<p>Earlier interest in imitation learning arose in the context of autonomous driving <span class="citation" data-cites="pomerleau_efficient_1991">(<a href="references.html#ref-pomerleau_efficient_1991" role="doc-biblioref">Pomerleau, 1991</a>)</span>. This task is suitable for imitation learning since expert (or near-expert) driving data is readily available. It is also challenging to express a reward function that captures exactly what we mean by “good driving”. Imitation learning methods sidestep this issue by directly training the algorithm to imitate expert demonstrations. The DAgger algorithm (<a href="#def-dagger-alg" class="quarto-xref">def.&nbsp;<span>8.2</span></a>) is due to <span class="citation" data-cites="ross_reduction_2010">Ross et al. (<a href="references.html#ref-ross_reduction_2010" role="doc-biblioref">2010</a>)</span>. The performance guarantee is stated as <span class="citation" data-cites="ross_reduction_2010">Ross et al. (<a href="references.html#ref-ross_reduction_2010" role="doc-biblioref">2010</a>, thm. 3.4)</span>.</p>
+<p>Another approach is to infer the reward function from the expert trajectories. This is known as the <strong>inverse reinforcement learning</strong> (IRL) problem <span class="citation" data-cites="russell_learning_1998 ng_algorithms_2000 abbeel_apprenticeship_2004">(<a href="references.html#ref-abbeel_apprenticeship_2004" role="doc-biblioref">Abbeel &amp; Ng, 2004</a>; <a href="references.html#ref-ng_algorithms_2000" role="doc-biblioref">Ng &amp; Russell, 2000</a>; <a href="references.html#ref-russell_learning_1998" role="doc-biblioref">Russell, 1998</a>)</span>. The typical RL problem is going from a reward function to an optimal policy, so the inverse problem is going from an optimal policy to the underlying reward function. One can then use typical RL techniques to optimize for the inferred reward function. This tends to generalize better than direct behaviour cloning. The challenge is that this problem is not well-defined, since any policy is optimal for infinitely many possible reward functions. This means that the researcher must come up with a useful “regularization” assumption to select which of the possible reward functions is the most plausible. Three common modelling assumptions are <strong>maximum-margin IRL</strong> <span class="citation" data-cites="ng_algorithms_2000 ratliff_maximum_2006">(<a href="references.html#ref-ng_algorithms_2000" role="doc-biblioref">Ng &amp; Russell, 2000</a>; <a href="references.html#ref-ratliff_maximum_2006" role="doc-biblioref">Ratliff et al., 2006</a>)</span>, <strong>Bayesian IRL</strong> <span class="citation" data-cites="ramachandran_bayesian_2007">(<a href="references.html#ref-ramachandran_bayesian_2007" role="doc-biblioref">Ramachandran &amp; Amir, 2007</a>)</span>, and <strong>maximum-entropy IRL</strong> <span class="citation" data-cites="ziebart_maximum_2008 ziebart_modeling_2010">(<a href="references.html#ref-ziebart_maximum_2008" role="doc-biblioref">Ziebart et al., 2008</a>, <a href="references.html#ref-ziebart_modeling_2010" role="doc-biblioref">2010</a>)</span>.</p>
+<p>Another framework for learning behaviour from expert demonstrations is <strong>generative adversarial imitation learning</strong> <span class="citation" data-cites="ho_generative_2016 orsini_what_2021">(<a href="references.html#ref-ho_generative_2016" role="doc-biblioref">Ho &amp; Ermon, 2016</a>; <a href="references.html#ref-orsini_what_2021" role="doc-biblioref">Orsini et al., 2021</a>)</span>, inspired by generative adversarial networks (GANs) <span class="citation" data-cites="goodfellow_generative_2020">(<a href="references.html#ref-goodfellow_generative_2020" role="doc-biblioref">Goodfellow et al., 2020</a>)</span>. Rather than first learning a reward function from expert data and then optimizing the policy in a separate phase, generative adversarial imitation learning simultaneously learns the reward function and the optimal policy, leading to improved performance.</p>
+<p>We can infer a reward function from other expert data besides demonstrations. Expert demonstrations provide a lot of signal but can be prohibitively expensive to collect for some tasks. It is often easier to <em>recognize</em> a good solution than to <em>generate</em> one. This leads to the related approach of <strong>reinforcement learning from human feedback</strong> (RLHF). Instead of inferring a reward function from expert demonstrations, we instead infer a reward function from a dataset of expert <em>rankings</em> of trajectories. This is the dominant approach used in RL finetuning of large language models <span class="citation" data-cites="ziegler_fine-tuning_2020 ouyang_training_2022">(<a href="references.html#ref-ouyang_training_2022" role="doc-biblioref">Ouyang et al., 2022</a>; <a href="references.html#ref-ziegler_fine-tuning_2020" role="doc-biblioref">Ziegler et al., 2020</a>)</span>. We recommend <span class="citation" data-cites="lambert_reinforcement_2024">Lambert (<a href="references.html#ref-lambert_reinforcement_2024" role="doc-biblioref">2024</a>)</span> for a comprehensive treatment of RLHF.</p>
+<p><span class="citation" data-cites="piot_bridging_2017">Piot et al. (<a href="references.html#ref-piot_bridging_2017" role="doc-biblioref">2017</a>)</span> unifies imitation learning and IRL in the <strong>set-policy</strong> framework. <span class="citation" data-cites="gleave_imitation_2022">Gleave et al. (<a href="references.html#ref-gleave_imitation_2022" role="doc-biblioref">2022</a>)</span> is a library of modular implementations of imitation learning algorithms in PyTorch. We recommend <span class="citation" data-cites="zare_survey_2024">Zare et al. (<a href="references.html#ref-zare_survey_2024" role="doc-biblioref">2024</a>)</span> for a more comprehensive survey of imitation learning.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-abbeel_apprenticeship_2004" class="csl-entry" role="listitem">
+Abbeel, P., &amp; Ng, A. Y. (2004, July 4). Apprenticeship learning via inverse reinforcement learning. <em>Proceedings of the <span>Twenty-First International Conference</span> on <span>Machine Learning</span></em>. International <span>Conference</span> on <span>Machine Learning</span>. <a href="https://doi.org/10.1145/1015330.1015430">https://doi.org/10.1145/1015330.1015430</a>
+</div>
+<div id="ref-danilyuk_robot_2021" class="csl-entry" role="listitem">
+Danilyuk, P. (2021). <em>A robot imitating a girl’s movement</em> [Graphic]. <a href="https://www.pexels.com/photo/a-robot-imitating-a-girl-s-movement-8294811/">https://www.pexels.com/photo/a-robot-imitating-a-girl-s-movement-8294811/</a>
+</div>
+<div id="ref-gleave_imitation_2022" class="csl-entry" role="listitem">
+Gleave, A., Taufeeque, M., Rocamonde, J., Jenner, E., Wang, S. H., Toyer, S., Ernestus, M., Belrose, N., Emmons, S., &amp; Russell, S. (2022, November 22). <em><span class="nocase">imitation</span>: Clean imitation learning implementations</em>. <a href="https://doi.org/10.48550/arXiv.2211.11972">https://doi.org/10.48550/arXiv.2211.11972</a>
+</div>
+<div id="ref-goodfellow_generative_2020" class="csl-entry" role="listitem">
+Goodfellow, I., Pouget-Abadie, J., Mirza, M., Xu, B., Warde-Farley, D., Ozair, S., Courville, A., &amp; Bengio, Y. (2020). Generative adversarial networks. <em>Commun. ACM</em>, <em>63</em>(11), 139–144. <a href="https://doi.org/10.1145/3422622">https://doi.org/10.1145/3422622</a>
+</div>
+<div id="ref-ho_generative_2016" class="csl-entry" role="listitem">
+Ho, J., &amp; Ermon, S. (2016). Generative adversarial imitation learning. <em>Proceedings of the 30th <span>International Conference</span> on <span>Neural Information Processing Systems</span></em>, 4572–4580.
+</div>
+<div id="ref-lambert_reinforcement_2024" class="csl-entry" role="listitem">
+Lambert, N. (2024). <em>Reinforcement learning from human feedback</em>. Online. <a href="https://rlhfbook.com">https://rlhfbook.com</a>
+</div>
+<div id="ref-ng_algorithms_2000" class="csl-entry" role="listitem">
+Ng, A. Y., &amp; Russell, S. J. (2000). Algorithms for inverse reinforcement learning. <em>Proceedings of the <span>Seventeenth International Conference</span> on <span>Machine Learning</span></em>, 663–670. <a href="https://ai.stanford.edu/~ang/papers/icml00-irl.pdf">https://ai.stanford.edu/~ang/papers/icml00-irl.pdf</a>
+</div>
+<div id="ref-orsini_what_2021" class="csl-entry" role="listitem">
+Orsini, M., Raichuk, A., Hussenot, L., Vincent, D., Dadashi, R., Girgin, S., Geist, M., Bachem, O., Pietquin, O., &amp; Andrychowicz, M. (2021). What matters for adversarial imitation learning? <em>Proceedings of the 35th <span>International Conference</span> on <span>Neural Information Processing Systems</span></em>, 14656–14668.
+</div>
+<div id="ref-ouyang_training_2022" class="csl-entry" role="listitem">
+Ouyang, L., Wu, J., Jiang, X., Almeida, D., Wainwright, C. L., Mishkin, P., Zhang, C., Agarwal, S., Slama, K., Ray, A., Schulman, J., Hilton, J., Kelton, F., Miller, L., Simens, M., Askell, A., Welinder, P., Christiano, P., Leike, J., &amp; Lowe, R. (2022). Training language models to follow instructions with human feedback. <em>Proceedings of the 36th <span>International Conference</span> on <span>Neural Information Processing Systems</span></em>, 27730–27744.
+</div>
+<div id="ref-piot_bridging_2017" class="csl-entry" role="listitem">
+Piot, B., Geist, M., &amp; Pietquin, O. (2017). Bridging the gap between imitation learning and inverse reinforcement learning. <em>IEEE Transactions on Neural Networks and Learning Systems</em>, <em>28</em>(8), 1814–1826. <span>IEEE Transactions</span> on <span>Neural Networks</span> and <span>Learning Systems</span>. <a href="https://doi.org/10.1109/TNNLS.2016.2543000">https://doi.org/10.1109/TNNLS.2016.2543000</a>
+</div>
+<div id="ref-pomerleau_efficient_1991" class="csl-entry" role="listitem">
+Pomerleau, D. A. (1991). Efficient training of artificial neural networks for autonomous navigation. <em>Neural Computation</em>, <em>3</em>(1), 88–97. Neural <span>Computation</span>. <a href="https://doi.org/10.1162/neco.1991.3.1.88">https://doi.org/10.1162/neco.1991.3.1.88</a>
+</div>
+<div id="ref-ramachandran_bayesian_2007" class="csl-entry" role="listitem">
+Ramachandran, D., &amp; Amir, E. (2007). Bayesian inverse reinforcement learning. <em>Proceedings of the 20th International Joint Conference on <span>Artifical</span> Intelligence</em>, 2586–2591.
+</div>
+<div id="ref-ratliff_maximum_2006" class="csl-entry" role="listitem">
+Ratliff, N. D., Bagnell, J. A., &amp; Zinkevich, M. A. (2006). Maximum margin planning. <em>Proceedings of the 23rd International Conference on <span>Machine</span> Learning</em>, 729–736. <a href="https://doi.org/10.1145/1143844.1143936">https://doi.org/10.1145/1143844.1143936</a>
+</div>
 <div id="ref-ross_reduction_2010" class="csl-entry" role="listitem">
-Ross, Stéphane, Geoffrey J. Gordon, and J. Bagnell. 2010. <span>“A <span>Reduction</span> of <span>Imitation Learning</span> and <span>Structured Prediction</span> to <span>No-Regret Online Learning</span>.”</span> In. <a href="https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e">https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e</a>.
+Ross, S., Gordon, G. J., &amp; Bagnell, J. (2010, November 2). <em>A reduction of imitation learning and structured prediction to no-regret online learning</em>. International <span>Conference</span> on <span>Artificial Intelligence</span> and <span>Statistics</span>. <a href="https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e">https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e</a>
+</div>
+<div id="ref-russell_learning_1998" class="csl-entry" role="listitem">
+Russell, S. (1998). Learning agents for uncertain environments (extended abstract). <em>Proceedings of the Eleventh Annual Conference on <span>Computational</span> Learning Theory</em>, 101–103. <a href="https://doi.org/10.1145/279943.279964">https://doi.org/10.1145/279943.279964</a>
+</div>
+<div id="ref-zare_survey_2024" class="csl-entry" role="listitem">
+Zare, M., Kebria, P. M., Khosravi, A., &amp; Nahavandi, S. (2024). A survey of imitation learning: Algorithms, recent developments, and challenges. <em>IEEE Transactions on Cybernetics</em>, <em>54</em>(12), 7173–7186. <span>IEEE Transactions</span> on <span>Cybernetics</span>. <a href="https://doi.org/10.1109/TCYB.2024.3395626">https://doi.org/10.1109/TCYB.2024.3395626</a>
+</div>
+<div id="ref-ziebart_modeling_2010" class="csl-entry" role="listitem">
+Ziebart, B. D., Bagnell, J. A., &amp; Dey, A. K. (2010). Modeling interaction via the principle of maximum causal entropy. <em>Proceedings of the 27th <span>International Conference</span> on <span>International Conference</span> on <span>Machine Learning</span></em>, 1255–1262.
+</div>
+<div id="ref-ziebart_maximum_2008" class="csl-entry" role="listitem">
+Ziebart, B. D., Maas, A., Bagnell, J. A., &amp; Dey, A. K. (2008). Maximum entropy inverse reinforcement learning. <em>Proceedings of the 23rd National Conference on <span>Artificial</span> Intelligence - <span>Volume</span> 3</em>, 1433–1438.
+</div>
+<div id="ref-ziegler_fine-tuning_2020" class="csl-entry" role="listitem">
+Ziegler, D. M., Stiennon, N., Wu, J., Brown, T. B., Radford, A., Amodei, D., Christiano, P., &amp; Irving, G. (2020, January 8). <em>Fine-<span>Tuning Language Models</span> from <span>Human Preferences</span></em>. <a href="https://doi.org/10.48550/arXiv.1909.08593">https://doi.org/10.48550/arXiv.1909.08593</a>
 </div>
 </div>
 </section>
@@ -412,6 +542,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -482,7 +756,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/rlbook\.adzc\.ai");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -812,16 +1086,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./pg.html" class="pagination-link" aria-label="Policy Gradient Methods">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./planning.html" class="pagination-link" aria-label="Tree Search Methods">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025 Alexander Cai</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/imitation_learning.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/imitation_learning.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link active" href="https://github.com/adzcai/rlbook" aria-current="page">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 

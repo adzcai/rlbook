@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>9&nbsp; Exploration in MDPs – CS 1840: Introduction to Reinforcement Learning</title>
+<title>10&nbsp; Exploration in MDPs – An Introduction to Reinforcement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 /* CSS for citations */
 div.csl-bib-body { }
@@ -50,17 +84,20 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./background.html" rel="next">
+<link href="./references.html" rel="next">
 <link href="./planning.html" rel="prev">
+<link href="./shared/184.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e39e07555a3cad66df478e90649eca5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -119,6 +156,12 @@ window.Quarto = {
 };
 </script>
 
+<meta property="og:title" content="10&nbsp; Exploration in MDPs – An Introduction to Reinforcement Learning">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://rlbook.adzc.ai/shared/sparse_reward_mdp.png">
+<meta property="og:site_name" content="An Introduction to Reinforcement Learning">
+<meta property="og:image:height" content="148">
+<meta property="og:image:width" content="490">
 </head>
 
 <body class="nav-sidebar floating">
@@ -130,7 +173,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./exploration.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./exploration.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -145,7 +188,45 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">CS 1840: Introduction to Reinforcement Learning</a> 
+      <a href="./">An Introduction to Reinforcement Learning</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/adzcai/rlbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -158,67 +239,73 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mdps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./control.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./bandits.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./planning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploration.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -227,6 +314,29 @@ window.Quarto = {
  <span class="menu-text">References</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proofs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Proofs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -237,34 +347,35 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">9.1</span> Introduction</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">10.1</span> Introduction</a>
   <ul class="collapse">
-  <li><a href="#sparse-reward" id="toc-sparse-reward" class="nav-link" data-scroll-target="#sparse-reward"><span class="header-section-number">9.1.1</span> Sparse reward</a></li>
-  <li><a href="#exploration-in-deterministic-mdps" id="toc-exploration-in-deterministic-mdps" class="nav-link" data-scroll-target="#exploration-in-deterministic-mdps"><span class="header-section-number">9.1.2</span> Exploration in deterministic MDPs</a></li>
+  <li><a href="#sec-sparse-reward" id="toc-sec-sparse-reward" class="nav-link" data-scroll-target="#sec-sparse-reward"><span class="header-section-number">10.1.1</span> Sparse reward</a></li>
+  <li><a href="#sec-reward-shaping" id="toc-sec-reward-shaping" class="nav-link" data-scroll-target="#sec-reward-shaping"><span class="header-section-number">10.1.2</span> Reward shaping</a></li>
   </ul></li>
-  <li><a href="#explore-then-exploit-for-deterministic-mdps" id="toc-explore-then-exploit-for-deterministic-mdps" class="nav-link" data-scroll-target="#explore-then-exploit-for-deterministic-mdps"><span class="header-section-number">9.2</span> Explore-then-exploit (for deterministic MDPs)</a></li>
-  <li><a href="#sec-mdp-mab" id="toc-sec-mdp-mab" class="nav-link" data-scroll-target="#sec-mdp-mab"><span class="header-section-number">9.3</span> Treating an unknown MDP as a MAB</a></li>
-  <li><a href="#ucb-vi" id="toc-ucb-vi" class="nav-link" data-scroll-target="#ucb-vi"><span class="header-section-number">9.4</span> UCB-VI</a>
+  <li><a href="#sec-explore-det-mdp" id="toc-sec-explore-det-mdp" class="nav-link" data-scroll-target="#sec-explore-det-mdp"><span class="header-section-number">10.2</span> Exploration in deterministic MDPs</a></li>
+  <li><a href="#sec-mdp-mab" id="toc-sec-mdp-mab" class="nav-link" data-scroll-target="#sec-mdp-mab"><span class="header-section-number">10.3</span> Treating an unknown MDP as a MAB</a></li>
+  <li><a href="#sec-ucbvi" id="toc-sec-ucbvi" class="nav-link" data-scroll-target="#sec-ucbvi"><span class="header-section-number">10.4</span> Upper confidence bound value iteration</a>
   <ul class="collapse">
-  <li><a href="#deling-the-transitions" id="toc-deling-the-transitions" class="nav-link" data-scroll-target="#deling-the-transitions"><span class="header-section-number">9.4.1</span> deling the transitions</a></li>
-  <li><a href="#reward-bonus" id="toc-reward-bonus" class="nav-link" data-scroll-target="#reward-bonus"><span class="header-section-number">9.4.2</span> Reward bonus</a></li>
-  <li><a href="#performance-of-ucb-vi" id="toc-performance-of-ucb-vi" class="nav-link" data-scroll-target="#performance-of-ucb-vi"><span class="header-section-number">9.4.3</span> Performance of UCB-VI</a></li>
+  <li><a href="#modeling-the-transitions" id="toc-modeling-the-transitions" class="nav-link" data-scroll-target="#modeling-the-transitions"><span class="header-section-number">10.4.1</span> Modeling the transitions</a></li>
+  <li><a href="#sec-reward-bonus" id="toc-sec-reward-bonus" class="nav-link" data-scroll-target="#sec-reward-bonus"><span class="header-section-number">10.4.2</span> Reward bonus</a></li>
+  <li><a href="#performance-of-ucbvi" id="toc-performance-of-ucbvi" class="nav-link" data-scroll-target="#performance-of-ucbvi"><span class="header-section-number">10.4.3</span> Performance of UCBVI</a></li>
   </ul></li>
-  <li><a href="#linear-mdps" id="toc-linear-mdps" class="nav-link" data-scroll-target="#linear-mdps"><span class="header-section-number">9.5</span> Linear MDPs</a>
+  <li><a href="#linear-mdps" id="toc-linear-mdps" class="nav-link" data-scroll-target="#linear-mdps"><span class="header-section-number">10.5</span> Linear MDPs</a>
   <ul class="collapse">
-  <li><a href="#planning-in-a-linear-mdp" id="toc-planning-in-a-linear-mdp" class="nav-link" data-scroll-target="#planning-in-a-linear-mdp"><span class="header-section-number">9.5.1</span> Planning in a linear MDP</a></li>
-  <li><a href="#sec-lin-ucb-vi" id="toc-sec-lin-ucb-vi" class="nav-link" data-scroll-target="#sec-lin-ucb-vi"><span class="header-section-number">9.5.2</span> UCB-VI in a linear MDP</a></li>
+  <li><a href="#planning-in-a-linear-mdp" id="toc-planning-in-a-linear-mdp" class="nav-link" data-scroll-target="#planning-in-a-linear-mdp"><span class="header-section-number">10.5.1</span> Planning in a linear MDP</a></li>
+  <li><a href="#sec-lin-ucbvi" id="toc-sec-lin-ucbvi" class="nav-link" data-scroll-target="#sec-lin-ucbvi"><span class="header-section-number">10.5.2</span> UCBVI in a linear MDP</a></li>
   </ul></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">9.6</span> Summary</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways"><span class="header-section-number">10.6</span> Key takeaways</a></li>
+  <li><a href="#sec-exploration-bib" id="toc-sec-exploration-bib" class="nav-link" data-scroll-target="#sec-exploration-bib"><span class="header-section-number">10.7</span> Bibliographic notes and further reading</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/exploration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/exploration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-exploration" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></h1>
+<h1 class="title"><span id="sec-exploration" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></h1>
 </div>
 
 
@@ -281,218 +392,269 @@ window.Quarto = {
 </header>
 
 
-<hr>
-<hr>
-<div class="hidden">
-
+<section id="introduction" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">10.1</span> Introduction</h2>
+<p>One of the key challenges of reinforcement learning is the <em>exploration-exploitation tradeoff</em>. Should we <em>exploit</em> actions we know will give high reward, or should we <em>explore</em> different actions to discover potentially better strategies? An algorithm that doesn’t explore effectively might easily <em>overfit</em> to certain areas of the state space, and fail to generalize once they enter a region they haven’t yet seen.</p>
+<p>In the multi-armed bandit setting (<a href="bandits.html" class="quarto-xref"><span>Chapter 4</span></a>), we studied the upper confidence bound (UCB) algorithm (<a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 4.7</span></a>) that incentivizes the learner to explore arms that it is uncertain about. In particular, UCB relies on <strong>optimism in the face of uncertainty</strong>: it chooses arms based on an <em>overestimate</em> of the arm’s true mean reward. In this chapter, we will see how to generalize this idea to the MDP setting.</p>
+<div id="b907837c" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> latex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<section id="introduction" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">9.1</span> Introduction</h2>
-<p>One of the key challenges of reinforcement learning is the <em>exploration-exploitation tradeoff</em>. Should we <em>exploit</em> actions we know will give high reward, or should we <em>explore</em> different actions to discover potentially better strategies? An algorithm that doesn’t explore effectively might easily <em>overfit</em> to certain areas of the state space, and fail to generalize once they enter a region they haven’t yet seen. The algorithms we saw in the chapter on fitted DP <a href="fitted_dp.html" class="quarto-xref"><span>Chapter 5</span></a> suffer from this issue.</p>
-<p>In <a href="bandits.html" class="quarto-xref"><span>Chapter 3</span></a>, where the state never changes so all we care about are the actions, we saw algorithms like <a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 3.6</span></a> and <a href="bandits.html#sec-thompson-sampling" class="quarto-xref"><span>Section 3.7</span></a> that incentivize the learner to explore arms that it is uncertain about. In this chapter, we will see how to generalize these ideas to the MDP setting.</p>
-<div id="def-per-episode-regret" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 9.1 (Per-episode regret)</strong></span> To quantify the performance of a learning algorithm, we will consider its per-episode regret over <span class="math inline">\(T\)</span> timesteps/episodes:</p>
-<p><span class="math display">\[
-\text{Regret}_T = \mathbb{E}\left[ \sum_{t=0}^{T-1} V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right]
-\]</span></p>
-<p>where <span class="math inline">\(\pi^t\)</span> is the policy generated by the algorithm at the <span class="math inline">\(t\)</span>th iteration.</p>
-</div>
-<section id="sparse-reward" class="level3" data-number="9.1.1">
-<h3 data-number="9.1.1" class="anchored" data-anchor-id="sparse-reward"><span class="header-section-number">9.1.1</span> Sparse reward</h3>
-<p>Exploration is crucial in unknown <strong>sparse reward</strong> problems where reward doesn’t come until after many steps, and algorithms which do not <em>systematically</em> explore new states may fail to learn anything meaningful (within a reasonable amount of time). We can see this by considering the following simple MDP:</p>
+<section id="sec-sparse-reward" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="sec-sparse-reward"><span class="header-section-number">10.1.1</span> Sparse reward</h3>
+<p>Exploration is crucial in <strong>sparse reward</strong> problems where <span class="math inline">\(r(s, a) = 0\)</span> for most (or nearly all) states and actions. Often, the agent must take a specific sequence of actions before any reward is observed.</p>
 <div id="exm-sparse-reward-mdp" class="theorem example">
-<p><span class="theorem-title"><strong>Example 9.1 (Sparse Reward MDP)</strong></span> Here’s a simple example of an MDP with sparse reward:</p>
+<p><span class="theorem-title"><strong>Example 10.1 (Chain MDP)</strong></span> Here’s a simple example of an MDP with sparse rewards:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="shared/sparse_reward_mdp.png" class="img-fluid figure-img"></p>
-<figcaption>image</figcaption>
+<figcaption>An illustration of the chain MDP environment.</figcaption>
 </figure>
 </div>
-<p>There are <span class="math inline">\(|\mathcal{S}|\)</span> states. The agent starts in the leftmost state. In every state, there are three possible actions, two of which move the agent left and one which moves the agent right. The reward function assigns <span class="math inline">\(r=1\)</span> to the rightmost cell.</p>
+<p>There are <span class="math inline">\(|\mathcal{S}|\)</span> cells arranged in a chain. The agent starts in the leftmost cell. The rightmost state is a terminal state. In every state, there are three possible actions, two of which move the agent left and one which moves the agent right. (The two “left” actions do nothing in the leftmost cell.) The reward function gives a reward of <span class="math inline">\(1\)</span> for taking the action that enters the rightmost cell, and zero otherwise.</p>
 </div>
-<p>How well would the algorithms we’ve covered so far do on this problem? For example, <a href="pg.html" class="quarto-xref"><span>Chapter 6</span></a> require the gradient to be nonzero in order to learn. If we never observe any reward, the gradient will always be zero, and the policy will never change or improve. <a href="fitted_dp.html" class="quarto-xref"><span>Chapter 5</span></a> will run into a similar issue: as we randomly interact with the environment, we will never observe any reward, and so the reward model simply gives zero for every state-action pair. In expectation, it would take a computationally infeasible number of rollouts to observe the reward by chance.</p>
-<p>The rest of this chapter will consider ways to <em>explicitly</em> add exploration to these algorithms.</p>
+<p>The problem of sparse rewards is especially prevalent in RL compared to supervised learning. In most supervised learning tasks, every labelled sample provides some useful signal. However, in RL, algorithms that don’t <em>systematically</em> explore new states may fail to learn anything meaningful within a reasonable amount of time.</p>
+<p>Consider the algorithms we’ve covered so far for unknown environments: policy gradient methods (<a href="pg.html" class="quarto-xref"><span>Chapter 7</span></a>) and fitted DP methods (<a href="fitted_dp.html" class="quarto-xref"><span>Chapter 6</span></a>). How would these do on this problem?</p>
+<div id="rem-sparse-rl" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.1</em> (Policy gradient methods fail on sparse reward). </span>Policy gradient algorithms require the gradient to be <em>nonzero</em> in order to learn. If we never observe any reward, the gradient will always be zero, and the policy will never change or improve. If we think of the expected total reward as a function <span class="math inline">\(J(\theta)\)</span> of the policy parameters, we can visualize the <em>graph</em> of <span class="math inline">\(J\)</span> as being mostly flat, making it impossible to “climb the hill” from almost every random initialization.</p>
+</div>
+<div id="rem-fitted-dp-sparse" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.2</em> (Fitted DP methods fail on sparse reward). </span>Fitted DP algorithms run into a similar issue: as we randomly interact with the environment, we never observe any reward, and so the reward model simply gives zero for every state-action pair. In expectation, it would take a computationally infeasible number of rollouts to observe the reward by chance.</p>
+</div>
+<p>This is quite disheartening! The sophisticated methods we’ve developed, which can exceed human-level performance on a wide variety of tasks, fail on this problem that seems almost trivial.</p>
+<p>Of course, a simple way to solve the “chain MDP” in <a href="#exm-sparse-reward-mdp" class="quarto-xref">ex.&nbsp;<span>10.1</span></a> is to actively visit unseen states. For a policy that visits a new state in each rollout, the final cell can be reached in <span class="math inline">\(O(|\mathcal{S}|)\)</span> rollouts (i.e.&nbsp;<span class="math inline">\(O(|\mathcal{S}|^2)\)</span> time). The rest of this chapter will consider ways to <em>explicitly</em> explore unknown states.</p>
 </section>
-<section id="exploration-in-deterministic-mdps" class="level3" data-number="9.1.2">
-<h3 data-number="9.1.2" class="anchored" data-anchor-id="exploration-in-deterministic-mdps"><span class="header-section-number">9.1.2</span> Exploration in deterministic MDPs</h3>
-<p>Let us address the exploration problem in a <em>deterministic</em> MDP, that is, where taking action <span class="math inline">\(a\)</span> in state <span class="math inline">\(s\)</span> always leads to the state <span class="math inline">\(P(s, a) \in \mathcal{S}\)</span>. How can we methodically visit every single state-action pair? In the bandit setting, it was trivial to visit every arm: just pull each arm once. How might I navigate to a particular state <span class="math inline">\(s\)</span> in the MDP setting? Doing so requires planning out a path from the original state. In fact, solving navigation itself is a complex RL problem!</p>
+<section id="sec-reward-shaping" class="level3" data-number="10.1.2">
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="sec-reward-shaping"><span class="header-section-number">10.1.2</span> Reward shaping</h3>
+<p>One workaround to sparse reward problems in practice is to <em>shape</em> the reward function using domain knowledge. For example, in <a href="#exm-sparse-reward-mdp" class="quarto-xref">ex.&nbsp;<span>10.1</span></a>, we (that is, the practitioners) know that travelling to the right is the correct action, so we could design a reward function that provides a reward of <span class="math inline">\(0.1\)</span> for the action that moves to the right. A similar strategy is used in practice for many chess or board game algorithms where capturing the opponent’s pieces earns some positive reward.</p>
+<p>Though this might seem obvious, designing a useful reward function can be challenging in practice. The agent may learn to exploit the intermediate rewards rather than solve the original goal. A famous example is the agent trained to play the CoastRunners game, in which players race boats around a racetrack. However, the algorithm found that it could achieve higher reward (i.e.&nbsp;in-game score) by refusing to go around the racetrack and instead collecting bonus points in a loop!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="shared/reward-hacking.jpg" class="img-fluid figure-img"></p>
+<figcaption>An RL agent collects bonus points instead of participating in the race. Image from <span class="citation" data-cites="clark_faulty_2024">Clark &amp; Amodei (<a href="references.html#ref-clark_faulty_2024" role="doc-biblioref">2024</a>)</span>.</figcaption>
+</figure>
+</div>
+<p>This phenomenon is known as <strong>reward hacking</strong> or <strong>Goodhart’s law</strong>. Reward hacking is essentially a special case of “finding loopholes” around the written guidelines (or in this case, the reward signal used for training); think of folk stories such as King Midas or the Monkey’s Paw. When RL algorithms are deployed in high-stakes scenarios, it is crucial to verify the learned policy’s behaviour and ensure that it is aligned to the designer’s intentions.</p>
 </section>
 </section>
-<section id="explore-then-exploit-for-deterministic-mdps" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="explore-then-exploit-for-deterministic-mdps"><span class="header-section-number">9.2</span> Explore-then-exploit (for deterministic MDPs)</h2>
-<p>In this simple deterministic setting, the environment never randomly takes us to unseen states, so our strategy must actively explore new states.</p>
+<section id="sec-explore-det-mdp" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="sec-explore-det-mdp"><span class="header-section-number">10.2</span> Exploration in deterministic MDPs</h2>
+<p>Let us address the exploration problem in a <em>deterministic</em> MDP, that is, where taking action <span class="math inline">\(a\)</span> in state <span class="math inline">\(s\)</span> always leads to the state <span class="math inline">\(P(s, a) \in \mathcal{S}\)</span>. How can we methodically visit every single state-action pair?</p>
+<p>In the multi-armed bandit setting (<a href="bandits.html" class="quarto-xref"><span>Chapter 4</span></a>), there are no states, so it’s trivial to visit every “state-action pair”: just pull each arm once. But in the MDP setting, in order to achieve a particular state-action pair <span class="math inline">\((s, a)\)</span>, one must plan out a path from the initial state.</p>
+<p>We can do this by constructing an MDP where only unseen state-action pairs are rewarded, and using value iteration/dynamic programming (<a href="mdps.html#sec-finite-opt-dp" class="quarto-xref"><span>Section 2.3.2</span></a>) to reach the unknown states in <span class="math inline">\(M_{\mathcal{D}}\)</span>. Concretely, we keep a set <span class="math inline">\(\mathcal{D}\)</span> of all the <span class="math inline">\((s, a, r, s')\)</span> tuples we’ve observed. Each episode, we use <span class="math inline">\(\mathcal{D}\)</span> to construct a fully known MDP, <span class="math inline">\(M_{\mathcal{D}}\)</span>, in which only unseen state-action pairs are rewarded.</p>
 <div id="def-explore-then-exploit" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 9.2</strong></span> We’ll keep a set <span class="math inline">\(\mathcal{D}\)</span> of all the <span class="math inline">\((s, a, r, s')\)</span> pairs we’ve observed. Each episode, we’ll use <span class="math inline">\(\mathcal{D}\)</span> to construct a fully known MDP, <span class="math inline">\(M_{\mathcal{D}}\)</span>, in which unseen state-action pairs are rewarded. We’ll then use the planning algorithms from <a href="mdps.html#sec-opt-dynamic-programming" class="quarto-xref"><span>Section 1.2.7</span></a> to reach the unknown states in <span class="math inline">\(M-{\mathcal{D}}\)</span>.</p>
-<p>We assume that every state can be reached from the initial state within a single episode, and that the action space <span class="math inline">\(\mathcal{A}\)</span> is fixed.</p>
+<p><span class="theorem-title"><strong>Definition 10.1 (Explore-then-exploit algorithm)</strong></span> Suppose that every state can be reached from the initial state within a single episode.</p>
 <ol type="1">
 <li><span class="math inline">\(\mathcal{D} \gets \emptyset\)</span></li>
 <li>For <span class="math inline">\(T = 0, 1, 2, \dots\)</span> (until the entire MDP has been explored):
 <ol type="1">
 <li>Construct <span class="math inline">\(M_{\mathcal{D}}\)</span> using <span class="math inline">\(\mathcal{D}\)</span>. That is, the state transitions are set to those observed in <span class="math inline">\(\mathcal{D}\)</span>, and the reward is set to <span class="math inline">\(0\)</span> for all state-action pairs in <span class="math inline">\(\mathcal{D}\)</span>, and <span class="math inline">\(1\)</span> otherwise.</li>
-<li>Execute <a href="mdps.html#sec-opt-dynamic-programming" class="quarto-xref"><span>Section 1.2.7</span></a> on the known MDP <span class="math inline">\(M-{\mathcal{D}}\)</span> to compute policy <span class="math inline">\(\pi^\star_{\mathcal{D}}\)</span>.</li>
-<li>Execute <span class="math inline">\(\pi^\star_{\mathcal{D}}\)</span>. This will visit some <span class="math inline">\((s, a)\)</span> not yet observed in <span class="math inline">\(\mathcal{D}\)</span>.</li>
+<li>Execute DP (<a href="mdps.html#sec-finite-opt-dp" class="quarto-xref"><span>Section 2.3.2</span></a>) on the known MDP <span class="math inline">\(M_{\mathcal{D}}\)</span> to compute the optimal policy <span class="math inline">\(\pi^\star_{\mathcal{D}}\)</span>.</li>
+<li>Execute <span class="math inline">\(\pi^\star_{\mathcal{D}}\)</span> in <span class="math inline">\(M_{\mathcal{D}}\)</span>. This will visit some <span class="math inline">\((s, a)\)</span> not yet in <span class="math inline">\(\mathcal{D}\)</span>, and observe the reward <span class="math inline">\(r(s, a)\)</span> and next state <span class="math inline">\(P(s, a)\)</span>.</li>
 <li><span class="math inline">\(\mathcal{D} \gets \mathcal{D} \cup \{ (s, a, r, s') \}\)</span>, where <span class="math inline">\(s' = P(s, a), r = r(s, a)\)</span> are the observed state transition and reward.</li>
 </ol></li>
 </ol>
 </div>
-<!-- Compute the optimal policy $\pi^\star$ in the MDP $K$ (e.g. using policy iteration). $\pi^\star$. -->
+<div id="rem-explore-bfs" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.3</em> (Path planning is graph traversal). </span>Review the dynamic programming algorithm for a finite-horizon MDP (<a href="mdps.html#sec-finite-opt-dp" class="quarto-xref"><span>Section 2.3.2</span></a>). Note that in the constructed MDP <span class="math inline">\(M_{\mathcal{D}}\)</span>, this is identical to a <strong>breadth-first search</strong> beginning from the desired state at the final timestep: each state-timestep pair is a node in the graph, and the state transitions determine the (directed) edges. Each state-timestep pair from which it is possible to reach the desired state is assigned a value of <span class="math inline">\(1\)</span>. The policy serves to backtrack through these state-timestep pairs, returning to the root node of the search: the desired state.</p>
+</div>
+<p>We can easily measure the <strong>per-episode regret</strong> of this algorithm.</p>
+<div id="def-per-episode-regret" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10.2 (Per-episode regret)</strong></span> We aim to evaluate some iterative policy optimization algorithm. Let <span class="math inline">\(\pi^t\)</span> be the policy returned by the algorithm after <span class="math inline">\(t\)</span> iterations. The per-episode regret across <span class="math inline">\(T\)</span> iterations is given by</p>
+<p><span id="eq-per-episode-regret"><span class="math display">\[
+\text{Regret}_T= \mathop{\mathbb{E}}_{s_0 \sim P_0}\left[ \sum_{t= 0}^{T- 1} V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right]
+\tag{10.1}\]</span></span></p>
+<p>where the randomness is in the initial state distribution.</p>
+</div>
+<div id="rem-mab-mdp" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.4</em> (MDP policies as MAB arms). </span>What does this have to do with the definition of regret in the MAB setting (<a href="bandits.html#def-regret" class="quarto-xref">def.&nbsp;<span>4.3</span></a>)? Here, policies are arms, and the “mean reward” is the expected total reward of a trajectory. We’ll make this connection more explicit in <a href="#sec-mdp-mab" class="quarto-xref"><span>Section 10.3</span></a>.</p>
+</div>
 <div id="thm-explore-then-exploit-performance" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 9.1 (Performance of explore-then-exploit)</strong></span> As long as every state can be reached from <span class="math inline">\(s_0\)</span> within a single episode, i.e.&nbsp;<span class="math inline">\(|\mathcal{S}| \le H\)</span>, this will eventually be able to explore all <span class="math inline">\(|\mathcal{S}| |\mathcal{A}|\)</span> state-action pairs, adding one new transition per episode. We know it will take at most <span class="math inline">\(|\mathcal{S}| |\mathcal{A}|\)</span> iterations to explore the entire MDP, after which <span class="math inline">\(\pi^t = \pi^\star\)</span>, incurring no additional regret. For each <span class="math inline">\(\pi^t\)</span> up until then, corresponding to the shortest-path policies <span class="math inline">\(\tilde \pi\)</span>, the value of policy <span class="math inline">\(\pi^t\)</span> will differ from that of <span class="math inline">\(\pi^\star\)</span> by at most <span class="math inline">\(H\)</span>, since the policies will differ by at most <span class="math inline">\(1\)</span> reward at each timestep. So,</p>
-<p><span class="math display">\[
-\sum_{t=0}^{T-1} V^\star_0 - V_0^{\pi^t} \le |\mathcal{S}||\mathcal{A}| H.
-\]</span></p>
-<p>(Note that this MDP and algorithm are deterministic, so the regret is not random.)</p>
+<p><span class="theorem-title"><strong>Theorem 10.1 (Performance of explore-then-exploit)</strong></span> The regret of the explore-then-exploit algorithm (<a href="#def-explore-then-exploit" class="quarto-xref">def.&nbsp;<span>10.1</span></a>) can be upper-bounded by</p>
+<p><span id="eq-explore-exploit-performance"><span class="math display">\[
+\sum_{t= 0}^{T- 1} V^\star_0 - V_0^{\pi^t} \le |\mathcal{S}||\mathcal{A}| H.
+\tag{10.2}\]</span></span></p>
+<p>(This MDP and algorithm are deterministic, assuming there is a single starting state, so the regret is not random.)</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>As long as every state can be reached from <span class="math inline">\(s_0\)</span> within a single episode, i.e.&nbsp;<span class="math inline">\(|\mathcal{S}| \le H\)</span>, <a href="#def-per-episode-regret" class="quarto-xref">def.&nbsp;<span>10.2</span></a> will eventually be able to explore all <span class="math inline">\(|\mathcal{S}| |\mathcal{A}|\)</span> state-action pairs, adding one new transition per episode.</p>
+<p>Let <span class="math inline">\(M\)</span> denote the original MDP that we aim to solve. We know it will take at most <span class="math inline">\(|\mathcal{S}| |\mathcal{A}|\)</span> iterations to explore the entire MDP, after which <span class="math inline">\(M_{\mathcal{D}} = M\)</span> and <span class="math inline">\(\pi^\star_{\mathcal{D}}\)</span> is the optimal policy in <span class="math inline">\(M\)</span>, incurring no additional regret. For each “shortest-path” policy <span class="math inline">\(\pi^\star_{\mathcal{D}}\)</span> up until then, its value will differ from that of <span class="math inline">\(\pi^\star\)</span> by at most <span class="math inline">\(H\)</span>, since the policies will differ by at most <span class="math inline">\(1\)</span> reward at each timestep.</p>
 </div>
 </section>
-<section id="sec-mdp-mab" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="sec-mdp-mab"><span class="header-section-number">9.3</span> Treating an unknown MDP as a MAB</h2>
-<p>We also explored the exploration-exploitation tradeoff in <a href="bandits.html" class="quarto-xref"><span>Chapter 3</span></a>. Recall tthat in the MAB setting, we have <span class="math inline">\(K\)</span> arms, each of which has an unknown reward distribution, and we want to learn which of the arms is <em>optimal</em>, i.e.&nbsp;has the highest mean reward.</p>
-<p>One algorithm that struck a good balance between exploration and exploitation was the <strong>upper confidence bound</strong> algorithm <a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 3.6</span></a>: For each arm, we construct a <em>confidence interval</em> for its true mean award, and then choose the arm with the highest upper confidence bound. In summary,</p>
-<p><span class="math display">\[
-k_{t+1} \gets \arg\max_{k \in [K]} \frac{R^{k}_t}{N^{k}_t} + \sqrt{\frac{\ln(2t/\delta)}{2 N^{k}_t}}
-\]</span></p>
-<p>where <span class="math inline">\(N_t^k\)</span> indicates the number of times arm <span class="math inline">\(k\)</span> has been pulled up until time <span class="math inline">\(t\)</span>, <span class="math inline">\(R_t^k\)</span> indicates the total reward obtained by pulling arm <span class="math inline">\(k\)</span> up until time <span class="math inline">\(t\)</span>, and <span class="math inline">\(\delta &gt; 0\)</span> controls the width of the confidence interval. How might we extend UCB to the MDP case?</p>
-<p>Let us formally describe an unknown MDP as an MAB problem. In an unknown MDP, we want to learn which <em>policy</em> is optimal. So if we want to apply MAB techniques to solving an MDP, it makes sense to think of <em>arms</em> as <em>policies</em>. There are <span class="math inline">\(K = (|\mathcal{A}|^{|\mathcal{S}|})^H\)</span> deterministic policies in a finite MDP. Then, “pulling” arm <span class="math inline">\(\pi\)</span> corresponds to using <span class="math inline">\(\pi\)</span> to act through a trajectory in the MDP, and observing the total reward.</p>
-<div id="exr-mdp-mab" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 9.1 (Notation for expected reward)</strong></span> Which quantity that we have seen so far equals the expected reward from arm <span class="math inline">\(\pi\)</span>?</p>
+<section id="sec-mdp-mab" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="sec-mdp-mab"><span class="header-section-number">10.3</span> Treating an unknown MDP as a MAB</h2>
+<p>We explored the exploration-exploitation tradeoff in the multi-armed bandits setting (<a href="bandits.html" class="quarto-xref"><span>Chapter 4</span></a>). Can we apply the MAB algorithms we discovered to MDPs as well? Let us formally describe an unknown MDP as an MAB problem.</p>
+<p>In a MAB problem, we want to find the <em>arm</em> with the highest mean reward. In an MDP, we want to find the <em>policy</em> that achieves the highest expected total reward. So if we want to apply MAB techniques to solving an MDP, it makes sense to draw an equivalence between <em>arms</em> and <em>policies</em>. We can summarize this equivalence in the following table:</p>
+<div id="tbl-mdp-mab" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mdp-mab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;10.1: Treating an MDP with finite states and actions as a MAB.
+</figcaption>
+<div aria-describedby="tbl-mdp-mab-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 68%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>MAB</th>
+<th>MDP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(K\)</span> arms</td>
+<td><span class="math inline">\((\vert\mathcal{A}\vert^{\vert\mathcal{S}\vert})^H\)</span> deterministic policies</td>
+</tr>
+<tr class="even">
+<td>unknown reward distributions <span class="math inline">\(\nu^k\)</span></td>
+<td>unknown trajectory distributions <span class="math inline">\(\rho^\pi\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(k^\star = \arg\max_{k \in [K]} \mathop{\mathbb{E}}_{r \sim \nu^k} [r]\)</span></td>
+<td><span class="math inline">\(\pi^\star = \arg\max_{\pi \in \Pi} \mathop{\mathbb{E}}_{\tau \sim \rho^\pi} \left[ \sum_{h=0}^{H-1} r(s_h, a_h) \right]\)</span></td>
+</tr>
+<tr class="even">
+<td>pull arm <span class="math inline">\(k\)</span> and observe reward</td>
+<td>roll out with <span class="math inline">\(\pi\)</span> and observe total reward</td>
+</tr>
+</tbody>
+</table>
 </div>
-<p>Recall that UCB incurs regret <span class="math inline">\(\tilde{O}(\sqrt{TK})\)</span>, where <span class="math inline">\(T\)</span> is the number of pulls and <span class="math inline">\(K\)</span> is the number of arms. So in the MDP-as-MAB problem, using UCB for <span class="math inline">\(T\)</span> episodes would achieve regret</p>
+</figure>
+</div>
+<p>(For the sake of this example, assume that the MDP’s reward function is stochastic, so that the MAB reward distributions are nondegenerate.)</p>
+<p>Recall that UCB incurs regret <span class="math inline">\(\widetilde{O}(\sqrt{TK})\)</span>, where <span class="math inline">\(T\)</span> is the number of pulls and <span class="math inline">\(K\)</span> is the number of arms. So in the MDP-as-MAB problem, using UCB for <span class="math inline">\(T\)</span> episodes would achieve regret</p>
 <p><span id="eq-mdp-as-mab"><span class="math display">\[
-\tilde{O}(\sqrt{|\mathcal{A}|^{|\mathcal{S}|H} T})
-\tag{9.1}\]</span></span></p>
-<p>This scales <em>exponentially</em> in <span class="math inline">\(|\mathcal{S}|\)</span> and <span class="math inline">\(H\)</span>, which quickly becomes intractable. Notably, this method doesn’t consider the information that we gain across different policies. We can illustrate this with the following example:</p>
+\widetilde{O}\left(
+    \sqrt{|\mathcal{A}|^{|\mathcal{S}|H} T}
+\right)
+\tag{10.3}\]</span></span></p>
+<p>This scales <em>exponentially</em> in <span class="math inline">\(|\mathcal{S}|\)</span> and <span class="math inline">\(H\)</span>, which quickly becomes intractable. Notably, this method treats each policy as entirely independent from the others, but the performance of different policies are typically correlated. We can illustrate this with the following example:</p>
 <div id="exm-ineffective-mdp" class="theorem example">
-<p><span class="theorem-title"><strong>Example 9.2 (Treating an MDP as a MAB)</strong></span> Consider a “coin MDP” with two states “heads” and “tails”, two actions “Y” and “N”, and a time horizon of <span class="math inline">\(H=2\)</span>. The state transition flips the coin, and doesn’t depend on the action. The reward only depends on the action: Taking action Y gives reward <span class="math inline">\(1\)</span>, and taking action N gives reward <span class="math inline">\(0\)</span>.</p>
-<p>Suppose we collect data from the two constant policies <span class="math inline">\(\pi_{\text{Y}}(s) = \text{Y}\)</span> and <span class="math inline">\(\pi_{\text{N}}(s) = \text{N}\)</span>. Now we want to learn about the policy <span class="math inline">\(\tilde{\pi}\)</span> that takes action Y and then N. Do we need to collect data from <span class="math inline">\(\tilde{\pi}\)</span> to evaluate it? No: Since the reward only depends on the action, we can infer its value from our data on the policies <span class="math inline">\(\pi_{\text{Y}}\)</span> and <span class="math inline">\(\pi_{\text{N}}\)</span>. However, if we treat the MDP as a bandit in which <span class="math inline">\(\tilde{\pi}\)</span> is a new, unknown arm, we ignore the known correlation between the action and the reward.</p>
+<p><span class="theorem-title"><strong>Example 10.2 (Treating an MDP as a MAB)</strong></span> Consider a “coin MDP” with two states “heads” and “tails”, two actions “Y” and “N”, and a time horizon of <span class="math inline">\(H=2\)</span>. The state transition flips the coin, and doesn’t depend on the action. The reward only depends on the action: Taking action Y gives reward <span class="math inline">\(1\)</span>, and taking action N gives reward <span class="math inline">\(0\)</span>.</p>
+<p>Suppose we collect data from the two constant policies <span class="math inline">\(\pi_{\text{Y}}(s) = \text{Y}\)</span> and <span class="math inline">\(\pi_{\text{N}}(s) = \text{N}\)</span>. Now we want to learn about the policy <span class="math inline">\(\widetilde{\pi}\)</span> that takes action Y and then N. Do we need to collect data from <span class="math inline">\(\widetilde{\pi}\)</span> to evaluate it? No: Since the reward only depends on the action, we can infer its value from our data on the policies <span class="math inline">\(\pi_{\text{Y}}\)</span> and <span class="math inline">\(\pi_{\text{N}}\)</span>. However, if we treat the MDP as a bandit in which <span class="math inline">\(\widetilde{\pi}\)</span> is a new, unknown arm, we ignore the known correlation between the action and the reward.</p>
 </div>
 </section>
-<section id="ucb-vi" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="ucb-vi"><span class="header-section-number">9.4</span> UCB-VI</h2>
-<p>The approach above is inefficient: We shouldn’t need to consider all <span class="math inline">\(|\mathcal{A}|^{|\mathcal{S}| H}\)</span> deterministic policies to achieve low regret. Rather, all we need to describe the optimal policy is <span class="math inline">\(Q^\star\)</span>, which has <span class="math inline">\(H |\mathcal{S}||\mathcal{A}|\)</span> entries to be learned. Can we borrow ideas from UCB to reduce the regret to a polynomial in <span class="math inline">\(|\mathcal{S}|\)</span>, <span class="math inline">\(|\mathcal{A}|\)</span>, and <span class="math inline">\(H\)</span>?</p>
-<p>One way to frame the UCB algorithm is that, when choosing arms, we optimize over a <em>proxy reward</em> that is the sum of the estimated mean reward and an <strong>exploration term</strong>. In the <strong>UCB-VI</strong> algorithm, we will extend this idea to the case of an unknown MDP <span class="math inline">\(\mathcal{M}^{?}\)</span> by modeling a proxy MDP <span class="math inline">\(\widetilde{\mathcal{M}}\)</span> with a reward function that encourages exploration. Then, we will use DP to solve for the optimal policy in <span class="math inline">\(\widetilde{\mathcal{M}}\)</span>.</p>
-<p><strong>Assumptions:</strong> For simplicity, here we assume the reward function of <span class="math inline">\(\mathcal{M}^{?}\)</span> is known, so we only need to model the state transitions, though the rewards can be modelled similarly. We will also consider the more general case of a <strong>time-varying</strong> MDP, where the transition and reward functions may change over time. We take the convention that <span class="math inline">\(P_h\)</span> is the distribution of <span class="math inline">\(s_{h+1} \mid s_{h}, a_{h}\)</span> and <span class="math inline">\(r_h\)</span> is applied to <span class="math inline">\(s_h, a_h\)</span>.</p>
-<p>At a high level, the UCB-VI algorithm can be described as follows:</p>
+<section id="sec-ucbvi" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="sec-ucbvi"><span class="header-section-number">10.4</span> Upper confidence bound value iteration</h2>
+<p>We shouldn’t need to consider all <span class="math inline">\(|\mathcal{A}|^{|\mathcal{S}| H}\)</span> deterministic policies to achieve low regret. Rather, all we need to describe the optimal policy is <span class="math inline">\(Q^\star\)</span>, which has <span class="math inline">\(H |\mathcal{S}||\mathcal{A}|\)</span> entries to be learned. In this section, we’ll study the upper confidence bound value iteration (UCBVI) algorithm <span class="citation" data-cites="azar_minimax_2017">(<a href="references.html#ref-azar_minimax_2017" role="doc-biblioref">Azar et al., 2017</a>)</span>, which indeed achieves <em>polynomial</em> regret in <span class="math inline">\(|\mathcal{S}|\)</span>, <span class="math inline">\(|\mathcal{A}|\)</span>, and <span class="math inline">\(H\)</span>.</p>
+<p>As its name suggests, UCBVI combines the upper confidence bound (UCB) algorithm from the multi-armed bandits setting (<a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 4.7</span></a>) with value iteration (VI) from the MDP setting (<a href="mdps.html#sec-finite-opt-dp" class="quarto-xref"><span>Section 2.3.2</span></a>):</p>
+<ul>
+<li>UCB strikes a good exploration-exploitation tradeoff in an (unknown) MAB;</li>
+<li>VI (what we simply call DP in the finite-horizon setting) computes the optimal value function in a known MDP (with finite states and actions).</li>
+</ul>
+<p>Let us briefly review these two algorithms:</p>
+<div id="rem-ucb-review" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.5</em> (Review of UCB). </span>At each iteration <span class="math inline">\(t\)</span>, for each arm <span class="math inline">\(k\)</span>, we construct a <em>confidence interval</em> for the mean of arm <span class="math inline">\(k\)</span>’s reward distribution. We then choose the arm with the highest upper confidence bound:</p>
+<p><span id="eq-ucb-review"><span class="math display">\[
+\begin{aligned}
+k_{t+1} &amp;\gets \arg\max_{k \in [K]} \text{ucb}^k_t \\
+\text{where } \text{ucb}^k_t &amp;= \frac{R^{k}_t}{N^{k}_t} + \sqrt{\frac{\ln(2t/\delta)}{2 N^{k}_t}}
+\end{aligned}
+\tag{10.4}\]</span></span></p>
+<p>where <span class="math inline">\(N_t^k\)</span> indicates the number of times arm <span class="math inline">\(k\)</span> has been pulled up until time <span class="math inline">\(t\)</span>, <span class="math inline">\(R_t^k\)</span> indicates the total reward obtained by pulling arm <span class="math inline">\(k\)</span> up until time <span class="math inline">\(t\)</span>, and <span class="math inline">\(\delta &gt; 0\)</span> controls the width of the confidence interval.</p>
+</div>
+<p>We can treat the upper confidence bound as a “proxy reward” that is the estimated mean reward plus a bonus <strong>exploration term</strong>. Since the size of the bonus term is proportional to our uncertainty (i.e.&nbsp;predicted variance) about that arm’s mean, this is called an <strong>optimistic</strong> bonus. In UCBVI, we will extend this idea to the case of an unknown MDP <span class="math inline">\(\mathcal{M}\)</span> by adding an <em>exploration term</em> to the reward function. Then, we will use DP to solve for the optimal policy in <span class="math inline">\(\widetilde{\mathcal{M}}\)</span>.</p>
+<div id="rem-vi-review" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.6</em> (Review of VI/DP). </span>Value iteration (VI) is a dynamic programming (DP) algorithm for computing the optimal policy and value function in an MDP where the state transitions and reward function are known. We begin at the final timestep, where <span class="math inline">\(V_H^\star(s) = 0\)</span>, and work backwards using Bellman’s optimality equations (<a href="mdps.html#thm-bellman-opt" class="quarto-xref">Theorem&nbsp;<span>2.5</span></a>):</p>
+<p>For <span class="math inline">\(h= H-1, \dots, 0\)</span>:</p>
+<p><span id="eq-vi-review"><span class="math display">\[
+\begin{aligned}
+Q_h^\star(s, a) &amp;= r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(\cdot \mid s, a)}[V_{h+1}^\star(s')] \\
+\pi_h^\star(s) &amp;= \arg\max_{a \in \mathcal{A}} Q_h^\star(s, a) \\
+V_h^\star(s) &amp;= Q_h^\star(s, \pi_h^\star(s)).
+\end{aligned}
+\tag{10.5}\]</span></span></p>
+</div>
+<p><strong>Assumptions</strong>: We will consider the general case of a <strong>time-varying</strong> MDP where the transition and reward functions may change over time. Recall our convention that <span class="math inline">\(P_h\)</span> is the distribution of <span class="math inline">\(s_{h+1} \mid s_{h}, a_{h}\)</span> and <span class="math inline">\(r_h\)</span> is applied to <span class="math inline">\(s_h, a_h\)</span>.</p>
+<div id="def-ucbvi" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10.3 (UCBVI)</strong></span> At a high level, the UCBVI algorithm can be described as follows: For <span class="math inline">\(i = 0, \dots, I-1\)</span>:</p>
 <ol type="1">
-<li><p><strong>Modeling:</strong> Use previous data to model the transitions <span class="math inline">\(\widehat{P}_0, \dots, \widehat{P}_{H-1}\)</span>.</p></li>
-<li><p><strong>Reward bonus:</strong> Design a reward bonus <span class="math inline">\(b_h(s, a) \in \mathbb{R}\)</span> to encourage exploration, analogous to the UCB term.</p></li>
-<li><p><strong>Optimistic planning:</strong> Use DP to compute the optimal policy <span class="math inline">\(\widehat \pi_h(s)\)</span> in the modelled MDP</p></li>
+<li><strong>Modeling:</strong> Use previously collected data to model the state transitions <span class="math inline">\(\widehat{P}_0, \dots, \widehat{P}_{H-1}\)</span> and reward functions <span class="math inline">\(\widehat{r}_0, \dots, \widehat{r}_{H-1}\)</span>.</li>
+<li><strong>Reward bonus:</strong> Design a reward bonus <span class="math inline">\(b_h(s, a) \in \mathbb{R}\)</span> to encourage exploration, analogous to the UCB term.</li>
+<li><strong>Optimistic planning:</strong> Use VI (i.e.&nbsp;DP) to compute the optimal policy <span class="math inline">\(\widehat \pi\)</span> in the modelled MDP</li>
 </ol>
 <p><span class="math display">\[
-\tilde{\mathcal{M}} = (\mathcal{S}, \mathcal{A}, \{ \widehat{P}_h\}_{h \in [H]}, \{ r_h+ b_h\}_{h \in [H]}, H).
+\widetilde{\mathcal{M}} = (\mathcal{S}, \mathcal{A}, \{ \widehat{P}_h\}_{h \in [H]}, \{ \widehat{r}_h+ b_h\}_{h \in [H]}, H).
 \]</span></p>
 <ol start="4" type="1">
-<li><strong>Execution:</strong> Use <span class="math inline">\(\widehat \pi_h(s)\)</span> to collect a new trajectory, and repeat.</li>
+<li><strong>Execution:</strong> Use <span class="math inline">\(\widehat \pi\)</span> to collect a new trajectory.</li>
 </ol>
-<p>We detail each of these steps below. The full definition follows in <a href="#def-ucb-vi" class="quarto-xref">Definition&nbsp;<span>9.3</span></a>.</p>
-<section id="deling-the-transitions" class="level3" data-number="9.4.1">
-<h3 data-number="9.4.1" class="anchored" data-anchor-id="deling-the-transitions"><span class="header-section-number">9.4.1</span> deling the transitions</h3>
-<p>We seek to approximate <span class="math inline">\(P_h(s_{h+1} \mid s_h, a_h) = \frac{\mathbb{P}(s_h, a_h, s_{h+1})}{\mathbb{P}(s_h, a_h)}\)</span>. We can estimate these using their sample probabilities from the dataset. That is, define</p>
-<p><span class="math display">\[
+<p>We detail each of these steps below.</p>
+</div>
+<section id="modeling-the-transitions" class="level3" data-number="10.4.1">
+<h3 data-number="10.4.1" class="anchored" data-anchor-id="modeling-the-transitions"><span class="header-section-number">10.4.1</span> Modeling the transitions</h3>
+<p>Recall that we <em>don’t know</em> the state transitions or reward function of the MDP we aim to solve. We seek to approximate</p>
+<p><span id="eq-transitions-factor"><span class="math display">\[
+P_h(s_{h+ 1} \mid s_h, a_h) = \frac{\mathbb{P}(s_h, a_h, s_{h+ 1})}{\mathbb{P}(s_h, a_h)},
+\tag{10.6}\]</span></span></p>
+<p>where <span class="math inline">\(\mathbb{P}\)</span> denotes the true joint probabilities. We can estimate these using their sample probabilities across a set of collected transitions. That is, define</p>
+<p><span id="eq-count-transitions"><span class="math display">\[
 \begin{aligned}
-    N_h^t(s, a, s') &amp; := \sum_{i=0}^{t-1} \mathbf{1}\left\{ (s_h^i, a_h^i, s_{h+1}^i) = (s, a, s') \right\} \\
-    N_h^t(s, a)     &amp; := \sum_{i=0}^{t-1} \mathbf{1}\left\{ (s_h^i, a_h^i) = (s, a) \right\}                \\
+    N_h^i(s, a, s') &amp; := \sum_{i'=0}^{i-1} \mathbf{1}\left\{ (s_h^{i'}, a_h^{i'}, s_{h+1}^{i'}) = (s, a, s') \right\} \\
+    N_h^i(s, a)     &amp; := \sum_{i'=0}^{i-1} \mathbf{1}\left\{ (s_h^{i'}, a_h^{i'}) = (s, a) \right\}                \\
 \end{aligned}
-\]</span></p>
-<p>Then we can model</p>
-<p><span class="math display">\[
+\tag{10.7}\]</span></span></p>
+<p>to be the number of times the tuple <span class="math inline">\(s, a, s'\)</span> appears in the collected data, and similar for the state-action pair <span class="math inline">\(s, a\)</span>. Then we can model</p>
+<p><span id="eq-average-transition"><span class="math display">\[
 \widehat{P}_h^t(s' \mid s, a) = \frac{N_h^t(s, a, s')}{N_h^t(s, a)}.
-\]</span></p>
-<div class="{prf:remark}">
-<p>Note that this is also a fairly naive, nonparametric estimator that doesn’t assume any underlying structure of the MDP. We’ll see how to incorporate assumptions about the MDP in the following section.</p>
-</div>
+\tag{10.8}\]</span></span></p>
+<p>Similarly, we can model the rewards by the sample mean in each state-action pair:</p>
+<p><span id="eq-average-reward"><span class="math display">\[
+\widehat{r}_h^t(s, a) = \frac{N_h^t(s, a)} \sum_{t'=0}^{t-1} \mathbf{1}\left\{ (s_h^i, a_h^i) = (s, a) \right\} r_h^i.
+\tag{10.9}\]</span></span></p>
+<p>This is a fairly naive, nonparametric estimator that doesn’t assume any underlying structure of the MDP. We’ll see how to incorporate assumptions about the MDP in the following section.</p>
 </section>
-<section id="reward-bonus" class="level3" data-number="9.4.2">
-<h3 data-number="9.4.2" class="anchored" data-anchor-id="reward-bonus"><span class="header-section-number">9.4.2</span> Reward bonus</h3>
-<p>To motivate the reward bonus term <span class="math inline">\(b_h^t(s, a)\)</span>, recall how we designed the reward bonus term for UCB:</p>
+<section id="sec-reward-bonus" class="level3" data-number="10.4.2">
+<h3 data-number="10.4.2" class="anchored" data-anchor-id="sec-reward-bonus"><span class="header-section-number">10.4.2</span> Reward bonus</h3>
+<p>To motivate the reward bonus term, recall how we designed the reward bonus term for UCB (<a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 4.7</span></a>):</p>
 <ol type="1">
-<li><p>We used Hoeffding’s inequality to bound, with high probability, how far the sample mean <span class="math inline">\(\widehat \mu_t^k\)</span> deviated from the true mean <span class="math inline">\(\mu^k\)</span>.</p></li>
-<li><p>By inverting this inequality, we obtained a <span class="math inline">\((1-\delta)\)</span>-confidence interval for the true mean, centered at our estimate.</p></li>
-<li><p>To make this bound <em>uniform</em> across all timesteps <span class="math inline">\(t \in [T]\)</span>, we applied the union bound and multiplied <span class="math inline">\(\delta\)</span> by a factor of <span class="math inline">\(T\)</span>.</p></li>
+<li>We used Hoeffding’s inequality to bound, with high probability, how far the sample mean <span class="math inline">\(\widehat \mu_t^k\)</span> deviated from the true mean <span class="math inline">\(\mu^k\)</span>.</li>
+<li>By inverting this inequality, we obtained a <span class="math inline">\((1-\delta)\)</span>-confidence interval for the true mean, centered at our estimate.</li>
+<li>To make this bound <em>uniform</em> across all timesteps <span class="math inline">\(t \in [T]\)</span>, we applied the union bound and multiplied <span class="math inline">\(\delta\)</span> by a factor of <span class="math inline">\(T\)</span>.</li>
 </ol>
-<p>We’d like to do the same for UCB-VI, and construct the bonus term such that <span class="math inline">\(V^\star_h(s) \le \widehat{V}_h^t(s)\)</span> with high probability. However, our construction will be more complex than the MAB case, since <span class="math inline">\(\widehat{V}_h^t(s)\)</span> depends on the bonus <span class="math inline">\(b_h^t(s, a)\)</span> implicitly via DP. We claim that the bonus term that gives the proper bound is</p>
-<p><span id="eq-ucb-vi-bonus"><span class="math display">\[
-b_h^t(s, a) = 2 H \sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|H T/\delta )}{N_h^t(s, a)}}.
-\tag{9.2}\]</span></span></p>
-<p>We will only provide a heuristic sketch of the proof; see <span class="citation" data-cites="agarwal_reinforcement_2022">(<a href="references.html#ref-agarwal_reinforcement_2022" role="doc-biblioref">Agarwal et al. 2022</a>)</span> (Section 7.3) for a full proof.</p>
-<div id="rem-ucb-vi-bonus" class="proof remark">
-<p><span class="proof-title"><em>Remark 9.1</em> (UCB-VI reward bonus construction). </span>We aim to show that, with high probability,</p>
-<p><span class="math display">\[
-V_h^\star(s) \le \widehat{V}_h^t(s) \quad \forall t \in [T], h \in [H], s \in \mathcal{S}.
-\]</span></p>
-<p>We’ll do this by bounding the error incurred at each step of DP. Recall that DP solves for <span class="math inline">\(\widehat{V}_h^t(s)\)</span> recursively as follows:</p>
-<p><span class="math display">\[
-\widehat{V}_h^t(s) = \max_{a \in \mathcal{A}} \left[ \tilde r^t_h(s, a) + \mathbb{E}_{s' \sim \widehat{P}_h^t(\cdot \mid s, a)} \left[ \widehat{V}_{h+1}^t(s') \right] \right]
-\]</span></p>
-<p>where <span class="math inline">\(\tilde r^t_h(s, a) = r_h(s, a) + b_h^t(s, a)\)</span> is the reward function of our modelled MDP <span class="math inline">\(\tilde{\mathcal{M}}^t\)</span>. On the other hand, we know that <span class="math inline">\(V^\star\)</span> must satisfy</p>
-<p><span class="math display">\[
-V^\star_h(s) = \max_{a \in \mathcal{A}} \left[ \tilde r^t_h(s, a) + \mathbb{E}_{s' \sim P^?_h(\cdot \mid s, a)} [V^\star_{h+1}(s')] \right]
-\]</span></p>
-<p>so it suffices to bound the difference between the two inner expectations. There are two sources of error:</p>
-<ol type="1">
-<li><p>The value functions <span class="math inline">\(\widehat{V}^t_{h+1}\)</span> v.s. <span class="math inline">\(V^\star_{h+1}\)</span></p></li>
-<li><p>The transition probabilities <span class="math inline">\(\widehat{P}_h^t\)</span> v.s. <span class="math inline">\(P^?_h\)</span>.</p></li>
-</ol>
-<p>We can bound these individually, and then combine them by the triangle inequality. For the former, we can simply bound the difference by <span class="math inline">\(H\)</span>, assuming that the rewards are within <span class="math inline">\([0, 1]\)</span>. Now, all that is left is to bound the error from the transition probabilities:</p>
-<p><span id="eq-err"><span class="math display">\[
-\text{error} = \left| \mathbb{E}_{s' \sim \widehat{P}_h^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] - \mathbb{E}_{s' \sim P^?_h(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]. \right|
-\tag{9.3}\]</span></span></p>
-<p>Let us bound this term for a fixed <span class="math inline">\(s, a, h, t\)</span>. (Later we can make this uniform across <span class="math inline">\(s, a, h, t\)</span> using the union bound.) Note that expanding out the definition of <span class="math inline">\(\widehat{P}_h^t\)</span> gives</p>
-<p><span class="math display">\[
-\begin{aligned}
-        \mathbb{E}_{s' \sim \widehat{P}_h^t(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right] &amp; = \sum_{s' \in \mathcal{S}} \frac{N^t_h(s, a, s')}{N^t_h(s, a)} V^\star_{h+1}(s')                                                     \\
-                                                                                   &amp; = \frac{1}{N^t_h(s, a)} \sum_{i=0}^{t-1} \sum_{s' \in \mathcal{S}} \mathbf{1}\left\{ (s_h^i, a_h^i, s_{h+1}^i) = (s, a, s') \right\} V^\star_{h+1}(s') \\
-                                                                                   &amp; = \frac{1}{N^t_h(s, a)} \sum_{i=0}^{t-1} \underbrace{\mathbf{1}\left\{ (s_h^i, a_h^i) = (s, a) \right\} V^\star_{h+1}(s_{h+1}^i)}_{X^i}
-\end{aligned}
-\]</span></p>
-<p>since the terms where <span class="math inline">\(s' \neq s_{h+1}^i\)</span> vanish.</p>
-<p>Now, in order to apply Hoeffding’s inequality, we would like to express the second term in <a href="#eq-err" class="quarto-xref">Equation&nbsp;<span>9.3</span></a> as a sum over <span class="math inline">\(t\)</span> random variables as well. We will do this by redundantly averaging over all desired trajectories (i.e.&nbsp;where we visit state <span class="math inline">\(s\)</span> and action <span class="math inline">\(a\)</span> at time <span class="math inline">\(h\)</span>):</p>
-<p><span class="math display">\[
-\begin{aligned}
-        \mathbb{E}_{s' \sim P^?_h(\cdot \mid s, a)} \left[ V^\star_{h+1}(s') \right]
-         &amp; = \sum_{s' \in \mathcal{S}} P^?_h(s' \mid s, a) V^\star_{h+1}(s')                                                                              \\
-         &amp; = \sum_{s' \in \mathcal{S}} \frac{1}{N^t_h(s, a)} \sum_{i=0}^{t-1} \mathbf{1}\left\{ (s_h^i, a_h^i) = (s, a) \right\} P^?_h(s' \mid s, a) V^\star_{h+1}(s') \\
-         &amp; = \frac{1}{N^t_h(s, a)} \sum_{i=0}^{t-1} \mathbb{E}_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_h^i, a_h^i)} X^i.
-\end{aligned}
-\]</span></p>
-<p>Now we can apply Hoeffding’s inequality to <span class="math inline">\(X^i - \mathbb{E}_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_h^i, a_h^i)} X^i\)</span>, which is bounded by <span class="math inline">\(H\)</span>, to obtain that, with probability at least <span class="math inline">\(1-\delta\)</span>,</p>
-<p><span class="math display">\[
-\text{error} = \left| \frac{1}{N^t_h(s, a)} \sum_{i=0}^{t-1} \left(X^i - \mathbb{E}_{s_{h+1}^i \sim P^?_{h}(\cdot \mid s_h^i, a_h^i)} X^i \right) \right| \le 2 H \sqrt{\frac{\ln(1/\delta)}{N_h^t(s, a)}}.
-\]</span></p>
-<p>Applying a union bound over all <span class="math inline">\(s \in \mathcal{S}, a \in \mathcal{A}, t \in [T], h \in [H]\)</span> gives the <span class="math inline">\(b_h^t(s, a)\)</span> term above.</p>
-</div>
-<p>Putting these parts together, we can define the algorithm as follows:</p>
-<div id="def-ucb-vi" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 9.3 (UCB-VI algorithm)</strong></span> TODO</p>
-</div>
+<p>We’d like to do the same for UCBVI, and construct the bonus term such that <span class="math inline">\(V^\star_h(s) \le \widehat{V}_h^t(s)\)</span> with high probability. However, our construction will be more complex than the MAB case, since <span class="math inline">\(\widehat{V}_h^t(s)\)</span> depends on the bonus <span class="math inline">\(b_h^t(s, a)\)</span> implicitly via DP. We claim that the bonus term that gives the proper bound is</p>
+<p><span id="eq-ucbvi-bonus"><span class="math display">\[
+b_h^i(s, a) = 2 H\sqrt{\frac{\log( |\mathcal{S}||\mathcal{A}|HI/\delta )}{N_h^t(s, a)}}.
+\tag{10.10}\]</span></span></p>
+<p>We provide a heuristic sketch of the proof in <a href="proofs.html#sec-ucbvi-proof" class="quarto-xref"><span>Section B.2</span></a>; see <span class="citation" data-cites="agarwal_reinforcement_2022">Agarwal et al. (<a href="references.html#ref-agarwal_reinforcement_2022" role="doc-biblioref">2022</a>)</span>, Section 7.3 for a full proof.</p>
 </section>
-<section id="performance-of-ucb-vi" class="level3" data-number="9.4.3">
-<h3 data-number="9.4.3" class="anchored" data-anchor-id="performance-of-ucb-vi"><span class="header-section-number">9.4.3</span> Performance of UCB-VI</h3>
-<p>How exactly does UCB-VI strike a good balance between exploration and exploitation? In UCB for MABs, the bonus exploration term is simple to interpret: It encourages the learner to take actions with a high exploration term. Here, the policy depends on the bonus term indirectly: The policy is obtained by planning in an MDP where the bonus term is added to the reward function. Note that the bonuses <em>propagate backwards</em> in DP, effectively enabling the learner to <em>plan to explore</em> unknown states. This effect takes some further interpretation.</p>
+<section id="performance-of-ucbvi" class="level3" data-number="10.4.3">
+<h3 data-number="10.4.3" class="anchored" data-anchor-id="performance-of-ucbvi"><span class="header-section-number">10.4.3</span> Performance of UCBVI</h3>
+<p>How exactly does UCBVI strike a good balance between exploration and exploitation? In UCB for MABs, the bonus exploration term is simple to interpret: It encourages the learner to take actions with a high exploration term. Here, the policy depends on the bonus term indirectly: The policy is obtained by planning in an MDP where the bonus term is added to the reward function. Note that the bonuses <em>propagate backwards</em> in DP, effectively enabling the learner to <em>plan to explore</em> unknown states. This effect takes some further interpretation.</p>
 <p>Recall we constructed <span class="math inline">\(b^t_h\)</span> so that, with high probability, <span class="math inline">\(V^\star_h(s) \le \widehat{V}_h^t(s)\)</span> and so</p>
 <p><span class="math display">\[
 V^\star_h(s) - V^{\pi^t}_h(s) \le \widehat{V}_h^t(s) - V^{\pi^t}_h(s).
 \]</span></p>
-<p>That is, the l.h.s. measures how suboptimal policy <span class="math inline">\(\pi^t\)</span> is in the true environment, while the r.h.s. is the difference in the policy’s value when acting in the modelled MDP <span class="math inline">\(\tilde{\mathcal{M}}^t\)</span> instead of the true one <span class="math inline">\(\mathcal{M}^{?}\)</span>.</p>
+<p>That is, the l.h.s. measures how suboptimal policy <span class="math inline">\(\pi^t\)</span> is in the true environment, while the r.h.s. is the difference in the policy’s value when acting in the modelled MDP <span class="math inline">\(\widetilde{\mathcal{M}}^t\)</span> instead of the true one <span class="math inline">\(\mathcal{M}\)</span>.</p>
 <p>If the r.h.s. is <em>small</em>, this implies that the l.h.s. difference is also small, i.e.&nbsp;that <span class="math inline">\(\pi^t\)</span> is <em>exploiting</em> actions that are giving high reward.</p>
-<p>If the r.h.s. is <em>large</em>, then we have overestimated the value: <span class="math inline">\(\pi^t\)</span>, the optimal policy of <span class="math inline">\(\tilde{\mathcal{M}}^t\)</span>, does not perform well in the true environment <span class="math inline">\(\mathcal{M}^{?}\)</span>. This indicates that one of the <span class="math inline">\(b_h^t(s, a)\)</span> terms must be large, or some <span class="math inline">\(\widehat P^t_h(\cdot \mid s, a)\)</span> must be inaccurate, indicating a state-action pair with a low visit count <span class="math inline">\(N^t_h(s, a)\)</span> that the learner was encouraged to explore.</p>
-<p>It turns out that UCB-VI achieves a regret of</p>
-<div id="thm-ucb-vi-regret" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 9.2 (UCB-VI regret)</strong></span> <span class="math display">\[
-\mathbb{E}\left[ \sum_{t=0}^{T-1} \left(V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right) \right] = \tilde{O}(H^2 \sqrt{|\mathcal{S}| |\mathcal{A}| T})
+<p>If the r.h.s. is <em>large</em>, then we have overestimated the value: <span class="math inline">\(\pi^t\)</span>, the optimal policy of <span class="math inline">\(\widetilde{\mathcal{M}}^t\)</span>, does not perform well in the true environment <span class="math inline">\(\mathcal{M}\)</span>. This indicates that one of the <span class="math inline">\(b_h^t(s, a)\)</span> terms must be large, or some <span class="math inline">\(\widehat P^t_h(\cdot \mid s, a)\)</span> must be inaccurate, indicating a state-action pair with a low visit count <span class="math inline">\(N^t_h(s, a)\)</span> that the learner was encouraged to explore.</p>
+<p>It turns out that UCBVI achieves a regret of</p>
+<div id="thm-ucbvi-regret" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 10.2 (UCBVI regret)</strong></span> The expected regret of UCBVI satisfies</p>
+<p><span class="math display">\[
+\mathop{\mathbb{E}}\left[
+    \sum_{t= 0}^{T- 1} \left(V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right)
+\right] =
+\widetilde{O}(H^2 \sqrt{|\mathcal{S}| |\mathcal{A}| I})
 \]</span></p>
 </div>
-<p>Comparing this to the UCB regret bound <span class="math inline">\(\tilde{O}(\sqrt{T K})\)</span>, where <span class="math inline">\(K\)</span> is the number of arms of the MAB, we see that we’ve reduced the number of effective arms from <span class="math inline">\(|\mathcal{A}|^{|\mathcal{S}|H}\)</span> (in <a href="#eq-mdp-as-mab" class="quarto-xref">Equation&nbsp;<span>9.1</span></a>) to <span class="math inline">\(H^4 |\mathcal{S}||\mathcal{A}|\)</span>, which is indeed polynomial in <span class="math inline">\(|\mathcal{S}|\)</span>, <span class="math inline">\(|\mathcal{A}|\)</span>, and <span class="math inline">\(H\)</span>, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret:</p>
+<p>Comparing this to the UCB regret bound <span class="math inline">\(\widetilde{O}(\sqrt{T K})\)</span>, where <span class="math inline">\(K\)</span> is the number of arms of the MAB, we see that we’ve reduced the number of effective arms from <span class="math inline">\(|\mathcal{A}|^{|\mathcal{S}|H}\)</span> (in <a href="#eq-mdp-as-mab" class="quarto-xref">eq.&nbsp;<span>10.3</span></a>) to <span class="math inline">\(H^4 |\mathcal{S}||\mathcal{A}|\)</span>, which is indeed polynomial in <span class="math inline">\(|\mathcal{S}|\)</span>, <span class="math inline">\(|\mathcal{A}|\)</span>, and <span class="math inline">\(H\)</span>, as desired. This is also roughly the number of episodes it takes to achieve constant-order average regret:</p>
 <p><span class="math display">\[
-\frac{1}{T} \mathbb{E}[\text{Regret}_T] = \tilde{O}\left(\sqrt{\frac{H^4 |\mathcal{S}||\mathcal{A}|}{T}}\right)
+\frac{1}{T} \mathop{\mathbb{E}}[\text{Regret}_T] = \widetilde{O}\left(\sqrt{\frac{H^4 |\mathcal{S}||\mathcal{A}|}{T}}\right)
 \]</span></p>
 <p>Note that the time-dependent transition matrix has <span class="math inline">\(H |\mathcal{S}|^2 |\mathcal{A}|\)</span> entries. Assuming <span class="math inline">\(H \ll |\mathcal{S}|\)</span>, this shows that it’s possible to achieve low regret, and achieve a near-optimal policy, while only understanding a <span class="math inline">\(1/|\mathcal{S}|\)</span> fraction of the world’s dynamics.</p>
 </section>
 </section>
-<section id="linear-mdps" class="level2" data-number="9.5">
-<h2 data-number="9.5" class="anchored" data-anchor-id="linear-mdps"><span class="header-section-number">9.5</span> Linear MDPs</h2>
+<section id="linear-mdps" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="linear-mdps"><span class="header-section-number">10.5</span> Linear MDPs</h2>
 <p>A polynomial dependency on <span class="math inline">\(|\mathcal{S}|\)</span> and <span class="math inline">\(|\mathcal{A}|\)</span> is manageable when the state and action spaces are small. But for large or continuous state and action spaces, even this polynomial factor will become intractable. Can we find algorithms that don’t depend on <span class="math inline">\(|\mathcal{S}|\)</span> or <span class="math inline">\(|\mathcal{A}|\)</span> at all, effectively reducing the dimensionality of the MDP? In this section, we’ll explore <strong>linear MDPs</strong>: an example of a <em>parameterized</em> MDP where the rewards and state transitions depend only on some parameter space of dimension <span class="math inline">\(d\)</span> that is independent from <span class="math inline">\(|\mathcal{S}|\)</span> or <span class="math inline">\(|\mathcal{A}|\)</span>.</p>
 <div id="def-linear-mdp" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 9.4 (Linear MDP)</strong></span> We assume that the transition probabilities and rewards are <em>linear</em> in some feature vector</p>
+<p><span class="theorem-title"><strong>Definition 10.4 (Linear MDP)</strong></span> We assume that the transition probabilities and rewards are <em>linear</em> in some feature vector</p>
 <p><span class="math inline">\(\phi(s, a) \in \mathbb{R}^d\)</span>:</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -502,37 +664,37 @@ V^\star_h(s) - V^{\pi^t}_h(s) \le \widehat{V}_h^t(s) - V^{\pi^t}_h(s).
 \]</span></p>
 <p>Note that we can also think of <span class="math inline">\(P_h(\cdot \mid s, a) = \mu_h^\star\)</span> as an <span class="math inline">\(|\mathcal{S}| \times d\)</span> matrix, and think of <span class="math inline">\(\mu^\star_h(s')\)</span> as indexing into the <span class="math inline">\(s'\)</span>-th row of this matrix (treating it as a column vector). Thinking of <span class="math inline">\(V^\star_{h+1}\)</span> as an <span class="math inline">\(|\mathcal{S}|\)</span>-dimensional vector, this allows us to write</p>
 <p><span class="math display">\[
-\mathbb{E}_{s' \sim P_h(\cdot \mid s, a)}[V^\star_{h+1}(s)] = (\mu^\star_h\phi(s, a))^\top V^\star_{h+1}.
+\mathop{\mathbb{E}}_{s' \sim P_h(\cdot \mid s, a)}[V^\star_{h+1}(s)] = (\mu^\star_h\phi(s, a))^\top V^\star_{h+1}.
 \]</span></p>
 <p>The <span class="math inline">\(\phi\)</span> feature mapping can be designed to capture interactions between the state <span class="math inline">\(s\)</span> and action <span class="math inline">\(a\)</span>. In this book, we’ll assume that the feature map <span class="math inline">\(\phi : \mathcal{S} \times \mathcal{A} \to \mathbb{R}^d\)</span> and the reward function (described by <span class="math inline">\(\theta_h^\star\)</span>) are known to the learner.</p>
 </div>
-<section id="planning-in-a-linear-mdp" class="level3" data-number="9.5.1">
-<h3 data-number="9.5.1" class="anchored" data-anchor-id="planning-in-a-linear-mdp"><span class="header-section-number">9.5.1</span> Planning in a linear MDP</h3>
+<section id="planning-in-a-linear-mdp" class="level3" data-number="10.5.1">
+<h3 data-number="10.5.1" class="anchored" data-anchor-id="planning-in-a-linear-mdp"><span class="header-section-number">10.5.1</span> Planning in a linear MDP</h3>
 <p>It turns out that <span class="math inline">\(Q^\star_h\)</span> is also linear with respect to this feature mapping. We can prove this by simply computing it using DP. We initialize the value function at the end of the time horizon by setting <span class="math inline">\(V_{H}^\star(s) = 0\)</span> for all states <span class="math inline">\(s\)</span>. Then we iterate:</p>
 <p><span class="math display">\[
 \begin{aligned}
-    Q^\star_h(s, a)  &amp; = r_h(s, a) + \mathbb{E}_{s' \sim P_h(\cdot \mid s, a)} [V^\star_{h+1}(s')]                          \\
+    Q^\star_h(s, a)  &amp; = r_h(s, a) + \mathop{\mathbb{E}}_{s' \sim P_h(\cdot \mid s, a)} [V^\star_{h+1}(s')]                          \\
                      &amp; = \phi(s, a)^\top \theta_h^\star + (\mu_h^\star \phi(s, a))^\top V^\star_{h+1}               \\
                      &amp; = \phi(s, a)^\top \underbrace{( \theta_h^\star + (\mu_h^\star)^\top  V^\star_{h+1})}_{w_h} \\
     V^\star_h(s)     &amp; = \max_a Q^\star_h(s, a)                                                                       \\
     \pi^\star_h(s) &amp; = \arg\max_a Q^\star_h(s, a)
 \end{aligned}
 \]</span></p>
-<div class="{attention}">
-<p>Show that <span class="math inline">\(Q^\pi_h\)</span> is also linear with respect to <span class="math inline">\(\phi(s, a)\)</span> for any policy <span class="math inline">\(\pi\)</span>.</p>
+<div id="exr-linear-q" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 10.1 (Action-value function is linear in features)</strong></span> Show that <span class="math inline">\(Q^\pi_h\)</span> is also linear with respect to <span class="math inline">\(\phi(s, a)\)</span> for any policy <span class="math inline">\(\pi\)</span>.</p>
 </div>
 </section>
-<section id="sec-lin-ucb-vi" class="level3" data-number="9.5.2">
-<h3 data-number="9.5.2" class="anchored" data-anchor-id="sec-lin-ucb-vi"><span class="header-section-number">9.5.2</span> UCB-VI in a linear MDP</h3>
-<section id="modeling-the-transitions" class="level4" data-number="9.5.2.1">
-<h4 data-number="9.5.2.1" class="anchored" data-anchor-id="modeling-the-transitions"><span class="header-section-number">9.5.2.1</span> Modeling the transitions</h4>
+<section id="sec-lin-ucbvi" class="level3" data-number="10.5.2">
+<h3 data-number="10.5.2" class="anchored" data-anchor-id="sec-lin-ucbvi"><span class="header-section-number">10.5.2</span> UCBVI in a linear MDP</h3>
+<section id="modeling-the-transitions-1" class="level4" data-number="10.5.2.1">
+<h4 data-number="10.5.2.1" class="anchored" data-anchor-id="modeling-the-transitions-1"><span class="header-section-number">10.5.2.1</span> Modeling the transitions</h4>
 <p>This linear assumption on the MDP will also allow us to model the unknown dynamics <span class="math inline">\(P^?_h(s' \mid s, a)\)</span> with techniques from <strong>supervised learning</strong> (SL). Recall that SL is useful for estimating conditional expectations by minimizing mean squared error. We can rephrase the estimation of <span class="math inline">\(P^?_h(s' \mid s, a)\)</span> as a least-squares problem as follows: Write <span class="math inline">\(\delta_s\)</span> to denote a one-hot vector in <span class="math inline">\(\mathbb{R}^{|\mathcal{S}|}\)</span>, with a <span class="math inline">\(1\)</span> in the <span class="math inline">\(s\)</span>-th entry and <span class="math inline">\(0\)</span> everywhere else. Note that</p>
 <p><span class="math display">\[
-\mathbb{E}_{s' \sim P_h(\cdot \mid s, a)} [\delta_{s'}] = P_h(\cdot \mid s, a) = \mu_h^\star \phi(s, a).
+\mathop{\mathbb{E}}_{s' \sim P_h(\cdot \mid s, a)} [\delta_{s'}] = P_h(\cdot \mid s, a) = \mu_h^\star \phi(s, a).
 \]</span></p>
 <p>Furthermore, since the expectation here is linear with respect to <span class="math inline">\(\phi(s, a)\)</span>, we can directly apply least-squares multi-target linear regression to construct the estimate</p>
 <p><span class="math display">\[
-\widehat \mu = \arg\min_{\mu \in \mathbb{R}^{|\mathcal{S}| \times d}} \sum_{t=0}^{T-1} \|\mu \phi(s_h^i, a_h^i) - \delta_{s_{h+1}^i} \|_2^2.
+\widehat \mu = \arg\min_{\mu \in \mathbb{R}^{|\mathcal{S}| \times d}} \sum_{t= 0}^{T- 1} \|\mu \phi(s_h^i, a_h^i) - \delta_{s_{h+1}^i} \|_2^2.
 \]</span></p>
 <p>This has a well-known closed-form solution:</p>
 <p><span class="math display">\[
@@ -543,38 +705,92 @@ V^\star_h(s) - V^{\pi^t}_h(s) \le \widehat{V}_h^t(s) - V^{\pi^t}_h(s).
 \]</span></p>
 <p>where we include a <span class="math inline">\(\lambda I\)</span> term to ensure that the matrix <span class="math inline">\(A^t_h\)</span> is invertible. (This can also be derived by adding a <span class="math inline">\(\lambda \|\mu\|_{\text{F}}^2\)</span> regularization term to the objective.) We can directly plug in this estimate into <span class="math inline">\(\widehat{P}^t_h(\cdot \mid s, a) = \widehat \mu^t_h \phi(s, a)\)</span>.</p>
 </section>
-<section id="reward-bonus-1" class="level4" data-number="9.5.2.2">
-<h4 data-number="9.5.2.2" class="anchored" data-anchor-id="reward-bonus-1"><span class="header-section-number">9.5.2.2</span> Reward bonus</h4>
-<p>Now, to design the reward bonus, we can’t apply Hoeffding’s inequality anymore, since the terms no longer involve sample means of bounded random variables; Instead, we’re incorporating information across different states and actions. Rather, we can construct an upper bound using <em>Chebyshev’s inequality</em> in the same way we did for the LinUCB algorithm in the MAB setting <a href="bandits.html#sec-lin-ucb" class="quarto-xref"><span>Section 3.8.1</span></a>:</p>
+<section id="reward-bonus" class="level4" data-number="10.5.2.2">
+<h4 data-number="10.5.2.2" class="anchored" data-anchor-id="reward-bonus"><span class="header-section-number">10.5.2.2</span> Reward bonus</h4>
+<p>Now, to design the reward bonus, we can’t apply Hoeffding’s inequality anymore, since the terms no longer involve sample means of bounded random variables; Instead, we’re incorporating information across different states and actions. Rather, we can construct an upper bound using <em>Chebyshev’s inequality</em> in the same way we did for the LinUCB algorithm in the MAB setting <a href="bandits.html#sec-lin-ucb" class="quarto-xref"><span>Section 4.9.1</span></a>:</p>
 <p><span class="math display">\[
-b^t_h(s, a) = \beta \sqrt{\phi(s, a)^\top (A^t_h)^{-1} \phi(s, a)}, \quad \beta = \tilde O(d H).
+b^t_h(s, a) = \beta \sqrt{\phi(s, a)^\top (A^t_h)^{-1} \phi(s, a)}, \quad \beta = \widetilde O(d H).
 \]</span></p>
-<p>Note that this isn’t explicitly inversely proportional to <span class="math inline">\(N_h^t(s, a)\)</span> as in the original UCB-VI bonus term <a href="#eq-ucb-vi-bonus" class="quarto-xref">Equation&nbsp;<span>9.2</span></a>. Rather, it is inversely proportional to the amount that the direction <span class="math inline">\(\phi(s, a)\)</span> has been explored in the history. That is, if <span class="math inline">\(A-h^t\)</span> has a large component in the direction <span class="math inline">\(\phi(s, a)\)</span>, implying that this direction is well explored, then the bonus term will be small, and vice versa.</p>
-<p>We can now plug in these transition estimates and reward bonuses into the UCB-VI algorithm <a href="#def-ucb-vi" class="quarto-xref">Definition&nbsp;<span>9.3</span></a>.</p>
-<div id="thm-lin-ucb-vi-regret" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 9.3 (LinUCB-VI regret)</strong></span> The LinUCB-VI algorithm achieves expected regret</p>
+<p>Note that this isn’t explicitly inversely proportional to <span class="math inline">\(N_h^t(s, a)\)</span> as in the original UCBVI bonus term <a href="#eq-ucbvi-bonus" class="quarto-xref">eq.&nbsp;<span>10.10</span></a>. Rather, it is inversely proportional to the amount that the direction <span class="math inline">\(\phi(s, a)\)</span> has been explored in the history. That is, if <span class="math inline">\(A-h^t\)</span> has a large component in the direction <span class="math inline">\(\phi(s, a)\)</span>, implying that this direction is well explored, then the bonus term will be small, and vice versa.</p>
+<p>We can now plug in these transition estimates and reward bonuses into the UCBVI algorithm <a href="#def-ucbvi" class="quarto-xref">def.&nbsp;<span>10.3</span></a>.</p>
+<div id="thm-lin-ucbvi-regret" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 10.3 (LinUCBVI regret)</strong></span> The LinUCBVI algorithm achieves expected regret</p>
 <p><span class="math display">\[
-\mathbb{E}[\text{Regret}_T] = \mathbb{E}\left[\sum_{t=0}^{T-1} V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right] \le \tilde O(H^2 d^{1.5} \sqrt{T})
+\mathop{\mathbb{E}}[\text{Regret}_T] = \mathop{\mathbb{E}}\left[\sum_{t= 0}^{T- 1} V^\star_0(s_0) - V^{\pi^t}_0(s_0) \right] \le \widetilde O(H^2 d^{1.5} \sqrt{T})
 \]</span></p>
 </div>
-<p>Comparing this to our bound for UCB-VI in an environment without this linear assumption, we see that we go from a sample complexity of <span class="math inline">\(\tilde \Omega(H^4 |\mathcal{S}||\mathcal{A}|)\)</span> to <span class="math inline">\(\tilde \Omega(H^4 d^{3})\)</span>. This new sample complexity only depends on the feature dimension and not on the state or action space of the MDP!</p>
+<p>Comparing this to our bound for UCBVI in an environment without this linear assumption, we see that we go from a sample complexity of <span class="math inline">\(\widetilde \Omega(H^4 |\mathcal{S}||\mathcal{A}|)\)</span> to <span class="math inline">\(\widetilde \Omega(H^4 d^{3})\)</span>. This new sample complexity only depends on the feature dimension and not on the state or action space of the MDP!</p>
 </section>
 </section>
 </section>
-<section id="summary" class="level2" data-number="9.6">
-<h2 data-number="9.6" class="anchored" data-anchor-id="summary"><span class="header-section-number">9.6</span> Summary</h2>
-<p>In this chapter, we’ve explored how to explore in an unknown MDP.</p>
-<ul>
-<li><p>We first discussed the explore-then-exploit algorithm <a href="#def-explore-then-exploit" class="quarto-xref">Definition&nbsp;<span>9.2</span></a>, a simple way to explore a deterministic MDP by visiting all state-action pairs.</p></li>
-<li><p>We then discussed how to treat an unknown MDP as a MAB <a href="#sec-mdp-mab" class="quarto-xref"><span>Section 9.3</span></a>, and how this approach is inefficient since it doesn’t make use of relationships between policies.</p></li>
-<li><p>We then introduced the UCB-VI algorithm <a href="#def-ucb-vi" class="quarto-xref">Definition&nbsp;<span>9.3</span></a>, which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration.</p></li>
-<li><p>Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCB-VI algorithm <a href="#sec-lin-ucb-vi" class="quarto-xref"><span>Section 9.5.2</span></a>, which has a sample complexity independent of the size of the state and action spaces.</p></li>
-</ul>
+<section id="key-takeaways" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="key-takeaways"><span class="header-section-number">10.6</span> Key takeaways</h2>
+<p>We first discussed the explore-then-exploit algorithm (<a href="#def-explore-then-exploit" class="quarto-xref">def.&nbsp;<span>10.1</span></a>), a simple way to explore a deterministic MDP by visiting all state-action pairs. This is essentially a graph traversal algorithm, where each state represents an edge of the graph. We then discussed how to treat an unknown MDP as a MAB (<a href="#sec-mdp-mab" class="quarto-xref"><span>Section 10.3</span></a>), and how this approach is inefficient since it doesn’t make use of correlations between different policies. We then introduced the UCBVI algorithm (<a href="#def-ucbvi" class="quarto-xref">def.&nbsp;<span>10.3</span></a>), the key algorithm of this chapter, which models the unknown MDP by a proxy MDP with a reward bonus term that encourages exploration. Finally, assuming that the transitions and rewards are linear with respect to a feature transformation of the state and action, we introduced the LinUCBVI algorithm (<a href="#sec-lin-ucbvi" class="quarto-xref"><span>Section 10.5.2</span></a>), which has a sample complexity independent of the size of the state and action spaces. This makes it possible to scale up UCBVI to large problems that have a simple underlying structure.</p>
+</section>
+<section id="sec-exploration-bib" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="sec-exploration-bib"><span class="header-section-number">10.7</span> Bibliographic notes and further reading</h2>
+<p>Sparse reward problems are frequent throughout reinforcement learning. The chain MDP example is from <span class="citation" data-cites="thrun_efficient_1992">Thrun (<a href="references.html#ref-thrun_efficient_1992" role="doc-biblioref">1992</a>)</span>. One of the most famous sparse reward problems is <strong>Montezuma’s Revenge</strong>, one of the tasks in the popular <strong>arcade learning environment</strong> (ALE) benchmark of Atari 2600 games <span class="citation" data-cites="bellemare_arcade_2013 machado_revisiting_2018">(<a href="references.html#ref-bellemare_arcade_2013" role="doc-biblioref">Bellemare et al., 2013</a>; <a href="references.html#ref-machado_revisiting_2018" role="doc-biblioref">Machado et al., 2018</a>)</span>. These were first solved by algorithms that explicitly encourage exploration <span class="citation" data-cites="bellemare_unifying_2016 burda_exploration_2018">(<a href="references.html#ref-bellemare_unifying_2016" role="doc-biblioref">Bellemare et al., 2016</a>; <a href="references.html#ref-burda_exploration_2018" role="doc-biblioref">Burda et al., 2018</a>)</span>.</p>
+<p>The issue of <strong>reward hacking</strong> is one of many possible concerns relating to AI safety. We refer the reader to <span class="citation" data-cites="amodei_concrete_2016">Amodei et al. (<a href="references.html#ref-amodei_concrete_2016" role="doc-biblioref">2016</a>)</span> for an overview of such risks. Reward hacking has been empirically demonstrated in large language model training <span class="citation" data-cites="gao_scaling_2023">(<a href="references.html#ref-gao_scaling_2023" role="doc-biblioref">Gao et al., 2023</a>)</span>.</p>
+<p>The UCBVI algorithm was first presented in <span class="citation" data-cites="azar_minimax_2017">Azar et al. (<a href="references.html#ref-azar_minimax_2017" role="doc-biblioref">2017</a>)</span>. UCBVI extends the UCB algorithm from multi-armed bandits to the MDP by estimating a model of the environment. Later work by <span class="citation" data-cites="drago_refined_2025">Drago et al. (<a href="references.html#ref-drago_refined_2025" role="doc-biblioref">2025</a>)</span> improved the regret bound on UCBVI. Other model-based methods for strategic exploration have been studied at least since <span class="citation" data-cites="schmidhuber_curious_1991">Schmidhuber (<a href="references.html#ref-schmidhuber_curious_1991" role="doc-biblioref">1991</a>)</span> and <span class="citation" data-cites="meyer_possibility_1991">Meyer &amp; Wilson (<a href="references.html#ref-meyer_possibility_1991" role="doc-biblioref">1991</a>)</span>. UCBVI computes the reward bonus using the <em>count</em> of the number of times that state-action pair has been visited. <span class="citation" data-cites="tang_exploration_2017">Tang et al. (<a href="references.html#ref-tang_exploration_2017" role="doc-biblioref">2017</a>)</span> surveys other such count-based exploration algorithms.</p>
+<p>It is also possible to encourage model-free algorithms to strategically explore. <span class="citation" data-cites="badia_agent57_2020">Badia et al. (<a href="references.html#ref-badia_agent57_2020" role="doc-biblioref">2020</a>)</span> designed a Q-learning algorithm with exploration incentives that surpassed the human baseline on the challenging Atari tasks.</p>
+<p><strong>Intrinsic motivation</strong> is another family of approaches to strategic exploration. In some sense, intrinsic motivation approaches are to RL as self-supervised approaches are to unsupervised learning: typically, we add some <em>intrinsic reward</em> to the objective function that encourages the policy to explore. See <span class="citation" data-cites="schmidhuber_formal_2010">Schmidhuber (<a href="references.html#ref-schmidhuber_formal_2010" role="doc-biblioref">2010</a>)</span> and <span class="citation" data-cites="aubret_survey_2019">Aubret et al. (<a href="references.html#ref-aubret_survey_2019" role="doc-biblioref">2019</a>)</span> for a recent survey on this family of methods.</p>
+<p>We refer the reader to the survey article <span class="citation" data-cites="ladosz_exploration_2022">Ladosz et al. (<a href="references.html#ref-ladosz_exploration_2022" role="doc-biblioref">2022</a>)</span> for further reading on exploration in RL.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
 <div id="ref-agarwal_reinforcement_2022" class="csl-entry" role="listitem">
-Agarwal, Alekh, Nan Jiang, Sham M Kakade, and Wen Sun. 2022. <em>Reinforcement <span>Learning</span>: <span>Theory</span> and <span>Algorithms</span></em>. <a href="https://rltheorybook.github.io/rltheorybook_AJKS.pdf">https://rltheorybook.github.io/rltheorybook_AJKS.pdf</a>.
+Agarwal, A., Jiang, N., Kakade, S. M., &amp; Sun, W. (2022). <em>Reinforcement learning: <span>Theory</span> and algorithms</em>. <a href="https://rltheorybook.github.io/rltheorybook_AJKS.pdf">https://rltheorybook.github.io/rltheorybook_AJKS.pdf</a>
+</div>
+<div id="ref-amodei_concrete_2016" class="csl-entry" role="listitem">
+Amodei, D., Olah, C., Steinhardt, J., Christiano, P., Schulman, J., &amp; Mané, D. (2016). <em>Concrete problems in <span>AI</span> safety</em>. <a href="http://arxiv.org/abs/1606.06565">http://arxiv.org/abs/1606.06565</a>
+</div>
+<div id="ref-aubret_survey_2019" class="csl-entry" role="listitem">
+Aubret, A., Matignon, L., &amp; Hassas, S. (2019, November 19). <em>A survey on intrinsic motivation in reinforcement learning</em>. <a href="https://doi.org/10.48550/arXiv.1908.06976">https://doi.org/10.48550/arXiv.1908.06976</a>
+</div>
+<div id="ref-azar_minimax_2017" class="csl-entry" role="listitem">
+Azar, M. G., Osband, I., &amp; Munos, R. (2017). Minimax regret bounds for reinforcement learning. <em>Proceedings of the 34th <span>International Conference</span> on <span>Machine Learning</span></em>, 263–272. <a href="https://proceedings.mlr.press/v70/azar17a.html">https://proceedings.mlr.press/v70/azar17a.html</a>
+</div>
+<div id="ref-badia_agent57_2020" class="csl-entry" role="listitem">
+Badia, A. P., Piot, B., Kapturowski, S., Sprechmann, P., Vitvitskyi, A., Guo, D., &amp; Blundell, C. (2020). Agent57: <span>Outperforming</span> the atari human benchmark. <em><span>ICML</span> 2020</em>, 507–517. <a href="https://doi.org/10.48550/arXiv.2003.13350">https://doi.org/10.48550/arXiv.2003.13350</a>
+</div>
+<div id="ref-bellemare_arcade_2013" class="csl-entry" role="listitem">
+Bellemare, M. G., Naddaf, Y., Veness, J., &amp; Bowling, M. (2013). The arcade learning environment: <span>An</span> evaluation platform for general agents. <em>Journal of Artificial Intelligence Research</em>, <em>47</em>, 253–279. <a href="https://doi.org/10.1613/jair.3912">https://doi.org/10.1613/jair.3912</a>
+</div>
+<div id="ref-bellemare_unifying_2016" class="csl-entry" role="listitem">
+Bellemare, M. G., Srinivasan, S., Ostrovski, G., Schaul, T., Saxton, D., &amp; Munos, R. (2016). Unifying count-based exploration and intrinsic motivation. <em>Proceedings of the 30th <span>International Conference</span> on <span>Neural Information Processing Systems</span></em>, 1479–1487.
+</div>
+<div id="ref-burda_exploration_2018" class="csl-entry" role="listitem">
+Burda, Y., Edwards, H., Storkey, A., &amp; Klimov, O. (2018, September 27). Exploration by random network distillation. <em>The Seventh International Conference on Learning Representations</em>. International <span>Conference</span> on <span>Learning Representations</span>. <a href="https://openreview.net/forum?id=H1lJJnR5Ym">https://openreview.net/forum?id=H1lJJnR5Ym</a>
+</div>
+<div id="ref-clark_faulty_2024" class="csl-entry" role="listitem">
+Clark, J., &amp; Amodei, D. (2024, February 14). <em>Faulty reward functions in the wild</em>. OpenAI. <a href="https://openai.com/index/faulty-reward-functions/">https://openai.com/index/faulty-reward-functions/</a>
+</div>
+<div id="ref-drago_refined_2025" class="csl-entry" role="listitem">
+Drago, S., Mussi, M., &amp; Metelli, A. M. (2025, February 24). <em>A refined analysis of <span>UCBVI</span></em>. <a href="https://doi.org/10.48550/arXiv.2502.17370">https://doi.org/10.48550/arXiv.2502.17370</a>
+</div>
+<div id="ref-gao_scaling_2023" class="csl-entry" role="listitem">
+Gao, L., Schulman, J., &amp; Hilton, J. (2023). Scaling laws for reward model overoptimization. <em>Proceedings of the 40th <span>International Conference</span> on <span>Machine Learning</span></em>, <em>202</em>, 10835–10866.
+</div>
+<div id="ref-ladosz_exploration_2022" class="csl-entry" role="listitem">
+Ladosz, P., Weng, L., Kim, M., &amp; Oh, H. (2022). Exploration in deep reinforcement learning: A survey. <em>Inf. Fusion</em>, <em>85</em>(C), 1–22. <a href="https://doi.org/10.1016/j.inffus.2022.03.003">https://doi.org/10.1016/j.inffus.2022.03.003</a>
+</div>
+<div id="ref-machado_revisiting_2018" class="csl-entry" role="listitem">
+Machado, M. C., Bellemare, M. G., Talvitie, E., Veness, J., Hausknecht, M., &amp; Bowling, M. (2018). Revisiting the arcade learning environment: <span>Evaluation</span> protocols and open problems for general agents. <em>Journal of Artificial Intelligence Research</em>, <em>61</em>, 523–562. <a href="https://doi.org/10.1613/jair.5699">https://doi.org/10.1613/jair.5699</a>
+</div>
+<div id="ref-meyer_possibility_1991" class="csl-entry" role="listitem">
+Meyer, J.-A., &amp; Wilson, S. W. (1991). A possibility for implementing curiosity and boredom in model-building neural controllers. In <em>From <span>Animals</span> to <span>Animats</span>: <span>Proceedings</span> of the <span>First International Conference</span> on <span>Simulation</span> of <span>Adaptive Behavior</span></em> (pp. 222–227). From <span>Animals</span> to <span>Animats</span>: <span>Proceedings</span> of the <span>First International Conference</span> on <span>Simulation</span> of <span>Adaptive Behavior</span>. MIT Press. <a href="https://ieeexplore.ieee.org/document/6294131">https://ieeexplore.ieee.org/document/6294131</a>
+</div>
+<div id="ref-schmidhuber_curious_1991" class="csl-entry" role="listitem">
+Schmidhuber, J. (1991). Curious model-building control systems. <em>[<span>Proceedings</span>] 1991 <span>IEEE International Joint Conference</span> on <span>Neural Networks</span></em>, 1458–1463 vol.2. <a href="https://doi.org/10.1109/IJCNN.1991.170605">https://doi.org/10.1109/IJCNN.1991.170605</a>
+</div>
+<div id="ref-schmidhuber_formal_2010" class="csl-entry" role="listitem">
+Schmidhuber, J. (2010). Formal theory of creativity, fun, and intrinsic motivation (1990–2010). <em>IEEE Transactions on Autonomous Mental Development</em>, <em>2</em>(3), 230–247. <span>IEEE Transactions</span> on <span>Autonomous Mental Development</span>. <a href="https://doi.org/10.1109/TAMD.2010.2056368">https://doi.org/10.1109/TAMD.2010.2056368</a>
+</div>
+<div id="ref-tang_exploration_2017" class="csl-entry" role="listitem">
+Tang, H., Houthooft, R., Foote, D., Stooke, A., Xi Chen, O., Duan, Y., Schulman, J., DeTurck, F., &amp; Abbeel, P. (2017). #<span>Exploration</span>: A study of count-based exploration for deep reinforcement learning. <em>Advances in <span>Neural Information Processing Systems</span></em>, <em>30</em>. <a href="https://proceedings.neurips.cc/paper_files/paper/2017/hash/3a20f62a0af1aa152670bab3c602feed-Abstract.html">https://proceedings.neurips.cc/paper_files/paper/2017/hash/3a20f62a0af1aa152670bab3c602feed-Abstract.html</a>
+</div>
+<div id="ref-thrun_efficient_1992" class="csl-entry" role="listitem">
+Thrun, S. B. (1992). <em>Efficient exploration in reinforcement learning</em> [Technical Report]. Carnegie Mellon University.
 </div>
 </div>
 </section>
@@ -600,6 +816,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -670,7 +1030,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/rlbook\.adzc\.ai");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -1000,16 +1360,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./planning.html" class="pagination-link" aria-label="Tree Search Methods">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./background.html" class="pagination-link" aria-label="Appendix: Background">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025 Alexander Cai</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/exploration.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/exploration.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link active" href="https://github.com/adzcai/rlbook" aria-current="page">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 

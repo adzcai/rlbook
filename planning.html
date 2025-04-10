@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>8&nbsp; Tree Search Methods – CS 1840: Introduction to Reinforcement Learning</title>
+<title>9&nbsp; Tree Search Methods – An Introduction to Reinforcement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -77,7 +77,7 @@ div.csl-indent {
 }</style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -86,15 +86,18 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./exploration.html" rel="next">
 <link href="./imitation_learning.html" rel="prev">
+<link href="./shared/184.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e39e07555a3cad66df478e90649eca5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -122,9 +125,6 @@ div.csl-indent {
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -156,6 +156,12 @@ window.Quarto = {
 };
 </script>
 
+<meta property="og:title" content="9&nbsp; Tree Search Methods – An Introduction to Reinforcement Learning">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://rlbook.adzc.ai/shared/tic_tac_toe.png">
+<meta property="og:site_name" content="An Introduction to Reinforcement Learning">
+<meta property="og:image:height" content="294">
+<meta property="og:image:width" content="440">
 </head>
 
 <body class="nav-sidebar floating">
@@ -167,7 +173,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./planning.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./planning.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -182,7 +188,45 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">CS 1840: Introduction to Reinforcement Learning</a> 
+      <a href="./">An Introduction to Reinforcement Learning</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/adzcai/rlbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -195,67 +239,73 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mdps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./control.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./bandits.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./planning.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -264,6 +314,29 @@ window.Quarto = {
  <span class="menu-text">References</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proofs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Proofs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -274,32 +347,32 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">8.1</span> Introduction</a></li>
-  <li><a href="#deterministic-zero-sum-fully-observable-two-player-games" id="toc-deterministic-zero-sum-fully-observable-two-player-games" class="nav-link" data-scroll-target="#deterministic-zero-sum-fully-observable-two-player-games"><span class="header-section-number">8.2</span> Deterministic, zero sum, fully observable two-player games</a>
+  <li><a href="#sec-planning-intro" id="toc-sec-planning-intro" class="nav-link active" data-scroll-target="#sec-planning-intro"><span class="header-section-number">9.1</span> Introduction</a></li>
+  <li><a href="#sec-two-game" id="toc-sec-two-game" class="nav-link" data-scroll-target="#sec-two-game"><span class="header-section-number">9.2</span> Deterministic, zero sum, fully observable two-player games</a>
   <ul class="collapse">
-  <li><a href="#notation" id="toc-notation" class="nav-link" data-scroll-target="#notation"><span class="header-section-number">8.2.1</span> Notation</a></li>
+  <li><a href="#notation" id="toc-notation" class="nav-link" data-scroll-target="#notation"><span class="header-section-number">9.2.1</span> Notation</a></li>
   </ul></li>
-  <li><a href="#sec-min-max-search" id="toc-sec-min-max-search" class="nav-link" data-scroll-target="#sec-min-max-search"><span class="header-section-number">8.3</span> Min-max search</a>
+  <li><a href="#sec-min-max-search" id="toc-sec-min-max-search" class="nav-link" data-scroll-target="#sec-min-max-search"><span class="header-section-number">9.3</span> Min-max search</a>
   <ul class="collapse">
-  <li><a href="#complexity-of-min-max-search" id="toc-complexity-of-min-max-search" class="nav-link" data-scroll-target="#complexity-of-min-max-search"><span class="header-section-number">8.3.1</span> Complexity of min-max search</a></li>
+  <li><a href="#complexity-of-min-max-search" id="toc-complexity-of-min-max-search" class="nav-link" data-scroll-target="#complexity-of-min-max-search"><span class="header-section-number">9.3.1</span> Complexity of min-max search</a></li>
   </ul></li>
-  <li><a href="#sec-alpha-beta-search" id="toc-sec-alpha-beta-search" class="nav-link" data-scroll-target="#sec-alpha-beta-search"><span class="header-section-number">8.4</span> Alpha-beta search</a></li>
-  <li><a href="#sec-mcts" id="toc-sec-mcts" class="nav-link" data-scroll-target="#sec-mcts"><span class="header-section-number">8.5</span> Monte Carlo Tree Search</a>
+  <li><a href="#sec-alpha-beta-search" id="toc-sec-alpha-beta-search" class="nav-link" data-scroll-target="#sec-alpha-beta-search"><span class="header-section-number">9.4</span> Alpha-beta pruning</a></li>
+  <li><a href="#sec-mcts" id="toc-sec-mcts" class="nav-link" data-scroll-target="#sec-mcts"><span class="header-section-number">9.5</span> Monte Carlo Tree Search</a>
   <ul class="collapse">
-  <li><a href="#incorporating-value-functions-and-policies" id="toc-incorporating-value-functions-and-policies" class="nav-link" data-scroll-target="#incorporating-value-functions-and-policies"><span class="header-section-number">8.5.1</span> Incorporating value functions and policies</a></li>
-  <li><a href="#self-play" id="toc-self-play" class="nav-link" data-scroll-target="#self-play"><span class="header-section-number">8.5.2</span> Self-play</a></li>
+  <li><a href="#incorporating-value-functions-and-policies" id="toc-incorporating-value-functions-and-policies" class="nav-link" data-scroll-target="#incorporating-value-functions-and-policies"><span class="header-section-number">9.5.1</span> Incorporating value functions and policies</a></li>
+  <li><a href="#self-play" id="toc-self-play" class="nav-link" data-scroll-target="#self-play"><span class="header-section-number">9.5.2</span> Self-play</a></li>
   </ul></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">8.6</span> Summary</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">8.7</span> References</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways"><span class="header-section-number">9.6</span> Key takeaways</a></li>
+  <li><a href="#sec-planning-bib" id="toc-sec-planning-bib" class="nav-link" data-scroll-target="#sec-planning-bib"><span class="header-section-number">9.7</span> Bibliographic notes and further reading</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/planning.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/planning.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-planning" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></h1>
+<h1 class="title"><span id="sec-planning" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></h1>
 </div>
 
 
@@ -316,19 +389,17 @@ window.Quarto = {
 </header>
 
 
-<hr>
-<hr>
-<section id="introduction" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">8.1</span> Introduction</h2>
+<section id="sec-planning-intro" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="sec-planning-intro"><span class="header-section-number">9.1</span> Introduction</h2>
 <p>Have you ever lost a strategy game against a skilled opponent? It probably seemed like they were <em>ahead of you at every turn</em>. They might have been <em>planning ahead</em> and anticipating your actions, then formulating their strategy to counter yours. If this opponent was a computer, they might have been using one of the strategies that we are about to explore.</p>
-<div id="133cc481" class="cell" data-execution_count="1">
+<div id="f196bd5d" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="d57452cf" class="cell" data-execution_count="2">
+<div id="e58dc3ce" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> Int, Array, latex, jnp, NamedTuple</span>
@@ -336,8 +407,8 @@ window.Quarto = {
 </details>
 </div>
 </section>
-<section id="deterministic-zero-sum-fully-observable-two-player-games" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="deterministic-zero-sum-fully-observable-two-player-games"><span class="header-section-number">8.2</span> Deterministic, zero sum, fully observable two-player games</h2>
+<section id="sec-two-game" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="sec-two-game"><span class="header-section-number">9.2</span> Deterministic, zero sum, fully observable two-player games</h2>
 <p>In this chapter, we will focus on games that are:</p>
 <ul>
 <li><em>deterministic,</em></li>
@@ -345,18 +416,23 @@ window.Quarto = {
 <li><em>fully observable,</em> that is, the state of the game is perfectly known by both players,</li>
 <li>for <em>two players</em> that alternate turns,</li>
 </ul>
-<p>We can represent such a game as a <em>complete game tree.</em> Each possible state is a node in the tree, and since we only consider deterministic games, we can represent actions as edges leading from the current state to the next. Each path through the tree, from root to leaf, represents a single game.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="shared/tic_tac_toe.png" class="img-fluid figure-img"></p>
-<figcaption>The first two layers of the complete game tree of tic-tac-toe.</figcaption>
+<p>We can represent such a game as a <em>complete game tree</em> that describes every possible match. Each possible state is a node in the tree, and since we only consider deterministic games, we can represent actions as edges leading from the current state to the next. Each path through the tree, from root to leaf, represents a single game.</p>
+<div id="fig-tic-tac-toe-tree" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tic-tac-toe-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="shared/tic_tac_toe.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tic-tac-toe-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.1: The first two layers of the complete game tree of tic-tac-toe.
+</figcaption>
 </figure>
 </div>
-<p>If you could store the complete game tree on a computer, you would be able to win every potentially winnable game by searching all paths from your current state and taking a winning move. We will see an explicit algorithm for this in <a href="#sec-min-max-search" class="quarto-xref"><span>Section 8.3</span></a>. However, as games become more complex, it becomes computationally impossible to search every possible path.</p>
+<p>(In games where one can return to a previous board state, to avoid introducing cycles, we might modify the state by also including the number of moves that have been made. This ensures that the complete game tree indeed has no cycles.)</p>
+<p>If you could store the complete game tree on a computer, you would be able to win every potentially winnable game by searching all paths from your current state and taking a winning move. We will see an explicit algorithm for this in <a href="#sec-min-max-search" class="quarto-xref"><span>Section 9.3</span></a>. However, as games become more complex, it becomes computationally impossible to search every possible path.</p>
 <p>For instance, a chess player has roughly 30 actions to choose from at each turn, and each game takes roughly 40 moves per player, so trying to solve chess exactly using minimax would take somewhere on the order of <span class="math inline">\(30^{80} \approx 10^{118}\)</span> operations. That’s 10 billion billion billion billion billion billion billion billion billion billion billion billion billion operations. As of the time of writing, the fastest processor can achieve almost 10 GHz (10 billion operations per second), so to fully solve chess using minimax is many, many orders of magnitude out of reach.</p>
-<p>It is thus intractable, in any realistic setting, to solve the complete game tree exactly. Luckily, only a small fraction of those games ever occur in reality; Later in this chapter, we will explore ways to <em>prune away</em> parts of the tree that we know we can safely ignore. We can also <em>approximate</em> the value of a state without fully evaluating it. Using these approximations, we can no longer <em>guarantee</em> winning the game, but we can come up with strategies that will do well against most opponents.</p>
-<section id="notation" class="level3" data-number="8.2.1">
-<h3 data-number="8.2.1" class="anchored" data-anchor-id="notation"><span class="header-section-number">8.2.1</span> Notation</h3>
+<p>It is thus intractable, in any realistic setting, to solve the complete game tree exactly. Luckily, only a small fraction of those games ever occur in reality. Later in this chapter, we will explore ways to <em>prune away</em> parts of the tree that we know we can safely ignore. We can also <em>approximate</em> the value of a state without fully evaluating it. Using these approximations, we can no longer <em>guarantee</em> winning the game, but we can come up with strategies that will do well against most opponents.</p>
+<section id="notation" class="level3" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="notation"><span class="header-section-number">9.2.1</span> Notation</h3>
 <p>Let us now describe these games formally. We’ll call the first player Max and the second player Min. Max seeks to maximize the final game score, while Min seeks to minimize the final game score.</p>
 <ul>
 <li>We’ll use <span class="math inline">\(\mathcal{S}\)</span> to denote the set of all possible game states.</li>
@@ -368,11 +444,11 @@ window.Quarto = {
 <li><span class="math inline">\(r(s)\)</span> denotes the <strong>game score</strong> of the terminal state <span class="math inline">\(s\)</span>. Note that this is some positive or negative value seen by both players: A positive value indicates Max winning, a negative value indicates Min winning, and a value of <span class="math inline">\(0\)</span> indicates a tie.</li>
 </ul>
 <p>We also call the sequence of states and actions a <strong>trajectory</strong>.</p>
-<div class="{attention}">
-<p>Above, we suppose that the game ends after <span class="math inline">\(H\)</span> total moves. But most real games have a <em>variable</em> length. How would you describe this?</p>
+<div id="exr-variable-length" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 9.1 (Variable length games)</strong></span> Above, we suppose that the game ends after <span class="math inline">\(H\)</span> total moves. But most real games have a <em>variable</em> length. How would you describe this?</p>
 </div>
 <div id="exm-tic-tac-toe" class="theorem example">
-<p><span class="theorem-title"><strong>Example 8.1 (Tic-tac-toe)</strong></span> Let us frame tic-tac-toe in this setting.</p>
+<p><span class="theorem-title"><strong>Example 9.1 (Tic-tac-toe)</strong></span> Let us frame tic-tac-toe in this setting.</p>
 <ul>
 <li>Each of the <span class="math inline">\(9\)</span> squares is either empty, marked X, or marked O. So there are <span class="math inline">\(|\mathcal{S}| = 3^9\)</span> potential states. Not all of these may be reachable!</li>
 <li>The initial state <span class="math inline">\(s_0\)</span> is the empty board.</li>
@@ -382,8 +458,8 @@ window.Quarto = {
 <li><span class="math inline">\(r(s)\)</span> at a <em>terminal</em> state is <span class="math inline">\(+1\)</span> if there are three Xs in a row, <span class="math inline">\(-1\)</span> if there are three Os in a row, and <span class="math inline">\(0\)</span> otherwise.</li>
 </ul>
 </div>
-<p>Our notation may remind you of <a href="mdps.html" class="quarto-xref"><span>Chapter 1</span></a>. Given that these games also involve a sequence of states and actions, can we formulate them as finite-horizon MDPs? The two settings are not exactly analogous, since in MDPs we only consider a <em>single</em> policy, while these games involve two distinct players with opposite objectives. Since we want to analyze the behavior of <em>both</em> players at the same time, describing such a game as an MDP is more trouble than it’s worth.</p>
-<div id="ba841c02" class="cell" data-execution_count="3">
+<p>Our notation may remind you of <a href="mdps.html" class="quarto-xref"><span>Chapter 2</span></a>. Given that these games also involve a sequence of states and actions, can we formulate them as finite-horizon MDPs? The two settings are not exactly analogous, since in MDPs we only consider a <em>single</em> policy, while these games involve two distinct players with opposite objectives. Since we want to analyze the behaviour of <em>both</em> players at the same time, describing such a game as an MDP is more trouble than it’s worth.</p>
+<div id="48b75c0e" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Player(IntEnum):</span>
@@ -448,22 +524,24 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="sec-min-max-search" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="sec-min-max-search"><span class="header-section-number">8.3</span> Min-max search</h2>
-<p>In the introduction, we claimed that we could win any potentially winnable game by looking ahead and predicting the opponent’s actions. This would mean that each <em>nonterminal</em> state already has some predetermined game score, that is, in each state, it is already “obvious” which player is going to win.</p>
-<p>Let <span class="math inline">\(V_\hi^\star(s)\)</span> denote the game score under optimal play from both players starting in state <span class="math inline">\(s\)</span> at time <span class="math inline">\(\hi\)</span>.</p>
+<section id="sec-min-max-search" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="sec-min-max-search"><span class="header-section-number">9.3</span> Min-max search</h2>
+<p>In the introduction, we claimed that we could win any potentially winnable game by looking ahead and predicting the opponent’s actions. This would mean that each <em>nonterminal</em> state already has some predetermined game score. That is, in each state, it is already possible to determine which player is going to win.</p>
+<p>Let <span class="math inline">\(V_h^\star(s)\)</span> denote the game score under optimal play from both players starting in state <span class="math inline">\(s\)</span> at time <span class="math inline">\(h\)</span>.</p>
 <div id="def-min-max-value" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.1 (Min-max search algorithm)</strong></span> <span class="math display">\[
-V_\hi^{\star}(s) = \begin{cases}
-r(s) &amp; \hi = \hor \\
-\max_{a \in \mathcal{A}_\hi(s)} V_{\hi+1}^{\star}(P(s, a)) &amp; \hi \text{ is even and } \hi &lt; H \\
-\min_{a \in \mathcal{A}_\hi(s)} V_{\hi+1}^{\star}(P(s, a)) &amp; \hi \text{ is odd and } \hi &lt; H \\
-\end{cases}
+<p><span class="theorem-title"><strong>Definition 9.1 (Min-max search algorithm)</strong></span> The best move for Max is the one that leads to the maximum value. Correspondingly, the best move for Min is the one that leads to the minimum value. This naturally gives rise to a recursive definition of the value of each state under optimal play:</p>
+<p><span class="math display">\[
+V_h^{\star}(s) = \begin{cases}
+r(s) &amp; h= H\\
+\max_{a \in \mathcal{A}_h(s)} V_{h+1}^{\star}(P(s, a)) &amp; h\text{ is even and } h&lt; H \\
+\min_{a \in \mathcal{A}_h(s)} V_{h+1}^{\star}(P(s, a)) &amp; h\text{ is odd and } h&lt; H
+\end{cases}.
 \]</span></p>
+<p>Recall that <span class="math inline">\(P(s, a)\)</span> denotes the next state after taking action <span class="math inline">\(a\)</span> in state <span class="math inline">\(s\)</span>.</p>
 </div>
-<p>We can compute this by starting at the terminal states, when the game’s outcome is known, and working backwards, assuming that Max chooses the action that leads to the highest score and Min chooses the action that leads to the lowest score.</p>
+<p>We can compute this by <strong>dynamic programming</strong>. We start at the terminal states, where the game’s outcome is known, and work backwards. This might remind you of policy evaluation in finite-horizon MDPs (<a href="mdps.html#sec-eval-dp-finite-horizon" class="quarto-xref"><span>Section 2.3.1</span></a>).</p>
 <p>This translates directly into a recursive depth-first search algorithm for searching the complete game tree.</p>
-<div id="08ac51a3" class="cell" data-execution_count="4">
+<div id="834d405b" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> minimax_search(s, player) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="st">"Action"</span>, <span class="st">"Value"</span>]:</span>
@@ -488,12 +566,14 @@ r(s) &amp; \hi = \hor \\
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>latex(minimax_search, id_to_latex<span class="op">=</span>{<span class="st">"env.step"</span>: <span class="st">"P"</span>, <span class="st">"env.action_space"</span>: <span class="vs">r"\mathcal</span><span class="sc">{A}</span><span class="vs">"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="4">
-\begin{array}{l} \mathbf{function} \ \mathrm{minimax\_search}(s, \mathrm{player}) \\ \hspace{1em} \mathbf{if} \ \mathrm{env}.\mathrm{is\_terminal} \mathopen{}\left( s \mathclose{}\right) \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( \mathrm{None}, \mathrm{env}.\mathrm{winner} \mathopen{}\left( s \mathclose{}\right) \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \hspace{1em} \mathbf{if} \ \mathrm{player} \equiv \mathrm{max} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathcal{A} \mathopen{}\left( s \mathclose{}\right) \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( P \mathopen{}\left( s, a \mathclose{}\right), \mathrm{min} \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &gt; v_{\mathrm{max}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \\ \hspace{1em} \mathbf{else} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathcal{A} \mathopen{}\left( s \mathclose{}\right) \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( P \mathopen{}\left( s, a \mathclose{}\right), \mathrm{max} \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &lt; v_{\mathrm{min}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \mathbf{end \ function} \end{array}
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{minimax\_search}(s, \mathrm{player}) \\ \hspace{1em} \mathbf{if} \ \mathrm{env}.\mathrm{is\_terminal} \mathopen{}\left( s \mathclose{}\right) \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( \mathrm{None}, \mathrm{env}.\mathrm{winner} \mathopen{}\left( s \mathclose{}\right) \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \hspace{1em} \mathbf{if} \ \mathrm{player} \equiv \mathrm{max} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathcal{A} \mathopen{}\left( s \mathclose{}\right) \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( P \mathopen{}\left( s, a \mathclose{}\right), \mathrm{min} \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &gt; v_{\mathrm{max}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \\ \hspace{1em} \mathbf{else} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathcal{A} \mathopen{}\left( s \mathclose{}\right) \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( P \mathopen{}\left( s, a \mathclose{}\right), \mathrm{max} \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &lt; v_{\mathrm{min}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
 </div>
 </div>
-<div id="exm-min-max-example" class="theorem example">
-<p><span class="theorem-title"><strong>Example 8.2 (Min-max search for a simple game)</strong></span> Consider a simple game with just two steps: Max chooses one of three possible actions (A, B, C), and then Min chooses one of three possible actions (D, E, F). The combination leads to a certain integer outcome, shown in the table below:</p>
+<div id="exm-min-max" class="theorem example">
+<p><span class="theorem-title"><strong>Example 9.2 (Min-max search for a simple game)</strong></span> Consider a simple game with just two steps: Max chooses one of three possible actions (A, B, C), and then Min chooses one of three possible actions (D, E, F). The combination leads to a certain integer outcome, shown in the table below:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -524,7 +604,7 @@ r(s) &amp; \hi = \hor \\
 </tr>
 </tbody>
 </table>
-<p>We can visualize this as the following complete game tree, where each box contains the value <span class="math inline">\(V_\hi^\star(s)\)</span> of that node. The min-max values of the terminal states are already known:</p>
+<p>We can visualize this as the following complete game tree, where each box contains the value <span class="math inline">\(V_h^\star(s)\)</span> of that node. The min-max values of the terminal states are already known:</p>
 <p><img src="./shared/minmax.png" class="img-fluid"></p>
 <p>We begin min-max search at the root, exploring each of Max’s actions. Suppose Max chooses action A. Then Min will choose action E to minimize the game score, making the value of this game node <span class="math inline">\(\min(4, -2, 5) = -2\)</span>.</p>
 <p><img src="./shared/minmax-2.png" class="img-fluid"></p>
@@ -533,23 +613,24 @@ r(s) &amp; \hi = \hor \\
 <p>Thus, Max’s best move is to take action C, resulting in a game score of <span class="math inline">\(\max(-2, -3, -1) = -1\)</span>.</p>
 <p><img src="./shared/minmax-4.png" class="img-fluid"></p>
 </div>
-<section id="complexity-of-min-max-search" class="level3" data-number="8.3.1">
-<h3 data-number="8.3.1" class="anchored" data-anchor-id="complexity-of-min-max-search"><span class="header-section-number">8.3.1</span> Complexity of min-max search</h3>
-<p>At each of the <span class="math inline">\(\hor\)</span> timesteps, this algorithm iterates through the entire action space at that state, and therefore has a time complexity of <span class="math inline">\(\hor^{n_A}\)</span> (where <span class="math inline">\(n_A\)</span> is the largest number of actions possibly available at once). This makes the min-max algorithm impractical for even moderately sized games.</p>
+<section id="complexity-of-min-max-search" class="level3" data-number="9.3.1">
+<h3 data-number="9.3.1" class="anchored" data-anchor-id="complexity-of-min-max-search"><span class="header-section-number">9.3.1</span> Complexity of min-max search</h3>
+<p>At each of the <span class="math inline">\(H\)</span> timesteps, this algorithm iterates through the entire action space at that state, and therefore has a time complexity of <span class="math inline">\(H^{n_A}\)</span> (where <span class="math inline">\(n_A\)</span> is the largest number of actions possibly available at once). This makes the min-max algorithm impractical for even moderately sized games.</p>
 <p>But do we need to compute the exact value of <em>every</em> possible state? Instead, is there some way we could “ignore” certain actions and their subtrees if we already know of better options? The <strong>alpha-beta search</strong> makes use of this intuition.</p>
 </section>
 </section>
-<section id="sec-alpha-beta-search" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="sec-alpha-beta-search"><span class="header-section-number">8.4</span> Alpha-beta search</h2>
-<p>The intuition behind alpha-beta search is as follows: Suppose Max is in state <span class="math inline">\(s\)</span>, and considering whether to take action <span class="math inline">\(a\)</span> or <span class="math inline">\(a'\)</span>. If at any point they find out that action <span class="math inline">\(a'\)</span> is definitely worse than (or equal to) action <span class="math inline">\(a\)</span>, they don’t need to evaluate action <span class="math inline">\(a'\)</span> any further.</p>
+<section id="sec-alpha-beta-search" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="sec-alpha-beta-search"><span class="header-section-number">9.4</span> Alpha-beta pruning</h2>
+<p>For a given deterministic, zero-sum, fully observable two-player game (<a href="#sec-two-game" class="quarto-xref"><span>Section 9.2</span></a>), we have seen that it is possible to “solve” the game, that is, determine the best move in every situation, using min-max search (<a href="#sec-min-max-search" class="quarto-xref"><span>Section 9.3</span></a>). However, the time complexity of min-max search makes it infeasible for most scenarios. Alpha-beta pruning improves min-max search by <em>pruning</em> down the search tree.</p>
+<p>Suppose Max is in state <span class="math inline">\(s\)</span> is deciding between action <span class="math inline">\(a\)</span> and <span class="math inline">\(a'\)</span>. If at any point Max finds out that action <span class="math inline">\(a'\)</span> is no better than action <span class="math inline">\(a\)</span>, she doesn’t need to evaluate action <span class="math inline">\(a'\)</span> any further.</p>
 <p>Concretely, we run min-max search as above, except now we keep track of two additional parameters <span class="math inline">\(\alpha(s)\)</span> and <span class="math inline">\(\beta(s)\)</span> while evaluating each state:</p>
 <ul>
-<li>Starting in state <span class="math inline">\(s\)</span>, Max can achieve a game score of <em>at least</em> <span class="math inline">\(\alpha(s)\)</span> assuming Min plays optimally. That is, <span class="math inline">\(V^\star_\hi(s) \ge \alpha(s)\)</span> at all points.</li>
-<li>Analogously, starting in state <span class="math inline">\(s\)</span>, Min can ensure a game score of <em>at most</em> <span class="math inline">\(\beta(s)\)</span> assuming Max plays optimally. That is, <span class="math inline">\(V^\star_\hi(s) \le \beta(s)\)</span> at all points.</li>
+<li>Starting in state <span class="math inline">\(s\)</span>, Max can achieve a game score of <em>at least</em> <span class="math inline">\(\alpha(s)\)</span> assuming Min plays optimally. That is, <span class="math inline">\(V^\star_h(s) \ge \alpha(s)\)</span> at all points.</li>
+<li>Analogously, starting in state <span class="math inline">\(s\)</span>, Min can ensure a game score of <em>at most</em> <span class="math inline">\(\beta(s)\)</span> assuming Max plays optimally. That is, <span class="math inline">\(V^\star_h(s) \le \beta(s)\)</span> at all points.</li>
 </ul>
-<p>Suppose we are evaluating <span class="math inline">\(V^\star_\hi(s)\)</span>, where it is Max’s turn (<span class="math inline">\(\hi\)</span> is even). We update <span class="math inline">\(\alpha(s)\)</span> to be the <em>highest</em> minimax value achievable from <span class="math inline">\(s\)</span> so far. That is, the value of <span class="math inline">\(s\)</span> is <em>at least</em> <span class="math inline">\(\alpha(s)\)</span>. Suppose Max chooses action <span class="math inline">\(a\)</span>, which leads to state <span class="math inline">\(s'\)</span>, in which it is Min’s turn. If any of Min’s actions in <span class="math inline">\(s'\)</span> achieve a value <span class="math inline">\(V^\star_{\hi+1}(s') \le \alpha(s)\)</span>, we know that Max would not choose action <span class="math inline">\(a\)</span>, since they know that it is <em>worse</em> than whichever action gave the value <span class="math inline">\(\alpha(s)\)</span>. Similarly, to evaluate a state on Min’s turn, we update <span class="math inline">\(\beta(s)\)</span> to be the <em>lowest</em> value achievable from <span class="math inline">\(s\)</span> so far. That is, the value of <span class="math inline">\(s\)</span> is <em>at most</em> <span class="math inline">\(\beta(s)\)</span>. Suppose Min chooses action <span class="math inline">\(a\)</span>, which leads to state <span class="math inline">\(s'\)</span> for Max. If Max has any actions that do <em>better</em> than <span class="math inline">\(\beta(s)\)</span>, they would take it, making action <span class="math inline">\(a\)</span> a suboptimal choice for Min.</p>
+<p>Suppose we are evaluating <span class="math inline">\(V^\star_h(s)\)</span>, where it is Max’s turn (<span class="math inline">\(h\)</span> is even). We update <span class="math inline">\(\alpha(s)\)</span> to be the <em>highest</em> minimax value achievable from <span class="math inline">\(s\)</span> so far. That is, the value of <span class="math inline">\(s\)</span> is <em>at least</em> <span class="math inline">\(\alpha(s)\)</span>. Suppose Max chooses action <span class="math inline">\(a\)</span>, which leads to state <span class="math inline">\(s'\)</span>, in which it is Min’s turn. If any of Min’s actions in <span class="math inline">\(s'\)</span> achieve a value <span class="math inline">\(V^\star_{h+1}(s') \le \alpha(s)\)</span>, we know that Max would not choose action <span class="math inline">\(a\)</span>, since they know that it is <em>worse</em> than whichever action gave the value <span class="math inline">\(\alpha(s)\)</span>. Similarly, to evaluate a state on Min’s turn, we update <span class="math inline">\(\beta(s)\)</span> to be the <em>lowest</em> value achievable from <span class="math inline">\(s\)</span> so far. That is, the value of <span class="math inline">\(s\)</span> is <em>at most</em> <span class="math inline">\(\beta(s)\)</span>. Suppose Min chooses action <span class="math inline">\(a\)</span>, which leads to state <span class="math inline">\(s'\)</span> for Max. If Max has any actions that do <em>better</em> than <span class="math inline">\(\beta(s)\)</span>, they would take it, making action <span class="math inline">\(a\)</span> a suboptimal choice for Min.</p>
 <div id="exm-alpha-beta-example" class="theorem example">
-<p><span class="theorem-title"><strong>Example 8.3 (Alpha-beta search for a simple game)</strong></span> Let us use the same simple game from <a href="#exm-min-max-example" class="quarto-xref">Example&nbsp;<span>8.2</span></a>. We list the values of <span class="math inline">\(\alpha(s), \beta(s)\)</span> in each node throughout the algorithm. These values are initialized to <span class="math inline">\(-\infty, +\infty\)</span> respectively. We shade any squares that have not been visited by the algorithm, and we assume that actions are evaluated from left to right.</p>
+<p><span class="theorem-title"><strong>Example 9.3 (Alpha-beta search for a simple game)</strong></span> Let us use the same simple game from <a href="#exm-min-max" class="quarto-xref">ex.&nbsp;<span>9.2</span></a>. We list the values of <span class="math inline">\(\alpha(s), \beta(s)\)</span> in each node throughout the algorithm. These values are initialized to <span class="math inline">\(-\infty, +\infty\)</span> respectively. We shade any squares that have not been visited by the algorithm, and we assume that actions are evaluated from left to right.</p>
 <p><img src="./shared/alpha-beta-0.png" class="img-fluid"></p>
 <p>Suppose Max takes action A. Let <span class="math inline">\(s'\)</span> be the resulting game state. The values of <span class="math inline">\(\alpha(s')\)</span> and <span class="math inline">\(\beta(s')\)</span> are initialized at the same values as the root state, since we want to prune a subtree if there exists a better action at any step higher in the tree.</p>
 <p><img src="./shared/alpha-beta-1.png" class="img-fluid"></p>
@@ -559,14 +640,14 @@ r(s) &amp; \hi = \hor \\
 <p><img src="./shared/alpha-beta-4.png" class="img-fluid"></p>
 <p>Then Max imagines taking action B. Again, let <span class="math inline">\(s'\)</span> denote the resulting game state. We initialize <span class="math inline">\(\alpha(s')\)</span> and <span class="math inline">\(\beta(s')\)</span> from the root:</p>
 <p><img src="./shared/alpha-beta-5.png" class="img-fluid"></p>
-<p>Now suppose Min takes action D, resulting in a value of <span class="math inline">\(-3\)</span>. We see that <span class="math inline">\(V^\star_\hi(s') = \min(-3, x, y)\)</span>, where <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are the values of the remaining two actions. But since <span class="math inline">\(\min(-3, x, y) \le -3\)</span>, we know that the value of <span class="math inline">\(s'\)</span> is at most <span class="math inline">\(-3\)</span>. But Max can achieve a better value of <span class="math inline">\(\alpha(s') = -2\)</span> by taking action A, and so Max will never take action B, and we can prune the search here. We will use dotted lines to indicate states that have been ruled out from the search:</p>
+<p>Now suppose Min takes action D, resulting in a value of <span class="math inline">\(-3\)</span>. We see that <span class="math inline">\(V^\star_h(s') = \min(-3, x, y)\)</span>, where <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are the values of the remaining two actions. But since <span class="math inline">\(\min(-3, x, y) \le -3\)</span>, we know that the value of <span class="math inline">\(s'\)</span> is at most <span class="math inline">\(-3\)</span>. But Max can achieve a better value of <span class="math inline">\(\alpha(s') = -2\)</span> by taking action A, and so Max will never take action B, and we can prune the search here. We will use dotted lines to indicate states that have been ruled out from the search:</p>
 <p><img src="./shared/alpha-beta-6.png" class="img-fluid"></p>
 <p>Finally, suppose Max takes action C. For Min’s actions D and E, there is still a chance that action C might outperform action A, so we continue expanding:</p>
 <p><img src="./shared/alpha-beta-7.png" class="img-fluid"> <img src="./shared/alpha-beta-8.png" class="img-fluid"></p>
 <p>Finally, we see that Min taking action F achieves the minimum value at this state. This shows that optimal play is for Max to take action C, and Min to take action F.</p>
 <p><img src="./shared/alpha-beta-9.png" class="img-fluid"></p>
 </div>
-<div id="0446b574" class="cell" data-execution_count="5">
+<div id="84fda08b" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> alpha_beta_search(s, player, alpha, beta) <span class="op">-&gt;</span> <span class="bu">tuple</span>[<span class="st">"Action"</span>, <span class="st">"Value"</span>]:</span>
@@ -601,49 +682,56 @@ r(s) &amp; \hi = \hor \\
 <span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>latex(alpha_beta_search)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="5">
-\begin{array}{l} \mathbf{function} \ \mathrm{alpha\_beta\_search}(s, \mathrm{player}, \alpha, \beta) \\ \hspace{1em} \mathbf{if} \ \mathrm{env}.\mathrm{is\_terminal} \mathopen{}\left( s \mathclose{}\right) \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( \mathrm{None}, \mathrm{env}.\mathrm{winner} \mathopen{}\left( s \mathclose{}\right) \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \hspace{1em} \mathbf{if} \ \mathrm{player} \equiv \mathrm{max} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathrm{actions} \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( \mathrm{env}.\mathrm{step} \mathopen{}\left( s, a \mathclose{}\right), \mathrm{min}, \alpha, \beta \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &gt; v_{\mathrm{max}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{4em} \alpha \gets \mathrm{max} \mathopen{}\left( \alpha, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{3em} \mathbf{if} \ v_{\mathrm{max}} \ge \beta \\ \hspace{4em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \\ \hspace{1em} \mathbf{else} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathrm{actions} \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( \mathrm{env}.\mathrm{step} \mathopen{}\left( s, a \mathclose{}\right), \mathrm{max} \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &lt; v_{\mathrm{min}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{4em} \beta \gets \mathrm{min} \mathopen{}\left( \beta, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{3em} \mathbf{if} \ v_{\mathrm{min}} \le \alpha \\ \hspace{4em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \mathbf{end \ function} \end{array}
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{alpha\_beta\_search}(s, \mathrm{player}, \alpha, \beta) \\ \hspace{1em} \mathbf{if} \ \mathrm{env}.\mathrm{is\_terminal} \mathopen{}\left( s \mathclose{}\right) \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( \mathrm{None}, \mathrm{env}.\mathrm{winner} \mathopen{}\left( s \mathclose{}\right) \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \hspace{1em} \mathbf{if} \ \mathrm{player} \equiv \mathrm{max} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathrm{actions} \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( \mathrm{env}.\mathrm{step} \mathopen{}\left( s, a \mathclose{}\right), \mathrm{min}, \alpha, \beta \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &gt; v_{\mathrm{max}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{4em} \alpha \gets \mathrm{max} \mathopen{}\left( \alpha, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{3em} \mathbf{if} \ v_{\mathrm{max}} \ge \beta \\ \hspace{4em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{max}}, v_{\mathrm{max}} \mathclose{}\right) \\ \hspace{1em} \mathbf{else} \\ \hspace{2em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( \mathrm{None}, \mathrm{None} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ a \in \mathrm{actions} \ \mathbf{do} \\ \hspace{3em} \mathopen{}\left( \mathrm{\_}, v \mathclose{}\right) \gets \mathrm{minimax\_search} \mathopen{}\left( \mathrm{env}.\mathrm{step} \mathopen{}\left( s, a \mathclose{}\right), \mathrm{max} \mathclose{}\right) \\ \hspace{3em} \mathbf{if} \ v &lt; v_{\mathrm{min}} \\ \hspace{4em} \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \gets \mathopen{}\left( a, v \mathclose{}\right) \\ \hspace{4em} \beta \gets \mathrm{min} \mathopen{}\left( \beta, v \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{3em} \mathbf{if} \ v_{\mathrm{min}} \le \alpha \\ \hspace{4em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \\ \hspace{3em} \mathbf{end \ if} \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{2em} \mathbf{return} \ \mathopen{}\left( a_{\mathrm{min}}, v_{\mathrm{min}} \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ if} \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
 </div>
 </div>
 <p>How do we choose what <em>order</em> to explore the branches? As you can tell, this significantly affects the efficiency of the pruning algorithm. If Max explores the possible actions in order from worst to best, they will not be able to prune any branches at all! Additionally, to verify that an action is suboptimal, we must run the search recursively from that action, which ultimately requires traversing the tree all the way to a leaf node. The longer the game might possibly last, the more computation we have to run.</p>
 <p>In practice, we can often use background information about the game to develop a <strong>heuristic</strong> for evaluating possible actions. If a technique is based on background information or intuition, especially if it isn’t rigorously justified, we call it a heuristic.</p>
 <p>Can we develop <em>heuristic methods</em> for tree exploration that works for all sorts of games? <!-- Here's where we can incorporate the _reinforcement learning_ --></p>
 </section>
-<section id="sec-mcts" class="level2" data-number="8.5">
-<h2 data-number="8.5" class="anchored" data-anchor-id="sec-mcts"><span class="header-section-number">8.5</span> Monte Carlo Tree Search</h2>
-<p>The task of evaluating actions in a complex environment might seem familiar. We’ve encountered this problem before in both the <a href="bandits.html" class="quarto-xref"><span>Chapter 3</span></a> setting and the <a href="mdps.html" class="quarto-xref"><span>Chapter 1</span></a> setting. Now we’ll see how to combine concepts from these to form a more general and efficient tree search heuristic called <strong>Monte Carlo Tree Search</strong> (MCTS).</p>
+<section id="sec-mcts" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="sec-mcts"><span class="header-section-number">9.5</span> Monte Carlo Tree Search</h2>
+<p>The task of <em>evaluating actions</em> in a complex environment might seem familiar. We’ve encountered this problem before in both multi-armed bandits (<a href="bandits.html" class="quarto-xref"><span>Chapter 4</span></a>) and Markov decision processes (<a href="mdps.html" class="quarto-xref"><span>Chapter 2</span></a>). Now we’ll see how to combine concepts from these to form a more general and efficient tree search heuristic called <strong>Monte Carlo Tree Search</strong> (MCTS).</p>
 <p>When a problem is intractable to solve <em>exactly</em>, we often turn to <em>approximate</em> algorithms that sacrifice some accuracy in exchange for computational efficiency. MCTS also improves on alpha-beta search in this sense. As the name suggests, MCTS uses <em>Monte Carlo</em> simulation, that is, collecting random samples and computing the sample statistics, in order to <em>approximate</em> the value of each action.</p>
-<p>As before, we imagine a complete game tree in which each path represents an <em>entire game</em>. The goal of MCTS is to assign values to only the game states that are <em>relevant</em> to the <em>current game</em>; We gradually expand the tree at each move. For comparison, in alpha-beta search, the entire tree only needs to be solved <em>once</em>, and from then on, choosing an action is as simple as taking a maximum over the previously computed values.</p>
+<p>As before, we imagine a game tree in which each path represents an <em>entire game</em>. MCTS assigns values to only the game states that are <em>relevant</em> to the <em>current game</em>. That is, we maintain a <em>search tree</em> that we gradually expand at each move. For comparison, in alpha-beta search, the entire tree only needs to be solved <em>once</em>, and from then on, choosing an action is as simple as taking a maximum over the previously computed values.</p>
 <p>The crux of MCTS is approximating the win probability of a state by a <em>sample probability</em>. In practice, MCTS is used for games with <em>binary outcomes</em> where <span class="math inline">\(r(s) \in \{ +1, -1 \}\)</span>, and so this is equivalent to approximating the final game score. To approximate the win probability from state <span class="math inline">\(s\)</span>, MCTS samples random games starting in <span class="math inline">\(s\)</span> and computes the sample proportion of those that the player wins.</p>
-<p>Note that, for a given state <span class="math inline">\(s\)</span>, choosing the best action <span class="math inline">\(a\)</span> can be framed as a <a href="bandits.html" class="quarto-xref"><span>Chapter 3</span></a> problem, where each action corresponds to an arm, and the reward distribution of arm <span class="math inline">\(k\)</span> is the distribution of the game score over random games after choosing that arm. The most commonly used bandit algorithm in practice for MCTS is the <a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 3.6</span></a> algorithm.</p>
+<p>Note that, for a given state <span class="math inline">\(s\)</span>, choosing the best action <span class="math inline">\(a\)</span> can be framed as a multi-armed bandit problem, where each action corresponds to an arm, and the reward distribution of arm <span class="math inline">\(k\)</span> is the distribution of the game score over random games after choosing that arm. The most commonly used bandit algorithm in practice for MCTS is the upper confidence bound algorithm (<a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 4.7</span></a>).</p>
 <div id="rem-ucb-summary" class="proof remark">
-<p><span class="proof-title"><em>Remark 8.1</em> (Summary of UCB). </span>Let us quickly review the UCB bandit algorithm. For each arm <span class="math inline">\(k\)</span>, we track the sample mean <span class="math display">\[
-\hat \mu^k_t = \frac{1}{N_t^k} \sum_{\tau=0}^{t-1} \ind{a_\tau = k} r_\tau
+<p><span class="proof-title"><em>Remark 9.1</em> (Summary of UCB). </span>Let us quickly review the UCB algorithm for a multi-armed bandit problem (<a href="bandits.html#sec-ucb" class="quarto-xref"><span>Section 4.7</span></a>) For each arm <span class="math inline">\(k\)</span>, we track the sample mean <span class="math display">\[
+\hat \mu^k_t = \frac{1}{N_t^k} \sum_{\tau=0}^{t-1} \mathbf{1}\left\{a_\tau = k\right\} r_\tau
 \]</span> of all rewards from that arm up to time <span class="math inline">\(t\)</span>. Then we construct a <em>confidence interval</em> <span class="math display">\[
 C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
 \]</span> where <span class="math inline">\(B_t^k = \sqrt{\frac{\ln(2 t / \delta)}{2 N_t^k}}\)</span> is given by Hoeffding’s inequality, so that with probability <span class="math inline">\(\delta\)</span> (some fixed parameter we choose), the true mean <span class="math inline">\(\mu^k\)</span> lies within <span class="math inline">\(C_t^k\)</span>. Note that <span class="math inline">\(B_t^k\)</span> scales like <span class="math inline">\(\sqrt{1/N^k_t}\)</span>, i.e.&nbsp;the more we have visited that arm, the more confident we get about it, and the narrower the confidence interval.</p>
 <p>To select an arm, we pick the arm with the highest <em>upper confidence bound</em>.</p>
 </div>
-<p>This means that, for each edge (corresponding to a state-action pair <span class="math inline">\((s, a)\)</span>) in the game tree, we keep track of the statistics required to compute its UCB:</p>
+<p>This means that, for each edge in the game tree, which corresponds to a state-action pair <span class="math inline">\((s, a)\)</span>, we keep track of the statistics required to compute its UCB:</p>
 <ul>
 <li>How many times it has been “visited” (<span class="math inline">\(N_t^{s, a}\)</span>)</li>
-<li>How many of those visits resulted in victory (<span class="math inline">\(\sum_{\tau=0}^{t-1} \ind{(s_\tau, a_\tau) = (s, a)} r_\tau\)</span>). Let us call this latter value <span class="math inline">\(W^{s, a}_t\)</span> (for number of “wins”).</li>
+<li>How many of those visits resulted in victory (<span class="math inline">\(\sum_{\tau=0}^{t-1} \mathbf{1}\left\{(s_\tau, a_\tau) = (s, a)\right\} r_\tau\)</span>). Let us call this latter value <span class="math inline">\(W^{s, a}_t\)</span> (for number of “wins”).</li>
 </ul>
 <p>What does <span class="math inline">\(t\)</span> refer to in the above expressions? Recall <span class="math inline">\(t\)</span> refers to the number of time steps elapsed in the <em>bandit environment</em>. As mentioned above, each state <span class="math inline">\(s\)</span> corresponds to its own bandit environment, and so <span class="math inline">\(t\)</span> refers to <span class="math inline">\(N^s\)</span>, that is, how many actions have been taken from state <span class="math inline">\(s\)</span>. This term, <span class="math inline">\(N^s\)</span>, gets incremented as the algorithm runs; for simplicity, we won’t introduce another index to track how it changes.</p>
 <div id="def-mcts-algorithm" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.2 (Monte Carlo tree search algorithm)</strong></span> Inputs: - <span class="math inline">\(T\)</span>, the number of iterations per move - <span class="math inline">\(\pi_{\text{rollout}}\)</span>, the <strong>rollout policy</strong> for randomly sampling games - <span class="math inline">\(c\)</span>, a positive value that encourages exploration</p>
+<p><span class="theorem-title"><strong>Definition 9.2 (Monte Carlo tree search algorithm)</strong></span> Here we describe how to perform a Monte Carlo tree search for choosing a single action in state <span class="math inline">\(s_{\text{start}}\)</span>.</p>
+<p>Inputs:</p>
+<ul>
+<li><span class="math inline">\(T\)</span>, the number of iterations per move</li>
+<li><span class="math inline">\(\pi_{\text{rollout}}\)</span>, the <strong>rollout policy</strong> for randomly sampling games</li>
+<li><span class="math inline">\(c\)</span>, a positive value that encourages exploration</li>
+</ul>
 <p>To choose a single move starting at state <span class="math inline">\(s_{\text{start}}\)</span>, MCTS first tries to estimate the UCB values for each of the possible actions <span class="math inline">\(\mathcal{A}(s_\text{start})\)</span>, and then chooses the best one. To estimate the UCB values, it repeats the following four steps <span class="math inline">\(T\)</span> times:</p>
 <ol type="1">
 <li><strong>Selection</strong>: We start at <span class="math inline">\(s = s_{\text{start}}\)</span>. Let <span class="math inline">\(\tau\)</span> be an empty list that we will use to track states and actions.
 <ul>
-<li>Until <span class="math inline">\(s\)</span> has at least one action that hasn’t been taken:
-<ul>
 <li>Choose <span class="math inline">\(a \gets \arg\max_k \text{UCB}^{s, k}\)</span>, where <span id="eq-ucb-tree"><span class="math display">\[
-\text{UCB}^{s, a} = \frac{W^{s, a}}{N^{s, a}} + c \sqrt{\frac{\ln N^s}{N^{s, a}}}
-\tag{8.1}\]</span></span></li>
+\text{UCB}^{s, a}
+=
+\frac{W^{s, a}}{N^{s, a}} + c \sqrt{\frac{\ln N^s}{N^{s, a}}}
+\tag{9.1}\]</span></span></li>
 <li>Append <span class="math inline">\((s, a)\)</span> to <span class="math inline">\(\tau\)</span></li>
-<li>Set <span class="math inline">\(s \gets P(s, a)\)</span></li>
-</ul></li>
+<li>If <span class="math inline">\(s\)</span> has at least one action that hasn’t been taken, move onto the next step. Otherwise, move to the next state <span class="math inline">\(s \gets P(s, a)\)</span> and repeat.</li>
 </ul></li>
 <li><strong>Expansion</strong>: Let <span class="math inline">\(s_\text{new}\)</span> denote the final state in <span class="math inline">\(\tau\)</span> (that has at least one action that hasn’t been taken). Choose one of these unexplored actions from <span class="math inline">\(s_\text{new}\)</span>. Call it <span class="math inline">\(a_{\text{new}}\)</span>. Add it to <span class="math inline">\(\tau\)</span>.</li>
 <li><strong>Simulation</strong>: Simulate a complete game episode by starting with the action <span class="math inline">\(a_{\text{new}}\)</span> and then playing according to <span class="math inline">\(\pi_\text{rollout}\)</span>. This results in the outcome <span class="math inline">\(r \in \{ +1, -1 \}\)</span>.</li>
@@ -654,18 +742,18 @@ C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
 <li>Set <span class="math inline">\(N^s \gets N^s + 1\)</span></li>
 </ul></li>
 </ol>
-<p>After <span class="math inline">\(T\)</span> repeats of the above, we return the action with the highest UCB value <a href="#eq-ucb-tree" class="quarto-xref">Equation&nbsp;<span>8.1</span></a>. Then play continues.</p>
+<p>After <span class="math inline">\(T\)</span> repeats of the above, we return the action with the highest UCB value <a href="#eq-ucb-tree" class="quarto-xref">eq.&nbsp;<span>9.1</span></a>. Then play continues.</p>
 <p>Between turns, we can keep the subtree whose statistics we have visited so far. However, the rest of the tree for the actions we did <em>not</em> end up taking gets discarded.</p>
 </div>
 <p>The application which brought the MCTS algorithm to fame was DeepMind’s <strong>AlphaGo</strong> <span class="citation" data-cites="silver_mastering_2016">Silver et al. (<a href="references.html#ref-silver_mastering_2016" role="doc-biblioref">2016</a>)</span>. Since then, it has been used in numerous applications ranging from games to automated theorem proving.</p>
 <p>How accurate is this Monte Carlo estimation? It depends heavily on the rollout policy <span class="math inline">\(\pi_\text{rollout}\)</span>. If the distribution <span class="math inline">\(\pi_\text{rollout}\)</span> induces over games is very different from the distribution seen during real gameplay, we might end up with a poor value approximation.</p>
-<section id="incorporating-value-functions-and-policies" class="level3" data-number="8.5.1">
-<h3 data-number="8.5.1" class="anchored" data-anchor-id="incorporating-value-functions-and-policies"><span class="header-section-number">8.5.1</span> Incorporating value functions and policies</h3>
-<p>To remedy this, we might make use of a value function <span class="math inline">\(v : \mathcal{S} \to \mathbb{R}\)</span> that more efficiently approximates the value of a state. Then, we can replace the simulation step of <a href="#def-mcts-algorithm" class="quarto-xref">Definition&nbsp;<span>8.2</span></a> with evaluating <span class="math inline">\(r = v(s-\text{next})\)</span>, where <span class="math inline">\(s-\text{next} = P(s-\text{new}, a-\text{new})\)</span>.</p>
-<p>We might also make use of a <strong>“guiding” policy</strong> <span class="math inline">\(\pi_\text{guide} : \mathcal{S} \to \triangle(\mathcal{A})\)</span> that provides “intuition” as to which actions are more valuable in a given state. We can scale the exploration term of <a href="#eq-ucb-tree" class="quarto-xref">Equation&nbsp;<span>8.1</span></a> according to the policy’s outputs.</p>
+<section id="incorporating-value-functions-and-policies" class="level3" data-number="9.5.1">
+<h3 data-number="9.5.1" class="anchored" data-anchor-id="incorporating-value-functions-and-policies"><span class="header-section-number">9.5.1</span> Incorporating value functions and policies</h3>
+<p>To remedy this, we might make use of a value function <span class="math inline">\(v : \mathcal{S} \to \mathbb{R}\)</span> that more efficiently approximates the value of a state. Then, we can replace the simulation step of <a href="#def-mcts-algorithm" class="quarto-xref">def.&nbsp;<span>9.2</span></a> with evaluating <span class="math inline">\(r = v(s-\text{next})\)</span>, where <span class="math inline">\(s_\text{next} = P(s_\text{new}, a_\text{new})\)</span>.</p>
+<p>We might also make use of a <strong>“guiding” policy</strong> <span class="math inline">\(\pi_\text{guide} : \mathcal{S} \to \triangle(\mathcal{A})\)</span> that provides “intuition” as to which actions are more valuable in a given state. We can scale the exploration term of <a href="#eq-ucb-tree" class="quarto-xref">eq.&nbsp;<span>9.1</span></a> according to the policy’s outputs.</p>
 <p>Putting these together, we can describe an updated version of MCTS that makes use of these value functions and policy:</p>
 <div id="def-mcts-policy-value" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.3 (Monte Carlo tree search with policy and value functions)</strong></span> Inputs: - <span class="math inline">\(T\)</span>, the number of iterations per move - <span class="math inline">\(v\)</span>, a value function that evaluates how good a state is - <span class="math inline">\(\pi_\text{guide}\)</span>, a guiding policy that encourages certain actions - <span class="math inline">\(c\)</span>, a positive value that encourages exploration</p>
+<p><span class="theorem-title"><strong>Definition 9.3 (Monte Carlo tree search with policy and value functions)</strong></span> Inputs: - <span class="math inline">\(T\)</span>, the number of iterations per move - <span class="math inline">\(v\)</span>, a value function that evaluates how good a state is - <span class="math inline">\(\pi_\text{guide}\)</span>, a guiding policy that encourages certain actions - <span class="math inline">\(c\)</span>, a positive value that encourages exploration</p>
 <p>To select a move in state <span class="math inline">\(s_\text{start}\)</span>, we repeat the following four steps <span class="math inline">\(T\)</span> times:</p>
 <ol type="1">
 <li><strong>Selection</strong>: We start at <span class="math inline">\(s = s_{\text{start}}\)</span>. Let <span class="math inline">\(\tau\)</span> be an empty list that we will use to track states and actions.
@@ -674,7 +762,7 @@ C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
 <ul>
 <li>Choose <span class="math inline">\(a \gets \arg\max_k \text{UCB}^{s, k}\)</span>, where <span id="eq-ucb-tree-policy"><span class="math display">\[
 \text{UCB}^{s, a} = \frac{W^{s, a}}{N^s} + c \cdot \pi_\text{guide}(a \mid s) \sqrt{\frac{\ln N^s}{N^{s, a}}}
-\tag{8.2}\]</span></span></li>
+\tag{9.2}\]</span></span></li>
 <li>Append <span class="math inline">\((s, a)\)</span> to <span class="math inline">\(\tau\)</span></li>
 <li>Set <span class="math inline">\(s \gets P(s, a)\)</span></li>
 </ul></li>
@@ -688,9 +776,9 @@ C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
 <li><span class="math inline">\(N^s \gets N^s + 1\)</span></li>
 </ul></li>
 </ol>
-<p>We finally return the action with the highest UCB value <a href="#eq-ucb-tree-policy" class="quarto-xref">Equation&nbsp;<span>8.2</span></a>. Then play continues. As before, we can reuse the tree across timesteps.</p>
+<p>We finally return the action with the highest UCB value <a href="#eq-ucb-tree-policy" class="quarto-xref">eq.&nbsp;<span>9.2</span></a>. Then play continues. As before, we can reuse the tree across timesteps.</p>
 </div>
-<div id="3261511b" class="cell" data-execution_count="6">
+<div id="6c5d1b4f" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EdgeStatistics(NamedTuple):</span>
@@ -710,14 +798,14 @@ C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># while all((s, a) in tree for a in env.action_state(s)):</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>How do we actually compute a useful <span class="math inline">\(\pi_\text{guide}\)</span> and <span class="math inline">\(v\)</span>? If we have some existing dataset of trajectories, we could use <a href="imitation_learning.html" class="quarto-xref"><span>Chapter 7</span></a> (that is, imitation learning) to generate a policy <span class="math inline">\(\pi_\text{guide}\)</span> via behavioral cloning and learn <span class="math inline">\(v\)</span> by regressing the game outcomes onto states. Then, plugging these into <a href="#def-mcts-policy-value" class="quarto-xref">Definition&nbsp;<span>8.3</span></a> results in a stronger policy by using tree search to “think ahead”.</p>
+<p>How do we actually compute a useful <span class="math inline">\(\pi_\text{guide}\)</span> and <span class="math inline">\(v\)</span>? If we have some existing dataset of trajectories, we could use <a href="imitation_learning.html" class="quarto-xref"><span>Chapter 8</span></a> (that is, imitation learning) to generate a policy <span class="math inline">\(\pi_\text{guide}\)</span> via behaviour cloning and learn <span class="math inline">\(v\)</span> by regressing the game outcomes onto states. Then, plugging these into <a href="#def-mcts-policy-value" class="quarto-xref">def.&nbsp;<span>9.3</span></a> results in a stronger policy by using tree search to “think ahead”.</p>
 <p>But we don’t have to stop at just one improvement step; we could iterate this process via <strong>self-play</strong>.</p>
 </section>
-<section id="self-play" class="level3" data-number="8.5.2">
-<h3 data-number="8.5.2" class="anchored" data-anchor-id="self-play"><span class="header-section-number">8.5.2</span> Self-play</h3>
-<p>Recall the <a href="mdps.html#sec-policy-iteration" class="quarto-xref"><span>Section 1.3.7.2</span></a> algorithm from the <a href="mdps.html" class="quarto-xref"><span>Chapter 1</span></a>. Policy iteration alternates between <strong>policy evaluation</strong> (taking <span class="math inline">\(\pi\)</span> and computing <span class="math inline">\(V^\pi\)</span>) and <strong>policy improvement</strong> (setting <span class="math inline">\(\pi\)</span> to be greedy with respect to <span class="math inline">\(V^\pi\)</span>). Above, we saw how MCTS can be thought of as a “policy improvement” operation: for a given policy <span class="math inline">\(\pi^0\)</span>, we can use it to guide MCTS, resulting in an algorithm that is itself a policy <span class="math inline">\(\pi^0_\text{MCTS}\)</span> that maps from states to actions. Now, we can use <a href="imitation_learning.html" class="quarto-xref"><span>Chapter 7</span></a> to obtain a new policy <span class="math inline">\(\pi^1\)</span> that imitates <span class="math inline">\(\pi^0_\text{MCTS}\)</span>. We can now use <span class="math inline">\(\pi^1\)</span> to guide MCTS, and repeat.</p>
+<section id="self-play" class="level3" data-number="9.5.2">
+<h3 data-number="9.5.2" class="anchored" data-anchor-id="self-play"><span class="header-section-number">9.5.2</span> Self-play</h3>
+<p>Recall the policy iteration algorithm for solving an MDP (<a href="mdps.html#sec-pi" class="quarto-xref"><span>Section 2.4.4.2</span></a>). Policy iteration alternates between <strong>policy evaluation</strong> (taking <span class="math inline">\(\pi\)</span> and computing <span class="math inline">\(V^\pi\)</span>) and <strong>policy improvement</strong> (setting <span class="math inline">\(\pi\)</span> to be greedy with respect to <span class="math inline">\(V^\pi\)</span>). We can think of MCTS as a “policy improvement” operation: for a given policy <span class="math inline">\(\pi^0\)</span>, we can use it to guide MCTS. This results in an algorithm that is <em>itself</em> a policy that maps from states to actions. This improved policy (using MCTS) is usually called the <strong>search policy</strong>. Denote it by <span class="math inline">\(\pi^0_\text{MCTS}\)</span>. Now, we can use imitation learning techniques (<a href="imitation_learning.html" class="quarto-xref"><span>Chapter 8</span></a>) to obtain a new policy <span class="math inline">\(\pi^1\)</span> that imitates <span class="math inline">\(\pi^0_\text{MCTS}\)</span>. We can now use <span class="math inline">\(\pi^1\)</span> to guide MCTS, and repeat.</p>
 <div id="def-mcts-self-play" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.4 (MCTS with self-play)</strong></span> Input:</p>
+<p><span class="theorem-title"><strong>Definition 9.4 (MCTS with self-play)</strong></span> Input:</p>
 <ul>
 <li>A parameterized policy class <span class="math inline">\(\pi_\theta : \mathcal{S} \to \triangle(\mathcal{A})\)</span></li>
 <li>A parameterized value function class <span class="math inline">\(v_\lambda : \mathcal{S} \to \mathbb{R}\)</span></li>
@@ -726,43 +814,60 @@ C_t^k = [\hat \mu^k_t - B_t^k, \hat \mu^k_t + B_t^k],
 </ul>
 <p>For <span class="math inline">\(t = 0, \dots, T-1\)</span>:</p>
 <ul>
-<li><strong>Policy improvement</strong>: Let <span class="math inline">\(\pi^t_\text{MCTS}\)</span> denote the policy obtained by <a href="#def-mcts-policy-value" class="quarto-xref">Definition&nbsp;<span>8.3</span></a> with <span class="math inline">\(\pi-{\theta^t}\)</span> and <span class="math inline">\(v-{\lambda^t}\)</span>. We use <span class="math inline">\(\pi^t-\text{MCTS}\)</span> to play against itself <span class="math inline">\(M\)</span> times. This generates <span class="math inline">\(M\)</span> trajectories <span class="math inline">\(\tau-0, \dots, \tau-{M-1}\)</span>.</li>
-<li><strong>Policy evaluation</strong>: Use behavioral cloning to find a set of policy parameters <span class="math inline">\(\theta^{t+1}\)</span> that mimic the behavior of <span class="math inline">\(\pi^t_\text{MCTS}\)</span> and a set of value function parameters <span class="math inline">\(\lambda^{t+1}\)</span> that approximate its value function. That is, <span class="math display">\[
+<li><strong>Policy improvement</strong>: Let <span class="math inline">\(\pi^t_\text{MCTS}\)</span> denote the policy obtained by <a href="#def-mcts-policy-value" class="quarto-xref">def.&nbsp;<span>9.3</span></a> with <span class="math inline">\(\pi_{\theta^t}\)</span> and <span class="math inline">\(v-{\lambda^t}\)</span>. We use <span class="math inline">\(\pi^t-\text{MCTS}\)</span> to play against itself <span class="math inline">\(M\)</span> times. This generates <span class="math inline">\(M\)</span> trajectories <span class="math inline">\(\tau-0, \dots, \tau-{M-1}\)</span>.</li>
+<li><strong>Policy evaluation</strong>: Use behaviour cloning to find a set of policy parameters <span class="math inline">\(\theta^{t+1}\)</span> that mimic the behaviour of <span class="math inline">\(\pi^t_\text{MCTS}\)</span> and a set of value function parameters <span class="math inline">\(\lambda^{t+1}\)</span> that approximate its value function. That is, <span class="math display">\[
 \begin{aligned}
-\theta^{t+1} &amp;\gets \arg\min_\theta \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} - \log \pi_\theta(a^m_\hi \mid s^m_\hi) \\
-\lambda^{t+1} &amp;\gets \arg\min_\lambda \sum_{m=0}^{M-1} \sum_{\hi=0}^{H-1} (v_\lambda(s^m_\hi) - R(\tau_m))^2
+\theta^{t+1} &amp;\gets \arg\min_\theta \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} - \log \pi_\theta(a^m_h\mid s^m_h) \\
+\lambda^{t+1} &amp;\gets \arg\min_\lambda \sum_{m=0}^{M-1} \sum_{h=0}^{H-1} (v_\lambda(s^m_h) - R(\tau_m))^2
 \end{aligned}
 \]</span></li>
 </ul>
 <p>Note that in implementation, the policy and value are typically both returned by a single deep neural network, that is, with a single set of parameters, and the two loss functions are added together.</p>
 </div>
-<p>This algorithm was brought to fame by AlphaGo Zero <span class="citation" data-cites="silver_mastering_2017">Silver et al. (<a href="references.html#ref-silver_mastering_2017" role="doc-biblioref">2017</a>)</span>.</p>
+<p>This algorithm was brought to fame by AlphaGo Zero <span class="citation" data-cites="silver_mastering_2017">(<a href="references.html#ref-silver_mastering_2017" role="doc-biblioref">Silver et al., 2017</a>)</span>.</p>
+<section id="extending-to-continuous-rewards" class="level4" data-number="9.5.2.1">
+<h4 data-number="9.5.2.1" class="anchored" data-anchor-id="extending-to-continuous-rewards"><span class="header-section-number">9.5.2.1</span> Extending to continuous rewards (*)</h4>
+<p>In the search algorithm above, we used <span class="math inline">\(W^{s, a}\)</span> to track the number of times the policy wins after taking action <span class="math inline">\(a\)</span> in state <span class="math inline">\(s\)</span>. This binary outcome can easily be generalized to a <em>continuous</em> reward at each state-action pair. This is the reward function we assumed when discussing MDPs (<a href="mdps.html" class="quarto-xref"><span>Chapter 2</span></a>).</p>
 </section>
 </section>
-<section id="summary" class="level2" data-number="8.6">
-<h2 data-number="8.6" class="anchored" data-anchor-id="summary"><span class="header-section-number">8.6</span> Summary</h2>
-<p>In this chapter, we explored tree search-based algorithms for deterministic, zero sum, fully observable two-player games. We began with <a href="#sec-min-max-search" class="quarto-xref"><span>Section 8.3</span></a>, an algorithm for exactly solving the game value of every possible state. However, this is impossible to execute in practice, and so we must resort to various ways to reduce the number of states and actions that we must explore. <a href="#sec-alpha-beta-search" class="quarto-xref"><span>Section 8.4</span></a> does this by -pruning- away states that we already know to be suboptimal, and <a href="#sec-mcts" class="quarto-xref"><span>Section 8.5</span></a> -approximates- the value of states instead of evaluating them exactly.</p>
 </section>
-<section id="references" class="level2" data-number="8.7">
-<h2 data-number="8.7" class="anchored" data-anchor-id="references"><span class="header-section-number">8.7</span> References</h2>
-<p>Chapter 5 of <span class="citation" data-cites="russell_artificial_2021">Russell and Norvig (<a href="references.html#ref-russell_artificial_2021" role="doc-biblioref">2021</a>)</span> provides an excellent overview of search methods in games. The original AlphaGo paper <span class="citation" data-cites="silver_mastering_2016">Silver et al. (<a href="references.html#ref-silver_mastering_2016" role="doc-biblioref">2016</a>)</span> was a groundbreaking application of these technologies. <span class="citation" data-cites="silver_mastering_2017">Silver et al. (<a href="references.html#ref-silver_mastering_2017" role="doc-biblioref">2017</a>)</span> removed the imitation learning phase, learning from scratch. AlphaZero <span class="citation" data-cites="silver_general_2018">Silver et al. (<a href="references.html#ref-silver_general_2018" role="doc-biblioref">2018</a>)</span> then extended to other games beyond Go, namely shogi and chess, also learning from scratch. In MuZero <span class="citation" data-cites="schrittwieser_mastering_2020">Schrittwieser et al. (<a href="references.html#ref-schrittwieser_mastering_2020" role="doc-biblioref">2020</a>)</span>, this was further extended by learning a model of the game dynamics.</p>
+<section id="key-takeaways" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="key-takeaways"><span class="header-section-number">9.6</span> Key takeaways</h2>
+<p>In this chapter, we explored tree search-based algorithms for deterministic, zero sum, fully observable two-player games. We began with min-max search (<a href="#sec-min-max-search" class="quarto-xref"><span>Section 9.3</span></a>), an algorithm for exactly solving the game value of every possible state. However, this is impossible to execute in practice, and so we must resort to various ways to reduce the number of states and actions that we must explore. Alpha-beta search (<a href="#sec-alpha-beta-search" class="quarto-xref"><span>Section 9.4</span></a>) does this by <em>pruning</em> away states that we already know to be suboptimal, and MCTS (<a href="#sec-mcts" class="quarto-xref"><span>Section 9.5</span></a>) <em>approximates</em> the value of states instead of evaluating them exactly.</p>
+</section>
+<section id="sec-planning-bib" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="sec-planning-bib"><span class="header-section-number">9.7</span> Bibliographic notes and further reading</h2>
+<p><span class="citation" data-cites="russell_artificial_2021">Russell &amp; Norvig (<a href="references.html#ref-russell_artificial_2021" role="doc-biblioref">2021</a>, ch.&nbsp;5)</span> provides an excellent overview of search methods in games. The original AlphaGo paper <span class="citation" data-cites="silver_mastering_2016">Silver et al. (<a href="references.html#ref-silver_mastering_2016" role="doc-biblioref">2016</a>)</span> was a groundbreaking application of these technologies. <span class="citation" data-cites="silver_mastering_2017">Silver et al. (<a href="references.html#ref-silver_mastering_2017" role="doc-biblioref">2017</a>)</span> removed the imitation learning phase, learning the optimal policy from scratch using self-play. AlphaZero <span class="citation" data-cites="silver_general_2018">(<a href="references.html#ref-silver_general_2018" role="doc-biblioref">Silver et al., 2018</a>)</span> then extended to other games beyond Go, namely shogi and chess, also learning from scratch. In MuZero <span class="citation" data-cites="schrittwieser_mastering_2020">(<a href="references.html#ref-schrittwieser_mastering_2020" role="doc-biblioref">Schrittwieser et al., 2020</a>)</span>, this was further extended by <em>learning</em> a model of the game dynamics. EfficientZero <span class="citation" data-cites="ye_mastering_2021">(<a href="references.html#ref-ye_mastering_2021" role="doc-biblioref">Ye et al., 2021</a>)</span> presented a more sample-efficient algorithm based on MuZero. Gumbel MuZero <span class="citation" data-cites="danihelka_policy_2021">(<a href="references.html#ref-danihelka_policy_2021" role="doc-biblioref">Danihelka et al., 2021</a>)</span> greatly improved the computational efficiency of MuZero by reducing the number of rollouts required. Stochastic MuZero <span class="citation" data-cites="antonoglou_planning_2021">(<a href="references.html#ref-antonoglou_planning_2021" role="doc-biblioref">Antonoglou et al., 2021</a>)</span> extends MuZero to stochastic environments.</p>
+<p>While search methods are extremely powerful, they are also computationally intensive, and have therefore historically been written in lower-level languages such as C or C++ rather than Python. The development of the JAX framework addresses this issue by providing a readable high-level Python library that compiles to code optimized for specific hardware. In particular, the Mctx library <span class="citation" data-cites="babuschkin_deepmind_2020">(<a href="references.html#ref-babuschkin_deepmind_2020" role="doc-biblioref">Babuschkin et al., 2020</a>)</span> provides usable implementations of MuZero and its variants above.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-antonoglou_planning_2021" class="csl-entry" role="listitem">
+Antonoglou, I., Schrittwieser, J., Ozair, S., Hubert, T. K., &amp; Silver, D. (2021, October 6). Planning in stochastic environments with a learned model. <em>The Tenth International Conference on Learning Representations</em>. International <span>Conference</span> on <span>Learning Representations</span>. <a href="https://openreview.net/forum?id=X6D9bAHhBQ1">https://openreview.net/forum?id=X6D9bAHhBQ1</a>
+</div>
+<div id="ref-babuschkin_deepmind_2020" class="csl-entry" role="listitem">
+Babuschkin, I., Baumli, K., Bell, A., Bhupatiraju, S., Bruce, J., Buchlovsky, P., Budden, D., Cai, T., Clark, A., Danihelka, I., Dedieu, A., Fantacci, C., Godwin, J., Jones, C., Hemsley, R., Hennigan, T., Hessel, M., Hou, S., Kapturowski, S., … Viola, F. (2020). <em>The <span>DeepMind JAX</span> ecosystem</em> [Computer software]. <a href="http://github.com/deepmind">http://github.com/deepmind</a>
+</div>
+<div id="ref-danihelka_policy_2021" class="csl-entry" role="listitem">
+Danihelka, I., Guez, A., Schrittwieser, J., &amp; Silver, D. (2021, October 6). Policy improvement by planning with gumbel. <em>The Tenth International Conference on Learning Representations</em>. <a href="https://openreview.net/forum?id=bERaNdoegnO">https://openreview.net/forum?id=bERaNdoegnO</a>
+</div>
 <div id="ref-russell_artificial_2021" class="csl-entry" role="listitem">
-Russell, Stuart J., and Peter Norvig. 2021. <em>Artificial Intelligence: A Modern Approach</em>. Fourth edition. Pearson Series in Artificial Intelligence. Hoboken: Pearson.
+Russell, S. J., &amp; Norvig, P. (2021). <em>Artificial intelligence: A modern approach</em> (Fourth edition). Pearson.
 </div>
 <div id="ref-schrittwieser_mastering_2020" class="csl-entry" role="listitem">
-Schrittwieser, Julian, Ioannis Antonoglou, Thomas Hubert, Karen Simonyan, Laurent Sifre, Simon Schmitt, Arthur Guez, et al. 2020. <span>“Mastering <span>Atari</span>, <span>Go</span>, Chess and Shogi by Planning with a Learned Model.”</span> <em>Nature</em> 588 (7839, 7839): 604–9. <a href="https://doi.org/10.1038/s41586-020-03051-4">https://doi.org/10.1038/s41586-020-03051-4</a>.
+Schrittwieser, J., Antonoglou, I., Hubert, T., Simonyan, K., Sifre, L., Schmitt, S., Guez, A., Lockhart, E., Hassabis, D., Graepel, T., Lillicrap, T., &amp; Silver, D. (2020). Mastering atari, go, chess and shogi by planning with a learned model. <em>Nature</em>, <em>588</em>(7839, 7839), 604–609. <a href="https://doi.org/10.1038/s41586-020-03051-4">https://doi.org/10.1038/s41586-020-03051-4</a>
 </div>
 <div id="ref-silver_mastering_2016" class="csl-entry" role="listitem">
-Silver, David, Aja Huang, Chris J. Maddison, Arthur Guez, Laurent Sifre, George van den Driessche, Julian Schrittwieser, et al. 2016. <span>“Mastering the Game of <span>Go</span> with Deep Neural Networks and Tree Search.”</span> <em>Nature</em> 529 (7587, 7587): 484–89. <a href="https://doi.org/10.1038/nature16961">https://doi.org/10.1038/nature16961</a>.
+Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., van den Driessche, G., Schrittwieser, J., Antonoglou, I., Panneershelvam, V., Lanctot, M., Dieleman, S., Grewe, D., Nham, J., Kalchbrenner, N., Sutskever, I., Lillicrap, T., Leach, M., Kavukcuoglu, K., Graepel, T., &amp; Hassabis, D. (2016). Mastering the game of go with deep neural networks and tree search. <em>Nature</em>, <em>529</em>(7587, 7587), 484–489. <a href="https://doi.org/10.1038/nature16961">https://doi.org/10.1038/nature16961</a>
 </div>
 <div id="ref-silver_general_2018" class="csl-entry" role="listitem">
-Silver, David, Thomas Hubert, Julian Schrittwieser, Ioannis Antonoglou, Matthew Lai, Arthur Guez, Marc Lanctot, et al. 2018. <span>“A General Reinforcement Learning Algorithm That Masters Chess, Shogi, and <span>Go</span> Through Self-Play.”</span> <em>Science</em> 362 (6419): 1140–44. <a href="https://doi.org/10.1126/science.aar6404">https://doi.org/10.1126/science.aar6404</a>.
+Silver, D., Hubert, T., Schrittwieser, J., Antonoglou, I., Lai, M., Guez, A., Lanctot, M., Sifre, L., Kumaran, D., Graepel, T., Lillicrap, T., Simonyan, K., &amp; Hassabis, D. (2018). A general reinforcement learning algorithm that masters chess, shogi, and go through self-play. <em>Science</em>, <em>362</em>(6419), 1140–1144. <a href="https://doi.org/10.1126/science.aar6404">https://doi.org/10.1126/science.aar6404</a>
 </div>
 <div id="ref-silver_mastering_2017" class="csl-entry" role="listitem">
-Silver, David, Julian Schrittwieser, Karen Simonyan, Ioannis Antonoglou, Aja Huang, Arthur Guez, Thomas Hubert, et al. 2017. <span>“Mastering the Game of <span>Go</span> Without Human Knowledge.”</span> <em>Nature</em> 550 (7676, 7676): 354–59. <a href="https://doi.org/10.1038/nature24270">https://doi.org/10.1038/nature24270</a>.
+Silver, D., Schrittwieser, J., Simonyan, K., Antonoglou, I., Huang, A., Guez, A., Hubert, T., Baker, L., Lai, M., Bolton, A., Chen, Y., Lillicrap, T., Hui, F., Sifre, L., van den Driessche, G., Graepel, T., &amp; Hassabis, D. (2017). Mastering the game of go without human knowledge. <em>Nature</em>, <em>550</em>(7676, 7676), 354–359. <a href="https://doi.org/10.1038/nature24270">https://doi.org/10.1038/nature24270</a>
+</div>
+<div id="ref-ye_mastering_2021" class="csl-entry" role="listitem">
+Ye, W., Liu, S., Kurutach, T., Abbeel, P., &amp; Gao, Y. (2021). Mastering atari games with limited data. <em><span>NeurIPS</span> 2021</em>, 25476–25488. <a href="https://doi.org/10.48550/arXiv.2111.00210">https://doi.org/10.48550/arXiv.2111.00210</a>
 </div>
 </div>
 </section>
@@ -788,6 +893,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -858,7 +1107,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/rlbook\.adzc\.ai");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -1188,16 +1437,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./imitation_learning.html" class="pagination-link" aria-label="Imitation Learning">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./exploration.html" class="pagination-link" aria-label="Exploration in MDPs">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025 Alexander Cai</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/planning.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/planning.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link active" href="https://github.com/adzcai/rlbook" aria-current="page">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 

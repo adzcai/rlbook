@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>References – CS 1840: Introduction to Reinforcement Learning</title>
+<title>References – An Introduction to Reinforcement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -49,16 +49,20 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./background.html" rel="prev">
+<link href="./background.html" rel="next">
+<link href="./exploration.html" rel="prev">
+<link href="./shared/184.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e39e07555a3cad66df478e90649eca5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -88,6 +92,8 @@ div.csl-indent {
 }</script>
 
 
+<meta property="og:title" content="References – An Introduction to Reinforcement Learning">
+<meta property="og:site_name" content="An Introduction to Reinforcement Learning">
 </head>
 
 <body class="nav-sidebar floating">
@@ -114,7 +120,45 @@ div.csl-indent {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">CS 1840: Introduction to Reinforcement Learning</a> 
+      <a href="./">An Introduction to Reinforcement Learning</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/adzcai/rlbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -127,67 +171,73 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mdps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./control.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./bandits.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./planning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -196,6 +246,29 @@ div.csl-indent {
  <span class="menu-text">References</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proofs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Proofs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -226,123 +299,772 @@ div.csl-indent {
 </header>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-abbeel_apprenticeship_2004" class="csl-entry" role="listitem">
+Abbeel, P., &amp; Ng, A. Y. (2004, July 4). Apprenticeship learning via
+inverse reinforcement learning. <em>Proceedings of the
+<span>Twenty-First International Conference</span> on <span>Machine
+Learning</span></em>. International <span>Conference</span> on
+<span>Machine Learning</span>. <a href="https://doi.org/10.1145/1015330.1015430">https://doi.org/10.1145/1015330.1015430</a>
+</div>
 <div id="ref-agarwal_reinforcement_2022" class="csl-entry" role="listitem">
-Agarwal, Alekh, Nan Jiang, Sham M Kakade, and Wen Sun. 2022.
-<em>Reinforcement <span>Learning</span>: <span>Theory</span> and
-<span>Algorithms</span></em>. <a href="https://rltheorybook.github.io/rltheorybook_AJKS.pdf">https://rltheorybook.github.io/rltheorybook_AJKS.pdf</a>.
+Agarwal, A., Jiang, N., Kakade, S. M., &amp; Sun, W. (2022).
+<em>Reinforcement learning: <span>Theory</span> and algorithms</em>. <a href="https://rltheorybook.github.io/rltheorybook_AJKS.pdf">https://rltheorybook.github.io/rltheorybook_AJKS.pdf</a>
+</div>
+<div id="ref-agarwal_deep_2021" class="csl-entry" role="listitem">
+Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A. C., &amp;
+Bellemare, M. (2021). Deep reinforcement learning at the edge of the
+statistical precipice. <em>Advances in <span>Neural Information
+Processing Systems</span></em>, <em>34</em>, 29304–29320. <a href="https://proceedings.neurips.cc/paper_files/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html">https://proceedings.neurips.cc/paper_files/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html</a>
+</div>
+<div id="ref-albrecht_multi-agent_2023" class="csl-entry" role="listitem">
+Albrecht, S. V., Christianos, F., &amp; Schäfer, L. (2023).
+<em>Multi-agent reinforcement learning: Foundations and modern
+approaches</em>. MIT Press. <a href="https://www.marl-book.com">https://www.marl-book.com</a>
 </div>
 <div id="ref-allaire_quarto_2024" class="csl-entry" role="listitem">
-Allaire, J. J., Charles Teague, Carlos Scheidegger, Yihui Xie, and
-Christophe Dervieux. 2024. <span>“Quarto.”</span> <a href="https://doi.org/10.5281/zenodo.5960048">https://doi.org/10.5281/zenodo.5960048</a>.
+Allaire, J. J., Teague, C., Scheidegger, C., Xie, Y., &amp; Dervieux, C.
+(2024). <em>Quarto</em> (Version 1.4) [Computer software]. <a href="https://doi.org/10.5281/zenodo.5960048">https://doi.org/10.5281/zenodo.5960048</a>
+</div>
+<div id="ref-amari_natural_1998" class="csl-entry" role="listitem">
+Amari, S.-I. (1998). Natural gradient works efficiently in learning.
+<em>Neural Comput.</em>, <em>10</em>(2), 251–276. <a href="https://doi.org/10.1162/089976698300017746">https://doi.org/10.1162/089976698300017746</a>
+</div>
+<div id="ref-amodei_concrete_2016" class="csl-entry" role="listitem">
+Amodei, D., Olah, C., Steinhardt, J., Christiano, P., Schulman, J.,
+&amp; Mané, D. (2016). <em>Concrete problems in <span>AI</span>
+safety</em>. <a href="http://arxiv.org/abs/1606.06565">http://arxiv.org/abs/1606.06565</a>
+</div>
+<div id="ref-ansel_pytorch_2024" class="csl-entry" role="listitem">
+Ansel, J., Yang, E., He, H., Gimelshein, N., Jain, A., Voznesensky, M.,
+Bao, B., Bell, P., Berard, D., Burovski, E., Chauhan, G., Chourdia, A.,
+Constable, W., Desmaison, A., DeVito, Z., Ellison, E., Feng, W., Gong,
+J., Gschwind, M., … Chintala, S. (2024, April). <span>PyTorch</span> 2:
+Faster machine learning through dynamic python bytecode transformation
+and graph compilation. <em>29th <span>ACM</span> International
+Conference on Architectural Support for Programming Languages and
+Operating Systems, Volume 2 (<span>ASPLOS</span> ’24)</em>. <a href="https://doi.org/10.1145/3620665.3640366">https://doi.org/10.1145/3620665.3640366</a>
+</div>
+<div id="ref-antonoglou_planning_2021" class="csl-entry" role="listitem">
+Antonoglou, I., Schrittwieser, J., Ozair, S., Hubert, T. K., &amp;
+Silver, D. (2021, October 6). Planning in stochastic environments with a
+learned model. <em>The Tenth International Conference on Learning
+Representations</em>. International <span>Conference</span> on
+<span>Learning Representations</span>. <a href="https://openreview.net/forum?id=X6D9bAHhBQ1">https://openreview.net/forum?id=X6D9bAHhBQ1</a>
+</div>
+<div id="ref-athans_optimal_1966" class="csl-entry" role="listitem">
+Athans, M., &amp; Falb, P. L. (1966). <em>Optimal control:
+<span>An</span> introduction to the theory and its applications</em>.
+McGraw-Hill. <a href="https://books.google.com?id=pfJHAQAAIAAJ">https://books.google.com?id=pfJHAQAAIAAJ</a>
+</div>
+<div id="ref-aubret_survey_2019" class="csl-entry" role="listitem">
+Aubret, A., Matignon, L., &amp; Hassas, S. (2019, November 19). <em>A
+survey on intrinsic motivation in reinforcement learning</em>. <a href="https://doi.org/10.48550/arXiv.1908.06976">https://doi.org/10.48550/arXiv.1908.06976</a>
+</div>
+<div id="ref-auer_using_2002" class="csl-entry" role="listitem">
+Auer, P. (2002). Using confidence bounds for exploitation-exploration
+trade-offs. <em>Journal of Machine Learning Research</em>, <em>3</em>,
+397–422. <a href="https://www.jmlr.org/papers/v3/auer02a.html">https://www.jmlr.org/papers/v3/auer02a.html</a>
+</div>
+<div id="ref-azar_minimax_2017" class="csl-entry" role="listitem">
+Azar, M. G., Osband, I., &amp; Munos, R. (2017). Minimax regret bounds
+for reinforcement learning. <em>Proceedings of the 34th
+<span>International Conference</span> on <span>Machine
+Learning</span></em>, 263–272. <a href="https://proceedings.mlr.press/v70/azar17a.html">https://proceedings.mlr.press/v70/azar17a.html</a>
+</div>
+<div id="ref-babuschkin_deepmind_2020" class="csl-entry" role="listitem">
+Babuschkin, I., Baumli, K., Bell, A., Bhupatiraju, S., Bruce, J.,
+Buchlovsky, P., Budden, D., Cai, T., Clark, A., Danihelka, I., Dedieu,
+A., Fantacci, C., Godwin, J., Jones, C., Hemsley, R., Hennigan, T.,
+Hessel, M., Hou, S., Kapturowski, S., … Viola, F. (2020). <em>The
+<span>DeepMind JAX</span> ecosystem</em> [Computer software]. <a href="http://github.com/deepmind">http://github.com/deepmind</a>
+</div>
+<div id="ref-badia_agent57_2020" class="csl-entry" role="listitem">
+Badia, A. P., Piot, B., Kapturowski, S., Sprechmann, P., Vitvitskyi, A.,
+Guo, D., &amp; Blundell, C. (2020). Agent57: <span>Outperforming</span>
+the atari human benchmark. <em><span>ICML</span> 2020</em>, 507–517. <a href="https://doi.org/10.48550/arXiv.2003.13350">https://doi.org/10.48550/arXiv.2003.13350</a>
+</div>
+<div id="ref-barto_neuronlike_1983" class="csl-entry" role="listitem">
+Barto, A. G., Sutton, R. S., &amp; Anderson, C. W. (1983). Neuronlike
+adaptive elements that can solve difficult learning control problems.
+<em>IEEE Transactions on Systems, Man, and Cybernetics</em>,
+<em>SMC-13</em>(5), 834–846. <span>IEEE Transactions</span> on
+<span>Systems</span>, <span>Man</span>, and <span>Cybernetics</span>. <a href="https://doi.org/10.1109/TSMC.1983.6313077">https://doi.org/10.1109/TSMC.1983.6313077</a>
 </div>
 <div id="ref-baydin_automatic_2018" class="csl-entry" role="listitem">
-Baydin, Atilim Gunes, Barak A. Pearlmutter, Alexey Andreyevich Radul,
-and Jeffrey Mark Siskind. 2018. <span>“Automatic Differentiation in
-Machine Learning: A Survey.”</span> February 5, 2018. <a href="https://doi.org/10.48550/arXiv.1502.05767">https://doi.org/10.48550/arXiv.1502.05767</a>.
+Baydin, A. G., Pearlmutter, B. A., Radul, A. A., &amp; Siskind, J. M.
+(2018, February 5). <em>Automatic differentiation in machine learning: A
+survey</em>. <a href="https://doi.org/10.48550/arXiv.1502.05767">https://doi.org/10.48550/arXiv.1502.05767</a>
+</div>
+<div id="ref-beck_mirror_2003" class="csl-entry" role="listitem">
+Beck, A., &amp; Teboulle, M. (2003). Mirror descent and nonlinear
+projected subgradient methods for convex optimization. <em>Operations
+Research Letters</em>, <em>31</em>(3), 167–175. <a href="https://doi.org/10.1016/S0167-6377(02)00231-6">https://doi.org/10.1016/S0167-6377(02)00231-6</a>
+</div>
+<div id="ref-bellemare_arcade_2013" class="csl-entry" role="listitem">
+Bellemare, M. G., Naddaf, Y., Veness, J., &amp; Bowling, M. (2013). The
+arcade learning environment: <span>An</span> evaluation platform for
+general agents. <em>Journal of Artificial Intelligence Research</em>,
+<em>47</em>, 253–279. <a href="https://doi.org/10.1613/jair.3912">https://doi.org/10.1613/jair.3912</a>
+</div>
+<div id="ref-bellemare_unifying_2016" class="csl-entry" role="listitem">
+Bellemare, M. G., Srinivasan, S., Ostrovski, G., Schaul, T., Saxton, D.,
+&amp; Munos, R. (2016). Unifying count-based exploration and intrinsic
+motivation. <em>Proceedings of the 30th <span>International
+Conference</span> on <span>Neural Information Processing
+Systems</span></em>, 1479–1487.
+</div>
+<div id="ref-bellman_dynamic_1957" class="csl-entry" role="listitem">
+Bellman, R. (1957). <em>Dynamic programming</em>. Princeton University
+Press. <a href="https://books.google.com?id=rZW4ugAACAAJ">https://books.google.com?id=rZW4ugAACAAJ</a>
+</div>
+<div id="ref-bellman_adaptive_1961" class="csl-entry" role="listitem">
+Bellman, R. (1961). <em>Adaptive control processes: A guided tour</em>.
+Princeton University Press. <a href="https://books.google.com?id=POAmAAAAMAAJ">https://books.google.com?id=POAmAAAAMAAJ</a>
+</div>
+<div id="ref-berkovitz_optimal_1974" class="csl-entry" role="listitem">
+Berkovitz, L. D. (1974). <em>Optimal control theory</em>. Springer
+Science+Business Media LLC.
+</div>
+<div id="ref-berry_bandit_1985" class="csl-entry" role="listitem">
+Berry, D. A., &amp; Fristedt, B. (1985). <em>Bandit problems</em>.
+Springer Netherlands. <a href="https://doi.org/10.1007/978-94-015-3711-7">https://doi.org/10.1007/978-94-015-3711-7</a>
+</div>
+<div id="ref-bertsekas_neuro-dynamic_1996" class="csl-entry" role="listitem">
+Bertsekas, D. P., &amp; Tsitsiklis, J. N. (1996). <em>Neuro-dynamic
+programming</em>. Athena scientific.
+</div>
+<div id="ref-bhatnagar_natural_2009" class="csl-entry" role="listitem">
+Bhatnagar, S., Sutton, R. S., Ghavamzadeh, M., &amp; Lee, M. (2009).
+Natural actor–critic algorithms. <em>Automatica</em>, <em>45</em>(11),
+2471–2482. <a href="https://doi.org/10.1016/j.automatica.2009.07.008">https://doi.org/10.1016/j.automatica.2009.07.008</a>
+</div>
+<div id="ref-bishop_pattern_2006" class="csl-entry" role="listitem">
+Bishop, C. M. (2006). <em>Pattern recognition and machine learning</em>.
+Springer.
 </div>
 <div id="ref-boyd_convex_2004" class="csl-entry" role="listitem">
-Boyd, Stephen, and Lieven Vandenberghe. 2004. <em>Convex
-<span>Optimization</span></em>. Cambridge University Press. <a href="https://web.stanford.edu/~boyd/cvxbook/">https://web.stanford.edu/~boyd/cvxbook/</a>.
+Boyd, S., &amp; Vandenberghe, L. (2004). <em>Convex optimization</em>.
+Cambridge University Press. <a href="https://web.stanford.edu/~boyd/cvxbook/">https://web.stanford.edu/~boyd/cvxbook/</a>
+</div>
+<div id="ref-bradbury_jax_2018" class="csl-entry" role="listitem">
+Bradbury, J., Frostig, R., Hawkins, P., Johnson, M. J., Leary, C.,
+Maclaurin, D., Necula, G., Paszke, A., VanderPlas, J., Wanderman-Milne,
+S., &amp; Zhang, Q. (2018). <em><span>JAX</span>:
+<span>Composable</span> transformations of python+<span>NumPy</span>
+programs</em> (Version 0.3.13) [Computer software]. <a href="http://github.com/google/jax">http://github.com/google/jax</a>
+</div>
+<div id="ref-burda_exploration_2018" class="csl-entry" role="listitem">
+Burda, Y., Edwards, H., Storkey, A., &amp; Klimov, O. (2018, September
+27). Exploration by random network distillation. <em>The Seventh
+International Conference on Learning Representations</em>. International
+<span>Conference</span> on <span>Learning Representations</span>. <a href="https://openreview.net/forum?id=H1lJJnR5Ym">https://openreview.net/forum?id=H1lJJnR5Ym</a>
+</div>
+<div id="ref-clark_faulty_2024" class="csl-entry" role="listitem">
+Clark, J., &amp; Amodei, D. (2024, February 14). <em>Faulty reward
+functions in the wild</em>. OpenAI. <a href="https://openai.com/index/faulty-reward-functions/">https://openai.com/index/faulty-reward-functions/</a>
+</div>
+<div id="ref-danihelka_policy_2021" class="csl-entry" role="listitem">
+Danihelka, I., Guez, A., Schrittwieser, J., &amp; Silver, D. (2021,
+October 6). Policy improvement by planning with gumbel. <em>The Tenth
+International Conference on Learning Representations</em>. <a href="https://openreview.net/forum?id=bERaNdoegnO">https://openreview.net/forum?id=bERaNdoegnO</a>
+</div>
+<div id="ref-danilyuk_robot_2021" class="csl-entry" role="listitem">
+Danilyuk, P. (2021). <em>A robot imitating a girl’s movement</em>
+[Graphic]. <a href="https://www.pexels.com/photo/a-robot-imitating-a-girl-s-movement-8294811/">https://www.pexels.com/photo/a-robot-imitating-a-girl-s-movement-8294811/</a>
 </div>
 <div id="ref-deng_mnist_2012" class="csl-entry" role="listitem">
-Deng, Li. 2012. <span>“The <span>MNIST Database</span> of
-<span>Handwritten Digit Images</span> for <span>Machine Learning
-Research</span> [<span>Best</span> of the <span>Web</span>].”</span>
-<em>IEEE Signal Processing Magazine</em> 29 (6): 141–42. <a href="https://doi.org/10.1109/MSP.2012.2211477">https://doi.org/10.1109/MSP.2012.2211477</a>.
+Deng, L. (2012). The <span>MNIST</span> database of handwritten digit
+images for machine learning research. <em>IEEE Signal Processing
+Magazine</em>, <em>29</em>(6), 141–142. <span>IEEE Signal Processing
+Magazine</span>. <a href="https://doi.org/10.1109/MSP.2012.2211477">https://doi.org/10.1109/MSP.2012.2211477</a>
+</div>
+<div id="ref-drago_refined_2025" class="csl-entry" role="listitem">
+Drago, S., Mussi, M., &amp; Metelli, A. M. (2025, February 24). <em>A
+refined analysis of <span>UCBVI</span></em>. <a href="https://doi.org/10.48550/arXiv.2502.17370">https://doi.org/10.48550/arXiv.2502.17370</a>
+</div>
+<div id="ref-fisher_statistical_1925" class="csl-entry" role="listitem">
+Fisher, R. A. (1925). <em>Statistical methods for research workers, 11th
+ed. rev</em>. Edinburgh.
 </div>
 <div id="ref-frans_berkelaar_container_2009" class="csl-entry" role="listitem">
-Frans Berkelaar. 2009. <em>Container Ship <span>MSC Davos</span> -
-<span>Westerschelde</span> - <span>Zeeland</span></em>. <a href="https://www.flickr.com/photos/28169156@N03/52957948820/">https://www.flickr.com/photos/28169156@N03/52957948820/</a>.
+Frans Berkelaar. (2009). <em>Container ship <span>MSC</span> davos -
+westerschelde - zeeland</em> [Graphic]. <a href="https://www.flickr.com/photos/28169156@N03/52957948820/">https://www.flickr.com/photos/28169156@N03/52957948820/</a>
+</div>
+<div id="ref-gao_scaling_2023" class="csl-entry" role="listitem">
+Gao, L., Schulman, J., &amp; Hilton, J. (2023). Scaling laws for reward
+model overoptimization. <em>Proceedings of the 40th <span>International
+Conference</span> on <span>Machine Learning</span></em>, <em>202</em>,
+10835–10866.
+</div>
+<div id="ref-gittins_multi-armed_2011" class="csl-entry" role="listitem">
+Gittins, J. C. (2011). <em>Multi-armed bandit allocation indices</em>
+(2nd ed). Wiley.
+</div>
+<div id="ref-gleave_imitation_2022" class="csl-entry" role="listitem">
+Gleave, A., Taufeeque, M., Rocamonde, J., Jenner, E., Wang, S. H.,
+Toyer, S., Ernestus, M., Belrose, N., Emmons, S., &amp; Russell, S.
+(2022, November 22). <em><span class="nocase">imitation</span>: Clean
+imitation learning implementations</em>. <a href="https://doi.org/10.48550/arXiv.2211.11972">https://doi.org/10.48550/arXiv.2211.11972</a>
+</div>
+<div id="ref-goodfellow_generative_2020" class="csl-entry" role="listitem">
+Goodfellow, I., Pouget-Abadie, J., Mirza, M., Xu, B., Warde-Farley, D.,
+Ozair, S., Courville, A., &amp; Bengio, Y. (2020). Generative
+adversarial networks. <em>Commun. ACM</em>, <em>63</em>(11), 139–144. <a href="https://doi.org/10.1145/3422622">https://doi.org/10.1145/3422622</a>
 </div>
 <div id="ref-gpa_photo_archive_robotic_2017" class="csl-entry" role="listitem">
-GPA Photo Archive. 2017. <em>Robotic Arm</em>. <a href="https://www.flickr.com/photos/iip-photo-archive/36123310136/">https://www.flickr.com/photos/iip-photo-archive/36123310136/</a>.
+GPA Photo Archive. (2017). <em>Robotic arm</em> [Graphic]. <a href="https://www.flickr.com/photos/iip-photo-archive/36123310136/">https://www.flickr.com/photos/iip-photo-archive/36123310136/</a>
 </div>
 <div id="ref-guy_chess_2006" class="csl-entry" role="listitem">
-Guy, Romain. 2006. <em>Chess</em>. <a href="https://www.flickr.com/photos/romainguy/230416692/">https://www.flickr.com/photos/romainguy/230416692/</a>.
+Guy, R. (2006). <em>Chess</em> [Graphic]. <a href="https://www.flickr.com/photos/romainguy/230416692/">https://www.flickr.com/photos/romainguy/230416692/</a>
+</div>
+<div id="ref-haarnoja_reinforcement_2017" class="csl-entry" role="listitem">
+Haarnoja, T., Tang, H., Abbeel, P., &amp; Levine, S. (2017).
+Reinforcement learning with deep energy-based policies. <em>Proceedings
+of the 34th <span>International Conference</span> on <span>Machine
+Learning</span> - <span>Volume</span> 70</em>, 1352–1361.
+</div>
+<div id="ref-haarnoja_soft_2018" class="csl-entry" role="listitem">
+Haarnoja, T., Zhou, A., Abbeel, P., &amp; Levine, S. (2018). Soft
+actor-critic: <span class="nocase">Off-policy</span> maximum entropy
+deep reinforcement learning with a stochastic actor. <em>Proceedings of
+the 35th <span>International Conference</span> on <span>Machine
+Learning</span></em>, 1861–1870. <a href="https://proceedings.mlr.press/v80/haarnoja18b.html">https://proceedings.mlr.press/v80/haarnoja18b.html</a>
+</div>
+<div id="ref-hasselt_double_2010" class="csl-entry" role="listitem">
+Hasselt, H. (2010). Double q-learning. <em>Advances in <span>Neural
+Information Processing Systems</span></em>, <em>23</em>. <a href="https://proceedings.neurips.cc/paper_files/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-Abstract.html">https://proceedings.neurips.cc/paper_files/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-Abstract.html</a>
+</div>
+<div id="ref-hasselt_deep_2016" class="csl-entry" role="listitem">
+Hasselt, H. van, Guez, A., &amp; Silver, D. (2016). Deep reinforcement
+learning with double q-learning. <em>Proceedings of the Thirtieth
+<span>AAAI</span> Conference on Artificial Intelligence</em>, 2094–2100.
 </div>
 <div id="ref-hastie_elements_2013" class="csl-entry" role="listitem">
-Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2013. <em>The
-<span>Elements</span> of <span>Statistical Learning</span>: <span>Data
-Mining</span>, <span>Inference</span>, and <span>Prediction</span></em>.
-Springer Science &amp; Business Media. <a href="https://books.google.com?id=yPfZBwAAQBAJ">https://books.google.com?id=yPfZBwAAQBAJ</a>.
+Hastie, T., Tibshirani, R., &amp; Friedman, J. (2013). <em>The elements
+of statistical learning: <span>Data</span> mining, inference, and
+prediction</em>. Springer Science &amp; Business Media. <a href="https://books.google.com?id=yPfZBwAAQBAJ">https://books.google.com?id=yPfZBwAAQBAJ</a>
+</div>
+<div id="ref-hausknecht_deep_2017" class="csl-entry" role="listitem">
+Hausknecht, M., &amp; Stone, P. (2017, January 11). <em>Deep recurrent
+q-learning for partially observable mdps</em>. <a href="https://doi.org/10.48550/arXiv.1507.06527">https://doi.org/10.48550/arXiv.1507.06527</a>
+</div>
+<div id="ref-hessel_rainbow_2018" class="csl-entry" role="listitem">
+Hessel, M., Modayil, J., van Hasselt, H., Schaul, T., Ostrovski, G.,
+Dabney, W., Horgan, D., Piot, B., Azar, M., &amp; Silver, D. (2018).
+Rainbow: Combining improvements in deep reinforcement learning.
+<em>Proceedings of the <span>Thirty-Second AAAI Conference</span> on
+<span>Artificial Intelligence</span> and <span>Thirtieth Innovative
+Applications</span> of <span>Artificial Intelligence Conference</span>
+and <span>Eighth AAAI Symposium</span> on <span>Educational
+Advances</span> in <span>Artificial Intelligence</span></em>, 3215–3222.
+</div>
+<div id="ref-ho_generative_2016" class="csl-entry" role="listitem">
+Ho, J., &amp; Ermon, S. (2016). Generative adversarial imitation
+learning. <em>Proceedings of the 30th <span>International
+Conference</span> on <span>Neural Information Processing
+Systems</span></em>, 4572–4580.
+</div>
+<div id="ref-ivanov_modern_2019" class="csl-entry" role="listitem">
+Ivanov, S., &amp; D’yakonov, A. (2019, July 6). <em>Modern deep
+reinforcement learning algorithms</em>. <a href="https://doi.org/10.48550/arXiv.1906.10025">https://doi.org/10.48550/arXiv.1906.10025</a>
 </div>
 <div id="ref-james_introduction_2023" class="csl-entry" role="listitem">
-James, Gareth, Daniela Witten, Trevor Hastie, Robert Tibshirani, and
-Jonathan Taylor. 2023. <em>An <span>Introduction</span> to
-<span>Statistical Learning</span>: With <span>Applications</span> in
-<span>Python</span></em>. Springer <span>Texts</span> in
-<span>Statistics</span>. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-031-38747-0">https://doi.org/10.1007/978-3-031-38747-0</a>.
+James, G., Witten, D., Hastie, T., Tibshirani, R., &amp; Taylor, J.
+(2023). <em>An introduction to statistical learning: With applications
+in python</em>. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-031-38747-0">https://doi.org/10.1007/978-3-031-38747-0</a>
+</div>
+<div id="ref-kakade_natural_2001" class="csl-entry" role="listitem">
+Kakade, S. M. (2001). A natural policy gradient. <em>Advances in
+<span>Neural Information Processing Systems</span></em>, <em>14</em>. <a href="https://proceedings.neurips.cc/paper_files/paper/2001/hash/4b86abe48d358ecf194c56c69108433e-Abstract.html">https://proceedings.neurips.cc/paper_files/paper/2001/hash/4b86abe48d358ecf194c56c69108433e-Abstract.html</a>
+</div>
+<div id="ref-kakade_approximately_2002" class="csl-entry" role="listitem">
+Kakade, S., &amp; Langford, J. (2002). Approximately optimal approximate
+reinforcement learning. <em>Proceedings of the <span>Nineteenth
+International Conference</span> on <span>Machine Learning</span></em>,
+267–274.
+</div>
+<div id="ref-keviczky_control_2019" class="csl-entry" role="listitem">
+Keviczky, L., Bars, R., Hetthéssy, J., &amp; Bányász, C. (2019).
+<em>Control engineering</em>. Springer. <a href="https://doi.org/10.1007/978-981-10-8297-9">https://doi.org/10.1007/978-981-10-8297-9</a>
+</div>
+<div id="ref-kochenderfer_algorithms_2022" class="csl-entry" role="listitem">
+Kochenderfer, M. J., Wheeler, T. A., &amp; Wray, K. H. (2022).
+<em>Algorithms for decision making</em>. <a href="https://mitpress.mit.edu/9780262047012/algorithms-for-decision-making/">https://mitpress.mit.edu/9780262047012/algorithms-for-decision-making/</a>
+</div>
+<div id="ref-ladosz_exploration_2022" class="csl-entry" role="listitem">
+Ladosz, P., Weng, L., Kim, M., &amp; Oh, H. (2022). Exploration in deep
+reinforcement learning: A survey. <em>Inf. Fusion</em>, <em>85</em>(C),
+1–22. <a href="https://doi.org/10.1016/j.inffus.2022.03.003">https://doi.org/10.1016/j.inffus.2022.03.003</a>
 </div>
 <div id="ref-lai_asymptotically_1985" class="csl-entry" role="listitem">
-Lai, T. L, and Herbert Robbins. 1985. <span>“Asymptotically Efficient
-Adaptive Allocation Rules.”</span> <em>Advances in Applied
-Mathematics</em> 6 (1): 4–22. <a href="https://doi.org/10.1016/0196-8858(85)90002-8">https://doi.org/10.1016/0196-8858(85)90002-8</a>.
+Lai, T. L., &amp; Robbins, H. (1985). Asymptotically efficient adaptive
+allocation rules. <em>Advances in Applied Mathematics</em>,
+<em>6</em>(1), 4–22. <a href="https://doi.org/10.1016/0196-8858(85)90002-8">https://doi.org/10.1016/0196-8858(85)90002-8</a>
+</div>
+<div id="ref-lambert_reinforcement_2024" class="csl-entry" role="listitem">
+Lambert, N. (2024). <em>Reinforcement learning from human feedback</em>.
+Online. <a href="https://rlhfbook.com">https://rlhfbook.com</a>
+</div>
+<div id="ref-lewis_optimal_2012" class="csl-entry" role="listitem">
+Lewis, F. L., Vrabie, D. L., &amp; Syrmos, V. L. (2012). <em>Optimal
+control</em> (3rd ed). John Wiley &amp; Sons. <a href="https://doi.org/10.1002/9781118122631">https://doi.org/10.1002/9781118122631</a>
+</div>
+<div id="ref-li_contextual-bandit_2010" class="csl-entry" role="listitem">
+Li, L., Chu, W., Langford, J., &amp; Schapire, R. E. (2010). A
+contextual-bandit approach to personalized news article recommendation.
+<em>Proceedings of the 19th International Conference on
+<span>World</span> Wide Web</em>, 661–670. <a href="https://doi.org/10.1145/1772690.1772758">https://doi.org/10.1145/1772690.1772758</a>
+</div>
+<div id="ref-li_reinforcement_2023" class="csl-entry" role="listitem">
+Li, S. E. (2023). <em>Reinforcement learning for sequential decision and
+optimal control</em>. Springer Nature. <a href="https://doi.org/10.1007/978-981-19-7784-8">https://doi.org/10.1007/978-981-19-7784-8</a>
+</div>
+<div id="ref-li_deep_2018" class="csl-entry" role="listitem">
+Li, Y. (2018). <em>Deep reinforcement learning</em>. <a href="https://doi.org/10.48550/arXiv.1810.06339">https://doi.org/10.48550/arXiv.1810.06339</a>
+</div>
+<div id="ref-lin_self-improving_1992" class="csl-entry" role="listitem">
+Lin, L.-J. (1992). Self-improving reactive agents based on reinforcement
+learning, planning and teaching. <em>Machine Learning</em>,
+<em>8</em>(3), 293–321. <a href="https://doi.org/10.1007/BF00992699">https://doi.org/10.1007/BF00992699</a>
+</div>
+<div id="ref-ljapunov_general_1992" class="csl-entry" role="listitem">
+Ljapunov, A. M., &amp; Fuller, A. T. (1992). <em>The general problem of
+the stability of motion</em>. Taylor &amp; Francis.
+</div>
+<div id="ref-lyapunov_general_1892" class="csl-entry" role="listitem">
+Lyapunov, A. M. (1892). <em>The general problem of the stability of
+motion</em>. University of Kharkov.
+</div>
+<div id="ref-macfarlane_development_1979" class="csl-entry" role="listitem">
+MacFarlane, A. (1979). The development of frequency-response methods in
+automatic control [perspectives]. <em>IEEE Transactions on Automatic
+Control</em>, <em>24</em>(2), 250–265. <span>IEEE Transactions</span> on
+<span>Automatic Control</span>. <a href="https://doi.org/10.1109/TAC.1979.1101978">https://doi.org/10.1109/TAC.1979.1101978</a>
+</div>
+<div id="ref-machado_revisiting_2018" class="csl-entry" role="listitem">
+Machado, M. C., Bellemare, M. G., Talvitie, E., Veness, J., Hausknecht,
+M., &amp; Bowling, M. (2018). Revisiting the arcade learning
+environment: <span>Evaluation</span> protocols and open problems for
+general agents. <em>Journal of Artificial Intelligence Research</em>,
+<em>61</em>, 523–562. <a href="https://doi.org/10.1613/jair.5699">https://doi.org/10.1613/jair.5699</a>
+</div>
+<div id="ref-maei_convergent_2009" class="csl-entry" role="listitem">
+Maei, H., Szepesvári, C., Bhatnagar, S., Precup, D., Silver, D., &amp;
+Sutton, R. S. (2009). Convergent temporal-difference learning with
+arbitrary smooth function approximation. <em>Advances in <span>Neural
+Information Processing Systems</span></em>, <em>22</em>. <a href="https://papers.nips.cc/paper_files/paper/2009/hash/3a15c7d0bbe60300a39f76f8a5ba6896-Abstract.html">https://papers.nips.cc/paper_files/paper/2009/hash/3a15c7d0bbe60300a39f76f8a5ba6896-Abstract.html</a>
+</div>
+<div id="ref-mahadevan_basis_2013" class="csl-entry" role="listitem">
+Mahadevan, S., Giguere, S., &amp; Jacek, N. (2013). Basis adaptation for
+sparse nonlinear reinforcement learning. <em>Proceedings of the AAAI
+Conference on Artificial Intelligence</em>, <em>27</em>(1, 1), 654–660.
+<a href="https://doi.org/10.1609/aaai.v27i1.8665">https://doi.org/10.1609/aaai.v27i1.8665</a>
+</div>
+<div id="ref-mahadevan_sparse_2012" class="csl-entry" role="listitem">
+Mahadevan, S., &amp; Liu, B. (2012). Sparse q-learning with mirror
+descent. <em>Proceedings of the <span>Twenty-Eighth Conference</span> on
+<span>Uncertainty</span> in <span>Artificial Intelligence</span></em>,
+564–573.
+</div>
+<div id="ref-mannor_reinforcement_2024" class="csl-entry" role="listitem">
+Mannor, S., Mansour, Y., &amp; Tamar, A. (2024). <em>Reinforcement
+learning: foundations</em>. <a href="https://sites.google.com/view/rlfoundations/home">https://sites.google.com/view/rlfoundations/home</a>
+</div>
+<div id="ref-marbach_simulation-based_2001" class="csl-entry" role="listitem">
+Marbach, P., &amp; Tsitsiklis, J. N. (2001). Simulation-based
+optimization of markov reward processes. <em>IEEE Transactions on
+Automatic Control</em>, <em>46</em>(2), 191–209. <span>IEEE
+Transactions</span> on <span>Automatic Control</span>. <a href="https://doi.org/10.1109/9.905687">https://doi.org/10.1109/9.905687</a>
+</div>
+<div id="ref-martens_optimizing_2015" class="csl-entry" role="listitem">
+Martens, J., &amp; Grosse, R. (2015). Optimizing neural networks with
+kronecker-factored approximate curvature. <em>Proceedings of the 32nd
+<span>International Conference</span> on <span>Machine
+Learning</span></em>, 2408–2417. <a href="https://proceedings.mlr.press/v37/martens15.html">https://proceedings.mlr.press/v37/martens15.html</a>
+</div>
+<div id="ref-maxwell_governors_1867" class="csl-entry" role="listitem">
+Maxwell, J. C. (1867). On governors. <em>Proceedings of the Royal
+Society of London</em>, <em>16</em>, 270–283. <a href="https://www.jstor.org/stable/112510">https://www.jstor.org/stable/112510</a>
+</div>
+<div id="ref-mayr_populations_1970" class="csl-entry" role="listitem">
+Mayr, E. (1970). <em>Populations, species and evolution: <span>An</span>
+abridgment of animal species and evolution</em>. Belknap Press of
+Harvard University Press.
+</div>
+<div id="ref-meurer_sympy_2017" class="csl-entry" role="listitem">
+Meurer, A., Smith, C. P., Paprocki, M., Čertík, O., Kirpichev, S. B.,
+Rocklin, M., Kumar, A., Ivanov, S., Moore, J. K., Singh, S., Rathnayake,
+T., Vig, S., Granger, B. E., Muller, R. P., Bonazzi, F., Gupta, H.,
+Vats, S., Johansson, F., Pedregosa, F., … Scopatz, A. (2017).
+<span>SymPy</span>: Symbolic computing in python. <em>PeerJ Computer
+Science</em>, <em>3</em>, e103. <a href="https://doi.org/10.7717/peerj-cs.103">https://doi.org/10.7717/peerj-cs.103</a>
+</div>
+<div id="ref-meyer_possibility_1991" class="csl-entry" role="listitem">
+Meyer, J.-A., &amp; Wilson, S. W. (1991). A possibility for implementing
+curiosity and boredom in model-building neural controllers. In <em>From
+<span>Animals</span> to <span>Animats</span>: <span>Proceedings</span>
+of the <span>First International Conference</span> on
+<span>Simulation</span> of <span>Adaptive Behavior</span></em> (pp.
+222–227). From <span>Animals</span> to <span>Animats</span>:
+<span>Proceedings</span> of the <span>First International
+Conference</span> on <span>Simulation</span> of <span>Adaptive
+Behavior</span>. MIT Press. <a href="https://ieeexplore.ieee.org/document/6294131">https://ieeexplore.ieee.org/document/6294131</a>
+</div>
+<div id="ref-mnih_asynchronous_2016" class="csl-entry" role="listitem">
+Mnih, V., Badia, A. P., Mirza, M., Graves, A., Lillicrap, T., Harley,
+T., Silver, D., &amp; Kavukcuoglu, K. (2016). Asynchronous methods for
+deep reinforcement learning. <em>Proceedings of <span>The</span> 33rd
+<span>International Conference</span> on <span>Machine
+Learning</span></em>, 1928–1937. <a href="https://proceedings.mlr.press/v48/mniha16.html">https://proceedings.mlr.press/v48/mniha16.html</a>
+</div>
+<div id="ref-mnih_playing_2013" class="csl-entry" role="listitem">
+Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I.,
+Wierstra, D., &amp; Riedmiller, M. A. (2013). Playing atari with deep
+reinforcement learning. <em>CoRR</em>, <em>abs/1312.5602</em>. <a href="http://arxiv.org/abs/1312.5602">http://arxiv.org/abs/1312.5602</a>
+</div>
+<div id="ref-munos_safe_2016" class="csl-entry" role="listitem">
+Munos, R., Stepleton, T., Harutyunyan, A., &amp; Bellemare, M. G.
+(2016). Safe and efficient off-policy reinforcement learning.
+<em>Proceedings of the 30th <span>International Conference</span> on
+<span>Neural Information Processing Systems</span></em>, 1054–1062.
+</div>
+<div id="ref-murphy_reinforcement_2025" class="csl-entry" role="listitem">
+Murphy, K. (2025, March 24). <em>Reinforcement learning: A comprehensive
+overview</em>. <a href="https://doi.org/10.48550/arXiv.2412.05265">https://doi.org/10.48550/arXiv.2412.05265</a>
+</div>
+<div id="ref-negative_space_photo_2015" class="csl-entry" role="listitem">
+Negative Space. (2015). <em>Photo of commercial district during
+dawn</em> [Graphic]. <a href="https://www.pexels.com/photo/photo-of-commercial-district-during-dawn-34639/">https://www.pexels.com/photo/photo-of-commercial-district-during-dawn-34639/</a>
+</div>
+<div id="ref-nemirovskij_problem_1983" class="csl-entry" role="listitem">
+Nemirovskij, A. S., Judin, D. B., Dawson, E. R., &amp; Nemirovskij, A.
+S. (1983). <em>Problem complexity and method efficiency in
+optimization</em>. Wiley.
+</div>
+<div id="ref-ng_algorithms_2000" class="csl-entry" role="listitem">
+Ng, A. Y., &amp; Russell, S. J. (2000). Algorithms for inverse
+reinforcement learning. <em>Proceedings of the <span>Seventeenth
+International Conference</span> on <span>Machine Learning</span></em>,
+663–670. <a href="https://ai.stanford.edu/~ang/papers/icml00-irl.pdf">https://ai.stanford.edu/~ang/papers/icml00-irl.pdf</a>
 </div>
 <div id="ref-nielsen_neural_2015" class="csl-entry" role="listitem">
-Nielsen, Michael A. 2015. <em>Neural <span>Networks</span> and
-<span>Deep Learning</span></em>. Determination Press. <a href="http://neuralnetworksanddeeplearning.com/">http://neuralnetworksanddeeplearning.com/</a>.
+Nielsen, M. A. (2015). <em>Neural networks and deep learning</em>.
+Determination Press. <a href="http://neuralnetworksanddeeplearning.com/">http://neuralnetworksanddeeplearning.com/</a>
+</div>
+<div id="ref-nocedal_numerical_2006" class="csl-entry" role="listitem">
+Nocedal, J., &amp; Wright, S. J. (2006). <em>Numerical optimization</em>
+(2nd ed). Springer.
+</div>
+<div id="ref-openai_introducing_2022" class="csl-entry" role="listitem">
+OpenAI. (2022, November 30). <em>Introducing <span>ChatGPT</span></em>.
+OpenAI News. <a href="https://openai.com/index/chatgpt/">https://openai.com/index/chatgpt/</a>
+</div>
+<div id="ref-orsini_what_2021" class="csl-entry" role="listitem">
+Orsini, M., Raichuk, A., Hussenot, L., Vincent, D., Dadashi, R., Girgin,
+S., Geist, M., Bachem, O., Pietquin, O., &amp; Andrychowicz, M. (2021).
+What matters for adversarial imitation learning? <em>Proceedings of the
+35th <span>International Conference</span> on <span>Neural Information
+Processing Systems</span></em>, 14656–14668.
+</div>
+<div id="ref-ouyang_training_2022" class="csl-entry" role="listitem">
+Ouyang, L., Wu, J., Jiang, X., Almeida, D., Wainwright, C. L., Mishkin,
+P., Zhang, C., Agarwal, S., Slama, K., Ray, A., Schulman, J., Hilton,
+J., Kelton, F., Miller, L., Simens, M., Askell, A., Welinder, P.,
+Christiano, P., Leike, J., &amp; Lowe, R. (2022). Training language
+models to follow instructions with human feedback. <em>Proceedings of
+the 36th <span>International Conference</span> on <span>Neural
+Information Processing Systems</span></em>, 27730–27744.
+</div>
+<div id="ref-peters_natural_2008" class="csl-entry" role="listitem">
+Peters, J., &amp; Schaal, S. (2008). Natural actor-critic.
+<em>Neurocomputing</em>, <em>71</em>(7), 1180–1190. <a href="https://doi.org/10.1016/j.neucom.2007.11.026">https://doi.org/10.1016/j.neucom.2007.11.026</a>
+</div>
+<div id="ref-peters_natural_2005" class="csl-entry" role="listitem">
+Peters, J., Vijayakumar, S., &amp; Schaal, S. (2005). Natural
+actor-critic. In J. Gama, R. Camacho, P. B. Brazdil, A. M. Jorge, &amp;
+L. Torgo (Eds.), <em>Machine <span>Learning</span>: <span>ECML</span>
+2005</em> (pp. 280–291). Springer. <a href="https://doi.org/10.1007/11564096_29">https://doi.org/10.1007/11564096_29</a>
+</div>
+<div id="ref-piot_bridging_2017" class="csl-entry" role="listitem">
+Piot, B., Geist, M., &amp; Pietquin, O. (2017). Bridging the gap between
+imitation learning and inverse reinforcement learning. <em>IEEE
+Transactions on Neural Networks and Learning Systems</em>,
+<em>28</em>(8), 1814–1826. <span>IEEE Transactions</span> on
+<span>Neural Networks</span> and <span>Learning Systems</span>. <a href="https://doi.org/10.1109/TNNLS.2016.2543000">https://doi.org/10.1109/TNNLS.2016.2543000</a>
+</div>
+<div id="ref-pixabay_20_2016" class="csl-entry" role="listitem">
+Pixabay. (2016a). <em>20 mg label blister pack</em> [Graphic]. <a href="https://www.pexels.com/photo/20-mg-label-blister-pack-208512/">https://www.pexels.com/photo/20-mg-label-blister-pack-208512/</a>
+</div>
+<div id="ref-pixabay_coins_2016" class="csl-entry" role="listitem">
+Pixabay. (2016b). <em>Coins on brown wood</em> [Graphic]. <a href="https://www.pexels.com/photo/coins-on-brown-wood-210600/">https://www.pexels.com/photo/coins-on-brown-wood-210600/</a>
+</div>
+<div id="ref-plaat_deep_2022" class="csl-entry" role="listitem">
+Plaat, A. (2022). <em>Deep reinforcement learning</em>. Springer Nature.
+<a href="https://doi.org/10.1007/978-981-19-0638-1">https://doi.org/10.1007/978-981-19-0638-1</a>
+</div>
+<div id="ref-pomerleau_efficient_1991" class="csl-entry" role="listitem">
+Pomerleau, D. A. (1991). Efficient training of artificial neural
+networks for autonomous navigation. <em>Neural Computation</em>,
+<em>3</em>(1), 88–97. Neural <span>Computation</span>. <a href="https://doi.org/10.1162/neco.1991.3.1.88">https://doi.org/10.1162/neco.1991.3.1.88</a>
+</div>
+<div id="ref-powell_reinforcement_2022" class="csl-entry" role="listitem">
+Powell, W. B. (2022). <em>Reinforcement learning and stochastic
+optimization: A unified framework for sequential decisions</em>. Wiley.
+</div>
+<div id="ref-puterman_markov_1994" class="csl-entry" role="listitem">
+Puterman, M. L. (1994). <em>Markov decision processes: Discrete
+stochastic dynamic programming</em>. Wiley.
+</div>
+<div id="ref-ramachandran_bayesian_2007" class="csl-entry" role="listitem">
+Ramachandran, D., &amp; Amir, E. (2007). Bayesian inverse reinforcement
+learning. <em>Proceedings of the 20th International Joint Conference on
+<span>Artifical</span> Intelligence</em>, 2586–2591.
+</div>
+<div id="ref-rao_foundations_2022" class="csl-entry" role="listitem">
+Rao, A., &amp; Jelvis, T. (2022). <em>Foundations of reinforcement
+learning with applications in finance</em>. <span>Chapman and
+Hall/CRC</span>. <a href="https://doi.org/10.1201/9781003229193">https://doi.org/10.1201/9781003229193</a>
+</div>
+<div id="ref-ratliff_maximum_2006" class="csl-entry" role="listitem">
+Ratliff, N. D., Bagnell, J. A., &amp; Zinkevich, M. A. (2006). Maximum
+margin planning. <em>Proceedings of the 23rd International Conference on
+<span>Machine</span> Learning</em>, 729–736. <a href="https://doi.org/10.1145/1143844.1143936">https://doi.org/10.1145/1143844.1143936</a>
+</div>
+<div id="ref-robbins_aspects_1952" class="csl-entry" role="listitem">
+Robbins, H. (1952). Some aspects of the sequential design of
+experiments. <em>Bulletin of the American Mathematical Society</em>,
+<em>58</em>(5), 527–535. <a href="https://projecteuclid.org/journals/bulletin-of-the-american-mathematical-society/volume-58/issue-5/Some-aspects-of-the-sequential-design-of-experiments/bams/1183517370.full">https://projecteuclid.org/journals/bulletin-of-the-american-mathematical-society/volume-58/issue-5/Some-aspects-of-the-sequential-design-of-experiments/bams/1183517370.full</a>
 </div>
 <div id="ref-ross_reduction_2010" class="csl-entry" role="listitem">
-Ross, Stéphane, Geoffrey J. Gordon, and J. Bagnell. 2010. <span>“A
-<span>Reduction</span> of <span>Imitation Learning</span> and
-<span>Structured Prediction</span> to <span>No-Regret Online
-Learning</span>.”</span> In. <a href="https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e">https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e</a>.
+Ross, S., Gordon, G. J., &amp; Bagnell, J. (2010, November 2). <em>A
+reduction of imitation learning and structured prediction to no-regret
+online learning</em>. International <span>Conference</span> on
+<span>Artificial Intelligence</span> and <span>Statistics</span>. <a href="https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e">https://www.semanticscholar.org/paper/A-Reduction-of-Imitation-Learning-and-Structured-to-Ross-Gordon/79ab3c49903ec8cb339437ccf5cf998607fc313e</a>
+</div>
+<div id="ref-russell_learning_1998" class="csl-entry" role="listitem">
+Russell, S. (1998). Learning agents for uncertain environments (extended
+abstract). <em>Proceedings of the Eleventh Annual Conference on
+<span>Computational</span> Learning Theory</em>, 101–103. <a href="https://doi.org/10.1145/279943.279964">https://doi.org/10.1145/279943.279964</a>
 </div>
 <div id="ref-russell_artificial_2021" class="csl-entry" role="listitem">
-Russell, Stuart J., and Peter Norvig. 2021. <em>Artificial Intelligence:
-A Modern Approach</em>. Fourth edition. Pearson Series in Artificial
-Intelligence. Hoboken: Pearson.
+Russell, S. J., &amp; Norvig, P. (2021). <em>Artificial intelligence: A
+modern approach</em> (Fourth edition). Pearson.
+</div>
+<div id="ref-schmidhuber_curious_1991" class="csl-entry" role="listitem">
+Schmidhuber, J. (1991). Curious model-building control systems.
+<em>[<span>Proceedings</span>] 1991 <span>IEEE International Joint
+Conference</span> on <span>Neural Networks</span></em>, 1458–1463 vol.2.
+<a href="https://doi.org/10.1109/IJCNN.1991.170605">https://doi.org/10.1109/IJCNN.1991.170605</a>
+</div>
+<div id="ref-schmidhuber_formal_2010" class="csl-entry" role="listitem">
+Schmidhuber, J. (2010). Formal theory of creativity, fun, and intrinsic
+motivation (1990–2010). <em>IEEE Transactions on Autonomous Mental
+Development</em>, <em>2</em>(3), 230–247. <span>IEEE Transactions</span>
+on <span>Autonomous Mental Development</span>. <a href="https://doi.org/10.1109/TAMD.2010.2056368">https://doi.org/10.1109/TAMD.2010.2056368</a>
 </div>
 <div id="ref-schrittwieser_mastering_2020" class="csl-entry" role="listitem">
-Schrittwieser, Julian, Ioannis Antonoglou, Thomas Hubert, Karen
-Simonyan, Laurent Sifre, Simon Schmitt, Arthur Guez, et al. 2020.
-<span>“Mastering <span>Atari</span>, <span>Go</span>, Chess and Shogi by
-Planning with a Learned Model.”</span> <em>Nature</em> 588 (7839, 7839):
-604–9. <a href="https://doi.org/10.1038/s41586-020-03051-4">https://doi.org/10.1038/s41586-020-03051-4</a>.
+Schrittwieser, J., Antonoglou, I., Hubert, T., Simonyan, K., Sifre, L.,
+Schmitt, S., Guez, A., Lockhart, E., Hassabis, D., Graepel, T.,
+Lillicrap, T., &amp; Silver, D. (2020). Mastering atari, go, chess and
+shogi by planning with a learned model. <em>Nature</em>,
+<em>588</em>(7839, 7839), 604–609. <a href="https://doi.org/10.1038/s41586-020-03051-4">https://doi.org/10.1038/s41586-020-03051-4</a>
+</div>
+<div id="ref-schulman_trust_2015" class="csl-entry" role="listitem">
+Schulman, J., Levine, S., Abbeel, P., Jordan, M., &amp; Moritz, P.
+(2015). Trust region policy optimization. <em>Proceedings of the 32nd
+International Conference on Machine Learning</em>, 1889–1897. <a href="https://proceedings.mlr.press/v37/schulman15.html">https://proceedings.mlr.press/v37/schulman15.html</a>
+</div>
+<div id="ref-schulman_high-dimensional_2016" class="csl-entry" role="listitem">
+Schulman, J., Moritz, P., Levine, S., Jordan, M. I., &amp; Abbeel, P.
+(2016). High-dimensional continuous control using generalized advantage
+estimation. In Y. Bengio &amp; Y. LeCun (Eds.), <em>4th international
+conference on learning representations</em>. <a href="http://arxiv.org/abs/1506.02438">http://arxiv.org/abs/1506.02438</a>
 </div>
 <div id="ref-schulman_proximal_2017" class="csl-entry" role="listitem">
-Schulman, John, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg
-Klimov. 2017. <span>“Proximal <span>Policy Optimization
-Algorithms</span>.”</span> August 28, 2017. <a href="https://doi.org/10.48550/arXiv.1707.06347">https://doi.org/10.48550/arXiv.1707.06347</a>.
+Schulman, J., Wolski, F., Dhariwal, P., Radford, A., &amp; Klimov, O.
+(2017, August 28). <em>Proximal policy optimization algorithms</em>. <a href="https://doi.org/10.48550/arXiv.1707.06347">https://doi.org/10.48550/arXiv.1707.06347</a>
+</div>
+<div id="ref-schultz_neural_1997" class="csl-entry" role="listitem">
+Schultz, W., Dayan, P., &amp; Montague, P. R. (1997). A neural substrate
+of prediction and reward. <em>Science</em>, <em>275</em>(5306),
+1593–1599. <a href="https://doi.org/10.1126/science.275.5306.1593">https://doi.org/10.1126/science.275.5306.1593</a>
+</div>
+<div id="ref-shao_deepseekmath_2024" class="csl-entry" role="listitem">
+Shao, Z., Wang, P., Zhu, Q., Xu, R., Song, J., Bi, X., Zhang, H., Zhang,
+M., Li, Y. K., Wu, Y., &amp; Guo, D. (2024, April 27).
+<em><span>DeepSeekMath</span>: <span>Pushing</span> the limits of
+mathematical reasoning in open language models</em>. <a href="https://doi.org/10.48550/arXiv.2402.03300">https://doi.org/10.48550/arXiv.2402.03300</a>
 </div>
 <div id="ref-silver_mastering_2016" class="csl-entry" role="listitem">
-Silver, David, Aja Huang, Chris J. Maddison, Arthur Guez, Laurent Sifre,
-George van den Driessche, Julian Schrittwieser, et al. 2016.
-<span>“Mastering the Game of <span>Go</span> with Deep Neural Networks
-and Tree Search.”</span> <em>Nature</em> 529 (7587, 7587): 484–89. <a href="https://doi.org/10.1038/nature16961">https://doi.org/10.1038/nature16961</a>.
+Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., van den
+Driessche, G., Schrittwieser, J., Antonoglou, I., Panneershelvam, V.,
+Lanctot, M., Dieleman, S., Grewe, D., Nham, J., Kalchbrenner, N.,
+Sutskever, I., Lillicrap, T., Leach, M., Kavukcuoglu, K., Graepel, T.,
+&amp; Hassabis, D. (2016). Mastering the game of go with deep neural
+networks and tree search. <em>Nature</em>, <em>529</em>(7587, 7587),
+484–489. <a href="https://doi.org/10.1038/nature16961">https://doi.org/10.1038/nature16961</a>
 </div>
 <div id="ref-silver_general_2018" class="csl-entry" role="listitem">
-Silver, David, Thomas Hubert, Julian Schrittwieser, Ioannis Antonoglou,
-Matthew Lai, Arthur Guez, Marc Lanctot, et al. 2018. <span>“A General
-Reinforcement Learning Algorithm That Masters Chess, Shogi, and
-<span>Go</span> Through Self-Play.”</span> <em>Science</em> 362 (6419):
-1140–44. <a href="https://doi.org/10.1126/science.aar6404">https://doi.org/10.1126/science.aar6404</a>.
+Silver, D., Hubert, T., Schrittwieser, J., Antonoglou, I., Lai, M.,
+Guez, A., Lanctot, M., Sifre, L., Kumaran, D., Graepel, T., Lillicrap,
+T., Simonyan, K., &amp; Hassabis, D. (2018). A general reinforcement
+learning algorithm that masters chess, shogi, and go through self-play.
+<em>Science</em>, <em>362</em>(6419), 1140–1144. <a href="https://doi.org/10.1126/science.aar6404">https://doi.org/10.1126/science.aar6404</a>
+</div>
+<div id="ref-silver_deterministic_2014" class="csl-entry" role="listitem">
+Silver, D., Lever, G., Heess, N., Degris, T., Wierstra, D., &amp;
+Riedmiller, M. (2014). Deterministic policy gradient algorithms.
+<em>Proceedings of the 31st <span>International Conference</span> on
+<span>Machine Learning</span></em>, 387–395. <a href="https://proceedings.mlr.press/v32/silver14.html">https://proceedings.mlr.press/v32/silver14.html</a>
 </div>
 <div id="ref-silver_mastering_2017" class="csl-entry" role="listitem">
-Silver, David, Julian Schrittwieser, Karen Simonyan, Ioannis Antonoglou,
-Aja Huang, Arthur Guez, Thomas Hubert, et al. 2017. <span>“Mastering the
-Game of <span>Go</span> Without Human Knowledge.”</span> <em>Nature</em>
-550 (7676, 7676): 354–59. <a href="https://doi.org/10.1038/nature24270">https://doi.org/10.1038/nature24270</a>.
+Silver, D., Schrittwieser, J., Simonyan, K., Antonoglou, I., Huang, A.,
+Guez, A., Hubert, T., Baker, L., Lai, M., Bolton, A., Chen, Y.,
+Lillicrap, T., Hui, F., Sifre, L., van den Driessche, G., Graepel, T.,
+&amp; Hassabis, D. (2017). Mastering the game of go without human
+knowledge. <em>Nature</em>, <em>550</em>(7676, 7676), 354–359. <a href="https://doi.org/10.1038/nature24270">https://doi.org/10.1038/nature24270</a>
+</div>
+<div id="ref-silver_reward_2021" class="csl-entry" role="listitem">
+Silver, D., Singh, S., Precup, D., &amp; Sutton, R. S. (2021). Reward is
+enough. <em>Artificial Intelligence</em>, <em>299</em>, 103535. <a href="https://doi.org/10.1016/j.artint.2021.103535">https://doi.org/10.1016/j.artint.2021.103535</a>
+</div>
+<div id="ref-stigler_history_2003" class="csl-entry" role="listitem">
+Stigler, S. M. (2003). <em>The history of statistics: The measurement of
+uncertainty before 1900</em> (9. print). Belknap Pr. of Harvard Univ.
+Pr.
 </div>
 <div id="ref-sussman_functional_2013" class="csl-entry" role="listitem">
-Sussman, Gerald Jay, Jack Wisdom, and Will Farr. 2013. <em>Functional
-Differential Geometry</em>. Cambridge, MA: The MIT Press.
+Sussman, G. J., Wisdom, J., &amp; Farr, W. (2013). <em>Functional
+differential geometry</em>. The MIT Press.
+</div>
+<div id="ref-sutton_temporal_1984" class="csl-entry" role="listitem">
+Sutton, R. S. (1984). <em>Temporal credit assignment in reinforcement
+learning</em> [PhD thesis]. University of Massachusetts Amherst.
+</div>
+<div id="ref-sutton_learning_1988" class="csl-entry" role="listitem">
+Sutton, R. S. (1988). Learning to predict by the methods of temporal
+differences. <em>Machine Learning</em>, <em>3</em>(1), 9–44. <a href="https://doi.org/10.1007/BF00115009">https://doi.org/10.1007/BF00115009</a>
 </div>
 <div id="ref-sutton_reinforcement_2018" class="csl-entry" role="listitem">
-Sutton, Richard S., and Andrew G. Barto. 2018. <em>Reinforcement
-Learning: An Introduction</em>. Second edition. Adaptive Computation and
-Machine Learning Series. Cambridge, Massachusetts: The MIT Press. <a href="http://incompleteideas.net/book/RLbook2020trimmed.pdf">http://incompleteideas.net/book/RLbook2020trimmed.pdf</a>.
+Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement learning: An
+introduction</em> (Second edition). The MIT Press. <a href="http://incompleteideas.net/book/RLbook2020trimmed.pdf">http://incompleteideas.net/book/RLbook2020trimmed.pdf</a>
+</div>
+<div id="ref-sutton_policy_1999" class="csl-entry" role="listitem">
+Sutton, R. S., McAllester, D., Singh, S., &amp; Mansour, Y. (1999).
+Policy gradient methods for reinforcement learning with function
+approximation. <em>Proceedings of the 13th <span>International
+Conference</span> on <span>Neural Information Processing
+Systems</span></em>, 1057–1063.
+</div>
+<div id="ref-szepesvari_algorithms_2010" class="csl-entry" role="listitem">
+Szepesvári, C. (2010). <em>Algorithms for reinforcement learning</em>.
+Springer International Publishing. <a href="https://doi.org/10.1007/978-3-031-01551-9">https://doi.org/10.1007/978-3-031-01551-9</a>
+</div>
+<div id="ref-tang_exploration_2017" class="csl-entry" role="listitem">
+Tang, H., Houthooft, R., Foote, D., Stooke, A., Xi Chen, O., Duan, Y.,
+Schulman, J., DeTurck, F., &amp; Abbeel, P. (2017).
+#<span>Exploration</span>: A study of count-based exploration for deep
+reinforcement learning. <em>Advances in <span>Neural Information
+Processing Systems</span></em>, <em>30</em>. <a href="https://proceedings.neurips.cc/paper_files/paper/2017/hash/3a20f62a0af1aa152670bab3c602feed-Abstract.html">https://proceedings.neurips.cc/paper_files/paper/2017/hash/3a20f62a0af1aa152670bab3c602feed-Abstract.html</a>
+</div>
+<div id="ref-thompson_likelihood_1933" class="csl-entry" role="listitem">
+Thompson, W. R. (1933). On the likelihood that one unknown probability
+exceeds another in view of the evidence of two samples.
+<em>Biometrika</em>, <em>25</em>(3/4), 285–294. <a href="https://doi.org/10.2307/2332286">https://doi.org/10.2307/2332286</a>
+</div>
+<div id="ref-thompson_theory_1935" class="csl-entry" role="listitem">
+Thompson, W. R. (1935). On the theory of apportionment. <em>American
+Journal of Mathematics</em>, <em>57</em>(2), 450–456. <a href="https://doi.org/10.2307/2371219">https://doi.org/10.2307/2371219</a>
+</div>
+<div id="ref-thorndike_animal_1911" class="csl-entry" role="listitem">
+Thorndike, E. L. (1911). <em>Animal intelligence:
+<span>Experimental</span> studies</em> (pp. viii, 297). Macmillan Press.
+<a href="https://doi.org/10.5962/bhl.title.55072">https://doi.org/10.5962/bhl.title.55072</a>
+</div>
+<div id="ref-thrun_efficient_1992" class="csl-entry" role="listitem">
+Thrun, S. B. (1992). <em>Efficient exploration in reinforcement
+learning</em> [Technical Report]. Carnegie Mellon University.
+</div>
+<div id="ref-turing_intelligent_1948" class="csl-entry" role="listitem">
+Turing, A. (1948). Intelligent machinery. <em>National Physical
+Laboratory</em>. <a href="https://weightagnostic.github.io/papers/turing1948.pdf">https://weightagnostic.github.io/papers/turing1948.pdf</a>
+</div>
+<div id="ref-van_hasselt_deep_2018" class="csl-entry" role="listitem">
+van Hasselt, H., Doron, Y., Strub, F., Hessel, M., Sonnerat, N., &amp;
+Modayil, J. (2018, December 6). <em>Deep reinforcement learning and the
+deadly triad</em>. <a href="https://doi.org/10.48550/arXiv.1812.02648">https://doi.org/10.48550/arXiv.1812.02648</a>
+</div>
+<div id="ref-vapnik_nature_2000" class="csl-entry" role="listitem">
+Vapnik, V. N. (2000). <em>The nature of statistical learning
+theory</em>. Springer. <a href="https://doi.org/10.1007/978-1-4757-3264-1">https://doi.org/10.1007/978-1-4757-3264-1</a>
 </div>
 <div id="ref-vershynin_high-dimensional_2018" class="csl-entry" role="listitem">
-Vershynin, Roman. 2018. <em>High-<span>Dimensional Probability</span>:
-<span>An Introduction</span> with <span>Applications</span> in
-<span>Data Science</span></em>. Cambridge University Press. <a href="https://books.google.com?id=NDdqDwAAQBAJ">https://books.google.com?id=NDdqDwAAQBAJ</a>.
+Vershynin, R. (2018). <em>High-dimensional probability: <span>An</span>
+introduction with applications in data science</em>. Cambridge
+University Press. <a href="https://books.google.com?id=NDdqDwAAQBAJ">https://books.google.com?id=NDdqDwAAQBAJ</a>
+</div>
+<div id="ref-wald_statistical_1949" class="csl-entry" role="listitem">
+Wald, A. (1949). Statistical decision functions. <em>The Annals of
+Mathematical Statistics</em>, <em>20</em>(2), 165–205. <a href="https://doi.org/10.1214/aoms/1177730030">https://doi.org/10.1214/aoms/1177730030</a>
+</div>
+<div id="ref-wang_sample_2017" class="csl-entry" role="listitem">
+Wang, Z., Bapst, V., Heess, N., Mnih, V., Munos, R., Kavukcuoglu, K.,
+&amp; Freitas, N. de. (2017, February 6). Sample efficient actor-critic
+with experience replay. <em>5th International Conference on Learning
+Representations</em>. <a href="https://openreview.net/forum?id=HyM25Mqel">https://openreview.net/forum?id=HyM25Mqel</a>
+</div>
+<div id="ref-wang_dueling_2016" class="csl-entry" role="listitem">
+Wang, Z., Schaul, T., Hessel, M., Hasselt, H., Lanctot, M., &amp;
+Freitas, N. (2016). Dueling network architectures for deep reinforcement
+learning. <em>Proceedings of <span>The</span> 33rd <span>International
+Conference</span> on <span>Machine Learning</span></em>, 1995–2003. <a href="https://proceedings.mlr.press/v48/wangf16.html">https://proceedings.mlr.press/v48/wangf16.html</a>
 </div>
 <div id="ref-williams_simple_1992" class="csl-entry" role="listitem">
-Williams, Ronald J. 1992. <span>“Simple Statistical Gradient-Following
-Algorithms for Connectionist Reinforcement Learning.”</span> <em>Machine
-Learning</em> 8 (3): 229–56. <a href="https://doi.org/10.1007/BF00992696">https://doi.org/10.1007/BF00992696</a>.
+Williams, R. J. (1992). Simple statistical gradient-following algorithms
+for connectionist reinforcement learning. <em>Machine Learning</em>,
+<em>8</em>(3), 229–256. <a href="https://doi.org/10.1007/BF00992696">https://doi.org/10.1007/BF00992696</a>
+</div>
+<div id="ref-witten_adaptive_1977" class="csl-entry" role="listitem">
+Witten, I. H. (1977). An adaptive optimal controller for discrete-time
+markov environments. <em>Information and Control</em>, <em>34</em>(4),
+286–295. <a href="https://doi.org/10.1016/S0019-9958(77)90354-0">https://doi.org/10.1016/S0019-9958(77)90354-0</a>
+</div>
+<div id="ref-wu_scalable_2017" class="csl-entry" role="listitem">
+Wu, Y., Mansimov, E., Grosse, R. B., Liao, S., &amp; Ba, J. (2017).
+Scalable trust-region method for deep reinforcement learning using
+kronecker-factored approximation. <em>Advances in Neural Information
+Processing Systems</em>, <em>30</em>. <a href="https://proceedings.neurips.cc/paper/2017/hash/361440528766bbaaaa1901845cf4152b-Abstract.html">https://proceedings.neurips.cc/paper/2017/hash/361440528766bbaaaa1901845cf4152b-Abstract.html</a>
+</div>
+<div id="ref-ye_mastering_2021" class="csl-entry" role="listitem">
+Ye, W., Liu, S., Kurutach, T., Abbeel, P., &amp; Gao, Y. (2021).
+Mastering atari games with limited data. <em><span>NeurIPS</span>
+2021</em>, 25476–25488. <a href="https://doi.org/10.48550/arXiv.2111.00210">https://doi.org/10.48550/arXiv.2111.00210</a>
+</div>
+<div id="ref-zare_survey_2024" class="csl-entry" role="listitem">
+Zare, M., Kebria, P. M., Khosravi, A., &amp; Nahavandi, S. (2024). A
+survey of imitation learning: Algorithms, recent developments, and
+challenges. <em>IEEE Transactions on Cybernetics</em>, <em>54</em>(12),
+7173–7186. <span>IEEE Transactions</span> on <span>Cybernetics</span>.
+<a href="https://doi.org/10.1109/TCYB.2024.3395626">https://doi.org/10.1109/TCYB.2024.3395626</a>
+</div>
+<div id="ref-ziebart_modeling_2010" class="csl-entry" role="listitem">
+Ziebart, B. D., Bagnell, J. A., &amp; Dey, A. K. (2010). Modeling
+interaction via the principle of maximum causal entropy. <em>Proceedings
+of the 27th <span>International Conference</span> on <span>International
+Conference</span> on <span>Machine Learning</span></em>, 1255–1262.
+</div>
+<div id="ref-ziebart_maximum_2008" class="csl-entry" role="listitem">
+Ziebart, B. D., Maas, A., Bagnell, J. A., &amp; Dey, A. K. (2008).
+Maximum entropy inverse reinforcement learning. <em>Proceedings of the
+23rd National Conference on <span>Artificial</span> Intelligence -
+<span>Volume</span> 3</em>, 1433–1438.
+</div>
+<div id="ref-ziegler_fine-tuning_2020" class="csl-entry" role="listitem">
+Ziegler, D. M., Stiennon, N., Wu, J., Brown, T. B., Radford, A., Amodei,
+D., Christiano, P., &amp; Irving, G. (2020, January 8).
+<em>Fine-<span>Tuning Language Models</span> from <span>Human
+Preferences</span></em>. <a href="https://doi.org/10.48550/arXiv.1909.08593">https://doi.org/10.48550/arXiv.1909.08593</a>
 </div>
 </div>
 
@@ -369,6 +1091,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -439,7 +1305,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/rlbook\.adzc\.ai");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -768,14 +1634,37 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./background.html" class="pagination-link" aria-label="Appendix: Background">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span>
+      <a href="./exploration.html" class="pagination-link" aria-label="Exploration in MDPs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./background.html" class="pagination-link" aria-label="Background">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025 Alexander Cai</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/references.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/references.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link active" href="https://github.com/adzcai/rlbook" aria-current="page">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 

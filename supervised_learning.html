@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; Supervised learning – CS 1840: Introduction to Reinforcement Learning</title>
+<title>5&nbsp; Supervised learning – An Introduction to Reinforcement Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -86,15 +86,18 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./fitted_dp.html" rel="next">
 <link href="./bandits.html" rel="prev">
+<link href="./shared/184.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e39e07555a3cad66df478e90649eca5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -153,6 +156,12 @@ window.Quarto = {
 };
 </script>
 
+<meta property="og:title" content="5&nbsp; Supervised learning – An Introduction to Reinforcement Learning">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://rlbook.adzc.ai/supervised_learning_files/figure-html/fig-mnist-output-1.png">
+<meta property="og:site_name" content="An Introduction to Reinforcement Learning">
+<meta property="og:image:height" content="174">
+<meta property="og:image:width" content="174">
 </head>
 
 <body class="nav-sidebar floating">
@@ -164,7 +173,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./supervised_learning.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./supervised_learning.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -179,7 +188,45 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">CS 1840: Introduction to Reinforcement Learning</a> 
+      <a href="./">An Introduction to Reinforcement Learning</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/adzcai/rlbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -192,67 +239,73 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mdps.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./control.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./bandits.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pg.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./planning.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploration.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Appendix: Background</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -261,6 +314,29 @@ window.Quarto = {
  <span class="menu-text">References</span></a>
   </div>
 </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proofs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Proofs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -271,34 +347,34 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">4.1</span> Introduction</a></li>
-  <li><a href="#the-supervised-learning-task" id="toc-the-supervised-learning-task" class="nav-link" data-scroll-target="#the-supervised-learning-task"><span class="header-section-number">4.2</span> The supervised learning task</a>
+  <li><a href="#sec-sl-intro" id="toc-sec-sl-intro" class="nav-link active" data-scroll-target="#sec-sl-intro"><span class="header-section-number">5.1</span> Introduction</a></li>
+  <li><a href="#sec-sl-task" id="toc-sec-sl-task" class="nav-link" data-scroll-target="#sec-sl-task"><span class="header-section-number">5.2</span> The supervised learning task</a>
   <ul class="collapse">
-  <li><a href="#loss-functions" id="toc-loss-functions" class="nav-link" data-scroll-target="#loss-functions"><span class="header-section-number">4.2.1</span> Loss functions</a></li>
-  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">4.2.2</span> Model selection</a></li>
+  <li><a href="#sec-loss" id="toc-sec-loss" class="nav-link" data-scroll-target="#sec-loss"><span class="header-section-number">5.2.1</span> Loss functions</a></li>
+  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection"><span class="header-section-number">5.2.2</span> Model selection</a></li>
   </ul></li>
-  <li><a href="#sec-erm" id="toc-sec-erm" class="nav-link" data-scroll-target="#sec-erm"><span class="header-section-number">4.3</span> Empirical risk minimization</a>
+  <li><a href="#sec-erm" id="toc-sec-erm" class="nav-link" data-scroll-target="#sec-erm"><span class="header-section-number">5.3</span> Empirical risk minimization</a>
   <ul class="collapse">
-  <li><a href="#function-classes" id="toc-function-classes" class="nav-link" data-scroll-target="#function-classes"><span class="header-section-number">4.3.1</span> Function classes</a></li>
-  <li><a href="#sec-sl-parameterized" id="toc-sec-sl-parameterized" class="nav-link" data-scroll-target="#sec-sl-parameterized"><span class="header-section-number">4.3.2</span> Parameterized function classes</a></li>
-  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link" data-scroll-target="#gradient-descent"><span class="header-section-number">4.3.3</span> Gradient descent</a></li>
+  <li><a href="#function-classes" id="toc-function-classes" class="nav-link" data-scroll-target="#function-classes"><span class="header-section-number">5.3.1</span> Function classes</a></li>
+  <li><a href="#sec-sl-parameterized" id="toc-sec-sl-parameterized" class="nav-link" data-scroll-target="#sec-sl-parameterized"><span class="header-section-number">5.3.2</span> Parameterized function classes</a></li>
+  <li><a href="#sec-sl-gd" id="toc-sec-sl-gd" class="nav-link" data-scroll-target="#sec-sl-gd"><span class="header-section-number">5.3.3</span> Gradient descent</a></li>
   </ul></li>
-  <li><a href="#examples-of-parameterized-function-classes" id="toc-examples-of-parameterized-function-classes" class="nav-link" data-scroll-target="#examples-of-parameterized-function-classes"><span class="header-section-number">4.4</span> Examples of parameterized function classes</a>
+  <li><a href="#examples-of-parameterized-function-classes" id="toc-examples-of-parameterized-function-classes" class="nav-link" data-scroll-target="#examples-of-parameterized-function-classes"><span class="header-section-number">5.4</span> Examples of parameterized function classes</a>
   <ul class="collapse">
-  <li><a href="#sec-sl-linear" id="toc-sec-sl-linear" class="nav-link" data-scroll-target="#sec-sl-linear"><span class="header-section-number">4.4.1</span> Linear regression</a></li>
-  <li><a href="#sec-sl-nn" id="toc-sec-sl-nn" class="nav-link" data-scroll-target="#sec-sl-nn"><span class="header-section-number">4.4.2</span> Neural networks</a></li>
+  <li><a href="#sec-sl-linear" id="toc-sec-sl-linear" class="nav-link" data-scroll-target="#sec-sl-linear"><span class="header-section-number">5.4.1</span> Linear regression</a></li>
+  <li><a href="#sec-sl-nn" id="toc-sec-sl-nn" class="nav-link" data-scroll-target="#sec-sl-nn"><span class="header-section-number">5.4.2</span> Neural networks</a></li>
   </ul></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">4.5</span> Summary</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">4.6</span> References</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways"><span class="header-section-number">5.5</span> Key takeaways</a></li>
+  <li><a href="#sec-sl-bib" id="toc-sec-sl-bib" class="nav-link" data-scroll-target="#sec-sl-bib"><span class="header-section-number">5.6</span> Bibliographic notes and further reading</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/supervised_learning.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/supervised_learning.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="sec-sl" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></h1>
+<h1 class="title"><span id="sec-sl" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></h1>
 </div>
 
 
@@ -315,14 +391,9 @@ window.Quarto = {
 </header>
 
 
-<hr>
-<hr>
-<div class="hidden">
-
-</div>
-<section id="introduction" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">4.1</span> Introduction</h2>
-<div id="d629b673" class="cell" data-execution_count="1">
+<section id="sec-sl-intro" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-sl-intro"><span class="header-section-number">5.1</span> Introduction</h2>
+<div id="53ad9ad6" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> Float, Array, Callable, plt, np, latex</span>
@@ -330,25 +401,25 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> config <span class="im">import</span> MNIST_PATH</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p><strong>Supervised learning</strong> (SL) is a core subfield of machine learning alongside RL and unsupervised learning. The typical SL task is to approximate an unknown function given a dataset of input-output pairs from that function.</p>
+<p><strong>Supervised learning</strong> (SL) is a core subfield of machine learning alongside RL and unsupervised learning. The typical SL task is to approximate an <em>unknown function</em> given a dataset of input-output examples from that function.</p>
 <div id="exm-image-classification" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.1 (Image classification)</strong></span> One of the most common examples of an SL problem is the task of image classification: Given a dataset of images and their respective labels, construct a function that takes an image and outputs the correct label.</p>
-<p><a href="#fig-mnist" class="quarto-xref">Figure&nbsp;<span>4.1</span></a> illustrates two samples (that is, input-output pairs) from the MNIST database of handwritten digits <span class="citation" data-cites="deng_mnist_2012">(<a href="references.html#ref-deng_mnist_2012" role="doc-biblioref">Deng 2012</a>)</span>. This is a task that most humans can easily accomplish. By providing many samples of digits and their labels to a machine, SL algorithms can learn to solve this task as well.</p>
+<p><span class="theorem-title"><strong>Example 5.1 (Image classification)</strong></span> One of the most common examples of an SL problem is the task of image classification: Given a dataset of images and their respective labels, construct a function that takes an image and outputs the correct label.</p>
+<p><a href="#fig-mnist" class="quarto-xref">fig.&nbsp;<span>5.1</span></a> illustrates two samples (that is, input-output pairs) from the MNIST database of handwritten digits <span class="citation" data-cites="deng_mnist_2012">(<a href="references.html#ref-deng_mnist_2012" role="doc-biblioref">Deng, 2012</a>)</span>. This is a task that most humans can easily accomplish. By providing many samples of digits and their labels to a machine, SL algorithms can learn to solve this task as well.</p>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> MNIST(MNIST_PATH, train<span class="op">=</span><span class="va">True</span>, download<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(data.data[<span class="dv">0</span>], cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"Label: </span><span class="sc">{</span>data<span class="sc">.</span>targets[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>plt.gcf().set_size_inches(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>plt.imshow(data.data[<span class="dv">0</span>], cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.title(f"Label: {data.targets[0]}")</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.imshow(data.data[<span class="dv">1</span>], cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"Label: </span><span class="sc">{</span>data<span class="sc">.</span>targets[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>plt.gcf().set_size_inches(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.imshow(data.data[<span class="dv">1</span>], cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># plt.title(f"Label: {data.targets[1]}")</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div id="fig-mnist" class="quarto-layout-panel">
@@ -359,10 +430,10 @@ window.Quarto = {
 <div id="fig-mnist-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-mnist-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-mnist-output-1.png" data-ref-parent="fig-mnist" width="175" height="203" class="figure-img">
+<img src="supervised_learning_files/figure-html/fig-mnist-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-mnist">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-mnist-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(a) A handwritten digit.
+(a) The handwritten digit <span class="math inline">\(5\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -371,10 +442,10 @@ window.Quarto = {
 <div id="fig-mnist-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-mnist-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-mnist-output-2.png" data-ref-parent="fig-mnist" width="175" height="203" class="figure-img">
+<img src="supervised_learning_files/figure-html/fig-mnist-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-mnist">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-mnist-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(b) Another handwritten digit.
+(b) The handwritten digit <span class="math inline">\(0\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -382,40 +453,41 @@ window.Quarto = {
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mnist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.1: The MNIST image classification dataset of handwritten digits.
+Figure&nbsp;5.1: The MNIST image classification dataset of <span class="math inline">\(28   imes 28\)</span> handwritten digits.
 </figcaption>
 </figure>
 </div>
-<p>Where might function approximation be useful in RL? There are many functions involved in the definition of an MDP (<a href="mdps.html#def-finite-horizon-mdp" class="quarto-xref">Definition&nbsp;<span>1.1</span></a>), such as the state transitions <span class="math inline">\(P\)</span> or the reward function <span class="math inline">\(r\)</span>, any of which might be unknown. We can plug in an SL algorithm to <strong>model</strong> these functions, and then solve the modeled environment using dynamic programming (<a href="mdps.html#sec-opt-dynamic-programming" class="quarto-xref"><span>Section 1.2.7</span></a>). This approach is called <strong>fitted DP</strong> and will be covered in <a href="fitted_dp.html" class="quarto-xref"><span>Chapter 5</span></a>. In the rest of this chapter, we’ll formalize the SL task and examine some basic algorithms.</p>
+<p>When might function approximation be useful in RL? Recall that the definition of an MDP includes the state transitions <span class="math inline">\(P : \mathcal{S} \times \mathcal{A} \to \triangle(\mathcal{S})\)</span> and a reward function <span class="math inline">\(r : \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span> (<a href="mdps.html#def-finite-horizon-mdp" class="quarto-xref">def.&nbsp;<span>2.4</span></a>). If we <em>know</em> both of these functions, in the sense that we are able to query them on arbitrary inputs, we can use powerful planning algorithms to solve for the optimal policy exactly (see <a href="mdps.html#sec-finite-opt-dp" class="quarto-xref"><span>Section 2.3.2</span></a>). Thus, if either (or both) of these is not known, we can use an SL algorithm to <strong>model</strong> the environment and then solve the modeled environment using dynamic programming. This approach is called <strong>fitted DP</strong> and will be covered in <a href="fitted_dp.html" class="quarto-xref"><span>Chapter 6</span></a>.</p>
+<p>We do not seek to comprehensively discuss supervised learning; see the bibiographic notes at the end of the chapter (<a href="#sec-sl-bib" class="quarto-xref"><span>Section 5.6</span></a>) for further resources. We hope to to leave you with an understanding of what types of problems SL can solve and how SL algorithms can be applied to RL.</p>
 </section>
-<section id="the-supervised-learning-task" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="the-supervised-learning-task"><span class="header-section-number">4.2</span> The supervised learning task</h2>
-<p>In SL, we are given a dataset of labelled samples <span class="math inline">\((x_1, y_1), \dots, (x_N, y_N)\)</span> that are independently sampled from some joint distribution <span class="math inline">\(p \in \triangle(X \times Y)\)</span> known as the <strong>data generating process</strong>. Note that, by the chain rule of probability, this can be factored as <span class="math inline">\(p(x, y) = p(y \mid x) p(x)\)</span>.</p>
+<section id="sec-sl-task" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-sl-task"><span class="header-section-number">5.2</span> The supervised learning task</h2>
+<p>In SL, we are given a dataset of labelled samples <span class="math inline">\((x_1, y_1), \dots, (x_N, y_N)\)</span> that are independently sampled from some <strong>data generating process</strong>. Mathematically, we describe this data generating process as a joint distribution <span class="math inline">\(p \in \triangle(\mathcal{X} \times \mathcal{Y})\)</span>, where <span class="math inline">\(\mathcal{X}\)</span> is the space of possible inputs and <span class="math inline">\(\mathcal{Y}\)</span> is the space of possible outputs. Note that, by the chain rule of probability, this can be factored as <span class="math inline">\(p(x, y) = p(y \mid x) p(x)\)</span>.</p>
 <div id="exm-sl-distributions" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.2</strong></span> For example, in <a href="#exm-image-classification" class="quarto-xref">Example&nbsp;<span>4.1</span></a>, the marginal distribution over <span class="math inline">\(x\)</span> is assumed to be the distribution of handwritten digits by humans, scanned as <span class="math inline">\(28 \times 28\)</span> grayscale images, and the conditional distribution <span class="math inline">\(y \mid x\)</span> is assumed to be the distribution over <span class="math inline">\(\{ 0, \dots, 9 \}\)</span> that a human would assign to the image <span class="math inline">\(x\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 5.2 (Joint distributions for image classification)</strong></span> For example, in <a href="#exm-image-classification" class="quarto-xref">ex.&nbsp;<span>5.1</span></a>, the marginal distribution over <span class="math inline">\(x\)</span> is assumed to be the distribution of handwritten digits by humans, scanned as <span class="math inline">\(28 \times 28\)</span> grayscale images. The conditional distribution <span class="math inline">\(y \mid x\)</span> is assumed to be the distribution over <span class="math inline">\(\{ 0, \dots, 9 \}\)</span> that a human would assign to the image <span class="math inline">\(x\)</span>.</p>
 </div>
-<p>Our task is to compute a “good” <strong>predictor</strong> <span class="math inline">\(\hat f : X \to Y\)</span> that, as its name suggests, takes an input and tries to predict the corresponding output.</p>
-<section id="loss-functions" class="level3" data-number="4.2.1">
-<h3 data-number="4.2.1" class="anchored" data-anchor-id="loss-functions"><span class="header-section-number">4.2.1</span> Loss functions</h3>
-<p>How can we measure how “good” a predictor is? The most common way is to use a <strong>loss function</strong> <span class="math inline">\(\ell : Y \times Y \to \mathbb{R}\)</span> that compares the guess <span class="math inline">\(\hat y := \hat f(x)\)</span> with the true output <span class="math inline">\(y\)</span>. <span class="math inline">\(\ell(\hat y, y)\)</span> should be low if the predictor accurately guessed the output, and high if the prediction was incorrect.</p>
+<p>Our task is to compute a “good” <strong>prediction rule</strong> <span class="math inline">\(\hat f : \mathcal{X} \to \mathcal{Y}\)</span> that takes an input and tries to predict the corresponding output.</p>
+<section id="sec-loss" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="sec-loss"><span class="header-section-number">5.2.1</span> Loss functions</h3>
+<p>How can we measure how “good” a prediction rule is? The most common way is to use a <strong>loss function</strong> <span class="math inline">\(\ell : \mathcal{Y} \times \mathcal{Y} \to \mathbb{R}\)</span> that compares the guess <span class="math inline">\(\hat y := \hat f(x)\)</span> with the true output <span class="math inline">\(y\)</span>. <span class="math inline">\(\ell(\hat y, y)\)</span> should be low if the prediction rule accurately guessed the output, and high if the prediction was incorrect.</p>
 <div id="exm-zero-one-loss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.3 (Zero-one loss)</strong></span> In the image classification task <a href="#exm-image-classification" class="quarto-xref">Example&nbsp;<span>4.1</span></a>, we have <span class="math inline">\(X = [0, 1]^{28 \times 28}\)</span> (the space of <span class="math inline">\(28\)</span>-by-<span class="math inline">\(28\)</span> grayscale images) and <span class="math inline">\(Y = \{ 0, \dots, 9 \}\)</span> (the image’s label). We could use the zero-one loss function,</p>
-<p><span class="math display">\[
+<p><span class="theorem-title"><strong>Example 5.3 (Zero-one loss)</strong></span> In the image classification task <a href="#exm-image-classification" class="quarto-xref">ex.&nbsp;<span>5.1</span></a>, we have <span class="math inline">\(X = [0, 1]^{28 \times 28}\)</span> (the space of <span class="math inline">\(28\)</span>-by-<span class="math inline">\(28\)</span> grayscale images) and <span class="math inline">\(Y = \{ 0, \dots, 9 \}\)</span> (the image’s label). We could use the zero-one loss function,</p>
+<p><span id="eq-zero-one"><span class="math display">\[
 \ell(\hat y, y) = \begin{cases}
 0 &amp; \hat y = y \\
 1 &amp; \hat y \ne y
 \end{cases}
-\]</span></p>
-<p>to measure the accuracy of the predictor. That is, if the predictor assigns the wrong label to an image, it incurs a loss of one for that sample.</p>
+\tag{5.1}\]</span></span></p>
+<p>to measure the accuracy of the prediction rule. That is, if the prediction rule assigns the wrong label to an image, it incurs a <em>loss</em> of one for that sample.</p>
 </div>
 <div id="exm-square-loss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.4 (Square loss)</strong></span> For a continuous output (i.e.&nbsp;<span class="math inline">\(Y \subseteq \mathbb{R}\)</span>), we typically use the <strong>squared difference</strong> as the loss function:</p>
-<p><span class="math display">\[
+<p><span class="theorem-title"><strong>Example 5.4 (Square loss)</strong></span> For a continuous output (i.e.&nbsp;<span class="math inline">\(\mathcal{Y} \subseteq \mathbb{R}\)</span>), we typically use the <strong>squared difference</strong> as the loss function:</p>
+<p><span id="eq-square"><span class="math display">\[
 \ell(\hat y, y) = (\hat y - y)^2
-\]</span></p>
-<p>The squared loss is nice to work with analytically since its derivative with respect to <span class="math inline">\(\hat y\)</span> is simply <span class="math inline">\(2 (\hat y - y)\)</span>. (Sometimes authors define the square loss as <em>half</em> of the above value to cancel the factor of <span class="math inline">\(2\)</span> in the derivative; generally speaking, scaling the loss by some constant scalar has no practical effect.)</p>
+\tag{5.2}\]</span></span></p>
+<p>The square loss is nice to work with analytically since its derivative with respect to <span class="math inline">\(\hat y\)</span> is simply <span class="math inline">\(2 (\hat y - y)\)</span>. (Sometimes authors define the square loss as <em>half</em> of the above value to cancel the factor of <span class="math inline">\(2\)</span> in the derivative. Generally speaking, scaling the loss by some constant scalar has no practical effect.)</p>
 </div>
-<div id="cell-fig-squared-loss" class="cell" data-execution_count="3">
+<div id="cell-fig-squared-loss" class="cell" data-fig-width="3" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">20</span>)</span>
@@ -429,51 +501,60 @@ Figure&nbsp;4.1: The MNIST image classification dataset of handwritten digits.
 <div id="fig-squared-loss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-squared-loss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-squared-loss-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="420" height="308">
+<img src="supervised_learning_files/figure-html/fig-squared-loss-output-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-squared-loss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.2: Squared loss.
+Figure&nbsp;5.2: Square loss.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="model-selection" class="level3" data-number="4.2.2">
-<h3 data-number="4.2.2" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">4.2.2</span> Model selection</h3>
-<p>Ultimately, we want a predictor that does well on new, unseen samples from the data generating process. We can thus ask, how much loss does the predictor incur <em>in expectation</em>? This is called the prediction’s <strong>generalization error</strong> or <strong>test error</strong>:</p>
-<p><span class="math display">\[
-\text{test error}(\hat f) := \mathbb{E}_{(x, y) \sim p} [ \ell(\hat f(x), y) ]
-\]</span></p>
-<p>Our goal is then to find the function <span class="math inline">\(\hat f\)</span> that minimizes the test error. For certain loss functions, this can be analytically computed, such as for squared error.</p>
+<section id="model-selection" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="model-selection"><span class="header-section-number">5.2.2</span> Model selection</h3>
+<p>Ultimately, we want a prediction rule that does well on new, unseen samples from the data generating process. We can thus ask, how much loss does the prediction rule incur <em>in expectation</em>? This is called the prediction rule’s <strong>generalization error</strong> or <strong>test error</strong>.</p>
+<div id="def-test-err" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.1 (Generalization error)</strong></span> Given a loss function <span class="math inline">\(\ell\)</span> and a prediction rule <span class="math inline">\(\hat f\)</span>, the <em>generalization error</em> of the prediction rule is defined as the expected loss over the data generating process.</p>
+<p><span id="eq-test-err"><span class="math display">\[
+\text{error}_{\text{g}}(\hat f) := \mathop{\mathbb{E}}_{(x, y) \sim p} [ \ell(\hat f(x), y) ]
+\tag{5.3}\]</span></span></p>
+<p>Suppose we sample a new input and output from the data generating process, make a guess according to our prediction rule, and use the loss function to compare our guess to the true output. If we repeat this many times, the average loss would approach the generalization error.</p>
+</div>
+<p>The goal of SL is then to find the prediction rule that minimizes the test error. For certain loss functions, the theoretical optimum can be analytically computed, such as for squared error.</p>
 <div id="thm-conditional-expectation-minimizes-mse" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 4.1 (The conditional expectation minimizes mean squared error)</strong></span> An important result is that, under the squared loss, the optimal predictor is the <strong>conditional expectation</strong>:</p>
-<p><span class="math display">\[
-\arg\min_{f} \mathbb{E}[(y - f(x))^2] = (x \mapsto \mathbb{E}[y \mid x])
-\]</span></p>
+<p><span class="theorem-title"><strong>Theorem 5.1 (The conditional expectation minimizes mean squared error)</strong></span> An important result is that, under the square loss, the optimal prediction rule is the <strong>conditional expectation</strong>:</p>
+<p><span id="eq-opt-cond"><span class="math display">\[
+\arg\min_{f} \mathop{\mathbb{E}}[(y - f(x))^2] = (x \mapsto \mathop{\mathbb{E}}[y \mid x])
+\tag{5.4}\]</span></span></p>
 </div>
 <div class="proof">
 <p><span class="proof-title"><em>Proof</em>. </span>We can decompose the mean squared error as</p>
-<p><span class="math display">\[
+<p><span id="eq-decompose-mse"><span class="math display">\[
 \begin{aligned}
-\mathbb{E}[(y - f(x))^2] &amp;= \mathbb{E}[ (y - \mathbb{E}[y \mid x] + \mathbb{E}[y \mid x] - f(x))^2 ] \\
-&amp;= \mathbb{E}[ (y - \mathbb{E}[y \mid x])^2 ] + \mathbb{E}[ (\mathbb{E}[y \mid x] - f(x))^2 ] \\
-&amp;\quad {} + 2 \mathbb{E}[ (y - \mathbb{E}[y \mid x])(\mathbb{E}[y \mid x] - f(x)) ] \\
+\mathop{\mathbb{E}}[(y - f(x))^2] &amp;= \mathop{\mathbb{E}}[ (y - \mathop{\mathbb{E}}[y \mid x] + \mathop{\mathbb{E}}[y \mid x] - f(x))^2 ] \\
+&amp;= \mathop{\mathbb{E}}[ (y - \mathop{\mathbb{E}}[y \mid x])^2 ] + \mathop{\mathbb{E}}[ (\mathop{\mathbb{E}}[y \mid x] - f(x))^2 ] \\
+&amp;\quad {} + 2 \mathop{\mathbb{E}}[ (y - \mathop{\mathbb{E}}[y \mid x])(\mathop{\mathbb{E}}[y \mid x] - f(x)) ] \\
 \end{aligned}
-\]</span></p>
-<p>We leave it as an exercise to show that the last term is zero. (Hint: use the law of iterated expectations.) The first term is the <strong>noise</strong>, or irreducible error, that doesn’t depend on <span class="math inline">\(f\)</span>, and the second term is the error due to the approximation, which is minimized at <span class="math inline">\(0\)</span> when <span class="math inline">\(f(x) = \mathbb{E}[y \mid x]\)</span>.</p>
+\tag{5.5}\]</span></span></p>
+<p>We leave it as an exercise to show that the last term is zero. (Hint: use the law of iterated expectations.) The first term is the <strong>noise</strong>, or irreducible error, that doesn’t depend on <span class="math inline">\(f\)</span>, and the second term is the error due to the approximation, which is minimized at <span class="math inline">\(0\)</span> when <span class="math inline">\(f(x) = \mathop{\mathbb{E}}[y \mid x]\)</span>.</p>
 </div>
-<p>In most applications, such as in <a href="#exm-sl-distributions" class="quarto-xref">Example&nbsp;<span>4.2</span></a>, the joint distribution of <span class="math inline">\(x, y\)</span> is intractable to compute, and so we can’t evaluate <span class="math inline">\(\mathbb{E}[y \mid x]\)</span> analytically. Instead, all we have are <span class="math inline">\(N\)</span> samples from the joint distribution of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. How might we use these to <em>approximate</em> the generalization error?</p>
+<p>In most applications, such as in <a href="#exm-sl-distributions" class="quarto-xref">ex.&nbsp;<span>5.2</span></a>, we can’t integrate over the joint distribution of <span class="math inline">\(x, y\)</span>, and so we can’t evaluate <span class="math inline">\(\mathop{\mathbb{E}}[y \mid x]\)</span> analytically. Instead, all we get are <span class="math inline">\(N\)</span> samples from the joint distribution of <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. How might we use these to <em>approximate</em> the generalization error?</p>
 </section>
 </section>
-<section id="sec-erm" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="sec-erm"><span class="header-section-number">4.3</span> Empirical risk minimization</h2>
-<p>To estimate the generalization error, we can simply take the <em>sample average</em> of the loss over the training data. This is called the <strong>training loss</strong> or <strong>empirical risk</strong>:</p>
-<p><span class="math display">\[
+<section id="sec-erm" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="sec-erm"><span class="header-section-number">5.3</span> Empirical risk minimization</h2>
+<p>To estimate the generalization error, we could simply take the <em>sample mean</em> of the loss over the training data. This is called the <strong>training loss</strong> or <strong>empirical risk</strong>:</p>
+<div id="def-empirical-risk" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.2 (Empirical risk)</strong></span> Given a dataset <span class="math inline">\((x_1, y_1), \dots, (x_N, y_N)\)</span> sampled i.i.d. from the data generating process, and a loss function <span class="math inline">\(\ell\)</span>, the empirical risk of the prediction rule <span class="math inline">\(\hat f\)</span> is the average loss across the dataset:</p>
+<p><span id="eq-training-loss"><span class="math display">\[
 \text{training loss}(\hat f) := \frac 1 N \sum_{n=1}^N \ell(\hat f(x_n), y_n).
-\]</span></p>
-<p>By the law of large numbers, as <span class="math inline">\(N\)</span> grows to infinity, the training loss converges to the generalization error.</p>
-<p>The <strong>empirical risk minimization</strong> (ERM) approach is to find a predictor that minimizes the empirical risk. An ERM algorithm requires two ingredients to be chosen based on our <strong>domain knowledge</strong> about the DGP:</p>
+\tag{5.6}\]</span></span></p>
+</div>
+<p>By the law of large numbers, as <span class="math inline">\(N\)</span> grows to infinity, the training loss converges to the generalization error (<a href="#def-test-err" class="quarto-xref">def.&nbsp;<span>5.1</span></a>).</p>
+<p>The <strong>empirical risk minimization</strong> (ERM) approach is to find a prediction rule that minimizes the empirical risk.</p>
+<div id="def-erm" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.3 (Empirical risk minimization)</strong></span> An ERM algorithm requires two ingredients to be chosen based on our <strong>domain knowledge</strong> about the DGP:</p>
 <ol type="1">
 <li>A <strong>function class</strong> <span class="math inline">\(\mathcal{F}\)</span>, that is, the space of functions to consider.</li>
 <li>A <strong>fitting method</strong> that uses the dataset to find the element of <span class="math inline">\(\mathcal{F}\)</span> that minimizes the training loss.</li>
@@ -484,13 +565,16 @@ Figure&nbsp;4.2: Squared loss.
 \hat f_\text{ERM} &amp;:= \arg\min_{f \in \mathcal{F}} \text{training loss}(f) \\
 &amp;= \arg\min_{f \in \mathcal{F}}\frac 1 N \sum_{n=1}^N \ell(f(x_n), y_n).
 \end{aligned}
-\tag{4.1}\]</span></span></p>
-<section id="function-classes" class="level3" data-number="4.3.1">
-<h3 data-number="4.3.1" class="anchored" data-anchor-id="function-classes"><span class="header-section-number">4.3.1</span> Function classes</h3>
+\tag{5.7}\]</span></span></p>
+</div>
+<section id="function-classes" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="function-classes"><span class="header-section-number">5.3.1</span> Function classes</h3>
 <p>How should we choose the correct function class? In fact, why do we need to constrain our search at all?</p>
-<div id="exr-function-space" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 4.1 (Overfitting)</strong></span> Suppose we are trying to approximate a relationship between real-valued inputs and outputs using squared loss as our loss function. Consider the predictor (visualized in <a href="#fig-pathological-predictor" class="quarto-xref">Figure&nbsp;<span>4.3</span></a>)</p>
-<p><span class="math display">\[\hat f(x) = \sum_{n=1}^N y_n \mathbf{1}\left\{x = x_n\right\}.\]</span></p>
+<div id="exr-overfitting" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.1 (Overfitting)</strong></span> Suppose we are trying to approximate a relationship between real-valued inputs and outputs using square loss as our loss function. Consider the prediction rule (visualized in <a href="#fig-pathological-predictor" class="quarto-xref">fig.&nbsp;<span>5.3</span></a>)</p>
+<p><span id="eq-overfitting"><span class="math display">\[
+\hat f(x) = \sum_{n=1}^N y_n \mathbf{1}\left\{x = x_n\right\}.
+\tag{5.8}\]</span></span></p>
 <p>What is the empirical risk of this function? How well does it perform on newly generated samples?</p>
 </div>
 <details class="code-fold">
@@ -517,7 +601,7 @@ Figure&nbsp;4.2: Squared loss.
 <div id="fig-pathological-predictor-1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-pathological-predictor-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-1.png" class="quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor" width="302" height="203">
+<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pathological-predictor-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) One training dataset.
@@ -529,7 +613,7 @@ Figure&nbsp;4.2: Squared loss.
 <div id="fig-pathological-predictor-2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-pathological-predictor-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-2.png" class="quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor" width="320" height="203">
+<img src="supervised_learning_files/figure-html/fig-pathological-predictor-output-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" data-ref-parent="fig-pathological-predictor">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-pathological-predictor-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Another training dataset.
@@ -540,45 +624,46 @@ Figure&nbsp;4.2: Squared loss.
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pathological-predictor-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.3: A pathological predictor.
+Figure&nbsp;5.3: A pathological prediction rule.
 </figcaption>
 </figure>
 </div>
-<p>The choice of <span class="math inline">\(\mathcal{F}\)</span> depends on our <strong>domain knowledge</strong> about the task. On one hand, <span class="math inline">\(\mathcal{F}\)</span> should be large enough to contain the true relationship, but on the other, it shouldn’t be <em>too</em> expressive; otherwise, it will <strong>overfit</strong> to random noise in the labels. The larger and more complex the function class, the more accurately we will be able to approximate any particular training dataset (i.e.&nbsp;smaller <strong>bias</strong>), but the more drastically the function will vary for different training datasets (i.e.&nbsp;larger <strong>variance</strong>). The mathematical details of the so-called <strong>bias-variance tradeoff</strong> can be found, for example, in <span class="citation" data-cites="hastie_elements_2013">Hastie, Tibshirani, and Friedman (<a href="references.html#ref-hastie_elements_2013" role="doc-biblioref">2013, chap. 2.9</a>)</span>.</p>
+<p>The choice of <span class="math inline">\(\mathcal{F}\)</span> depends on our <strong>domain knowledge</strong> about the task. On one hand, <span class="math inline">\(\mathcal{F}\)</span> should be large enough to contain the true relationship, but on the other, it shouldn’t be <em>too</em> expressive; otherwise, it will <strong>overfit</strong> to random noise in the labels. The larger and more complex the function class, the more accurately we will be able to approximate any particular training dataset (i.e.&nbsp;smaller <strong>bias</strong>), but the more drastically the function will vary for <em>different</em> training datasets (i.e.&nbsp;larger <strong>variance</strong>). For most loss functions, including the square loss, it is possible to express the generalization error (<a href="#def-test-err" class="quarto-xref">def.&nbsp;<span>5.1</span></a>) as a sum of a bias term and a variance term. The mathematical details of this so-called <strong>bias-variance tradeoff</strong> can be found, for example, in <span class="citation" data-cites="hastie_elements_2013">Hastie et al. (<a href="references.html#ref-hastie_elements_2013" role="doc-biblioref">2013, Chapter 2.9</a>)</span>.</p>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>n_samples <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>x_axis <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="op">+</span><span class="dv">1</span>, <span class="dv">50</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>degrees <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">50</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>x_axis <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">1</span>, <span class="op">+</span><span class="dv">1</span>, <span class="dv">50</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_data(sigma<span class="op">=</span><span class="fl">0.2</span>):</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    x_train <span class="op">=</span> np.random.uniform(<span class="op">-</span><span class="dv">1</span>, <span class="op">+</span><span class="dv">1</span>, n_samples)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    y_train <span class="op">=</span> np.sin(np.pi <span class="op">*</span> x_train) <span class="op">+</span> sigma <span class="op">*</span> np.random.normal(size<span class="op">=</span>n_samples)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x_train, y_train</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_data(sigma<span class="op">=</span><span class="fl">0.2</span>):</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    x_train <span class="op">=</span> np.random.uniform(<span class="op">-</span><span class="dv">1</span>, <span class="op">+</span><span class="dv">1</span>, n_samples)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    y_train <span class="op">=</span> np.sin(np.pi <span class="op">*</span> x_train) <span class="op">+</span> sigma <span class="op">*</span> np.random.normal(size<span class="op">=</span>n_samples)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x_train, y_train</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transform(x: Float[Array, <span class="st">" N"</span>], d: <span class="bu">int</span>):</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.column_stack([</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        x <span class="op">**</span> d_</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> d_ <span class="kw">in</span> <span class="bu">range</span>(d <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transform(x: Float[Array, <span class="st">" N"</span>], d: <span class="bu">int</span>):</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.column_stack([</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        x <span class="op">**</span> d_</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> d_ <span class="kw">in</span> <span class="bu">range</span>(d <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    ])</span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> [<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">50</span>]:</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        x_train, y_train <span class="op">=</span> generate_data()</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        x_features <span class="op">=</span> transform(x_train, d)</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        w <span class="op">=</span> np.linalg.lstsq(x_features, y_train)[<span class="dv">0</span>]</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        y_hat <span class="op">=</span> transform(x_axis, d) <span class="op">@</span> w</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="st">'blue'</span> <span class="cf">if</span> _ <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'red'</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        plt.scatter(x_train, y_train, color<span class="op">=</span>color, marker<span class="op">=</span><span class="st">'x'</span>)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        plt.plot(x_axis, y_hat, color<span class="op">=</span>color)</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    plt.xlim(<span class="op">-</span><span class="dv">1</span>, <span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    plt.ylim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    plt.gcf().set_size_inches(<span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> degrees:</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        x_train, y_train <span class="op">=</span> generate_data()</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        x_features <span class="op">=</span> transform(x_train, d)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        w <span class="op">=</span> np.linalg.lstsq(x_features, y_train)[<span class="dv">0</span>]</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        y_hat <span class="op">=</span> transform(x_axis, d) <span class="op">@</span> w</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="st">'blue'</span> <span class="cf">if</span> _ <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'red'</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        plt.scatter(x_train, y_train, color<span class="op">=</span>color, marker<span class="op">=</span><span class="st">'x'</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        plt.plot(x_axis, y_hat, color<span class="op">=</span>color)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    plt.xlim(<span class="op">-</span><span class="dv">1</span>, <span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    plt.ylim(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    plt.gcf().set_size_inches(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div id="fig-bias-variance" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
@@ -588,7 +673,7 @@ Figure&nbsp;4.3: A pathological predictor.
 <div id="fig-bias-variance-1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-bias-variance-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-bias-variance-output-1.png" data-ref-parent="fig-bias-variance" width="225" height="198" class="figure-img">
+<img src="supervised_learning_files/figure-html/fig-bias-variance-output-1.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-bias-variance-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (a) Degree <span class="math inline">\(2\)</span> polynomials
@@ -600,7 +685,7 @@ Figure&nbsp;4.3: A pathological predictor.
 <div id="fig-bias-variance-2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-bias-variance-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-bias-variance-output-2.png" data-ref-parent="fig-bias-variance" width="225" height="198" class="figure-img">
+<img src="supervised_learning_files/figure-html/fig-bias-variance-output-2.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-bias-variance-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (b) Degree <span class="math inline">\(5\)</span> polynomials
@@ -612,7 +697,7 @@ Figure&nbsp;4.3: A pathological predictor.
 <div id="fig-bias-variance-3" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-subfloat-fig figure">
 <div aria-describedby="fig-bias-variance-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="supervised_learning_files/figure-html/fig-bias-variance-output-3.png" data-ref-parent="fig-bias-variance" width="225" height="198" class="figure-img">
+<img src="supervised_learning_files/figure-html/fig-bias-variance-output-3.png" class="img-fluid figure-img" data-ref-parent="fig-bias-variance">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-bias-variance-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 (c) Degree <span class="math inline">\(50\)</span> polynomials
@@ -623,75 +708,87 @@ Figure&nbsp;4.3: A pathological predictor.
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bias-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.4: Demonstrating the bias-variance tradeoff through polynomial regression. Increasing the degree increases the complexity of the polynomial function class.
+Figure&nbsp;5.4: Demonstrating the bias-variance tradeoff through polynomial regression. Increasing the degree increases the complexity of the polynomial function class.
 </figcaption>
 </figure>
 </div>
-<p>We must also consider <em>practical</em> constraints on the function class. We need an efficient algorithm to actually compute the function in the class that minimizes the training error. This point should not be underestimated! The success of modern deep learning, for example, is in large part due to hardware developments that make certain parallelizable operations more efficient.</p>
+<p>We must also consider <em>practical</em> constraints on the function class. We need an efficient algorithm to actually compute the function in the class that minimizes the training error. This point should not be underestimated! The success of modern deep learning, for example, is in large part due to hardware developments that have made certain operations more efficient than others.</p>
 </section>
-<section id="sec-sl-parameterized" class="level3" data-number="4.3.2">
-<h3 data-number="4.3.2" class="anchored" data-anchor-id="sec-sl-parameterized"><span class="header-section-number">4.3.2</span> Parameterized function classes</h3>
-<p>Both of the function classes we will consider, linear maps and neural networks, are <strong>finite-dimensional</strong>, a.k.a. <strong>parameterized</strong>. This means each function can be identified using some finite set of <strong>parameters</strong>, which we denote <span class="math inline">\(\theta \in \mathbb{R}^D\)</span>.</p>
+<section id="sec-sl-parameterized" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="sec-sl-parameterized"><span class="header-section-number">5.3.2</span> Parameterized function classes</h3>
+<p>Both of the function classes we will consider, linear maps and neural networks, are <strong>finite-dimensional</strong>, a.k.a. <strong>parameterized</strong>. The notion of a parameterized function class is best illustrated by example:</p>
 <div id="exm-quadratics" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.5 (Quadratic functions)</strong></span> As a third example of a parameterized function class, consider the class of <strong>quadratic functions</strong>, i.e.&nbsp;polynomials of degree <span class="math inline">\(2\)</span>. This is a three-dimensional function space, since we can describe any quadratic <span class="math inline">\(p\)</span> as</p>
-<p><span class="math display">\[
+<p><span class="theorem-title"><strong>Example 5.5 (Quadratic functions)</strong></span> consider the class of <strong>quadratic functions</strong>, i.e.&nbsp;polynomials of degree <span class="math inline">\(2\)</span>. This is a three-dimensional function space (<span class="math inline">\(D = 3\)</span>), since we can describe any quadratic <span class="math inline">\(p\)</span> as</p>
+<p><span id="eq-quadratic-1"><span class="math display">\[
 p(x) = a x^2 + b x + c,
-\]</span></p>
+\tag{5.9}\]</span></span></p>
 <p>where <span class="math inline">\(a, b, c\)</span> are the three parameters. We could also use a different parameterization:</p>
-<p><span class="math display">\[
+<p><span id="eq-quadratic-2"><span class="math display">\[
 p(x) = a' (x - b')^2 + c'.
-\]</span></p>
-<p>Note that the choice of parameterization can impact the performance of the chosen fitting method. What is the derivative of the first expression with respect to <span class="math inline">\(a, b, c\)</span>? Compare this to the derivative of the second expression with respect to <span class="math inline">\(a', b', c'\)</span>. This shows that gradient-based fitting methods may change their behavior depending on the parameterization.</p>
+\tag{5.10}\]</span></span></p>
 </div>
-<p>Using a parameterized function class allows us to reframe the ERM problem <a href="#eq-erm" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> in terms of optimizing over the <em>parameters</em> instead of over the functions they represent:</p>
+<div id="def-parameter" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.4 (Parameters)</strong></span> Let <span class="math inline">\(\mathcal{F}\)</span> be a class of functions mapping from <span class="math inline">\(\mathcal{X}\)</span> to <span class="math inline">\(\mathcal{Y}\)</span>. We say that <span class="math inline">\(\mathcal{F}\)</span> is a <strong>parameterized</strong> function class if each <span class="math inline">\(f \in \mathcal{F}\)</span> can be identified using <span class="math inline">\(D\)</span> <strong>parameters</strong>.</p>
+</div>
+<div id="exr-parameterization-matters" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 5.2 (Parameterization matters)</strong></span> Note that the choice of parameterization can impact the performance of the chosen fitting method. What is the derivative of <a href="#eq-quadratic-1" class="quarto-xref">eq.&nbsp;<span>5.9</span></a> with respect to <span class="math inline">\(a, b, c\)</span>? Compare this to the derivative of <a href="#eq-quadratic-2" class="quarto-xref">eq.&nbsp;<span>5.10</span></a> with respect to <span class="math inline">\(a', b', c'\)</span>. This shows that gradient-based fitting methods may change their behaviour depending on the parameterization.</p>
+</div>
+<p>Using a parameterized function class allows us to reframe the ERM problem <a href="#def-erm" class="quarto-xref">def.&nbsp;<span>5.3</span></a> in terms of optimizing over the <em>parameters</em> instead of over the functions they represent:</p>
 <p><span id="eq-erm-parameterized"><span class="math display">\[
 \begin{aligned}
 \hat \theta_\text{ERM} &amp;:= \arg\min_{\theta \in \mathbb{R}^D} \text{training loss}(f_\theta) \\
 &amp;= \frac{1}{N} \sum_{n=1}^N (y_n - f_\theta(x_n))^2
 \end{aligned}
-\tag{4.2}\]</span></span></p>
+\tag{5.11}\]</span></span></p>
 <p>In general, optimizing over a <em>finite-dimensional</em> space is much, much easier than optimizing over an <em>infinite-dimensional</em> space.</p>
 </section>
-<section id="gradient-descent" class="level3" data-number="4.3.3">
-<h3 data-number="4.3.3" class="anchored" data-anchor-id="gradient-descent"><span class="header-section-number">4.3.3</span> Gradient descent</h3>
+<section id="sec-sl-gd" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="sec-sl-gd"><span class="header-section-number">5.3.3</span> Gradient descent</h3>
 <p>One widely applicable fitting method for parameterized function classes is <strong>gradient descent</strong>.</p>
 <p>Let <span class="math inline">\(L(\theta) = \text{training loss}(f_\theta)\)</span> denote the empirical risk in terms of the parameters. The <strong>gradient descent</strong> algorithm iteratively updates the parameters according to the rule</p>
 <p><span class="math display">\[
 \theta^{t+1} = \theta^t - \eta \nabla_\theta L(\theta^t)
 \]</span></p>
 <p>where <span class="math inline">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong> and <span class="math inline">\(\nabla_\theta L(\theta^t)\)</span> indicates the <strong>gradient</strong> of <span class="math inline">\(L\)</span> at the point <span class="math inline">\(\theta^t\)</span>. Recall that the gradient of a function at a point is a vector in the direction that increases the function’s value the most within a <em>neighborhood</em>. So by taking small steps in the oppposite direction, we obtain a solution that achieves a slightly lower loss than the current one.</p>
-<div id="586a9e68" class="cell" data-execution_count="6">
+<div id="fig-gd" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="6">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="lst-gd"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="lst-gd-1"><a href="#lst-gd-1" aria-hidden="true" tabindex="-1"></a>Params <span class="op">=</span> Float[Array, <span class="st">" D"</span>]</span>
-<span id="lst-gd-2"><a href="#lst-gd-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="lst-gd-3"><a href="#lst-gd-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="lst-gd-4"><a href="#lst-gd-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gradient_descent(</span>
-<span id="lst-gd-5"><a href="#lst-gd-5" aria-hidden="true" tabindex="-1"></a>    loss: Callable[[Params], <span class="bu">float</span>],</span>
-<span id="lst-gd-6"><a href="#lst-gd-6" aria-hidden="true" tabindex="-1"></a>    θ_init: Params,</span>
-<span id="lst-gd-7"><a href="#lst-gd-7" aria-hidden="true" tabindex="-1"></a>    η: <span class="bu">float</span>,</span>
-<span id="lst-gd-8"><a href="#lst-gd-8" aria-hidden="true" tabindex="-1"></a>    epochs: <span class="bu">int</span>,</span>
-<span id="lst-gd-9"><a href="#lst-gd-9" aria-hidden="true" tabindex="-1"></a>):</span>
-<span id="lst-gd-10"><a href="#lst-gd-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="lst-gd-11"><a href="#lst-gd-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Run gradient descent to minimize the given loss function</span></span>
-<span id="lst-gd-12"><a href="#lst-gd-12" aria-hidden="true" tabindex="-1"></a><span class="co">    (expressed in terms of the parameters).</span></span>
-<span id="lst-gd-13"><a href="#lst-gd-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="lst-gd-14"><a href="#lst-gd-14" aria-hidden="true" tabindex="-1"></a>    θ <span class="op">=</span> θ_init</span>
-<span id="lst-gd-15"><a href="#lst-gd-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
-<span id="lst-gd-16"><a href="#lst-gd-16" aria-hidden="true" tabindex="-1"></a>        θ <span class="op">=</span> θ <span class="op">-</span> η <span class="op">*</span> grad(loss)(θ)</span>
-<span id="lst-gd-17"><a href="#lst-gd-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> θ</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Params <span class="op">=</span> Float[Array, <span class="st">" D"</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gradient_descent(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    loss: Callable[[Params], <span class="bu">float</span>],</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    θ_init: Params,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    η: <span class="bu">float</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    epochs: <span class="bu">int</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Run gradient descent to minimize the given loss function</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">    (expressed in terms of the parameters).</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    θ <span class="op">=</span> θ_init</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        θ <span class="op">=</span> θ <span class="op">-</span> η <span class="op">*</span> grad(loss)(θ)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> θ</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>In <a href="pg.html#sec-computing-derivatives" class="quarto-xref"><span>Section 6.2.1</span></a>, we will discuss methods for implementing the <code>grad</code> function above, which takes in a function and returns its gradient, which can then be evaluated at a point.</p>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-gd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.5
+</figcaption>
+</figure>
+</div>
+<p>In <a href="pg.html#sec-computing-derivatives" class="quarto-xref"><span>Section 7.3.1</span></a>, we will discuss methods for implementing the <code>grad</code> function above, which takes in a function and returns its gradient, which can then be evaluated at a point.</p>
 <p>Why do we need to scale down the step size by <span class="math inline">\(\eta\)</span>? The key word above is “neighborhood”. The gradient only describes the function within a local region around the point, whose size depends on the function’s smoothness. If we take a step that’s too large, we might end up with a <em>worse</em> solution by overshooting the region where the gradient is accurate. Note that, as a result, we can’t guarantee finding a <em>global</em> optimum of the function; we can only find <em>local</em> optima that are the best parameters within some neighborhood.</p>
 <p>Another issue is that it’s often expensive to compute <span class="math inline">\(\nabla_\theta L\)</span> when <span class="math inline">\(N\)</span> is very large. Instead of calculating the gradient for every point in the dataset and averaging these, we can simply draw a <strong>batch</strong> of samples from the dataset and average the gradient across just these samples. Note that this is an unbiased random <em>estimator</em> of the true gradient. This algorithm is known as <strong>stochastic gradient descent</strong>. The added noise sometimes helps to jump to better solutions with a lower overall empirical risk.</p>
-<p>Stepping for a moment back into the world of RL, you might wonder, why can’t we simply apply gradient descent (or rather, gradient ascent) to the total reward? It turns out that the gradient of the total reward with respect to the policy parameters known as the <strong>policy gradient</strong>, is challenging but possible to approximate. In <a href="pg.html" class="quarto-xref"><span>Chapter 6</span></a>, we will do exactly this.</p>
+<p>Stepping for a moment back into the world of RL, you might wonder, why can’t we simply apply gradient descent to the total reward? It turns out that the gradient of the total reward with respect to the policy parameters known as the <strong>policy gradient</strong>, is challenging but possible to approximate. In <a href="pg.html" class="quarto-xref"><span>Chapter 7</span></a>, we will do exactly this.</p>
 </section>
 </section>
-<section id="examples-of-parameterized-function-classes" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="examples-of-parameterized-function-classes"><span class="header-section-number">4.4</span> Examples of parameterized function classes</h2>
-<section id="sec-sl-linear" class="level3" data-number="4.4.1">
-<h3 data-number="4.4.1" class="anchored" data-anchor-id="sec-sl-linear"><span class="header-section-number">4.4.1</span> Linear regression</h3>
+<section id="examples-of-parameterized-function-classes" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="examples-of-parameterized-function-classes"><span class="header-section-number">5.4</span> Examples of parameterized function classes</h2>
+<section id="sec-sl-linear" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="sec-sl-linear"><span class="header-section-number">5.4.1</span> Linear regression</h3>
 <p>In linear regression, we assume that the function <span class="math inline">\(f\)</span> is linear in the parameters:</p>
 <p><span class="math display">\[
 \mathcal{F} = \{ x \mapsto \theta^\top x \mid \theta \in \mathbb{R}^D \}
@@ -703,11 +800,11 @@ p(x) = a' (x - b')^2 + c'.
 &amp;= \arg\min_{\theta \in \mathbb{R}^D} \frac 1 2 \|Y - X \theta \|^2 \\
 &amp;= (X^\top X)^{-1} X^\top Y,
 \end{aligned}
-\tag{4.3}\]</span></span></p>
+\tag{5.12}\]</span></span></p>
 <p>where we have assumed that the columns of <span class="math inline">\(X\)</span> are linearly independent so that the matrix <span class="math inline">\(X^\top X\)</span> is invertible.</p>
 <p>What happens if the columns aren’t linearly independent? In this case, out of the possible solutions with the minimum empirical risk, we typically choose the one with the <em>smallest norm</em>.</p>
 <div id="exr-smallest-norm" class="theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 4.2</strong></span> Gradient descent on the ERM problem (<a href="#eq-erm-linear-regression" class="quarto-xref">Equation&nbsp;<span>4.3</span></a>), initialized at the origin and using a small enough step size, eventually finds the parameters with the smallest norm. In practice, since the squared error gradient is convenient to compute, running gradient descent can be faster than explicitly computing the inverse (or pseudoinverse) of a matrix.</p>
+<p><span class="theorem-title"><strong>Exercise 5.3 (Gradient descent finds the minimum norm solution)</strong></span> Gradient descent on the ERM problem (<a href="#eq-erm-linear-regression" class="quarto-xref">eq.&nbsp;<span>5.12</span></a>), initialized at the origin and using a small enough step size, eventually finds the parameters with the smallest norm. In practice, since the squared error gradient is convenient to compute, running gradient descent can be faster than explicitly computing the inverse (or pseudoinverse) of a matrix.</p>
 <p>Assume that <span class="math inline">\(N &lt; D\)</span> and that the data points are linearly independent.</p>
 <ol type="1">
 <li><p>Let <span class="math inline">\(\hat{\theta}\)</span> be the solution found by gradient descent. Show that <span class="math inline">\(\hat{\theta}\)</span> is a linear combination of the data points, that is, <span class="math inline">\(\hat{\theta} = X^\top a\)</span>, where <span class="math inline">\(a \in \mathbb{R}^N\)</span>.</p></li>
@@ -717,8 +814,8 @@ p(x) = a' (x - b')^2 + c'.
 </div>
 <p>Though linear regression may appear trivially simple, it is a very powerful tool for more complex models to build upon. For instance, to expand the expressiveness of linear models, we can first <em>transform</em> the input <span class="math inline">\(x\)</span> using some feature mapping <span class="math inline">\(\phi\)</span>, i.e.&nbsp;<span class="math inline">\(\widetilde x = \phi(x)\)</span>, and then fit a linear model in the transformed space instead. By using domain knowledge to choose a useful feature mapping, we can obtain a powerful SL method for a particular task.</p>
 </section>
-<section id="sec-sl-nn" class="level3" data-number="4.4.2">
-<h3 data-number="4.4.2" class="anchored" data-anchor-id="sec-sl-nn"><span class="header-section-number">4.4.2</span> Neural networks</h3>
+<section id="sec-sl-nn" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="sec-sl-nn"><span class="header-section-number">5.4.2</span> Neural networks</h3>
 <p>In neural networks, we assume that the function <span class="math inline">\(f\)</span> is a composition of linear functions (represented by matrices <span class="math inline">\(W_i\)</span>) and non-linear activation functions (denoted by <span class="math inline">\(\sigma\)</span>):</p>
 <p><span class="math display">\[
 \mathcal{F} = \{ x \mapsto \sigma(W_L \sigma(W_{L-1} \dots \sigma(W_1 x + b_1) \dots + b_{L-1}) + b_L) \}
@@ -728,27 +825,34 @@ p(x) = a' (x - b')^2 + c'.
 <p>Another reason for their popularity is the efficient <strong>backpropagation</strong> algorithm for computing the gradient of the output with respect to the parameters. Essentially, the hierarchical structure of the neural network, i.e.&nbsp;computing the output of the network as a composition of functions, allows us to use the chain rule to compute the gradient of the output with respect to the parameters of each layer.</p>
 </section>
 </section>
-<section id="summary" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="summary"><span class="header-section-number">4.5</span> Summary</h2>
-<p>We have now gotten a glimpse into <strong>supervised learning</strong>, which seeks to learn about some input-output relationship using a dataset of example points. In particular, we typically seek to compute a <strong>predictor</strong> that takes in an input value and returns a good guess for the corresponding output. We score predictors using a <strong>loss function</strong> that measures how incorrectly it guesses. We want to find a predictor that achieves low loss on unseen data points. We do this by searching over a class of functions to find one that minimizes the <strong>empirical risk</strong> over the training dataset. We finally saw two popular examples of <strong>parameterized</strong> function classes: linear regression and neural networks.</p>
+<section id="key-takeaways" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="key-takeaways"><span class="header-section-number">5.5</span> Key takeaways</h2>
+<p><strong>Supervised learning</strong> is a field of machine learning that seeks to approximate some unknown function given a dataset of example input-output pairs from that function. In particular, we typically seek to compute a <strong>prediction rule</strong> that takes in an input value and returns a good guess for the corresponding output. We score prediction rules using a <strong>loss function</strong> that measures how incorrectly it guesses. We want to find a prediction rule that achieves low loss on unseen data points. We do this by searching over a class of functions to find one that minimizes the <strong>empirical risk</strong> over the training dataset. We finally saw two popular examples of <strong>parameterized</strong> function classes: linear regression and neural networks.</p>
 </section>
-<section id="references" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="references"><span class="header-section-number">4.6</span> References</h2>
-<p><span class="citation" data-cites="james_introduction_2023">James et al. (<a href="references.html#ref-james_introduction_2023" role="doc-biblioref">2023</a>)</span> provides an accessible introduction to supervised learning. <span class="citation" data-cites="hastie_elements_2013">Hastie, Tibshirani, and Friedman (<a href="references.html#ref-hastie_elements_2013" role="doc-biblioref">2013</a>)</span> examines the subject in even further depth and covers many relevant supervised learning methods. <span class="citation" data-cites="nielsen_neural_2015">Nielsen (<a href="references.html#ref-nielsen_neural_2015" role="doc-biblioref">2015</a>)</span> provides a comprehensive introduction to neural networks and backpropagation.</p>
+<section id="sec-sl-bib" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="sec-sl-bib"><span class="header-section-number">5.6</span> Bibliographic notes and further reading</h2>
+<p>Supervised learning is the largest subfield of machine learning; we do not attempt to comprehensively survey recent progress here. Rather, here are some textbooks for interested students to read further.</p>
+<p><span class="citation" data-cites="james_introduction_2023">James et al. (<a href="references.html#ref-james_introduction_2023" role="doc-biblioref">2023</a>)</span> provides an accessible introduction to supervised learning. <span class="citation" data-cites="hastie_elements_2013">Hastie et al. (<a href="references.html#ref-hastie_elements_2013" role="doc-biblioref">2013</a>)</span> examines the subject in even further depth and covers many relevant supervised learning methods. <span class="citation" data-cites="nielsen_neural_2015">Nielsen (<a href="references.html#ref-nielsen_neural_2015" role="doc-biblioref">2015</a>)</span> provides a comprehensive introduction to neural networks and backpropagation. <span class="citation" data-cites="vapnik_nature_2000">Vapnik (<a href="references.html#ref-vapnik_nature_2000" role="doc-biblioref">2000</a>)</span> is another prominent textbook on classical statistical learning from before the “deep learning era”. <span class="citation" data-cites="bishop_pattern_2006">Bishop (<a href="references.html#ref-bishop_pattern_2006" role="doc-biblioref">2006</a>)</span> focuses on the Bayesian perspective.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-bishop_pattern_2006" class="csl-entry" role="listitem">
+Bishop, C. M. (2006). <em>Pattern recognition and machine learning</em>. Springer.
+</div>
 <div id="ref-deng_mnist_2012" class="csl-entry" role="listitem">
-Deng, Li. 2012. <span>“The <span>MNIST Database</span> of <span>Handwritten Digit Images</span> for <span>Machine Learning Research</span> [<span>Best</span> of the <span>Web</span>].”</span> <em>IEEE Signal Processing Magazine</em> 29 (6): 141–42. <a href="https://doi.org/10.1109/MSP.2012.2211477">https://doi.org/10.1109/MSP.2012.2211477</a>.
+Deng, L. (2012). The <span>MNIST</span> database of handwritten digit images for machine learning research. <em>IEEE Signal Processing Magazine</em>, <em>29</em>(6), 141–142. <span>IEEE Signal Processing Magazine</span>. <a href="https://doi.org/10.1109/MSP.2012.2211477">https://doi.org/10.1109/MSP.2012.2211477</a>
 </div>
 <div id="ref-hastie_elements_2013" class="csl-entry" role="listitem">
-Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2013. <em>The <span>Elements</span> of <span>Statistical Learning</span>: <span>Data Mining</span>, <span>Inference</span>, and <span>Prediction</span></em>. Springer Science &amp; Business Media. <a href="https://books.google.com?id=yPfZBwAAQBAJ">https://books.google.com?id=yPfZBwAAQBAJ</a>.
+Hastie, T., Tibshirani, R., &amp; Friedman, J. (2013). <em>The elements of statistical learning: <span>Data</span> mining, inference, and prediction</em>. Springer Science &amp; Business Media. <a href="https://books.google.com?id=yPfZBwAAQBAJ">https://books.google.com?id=yPfZBwAAQBAJ</a>
 </div>
 <div id="ref-james_introduction_2023" class="csl-entry" role="listitem">
-James, Gareth, Daniela Witten, Trevor Hastie, Robert Tibshirani, and Jonathan Taylor. 2023. <em>An <span>Introduction</span> to <span>Statistical Learning</span>: With <span>Applications</span> in <span>Python</span></em>. Springer <span>Texts</span> in <span>Statistics</span>. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-031-38747-0">https://doi.org/10.1007/978-3-031-38747-0</a>.
+James, G., Witten, D., Hastie, T., Tibshirani, R., &amp; Taylor, J. (2023). <em>An introduction to statistical learning: With applications in python</em>. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-031-38747-0">https://doi.org/10.1007/978-3-031-38747-0</a>
 </div>
 <div id="ref-nielsen_neural_2015" class="csl-entry" role="listitem">
-Nielsen, Michael A. 2015. <em>Neural <span>Networks</span> and <span>Deep Learning</span></em>. Determination Press. <a href="http://neuralnetworksanddeeplearning.com/">http://neuralnetworksanddeeplearning.com/</a>.
+Nielsen, M. A. (2015). <em>Neural networks and deep learning</em>. Determination Press. <a href="http://neuralnetworksanddeeplearning.com/">http://neuralnetworksanddeeplearning.com/</a>
+</div>
+<div id="ref-vapnik_nature_2000" class="csl-entry" role="listitem">
+Vapnik, V. N. (2000). <em>The nature of statistical learning theory</em>. Springer. <a href="https://doi.org/10.1007/978-1-4757-3264-1">https://doi.org/10.1007/978-1-4757-3264-1</a>
 </div>
 </div>
 </section>
@@ -774,6 +878,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -844,7 +1092,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/rlbook\.adzc\.ai");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -1174,16 +1422,36 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./bandits.html" class="pagination-link" aria-label="Multi-Armed Bandits">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./fitted_dp.html" class="pagination-link" aria-label="Fitted Dynamic Programming Algorithms">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025 Alexander Cai</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/supervised_learning.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/supervised_learning.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link active" href="https://github.com/adzcai/rlbook" aria-current="page">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
 
 
 

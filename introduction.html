@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; Introduction – An Introduction to Reinforcement Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./mdps.html" rel="next">
+<link href="./notation.html" rel="prev">
+<link href="./shared/184.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b53751a350365c71b6c909e95f209ed1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-626149efe8f5d16e1d391ba177679bf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e39e07555a3cad66df478e90649eca5f.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<meta property="og:title" content="1&nbsp; Introduction – An Introduction to Reinforcement Learning">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="An Introduction to Reinforcement Learning">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./introduction.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">An Introduction to Reinforcement Learning</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/adzcai/rlbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mdps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bandits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./planning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proofs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Proofs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#core-tasks-of-reinforcement-learning" id="toc-core-tasks-of-reinforcement-learning" class="nav-link active" data-scroll-target="#core-tasks-of-reinforcement-learning"><span class="header-section-number">1.1</span> Core tasks of reinforcement learning</a></li>
+  <li><a href="#sec-intro-challenges" id="toc-sec-intro-challenges" class="nav-link" data-scroll-target="#sec-intro-challenges"><span class="header-section-number">1.2</span> Challenges of reinforcement learning</a></li>
+  <li><a href="#sec-programming" id="toc-sec-programming" class="nav-link" data-scroll-target="#sec-programming"><span class="header-section-number">1.3</span> Programming</a></li>
+  <li><a href="#sec-intro-bib" id="toc-sec-intro-bib" class="nav-link" data-scroll-target="#sec-intro-bib"><span class="header-section-number">1.4</span> Bibliographic notes and further reading</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/introduction.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/introduction.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-intro" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Reinforcement learning (RL) is a branch of machine learning that studies <strong>sequential decision-making</strong> in <strong>unknown environments.</strong> An RL algorithm finds a strategy, called a <strong>policy</strong>, that maximizes the <strong>reward</strong> it obtains from the environment.</p>
+<p>RL provides a powerful framework for attacking a wide variety of problems, including robotic control, video games and board games, resource management, language modeling, and more. It also provides an interdisciplinary paradigm for studying animal and human behaviour. Many of the most stunning results in machine learning, ranging from AlphaGo <span class="citation" data-cites="silver_mastering_2016">(<a href="references.html#ref-silver_mastering_2016" role="doc-biblioref">Silver et al., 2016</a>)</span> to ChatGPT <span class="citation" data-cites="openai_introducing_2022">(<a href="references.html#ref-openai_introducing_2022" role="doc-biblioref">OpenAI, 2022</a>)</span>, are built using RL algorithms.</p>
+<p>How does RL compare to the other two core machine learning paradigms, <strong>supervised learning</strong> and <strong>unsupervised learning?</strong></p>
+<ul>
+<li><p><strong>Supervised learning</strong> (SL) concerns itself with learning a mapping from inputs to outputs. Typically the data takes the form of <em>statistically independent</em> input-output pairs. In RL, however, the data is generated by the agent interacting with the environment, meaning the sequential observations of the state are <em>not independent</em> from each other. SL is a well-studied field that provides many useful tools for RL.</p></li>
+<li><p><strong>Unsupervised learning</strong> concerns itself with learning the <em>structure</em> of data without the use of outside feedback or labels. In RL, though, the agent receives a <strong>reward signal</strong> from the environment, which can be thought of as a sort of feedback. Unsupervised learning is crucial in many real-world applications of RL for dimensionality reduction.</p></li>
+</ul>
+<p>The key difference is that RL algorithms don’t learn from some existing dataset; rather, they must go out and interact with the environment to collect their own data in an online way. This means RL algorithms face a distinct set of challenges from other kinds of machine learning. We’ll discuss these more concretely in <a href="#sec-intro-challenges" class="quarto-xref"><span>Section 1.2</span></a>.</p>
+<div id="rem-reward-hypothesis" class="proof remark">
+<p><span class="proof-title"><em>Remark 1.1</em> (The reward hypothesis). </span>Why do we only focus on maximizing a <em>scalar</em> reward signal? Surely a more descriptive or higher-dimensional signal would enable more efficient learning. Nonetheless, many (prominent) researchers hold that <strong>scalar reward is enough</strong> for developing behaviours that achieve a wide array of goals <span class="citation" data-cites="silver_reward_2021">(<a href="references.html#ref-silver_reward_2021" role="doc-biblioref">Silver et al., 2021</a>)</span>. This idea is also termed the <strong>reward hypothesis</strong>, and goes back at least as far as Turing, who suggested that one could train a “universal machine” using one input signal for “pain” and another for “pleasure” <span class="citation" data-cites="turing_intelligent_1948">(<a href="references.html#ref-turing_intelligent_1948" role="doc-biblioref">Turing, 1948</a>)</span>. Reinforcement learning takes this hypothesis seriously. It is undeniable that maximizing scalar rewards has led to success in an assortment of sequential decision-making problems.</p>
+</div>
+<section id="core-tasks-of-reinforcement-learning" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="core-tasks-of-reinforcement-learning"><span class="header-section-number">1.1</span> Core tasks of reinforcement learning</h2>
+<p>What tasks, exactly, are important for RL? Typically,</p>
+<ul>
+<li><p><strong>Policy evaluation (prediction)</strong>: How ‘good’ is a specific state, or state-action pair (under a given policy)? That is, how much reward does it lead to in the long run? This is also called the task of <strong>value estimation</strong>.</p></li>
+<li><p><strong>Policy optimization (control)</strong>: Suppose we fully understand how the environment behaves. What is the best action to take in every scenario?</p></li>
+</ul>
+</section>
+<section id="sec-intro-challenges" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="sec-intro-challenges"><span class="header-section-number">1.2</span> Challenges of reinforcement learning</h2>
+<p><strong>Recursion (bootstrapping)</strong>: how can we “reuse” our current predictions to generate new information?</p>
+<p><strong>Exploration-exploitation tradeoff</strong>: should we try new actions, or capitalize on actions that we currently believe to be good?</p>
+<p><strong>Credit assignment</strong>: Consider this example: some mornings, you may wake up well rested, while other mornings, you may wake up drowsy and tired, even if the amount of time you spent asleep stays the same. What could be the cause? You take so many actions throughout the day, and any one of them could be the reason for your good or poor sleep. Was it a skipped meal? A lack of exercise? When these consequences interact with each other, it can be challenging to properly <em>assign credit</em> to the actions that cause the observed effects.</p>
+<p><strong>Reproducibility</strong>: the high variance inherent in interacting with the environment means that the results of RL experiments can be challenging to reproduce. Even when averaging across multiple random seeds, the same algorithm can achieve drastically different-seeming results <span class="citation" data-cites="agarwal_deep_2021">(<a href="references.html#ref-agarwal_deep_2021" role="doc-biblioref">R. Agarwal et al., 2021</a>)</span>.</p>
+</section>
+<section id="sec-programming" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="sec-programming"><span class="header-section-number">1.3</span> Programming</h2>
+<p>Why include code in a textbook? We believe that implementing an algorithm is a strong test of your understanding of it; mathematical notation can often abstract away details, while a computer must be given every single instruction. We have sought to write readable Python code that is self-contained within each file. This approach is inspired by <span class="citation" data-cites="sussman_functional_2013">Sussman et al. (<a href="references.html#ref-sussman_functional_2013" role="doc-biblioref">2013</a>)</span>. There are some ways in which the code style differs from typical software projects:</p>
+<ul>
+<li>We keep use of language features to a minimum, even if it leads to code that could otherwise be more concisely or idiomatically expressed.</li>
+<li>The variable names used in the code match those used in the main text. For example, the variable <code>s</code> will be used instead of the more explicit <code>state</code>.</li>
+</ul>
+<p>We also make extensive use of Python <em>type annotations</em> to explicitly specify variable types, including shapes of vectors and matrices using the <a href="https://github.com/patrick-kidger/jaxtyping">jaxtyping</a> library.</p>
+<p>This is an interactive book built with Quarto <span class="citation" data-cites="allaire_quarto_2024">(<a href="references.html#ref-allaire_quarto_2024" role="doc-biblioref">Allaire et al., 2024</a>)</span>. It uses <a href="https://docs.python.org/3.11/contents.html">Python 3.11</a>. It uses the <a href="https://jax.readthedocs.io/en/latest/index.html">JAX</a> library for numerical computing. JAX was chosen for the clarity of its functional style and due to its mature RL ecosystem, sustained in large part by the Google DeepMind research group and a large body of open-source contributors. We use the standard <a href="https://gymnasium.farama.org/">Gymnasium</a> library for interfacing with RL environments.</p>
+</section>
+<section id="sec-intro-bib" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="sec-intro-bib"><span class="header-section-number">1.4</span> Bibliographic notes and further reading</h2>
+<p>Interest has surged in RL in the past decades, especially since AlphaGo’s groundbreaking success <span class="citation" data-cites="silver_mastering_2016">(<a href="references.html#ref-silver_mastering_2016" role="doc-biblioref">Silver et al., 2016</a>)</span>. There are a number of recent textbooks that cover the field of RL:</p>
+<p><span class="citation" data-cites="schultz_neural_1997">Schultz et al. (<a href="references.html#ref-schultz_neural_1997" role="doc-biblioref">1997</a>)</span> highlights RL as a normative theory for neuroscientific behaviour. <span class="citation" data-cites="thorndike_animal_1911">Thorndike (<a href="references.html#ref-thorndike_animal_1911" role="doc-biblioref">1911</a>)</span> puts RL forward as a learning framework for animal behaviours.</p>
+<p><span class="citation" data-cites="sutton_reinforcement_2018">Sutton &amp; Barto (<a href="references.html#ref-sutton_reinforcement_2018" role="doc-biblioref">2018</a>)</span> set the framework for much of modern RL. <span class="citation" data-cites="plaat_deep_2022">Plaat (<a href="references.html#ref-plaat_deep_2022" role="doc-biblioref">2022</a>)</span> is a graduate-level textbook on deep reinforcement learning. <span class="citation" data-cites="agarwal_reinforcement_2022">A. Agarwal et al. (<a href="references.html#ref-agarwal_reinforcement_2022" role="doc-biblioref">2022</a>)</span> is a useful reference for theoretical guarantees of RL algorithms. <span class="citation" data-cites="li_reinforcement_2023">S. E. Li (<a href="references.html#ref-li_reinforcement_2023" role="doc-biblioref">2023</a>)</span> highlights the connections between RL and optimal control. <span class="citation" data-cites="mannor_reinforcement_2024">Mannor et al. (<a href="references.html#ref-mannor_reinforcement_2024" role="doc-biblioref">2024</a>)</span> is another advanced undergraduate course textbook. <span class="citation" data-cites="bertsekas_neuro-dynamic_1996">Bertsekas &amp; Tsitsiklis (<a href="references.html#ref-bertsekas_neuro-dynamic_1996" role="doc-biblioref">1996</a>)</span> introduced many of the core concepts of RL. <span class="citation" data-cites="szepesvari_algorithms_2010">Szepesvári (<a href="references.html#ref-szepesvari_algorithms_2010" role="doc-biblioref">2010</a>)</span> is an invaluable resource on much of the theory underlying the methods in this book and elsewhere. <span class="citation" data-cites="kochenderfer_algorithms_2022">Kochenderfer et al. (<a href="references.html#ref-kochenderfer_algorithms_2022" role="doc-biblioref">2022</a>)</span> provides a more probabilistic perspective alongside Julia code for various RL algorithms.</p>
+<p>There are also a number of review articles that summarize recent advances. <span class="citation" data-cites="murphy_reinforcement_2025">Murphy (<a href="references.html#ref-murphy_reinforcement_2025" role="doc-biblioref">2025</a>)</span> gives an overview of the past decade of advancements in RL. <span class="citation" data-cites="ivanov_modern_2019">Ivanov &amp; D’yakonov (<a href="references.html#ref-ivanov_modern_2019" role="doc-biblioref">2019</a>)</span> lists many popular algorithms.</p>
+<p>Other textbooks focus on specific RL techniques or on applications of RL to specific fields. <span class="citation" data-cites="albrecht_multi-agent_2023">Albrecht et al. (<a href="references.html#ref-albrecht_multi-agent_2023" role="doc-biblioref">2023</a>)</span> discusses <strong>multi-agent</strong> reinforcement learning. <span class="citation" data-cites="rao_foundations_2022">Rao &amp; Jelvis (<a href="references.html#ref-rao_foundations_2022" role="doc-biblioref">2022</a>)</span> focuses on applications of RL to finance. <span class="citation" data-cites="li_deep_2018">Y. Li (<a href="references.html#ref-li_deep_2018" role="doc-biblioref">2018</a>)</span> surveys applications of RL to various fields.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-agarwal_reinforcement_2022" class="csl-entry" role="listitem">
+Agarwal, A., Jiang, N., Kakade, S. M., &amp; Sun, W. (2022). <em>Reinforcement learning: <span>Theory</span> and algorithms</em>. <a href="https://rltheorybook.github.io/rltheorybook_AJKS.pdf">https://rltheorybook.github.io/rltheorybook_AJKS.pdf</a>
+</div>
+<div id="ref-agarwal_deep_2021" class="csl-entry" role="listitem">
+Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A. C., &amp; Bellemare, M. (2021). Deep reinforcement learning at the edge of the statistical precipice. <em>Advances in <span>Neural Information Processing Systems</span></em>, <em>34</em>, 29304–29320. <a href="https://proceedings.neurips.cc/paper_files/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html">https://proceedings.neurips.cc/paper_files/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html</a>
+</div>
+<div id="ref-albrecht_multi-agent_2023" class="csl-entry" role="listitem">
+Albrecht, S. V., Christianos, F., &amp; Schäfer, L. (2023). <em>Multi-agent reinforcement learning: Foundations and modern approaches</em>. MIT Press. <a href="https://www.marl-book.com">https://www.marl-book.com</a>
+</div>
+<div id="ref-allaire_quarto_2024" class="csl-entry" role="listitem">
+Allaire, J. J., Teague, C., Scheidegger, C., Xie, Y., &amp; Dervieux, C. (2024). <em>Quarto</em> (Version 1.4) [Computer software]. <a href="https://doi.org/10.5281/zenodo.5960048">https://doi.org/10.5281/zenodo.5960048</a>
+</div>
+<div id="ref-bertsekas_neuro-dynamic_1996" class="csl-entry" role="listitem">
+Bertsekas, D. P., &amp; Tsitsiklis, J. N. (1996). <em>Neuro-dynamic programming</em>. Athena scientific.
+</div>
+<div id="ref-ivanov_modern_2019" class="csl-entry" role="listitem">
+Ivanov, S., &amp; D’yakonov, A. (2019, July 6). <em>Modern deep reinforcement learning algorithms</em>. <a href="https://doi.org/10.48550/arXiv.1906.10025">https://doi.org/10.48550/arXiv.1906.10025</a>
+</div>
+<div id="ref-kochenderfer_algorithms_2022" class="csl-entry" role="listitem">
+Kochenderfer, M. J., Wheeler, T. A., &amp; Wray, K. H. (2022). <em>Algorithms for decision making</em>. <a href="https://mitpress.mit.edu/9780262047012/algorithms-for-decision-making/">https://mitpress.mit.edu/9780262047012/algorithms-for-decision-making/</a>
+</div>
+<div id="ref-li_reinforcement_2023" class="csl-entry" role="listitem">
+Li, S. E. (2023). <em>Reinforcement learning for sequential decision and optimal control</em>. Springer Nature. <a href="https://doi.org/10.1007/978-981-19-7784-8">https://doi.org/10.1007/978-981-19-7784-8</a>
+</div>
+<div id="ref-li_deep_2018" class="csl-entry" role="listitem">
+Li, Y. (2018). <em>Deep reinforcement learning</em>. <a href="https://doi.org/10.48550/arXiv.1810.06339">https://doi.org/10.48550/arXiv.1810.06339</a>
+</div>
+<div id="ref-mannor_reinforcement_2024" class="csl-entry" role="listitem">
+Mannor, S., Mansour, Y., &amp; Tamar, A. (2024). <em>Reinforcement learning: foundations</em>. <a href="https://sites.google.com/view/rlfoundations/home">https://sites.google.com/view/rlfoundations/home</a>
+</div>
+<div id="ref-murphy_reinforcement_2025" class="csl-entry" role="listitem">
+Murphy, K. (2025, March 24). <em>Reinforcement learning: A comprehensive overview</em>. <a href="https://doi.org/10.48550/arXiv.2412.05265">https://doi.org/10.48550/arXiv.2412.05265</a>
+</div>
+<div id="ref-openai_introducing_2022" class="csl-entry" role="listitem">
+OpenAI. (2022, November 30). <em>Introducing <span>ChatGPT</span></em>. OpenAI News. <a href="https://openai.com/index/chatgpt/">https://openai.com/index/chatgpt/</a>
+</div>
+<div id="ref-plaat_deep_2022" class="csl-entry" role="listitem">
+Plaat, A. (2022). <em>Deep reinforcement learning</em>. Springer Nature. <a href="https://doi.org/10.1007/978-981-19-0638-1">https://doi.org/10.1007/978-981-19-0638-1</a>
+</div>
+<div id="ref-rao_foundations_2022" class="csl-entry" role="listitem">
+Rao, A., &amp; Jelvis, T. (2022). <em>Foundations of reinforcement learning with applications in finance</em>. <span>Chapman and Hall/CRC</span>. <a href="https://doi.org/10.1201/9781003229193">https://doi.org/10.1201/9781003229193</a>
+</div>
+<div id="ref-schultz_neural_1997" class="csl-entry" role="listitem">
+Schultz, W., Dayan, P., &amp; Montague, P. R. (1997). A neural substrate of prediction and reward. <em>Science</em>, <em>275</em>(5306), 1593–1599. <a href="https://doi.org/10.1126/science.275.5306.1593">https://doi.org/10.1126/science.275.5306.1593</a>
+</div>
+<div id="ref-silver_mastering_2016" class="csl-entry" role="listitem">
+Silver, D., Huang, A., Maddison, C. J., Guez, A., Sifre, L., van den Driessche, G., Schrittwieser, J., Antonoglou, I., Panneershelvam, V., Lanctot, M., Dieleman, S., Grewe, D., Nham, J., Kalchbrenner, N., Sutskever, I., Lillicrap, T., Leach, M., Kavukcuoglu, K., Graepel, T., &amp; Hassabis, D. (2016). Mastering the game of go with deep neural networks and tree search. <em>Nature</em>, <em>529</em>(7587, 7587), 484–489. <a href="https://doi.org/10.1038/nature16961">https://doi.org/10.1038/nature16961</a>
+</div>
+<div id="ref-silver_reward_2021" class="csl-entry" role="listitem">
+Silver, D., Singh, S., Precup, D., &amp; Sutton, R. S. (2021). Reward is enough. <em>Artificial Intelligence</em>, <em>299</em>, 103535. <a href="https://doi.org/10.1016/j.artint.2021.103535">https://doi.org/10.1016/j.artint.2021.103535</a>
+</div>
+<div id="ref-sussman_functional_2013" class="csl-entry" role="listitem">
+Sussman, G. J., Wisdom, J., &amp; Farr, W. (2013). <em>Functional differential geometry</em>. The MIT Press.
+</div>
+<div id="ref-sutton_reinforcement_2018" class="csl-entry" role="listitem">
+Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement learning: An introduction</em> (Second edition). The MIT Press. <a href="http://incompleteideas.net/book/RLbook2020trimmed.pdf">http://incompleteideas.net/book/RLbook2020trimmed.pdf</a>
+</div>
+<div id="ref-szepesvari_algorithms_2010" class="csl-entry" role="listitem">
+Szepesvári, C. (2010). <em>Algorithms for reinforcement learning</em>. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-031-01551-9">https://doi.org/10.1007/978-3-031-01551-9</a>
+</div>
+<div id="ref-thorndike_animal_1911" class="csl-entry" role="listitem">
+Thorndike, E. L. (1911). <em>Animal intelligence: <span>Experimental</span> studies</em> (pp. viii, 297). Macmillan Press. <a href="https://doi.org/10.5962/bhl.title.55072">https://doi.org/10.5962/bhl.title.55072</a>
+</div>
+<div id="ref-turing_intelligent_1948" class="csl-entry" role="listitem">
+Turing, A. (1948). Intelligent machinery. <em>National Physical Laboratory</em>. <a href="https://weightagnostic.github.io/papers/turing1948.pdf">https://weightagnostic.github.io/papers/turing1948.pdf</a>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/rlbook\.adzc\.ai");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./notation.html" class="pagination-link" aria-label="Notation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Notation</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./mdps.html" class="pagination-link" aria-label="Markov Decision Processes">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025 Alexander Cai</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/introduction.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/introduction.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link active" href="https://github.com/adzcai/rlbook" aria-current="page">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
