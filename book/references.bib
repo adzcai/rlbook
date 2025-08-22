@@ -10,7 +10,7 @@
   urldate = {2024-11-11},
   abstract = {Derivatives, mostly in the form of gradients and Hessians, are ubiquitous in machine learning. Automatic differentiation (AD), also called algorithmic differentiation or simply "autodiff", is a family of techniques similar to but more general than backpropagation for efficiently and accurately evaluating derivatives of numeric functions expressed as computer programs. AD is a small but established field with applications in areas including computational fluid dynamics, atmospheric sciences, and engineering design optimization. Until very recently, the fields of machine learning and AD have largely been unaware of each other and, in some cases, have independently discovered each other's results. Despite its relevance, general-purpose AD has been missing from the machine learning toolbox, a situation slowly changing with its ongoing adoption under the names "dynamic computational graphs" and "differentiable programming". We survey the intersection of AD and machine learning, cover applications where AD has direct relevance, and address the main implementation techniques. By precisely defining the main differentiation techniques and their interrelationships, we aim to bring clarity to the usage of the terms "autodiff", "automatic differentiation", and "symbolic differentiation" as these are encountered more and more in machine learning settings.},
   pubstate = {prepublished},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Automatic differentiation in machine learning (2018) - Baydin, Pearlmutter, Radul, Siskind.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Automatic differentiation in machine learning (2018) - Baydin, Pearlmutter, Radul, Siskind.pdf}
 }
 
 @article{machado_revisiting_2018,
@@ -27,7 +27,7 @@
   urldate = {2024-11-11},
   abstract = {The Arcade Learning Environment (ALE) is an evaluation platform that poses the challenge of building AI agents with general competency across dozens of Atari 2600 games. It supports a variety of different problem settings and it has been receiving increasing attention from the scientific community, leading to some high-profile success stories such as the much publicized Deep Q-Networks (DQN). In this article we take a big picture look at how the ALE is being used by the research community. We show how diverse the evaluation methodologies in the ALE have become with time, and highlight some key concerns when evaluating agents in the ALE. We use this discussion to present some methodological best practices and provide new benchmark results using these best practices. To further the progress in the field, we introduce a new version of the ALE that supports multiple game modes and provides a form of stochasticity we call sticky actions. We conclude this big picture look by revisiting challenges posed when the ALE was introduced, summarizing the state-of-the-art in various problems and highlighting problems that remain open.},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Revisiting the Arcade Learning Environment (2018) - Machado et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Revisiting the Arcade Learning Environment (2018) - Machado et al.pdf}
 }
 
 @inproceedings{lechner_gigastep_2023,
@@ -39,7 +39,7 @@
   abstract = {Multi-agent reinforcement learning (MARL) research is faced with a trade-off: it either uses complex environments requiring large compute resources, which makes it inaccessible to researchers with limited resources, or relies on simpler dynamics for faster execution, which makes the transferability of the results to more realistic tasks challenging. Motivated by these challenges, we present Gigastep, a fully vectorizable, MARL environment implemented in JAX, capable of executing up to one billion environment steps per second on consumer-grade hardware. Its design allows for comprehensive MARL experimentation, including a complex, high-dimensional space defined by 3D dynamics, stochasticity, and partial observations. Gigastep supports both collaborative and adversarial tasks, continuous and discrete action spaces, and provides RGB image and feature vector observations, allowing the evaluation of a wide range of MARL algorithms. We validate Gigastep's usability through an extensive set of experiments, underscoring its role in widening participation and promoting inclusivity in the MARL research community.},
   eventtitle = {Thirty-Seventh {{Conference}} on {{Neural Information Processing Systems Datasets}} and {{Benchmarks Track}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2023/Gigastep - One Billion Steps per Second Multi-agent Reinforcement Learning (2023) - Lechner et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2023/Gigastep - One Billion Steps per Second Multi-agent Reinforcement Learning (2023) - Lechner et al.pdf}
 }
 
 @online{hausknecht_deep_2017,
@@ -55,7 +55,7 @@
   abstract = {Deep Reinforcement Learning has yielded proficient controllers for complex tasks. However, these controllers have limited memory and rely on being able to perceive the complete game screen at each decision point. To address these shortcomings, this article investigates the effects of adding recurrency to a Deep Q-Network (DQN) by replacing the first post-convolutional fully-connected layer with a recurrent LSTM. The resulting \textbackslash textit\{Deep Recurrent Q-Network\} (DRQN), although capable of seeing only a single frame at each timestep, successfully integrates information through time and replicates DQN's performance on standard Atari games and partially observed equivalents featuring flickering game screens. Additionally, when trained with partial observations and evaluated with incrementally more complete observations, DRQN's performance scales as a function of observability. Conversely, when trained with full observations and evaluated with partial observations, DRQN's performance degrades less than DQN's. Thus, given the same length of history, recurrency is a viable alternative to stacking a history of frames in the DQN's input layer and while recurrency confers no systematic advantage when learning to play the game, the recurrent net can better adapt at evaluation time if the quality of observations changes.},
   pubstate = {prepublished},
   annotation = {1274 citations (Semantic Scholar/arXiv) [2023-06-04]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Deep Recurrent Q-Learning for Partially Observable MDPs (2017) - Hausknecht, Stone.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Deep Recurrent Q-Learning for Partially Observable MDPs (2017) - Hausknecht, Stone.pdf}
 }
 
 @online{van_hasselt_deep_2018,
@@ -71,7 +71,7 @@
   abstract = {We know from reinforcement learning theory that temporal difference learning can fail in certain cases. Sutton and Barto (2018) identify a deadly triad of function approximation, bootstrapping, and off-policy learning. When these three properties are combined, learning can diverge with the value estimates becoming unbounded. However, several algorithms successfully combine these three properties, which indicates that there is at least a partial gap in our understanding. In this work, we investigate the impact of the deadly triad in practice, in the context of a family of popular deep reinforcement learning models - deep Q-networks trained with experience replay - analysing how the components of this system play a role in the emergence of the deadly triad, and in the agent's performance},
   pubstate = {prepublished},
   annotation = {152 citations (Semantic Scholar/arXiv) [2023-03-29]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Deep Reinforcement Learning and the Deadly Triad (2018) - van Hasselt et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Deep Reinforcement Learning and the Deadly Triad (2018) - van Hasselt et al.pdf}
 }
 
 @software{babuschkin_deepmind_2020,
@@ -88,7 +88,7 @@
   date = {2004},
   publisher = {Cambridge University Press},
   url = {https://web.stanford.edu/~boyd/cvxbook/},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2004/Convex Optimization (2004) - Boyd, Vandenberghe 3.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2004/Convex Optimization (2004) - Boyd, Vandenberghe.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2004/Convex Optimization (2004) - Boyd, Vandenberghe 3.pdf;/Users/adzcai/Vault/papers/assets/2004/Convex Optimization (2004) - Boyd, Vandenberghe.pdf}
 }
 
 @inproceedings{abbeel_apprenticeship_2004,
@@ -136,7 +136,7 @@
   langid = {english},
   pagetotal = {664},
   annotation = {OCLC: ocm68629100},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2006/Numerical optimization (2006) - Nocedal, Wright.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2006/Numerical optimization (2006) - Nocedal, Wright.pdf}
 }
 
 @book{vershynin_high-dimensional_2018,
@@ -151,7 +151,7 @@
   isbn = {978-1-108-41519-4},
   langid = {english},
   pagetotal = {299},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/High-Dimensional Probability (2018) - Vershynin.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/High-Dimensional Probability (2018) - Vershynin.pdf}
 }
 
 @online{schulman_proximal_2017,
@@ -167,7 +167,7 @@
   abstract = {We propose a new family of policy gradient methods for reinforcement learning, which alternate between sampling data through interaction with the environment, and optimizing a "surrogate" objective function using stochastic gradient ascent. Whereas standard policy gradient methods perform one gradient update per data sample, we propose a novel objective function that enables multiple epochs of minibatch updates. The new methods, which we call proximal policy optimization (PPO), have some of the benefits of trust region policy optimization (TRPO), but they are much simpler to implement, more general, and have better sample complexity (empirically). Our experiments test PPO on a collection of benchmark tasks, including simulated robotic locomotion and Atari game playing, and we show that PPO outperforms other online policy gradient methods, and overall strikes a favorable balance between sample complexity, simplicity, and wall-time.},
   pubstate = {prepublished},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Proximal Policy Optimization Algorithms (2017) - Schulman et al.pdf;/Users/adzcai/Zotero/storage/NCI3EDQS/1707.html}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Proximal Policy Optimization Algorithms (2017) - Schulman et al.pdf;/Users/adzcai/Zotero/storage/NCI3EDQS/1707.html}
 }
 
 @article{williams_simple_1992,
@@ -185,7 +185,7 @@
   urldate = {2022-09-03},
   abstract = {This article presents a general class of associative reinforcement learning algorithms for connectionist networks containing stochastic units. These algorithms, called REINFORCE algorithms, are shown to make weight adjustments in a direction that lies along the gradient of expected reinforcement in both immediate-reinforcement tasks and certain limited forms of delayed-reinforcement tasks, and they do this without explicitly computing gradient estimates or even storing information from which such estimates could be computed. Specific examples of such algorithms are presented, some of which bear a close relationship to certain existing algorithms while others are novel but potentially interesting in their own right. Also given are results that show how such algorithms can be naturally integrated with backpropagation. We close with a brief discussion of a number of additional issues surrounding the use of such algorithms, including what is known about their limiting behaviors as well as further considerations that might be used to help develop similar but potentially more powerful reinforcement learning algorithms.},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1992/Simple statistical gradient-following algorithms for connectionist reinforcement learning (1992) - Williams.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1992/Simple statistical gradient-following algorithms for connectionist reinforcement learning (1992) - Williams.pdf}
 }
 
 @online{islam_reproducibility_2017,
@@ -200,7 +200,7 @@
   abstract = {Policy gradient methods in reinforcement learning have become increasingly prevalent for state-of-the-art performance in continuous control tasks. Novel methods typically benchmark against a few key algorithms such as deep deterministic policy gradients and trust region policy optimization. As such, it is important to present and use consistent baselines experiments. However, this can be difficult due to general variance in the algorithms, hyper-parameter tuning, and environment stochasticity. We investigate and discuss: the significance of hyper-parameters in policy gradients for continuous control, general variance in the algorithms, and reproducibility of reported results. We provide guidelines on reporting novel results as comparisons against baseline methods such that future researchers can make informed decisions when investigating novel methods.},
   pubstate = {prepublished},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Reproducibility of Benchmarked Deep Reinforcement Learning Tasks for Continuous Control (2017) - Islam, Henderson, Gomrokchi, Precup.pdf;/Users/adzcai/Zotero/storage/DESTVEZK/1708.html}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Reproducibility of Benchmarked Deep Reinforcement Learning Tasks for Continuous Control (2017) - Islam, Henderson, Gomrokchi, Precup.pdf;/Users/adzcai/Zotero/storage/DESTVEZK/1708.html}
 }
 
 @article{schrittwieser_mastering_2020,
@@ -220,7 +220,7 @@
   issue = {7839},
   langid = {english},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2020/Mastering Atari, Go, chess and shogi by planning with a learned model (2020) - Schrittwieser et al.pdf;/Users/adzcai/Zotero/storage/KLW59Z2L/s41586-020-03051-4.html}
+  file = {/Users/adzcai/Vault/papers/assets/2020/Mastering Atari, Go, chess and shogi by planning with a learned model (2020) - Schrittwieser et al.pdf;/Users/adzcai/Zotero/storage/KLW59Z2L/s41586-020-03051-4.html}
 }
 
 @article{silver_general_2018,
@@ -235,7 +235,7 @@
   doi = {10.1126/science.aar6404},
   url = {https://www.science.org/doi/10.1126/science.aar6404},
   urldate = {2022-08-15},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play (2018) - Silver et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play (2018) - Silver et al.pdf}
 }
 
 @article{silver_mastering_2017,
@@ -255,7 +255,7 @@
   issue = {7676},
   langid = {english},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Mastering the game of Go without human knowledge (2017) - Silver et al.pdf;/Users/adzcai/Zotero/storage/6KP4UDZN/nature24270.html}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Mastering the game of Go without human knowledge (2017) - Silver et al.pdf;/Users/adzcai/Zotero/storage/6KP4UDZN/nature24270.html}
 }
 
 @article{silver_mastering_2016,
@@ -276,7 +276,7 @@
   langid = {english},
   keywords = {broken},
   annotation = {9998 citations (Semantic Scholar/DOI) [2022-05-18]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Mastering the game of Go with deep neural networks and tree search (2016) - Silver et al.pdf;/Users/adzcai/Zotero/storage/STY6YT82/nature16961.html}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Mastering the game of Go with deep neural networks and tree search (2016) - Silver et al.pdf;/Users/adzcai/Zotero/storage/STY6YT82/nature16961.html}
 }
 
 @unpublished{amodei_concrete_2016,
@@ -291,7 +291,7 @@
   abstract = {Rapid progress in machine learning and artificial intelligence (AI) has brought increasing attention to the potential impacts of AI technologies on society. In this paper we discuss one such potential impact: the problem of accidents in machine learning systems, defined as unintended and harmful behavior that may emerge from poor design of real-world AI systems. We present a list of five practical research problems related to accident risk, categorized according to whether the problem originates from having the wrong objective function ("avoiding side effects" and "avoiding reward hacking"), an objective function that is too expensive to evaluate frequently ("scalable supervision"), or undesirable behavior during the learning process ("safe exploration" and "distributional shift"). We review previous work in these areas as well as suggesting research directions with a focus on relevance to cutting-edge AI systems. Finally, we consider the high-level question of how to think most productively about the safety of forward-looking applications of AI.},
   keywords = {⛔ No DOI found,broken},
   annotation = {1188 citations (Semantic Scholar/arXiv) [2022-05-18]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Concrete Problems in AI Safety (2016) - Amodei et al.pdf;/Users/adzcai/Zotero/storage/VQPG8CUP/1606.html}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Concrete Problems in AI Safety (2016) - Amodei et al.pdf;/Users/adzcai/Zotero/storage/VQPG8CUP/1606.html}
 }
 
 @article{degrave_magnetic_2022,
@@ -311,7 +311,7 @@
   issue = {7897},
   langid = {english},
   annotation = {230 citations (Semantic Scholar/DOI) [2023-05-21]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Magnetic control of tokamak plasmas through deep reinforcement learning (2022) - Degrave et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2022/Magnetic control of tokamak plasmas through deep reinforcement learning (2022) - Degrave et al.pdf}
 }
 
 @book{sussman_functional_2013,
@@ -322,7 +322,7 @@
   location = {Cambridge, MA},
   isbn = {978-0-262-01934-7},
   pagetotal = {228},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2013/Functional differential geometry (2013) - Sussman, Wisdom, Farr.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2013/Functional differential geometry (2013) - Sussman, Wisdom, Farr.pdf}
 }
 
 @book{hastie_elements_2013,
@@ -337,7 +337,7 @@
   isbn = {978-0-387-21606-5},
   langid = {english},
   pagetotal = {545},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2013/The Elements of Statistical Learning (2013) - Hastie, Tibshirani, Friedman.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2013/The Elements of Statistical Learning (2013) - Hastie, Tibshirani, Friedman.pdf}
 }
 
 @online{adaptive_agent_team_human-timescale_2023,
@@ -352,7 +352,7 @@
   abstract = {Foundation models have shown impressive adaptation and scalability in supervised and self-supervised learning problems, but so far these successes have not fully translated to reinforcement learning (RL). In this work, we demonstrate that training an RL agent at scale leads to a general in-context learning algorithm that can adapt to open-ended novel embodied 3D problems as quickly as humans. In a vast space of held-out environment dynamics, our adaptive agent (AdA) displays on-the-fly hypothesis-driven exploration, efficient exploitation of acquired knowledge, and can successfully be prompted with first-person demonstrations. Adaptation emerges from three ingredients: (1) meta-reinforcement learning across a vast, smooth and diverse task distribution, (2) a policy parameterised as a large-scale attention-based memory architecture, and (3) an effective automated curriculum that prioritises tasks at the frontier of an agent's capabilities. We demonstrate characteristic scaling laws with respect to network size, memory length, and richness of the training task distribution. We believe our results lay the foundation for increasingly general and adaptive RL agents that perform well across ever-larger open-ended domains.},
   pubstate = {prepublished},
   annotation = {1 citations (Semantic Scholar/arXiv) [2023-02-20]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2023/Human-Timescale Adaptation in an Open-Ended Task Space (2023) - Adaptive Agent Team et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2023/Human-Timescale Adaptation in an Open-Ended Task Space (2023) - Adaptive Agent Team et al.pdf}
 }
 
 @book{sutton_reinforcement_2018,
@@ -369,7 +369,7 @@
   isbn = {978-0-262-03924-6},
   langid = {english},
   pagetotal = {526},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Reinforcement learning (2018) - Sutton, Barto.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Reinforcement learning (2018) - Sutton, Barto.pdf}
 }
 
 @book{kochenderfer_algorithms_2022,
@@ -381,7 +381,7 @@
   abstract = {A broad introduction to algorithms for decision making under uncertainty, introducing the underlying mathematical problem formulations and the algorithms for...},
   isbn = {978-0-262-04701-2},
   langid = {american},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Algorithms for Decision Making (2022) - Kochenderfer, Wheeler, Wray.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2022/Algorithms for Decision Making (2022) - Kochenderfer, Wheeler, Wray.pdf}
 }
 
 @article{schultz_neural_1997,
@@ -398,7 +398,7 @@
   urldate = {2022-11-28},
   abstract = {The capacity to predict future events permits a creature to detect, model, and manipulate the causal structure of its interactions with its environment. Behavioral experiments suggest that learning is driven by changes in the expectations about future salient events such as rewards and punishments. Physiological work has recently complemented these studies by identifying dopaminergic neurons in the primate whose fluctuating output apparently signals changes or errors in the predictions of future salient and rewarding events. Taken together, these findings can be understood through quantitative theories of adaptive optimizing control.},
   annotation = {7847 citations (Semantic Scholar/DOI) [2022-11-27]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1997/A Neural Substrate of Prediction and Reward (1997) - Schultz, Dayan, Montague.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1997/A Neural Substrate of Prediction and Reward (1997) - Schultz, Dayan, Montague.pdf}
 }
 
 @article{bellemare_arcade_2013,
@@ -420,7 +420,7 @@
   abstract = {In this article we introduce the Arcade Learning Environment (ALE): both a challenge problem and a platform and methodology for evaluating the development of general, domain-independent AI technology. ALE provides an interface to hundreds of Atari 2600 game environments, each one different, interesting, and designed to be a challenge for human players. ALE presents significant research challenges for reinforcement learning, model learning, model-based planning, imitation learning, transfer learning, and intrinsic motivation. Most importantly, it provides a rigorous testbed for evaluating and comparing approaches to these problems. We illustrate the promise of ALE by developing and benchmarking domain-independent agents designed using well-established AI techniques for both reinforcement learning and planning. In doing so, we also propose an evaluation methodology made possible by ALE, reporting empirical results on over 55 different games. All of the software, including the benchmark agents, is publicly available.},
   annotation = {2415 citations (Semantic Scholar/arXiv) [2023-05-29]\\
 2415 citations (Semantic Scholar/DOI) [2023-05-29]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2013/The Arcade Learning Environment (2013) - Bellemare, Naddaf, Veness, Bowling.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2013/The Arcade Learning Environment (2013) - Bellemare, Naddaf, Veness, Bowling.pdf}
 }
 
 @book{albrecht_multi-agent_2023,
@@ -429,7 +429,7 @@
   date = {2023},
   publisher = {MIT Press},
   url = {https://www.marl-book.com},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2023/Multi-agent reinforcement learning (2023) - Albrecht, Christianos, Schäfer.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2023/Multi-agent reinforcement learning (2023) - Albrecht, Christianos, Schäfer.pdf}
 }
 
 @inproceedings{kakade_approximately_2002,
@@ -442,11 +442,11 @@
   publisher = {Morgan Kaufmann Publishers Inc.},
   location = {San Francisco, CA, USA},
   isbn = {978-1-55860-873-3},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2002/Approximately Optimal Approximate Reinforcement Learning (2002) - Kakade, Langford.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2002/Approximately Optimal Approximate Reinforcement Learning (2002) - Kakade, Langford.pdf}
 }
 
 @software{bradbury_jax_2018,
-  title = {{{JAX}}: {{Composable}} Transformations of python+{{NumPy}} Programs},
+  title = {{{JAX}}: Composable Transformations of {{Python}}+{{NumPy}} Programs},
   author = {Bradbury, James and Frostig, Roy and Hawkins, Peter and Johnson, Matthew James and Leary, Chris and Maclaurin, Dougal and Necula, George and Paszke, Adam and VanderPlas, Jake and Wanderman-Milne, Skye and Zhang, Qiao},
   date = {2018},
   url = {http://github.com/google/jax},
@@ -470,7 +470,7 @@
   abstract = {Reinforcement learning has achieved great success in many applications. However, sample efficiency remains a key challenge, with prominent methods requiring millions (or even billions) of environment steps to train. Recently, there has been significant progress in sample efficient image-based RL algorithms; however, consistent human-level performance on the Atari game benchmark remains an elusive goal. We propose a sample efficient model-based visual RL algorithm built on MuZero, which we name EfficientZero. Our method achieves 194.3\% mean human performance and 109.0\% median performance on the Atari 100k benchmark with only two hours of real-time game experience and outperforms the state SAC in some tasks on the DMControl 100k benchmark. This is the first time an algorithm achieves super-human performance on Atari games with such little data. EfficientZero's performance is also close to DQN's performance at 200 million frames while we consume 500 times less data. EfficientZero's low sample complexity and high performance can bring RL closer to real-world applicability. We implement our algorithm in an easy-to-understand manner and it is available at https://github.com/YeWR/EfficientZero. We hope it will accelerate the research of MCTS-based RL algorithms in the wider community.},
   eventtitle = {{{NeurIPS}}},
   annotation = {48 citations (Semantic Scholar/arXiv) [2023-02-22]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Mastering Atari Games with Limited Data (2021) - Ye et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2021/Mastering Atari Games with Limited Data (2021) - Ye et al.pdf}
 }
 
 @inproceedings{freeman_brax_2021,
@@ -488,7 +488,7 @@
   eventtitle = {{{NeurIPS Datasets}} and {{Benchmarks}}},
   pubstate = {preprint | DBLP: https://dblp.org/rec/conf/nips/FreemanFRGMB21},
   annotation = {151 citations (Semantic Scholar/arXiv) [2023-07-22]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Brax – A Differentiable Physics Engine for Large Scale Rigid Body Simulation (2021) - Freeman et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2021/Brax – A Differentiable Physics Engine for Large Scale Rigid Body Simulation (2021) - Freeman et al.pdf}
 }
 
 @inproceedings{badia_agent57_2020,
@@ -508,7 +508,7 @@
   abstract = {Atari games have been a long-standing benchmark in the reinforcement learning (RL) community for the past decade. This benchmark was proposed to test general competency of RL algorithms. Previous work has achieved good average performance by doing outstandingly well on many games of the set, but very poorly in several of the most challenging games. We propose Agent57, the first deep RL agent that outperforms the standard human benchmark on all 57 Atari games. To achieve this result, we train a neural network which parameterizes a family of policies ranging from very exploratory to purely exploitative. We propose an adaptive mechanism to choose which policy to prioritize throughout the training process. Additionally, we utilize a novel parameterization of the architecture that allows for more consistent and stable learning.},
   eventtitle = {{{ICML}}},
   annotation = {313 citations (Semantic Scholar/arXiv) [2023-04-11]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2020/Agent57 (2020) - Badia et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2020/Agent57 (2020) - Badia et al.pdf}
 }
 
 @unpublished{li_deep_2018,
@@ -525,7 +525,7 @@
   pubstate = {prepublished},
   keywords = {broken},
   annotation = {200 citations (Semantic Scholar/arXiv) [2022-05-18]},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Deep Reinforcement Learning (2018) - Li.pdf;/Users/adzcai/Zotero/storage/U58RHL7G/1810.html}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Deep Reinforcement Learning (2018) - Li.pdf;/Users/adzcai/Zotero/storage/U58RHL7G/1810.html}
 }
 
 @article{lai_asymptotically_1985,
@@ -541,7 +541,7 @@
   doi = {10.1016/0196-8858(85)90002-8},
   url = {https://www.sciencedirect.com/science/article/pii/0196885885900028},
   urldate = {2023-10-23},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1985/Asymptotically efficient adaptive allocation rules (1985) - Lai, Robbins.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1985/Asymptotically efficient adaptive allocation rules (1985) - Lai, Robbins.pdf}
 }
 
 @book{nielsen_neural_2015,
@@ -563,7 +563,7 @@
   location = {New York},
   isbn = {978-0-387-31073-2},
   pagetotal = {738},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2006/Pattern recognition and machine learning (2006) - Bishop.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2006/Pattern recognition and machine learning (2006) - Bishop.pdf}
 }
 
 @book{james_introduction_2023,
@@ -579,7 +579,7 @@
   urldate = {2024-02-07},
   isbn = {978-3-031-38746-3 978-3-031-38747-0},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2023/An Introduction to Statistical Learning (2023) - James et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2023/An Introduction to Statistical Learning (2023) - James et al.pdf}
 }
 
 @book{russell_artificial_2021,
@@ -593,7 +593,7 @@
   location = {Hoboken},
   abstract = {"Updated edition of popular textbook on Artificial Intelligence. This edition specific looks at ways of keeping artificial intelligence under control"--},
   isbn = {978-0-13-461099-3},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Artificial intelligence (2021) - Russell, Norvig.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2021/Artificial intelligence (2021) - Russell, Norvig.pdf}
 }
 
 @book{heath_scientific_2018,
@@ -608,7 +608,7 @@
   location = {Philadelphia},
   isbn = {978-1-61197-557-4},
   pagetotal = {567},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Scientific computing (2018) - Heath 2.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Scientific computing (2018) - Heath 2.pdf}
 }
 
 @inproceedings{ross_reduction_2010,
@@ -619,7 +619,7 @@
   urldate = {2024-08-08},
   abstract = {Sequential prediction problems such as imitation learning, where future observations depend on previous predictions (actions), violate the common i.i.d. assumptions made in statistical learning. This leads to poor performance in theory and often in practice. Some recent approaches provide stronger guarantees in this setting, but remain somewhat unsatisfactory as they train either non-stationary or stochastic policies and require a large number of iterations. In this paper, we propose a new iterative algorithm, which trains a stationary deterministic policy, that can be seen as a no regret algorithm in an online learning setting. We show that any such no regret algorithm, combined with additional reduction assumptions, must find a policy with good performance under the distribution of observations it induces in such sequential settings. We demonstrate that this new approach outperforms previous approaches on two challenging imitation learning problems and a benchmark sequence labeling problem.},
   eventtitle = {International {{Conference}} on {{Artificial Intelligence}} and {{Statistics}}},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2010/A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning (2010) - Ross, Gordon, Bagnell.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2010/A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning (2010) - Ross, Gordon, Bagnell.pdf}
 }
 
 @online{zhang_deep_2015,
@@ -635,7 +635,7 @@
   abstract = {We study the problem of stochastic optimization for deep learning in the parallel computing environment under communication constraints. A new algorithm is proposed in this setting where the communication and coordination of work among concurrent processes (local workers), is based on an elastic force which links the parameters they compute with a center variable stored by the parameter server (master). The algorithm enables the local workers to perform more exploration, i.e. the algorithm allows the local variables to fluctuate further from the center variable by reducing the amount of communication between local workers and the master. We empirically demonstrate that in the deep learning setting, due to the existence of many local optima, allowing more exploration can lead to the improved performance. We propose synchronous and asynchronous variants of the new algorithm. We provide the stability analysis of the asynchronous variant in the round-robin scheme and compare it with the more common parallelized method ADMM. We show that the stability of EASGD is guaranteed when a simple stability condition is satisfied, which is not the case for ADMM. We additionally propose the momentum-based version of our algorithm that can be applied in both synchronous and asynchronous settings. Asynchronous variant of the algorithm is applied to train convolutional neural networks for image classification on the CIFAR and ImageNet datasets. Experiments demonstrate that the new algorithm accelerates the training of deep architectures compared to DOWNPOUR and other common baseline approaches and furthermore is very communication efficient.},
   pubstate = {prepublished},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Deep learning with Elastic Averaging SGD (2015) - Zhang, Choromanska, LeCun.pdf;/Users/adzcai/Zotero/storage/M4LFKVWK/1412.html}
+  file = {/Users/adzcai/Vault/papers/assets/2015/Deep learning with Elastic Averaging SGD (2015) - Zhang, Choromanska, LeCun.pdf;/Users/adzcai/Zotero/storage/M4LFKVWK/1412.html}
 }
 
 @inreference{achiam_spinning_2018,
@@ -661,7 +661,7 @@
   abstract = {Despite the success of Large Language Models (LLMs) on various tasks following human instructions, controlling model generation at inference time poses a persistent challenge. In this paper, we introduce Ctrl-G, an adaptable framework that facilitates tractable and flexible control of LLM generation to reliably follow logical constraints. Ctrl-G combines any production-ready LLM with a Hidden Markov Model, enabling LLM outputs to adhere to logical constraints represented as deterministic finite automata. We show that Ctrl-G, when applied to a TULU2-7B model, outperforms GPT3.5 and GPT4 on the task of interactive text editing: specifically, for the task of generating text insertions/continuations following logical constraints, Ctrl-G achieves over 30\% higher satisfaction rate in human evaluation compared to GPT4. When applied to medium-size language models (e.g., GPT2-large), Ctrl-G also beats its counterparts for constrained generation by large margins on standard benchmarks. Additionally, as a proof-of-concept study, we experiment Ctrl-G on the Grade School Math benchmark to assist LLM reasoning, foreshadowing the application of Ctrl-G, as well as other constrained generation approaches, beyond traditional language generation tasks.},
   pubstate = {prepublished},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Adaptable Logical Control for Large Language Models (2024) - Zhang et al.pdf;/Users/adzcai/Zotero/storage/38W8T74Y/2406.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/Adaptable Logical Control for Large Language Models (2024) - Zhang et al.pdf;/Users/adzcai/Zotero/storage/38W8T74Y/2406.html}
 }
 
 @online{zhai_fine-tuning_2024,
@@ -677,7 +677,7 @@
   abstract = {Large vision-language models (VLMs) fine-tuned on specialized visual instruction-following data have exhibited impressive language reasoning capabilities across various scenarios. However, this fine-tuning paradigm may not be able to efficiently learn optimal decision-making agents in multi-step goal-directed tasks from interactive environments. To address this challenge, we propose an algorithmic framework that fine-tunes VLMs with reinforcement learning (RL). Specifically, our framework provides a task description and then prompts the VLM to generate chain-of-thought (CoT) reasoning, enabling the VLM to efficiently explore intermediate reasoning steps that lead to the final text-based action. Next, the open-ended text output is parsed into an executable action to interact with the environment to obtain goal-directed task rewards. Finally, our framework uses these task rewards to fine-tune the entire VLM with RL. Empirically, we demonstrate that our proposed framework enhances the decision-making capabilities of VLM agents across various tasks, enabling 7b models to outperform commercial models such as GPT4-V or Gemini. Furthermore, we find that CoT reasoning is a crucial component for performance improvement, as removing the CoT reasoning results in a significant decrease in the overall performance of our method.},
   pubstate = {prepublished},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Fine-Tuning Large Vision-Language Models as Decision-Making Agents via Reinforcement Learning (2024) - Zhai et al.pdf;/Users/adzcai/Zotero/storage/2X2WJU4D/2405.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/Fine-Tuning Large Vision-Language Models as Decision-Making Agents via Reinforcement Learning (2024) - Zhai et al.pdf;/Users/adzcai/Zotero/storage/2X2WJU4D/2405.html}
 }
 
 @online{welleck_decoding_2024,
@@ -694,7 +694,7 @@
   abstract = {One of the most striking findings in modern research on large language models (LLMs) is that scaling up compute during training leads to better results. However, less attention has been given to the benefits of scaling compute during inference. This survey focuses on these inference-time approaches. We explore three areas under a unified mathematical formalism: token-level generation algorithms, meta-generation algorithms, and efficient generation. Token-level generation algorithms, often called decoding algorithms, operate by sampling a single token at a time or constructing a token-level search space and then selecting an output. These methods typically assume access to a language model's logits, next-token distributions, or probability scores. Meta-generation algorithms work on partial or full sequences, incorporating domain knowledge, enabling backtracking, and integrating external information. Efficient generation methods aim to reduce token costs and improve the speed of generation. Our survey unifies perspectives from three research communities: traditional natural language processing, modern LLMs, and machine learning systems.},
   pubstate = {prepublished},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/From Decoding to Meta-Generation (2024) - Welleck et al.pdf;/Users/adzcai/Zotero/storage/S4Y984R4/2406.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/From Decoding to Meta-Generation (2024) - Welleck et al.pdf;/Users/adzcai/Zotero/storage/S4Y984R4/2406.html}
 }
 
 @online{sun_easy--hard_2024,
@@ -711,7 +711,7 @@
   abstract = {Current AI alignment methodologies rely on human-provided demonstrations or judgments, and the learned capabilities of AI systems would be upper-bounded by human capabilities as a result. This raises a challenging research question: How can we keep improving the systems when their capabilities have surpassed the levels of humans? This paper answers this question in the context of tackling hard reasoning tasks (e.g., level 4-5 MATH problems) via learning from human annotations on easier tasks (e.g., level 1-3 MATH problems), which we term as \textbackslash textit\{easy-to-hard generalization\}. Our key insight is that an evaluator (reward model) trained on supervisions for easier tasks can be effectively used for scoring candidate solutions of harder tasks and hence facilitating easy-to-hard generalization over different levels of tasks. Based on this insight, we propose a novel approach to scalable alignment, which firstly trains the process-supervised reward models on easy problems (e.g., level 1-3), and then uses them to evaluate the performance of policy models on hard problems. We show that such \textbackslash textit\{easy-to-hard generalization from evaluators\} can enable \textbackslash textit\{easy-to-hard generalizations in generators\} either through re-ranking or reinforcement learning (RL). Notably, our process-supervised 7b RL model achieves an accuracy of 34.0\textbackslash\% on MATH500, despite only using human supervision on easy problems. Our approach suggests a promising path toward AI systems that advance beyond the frontier of human supervision.},
   pubstate = {prepublished},
   keywords = {broken},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Easy-to-Hard Generalization (2024) - Sun et al.pdf;/Users/adzcai/Zotero/storage/J52D59AK/2403.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/Easy-to-Hard Generalization (2024) - Sun et al.pdf;/Users/adzcai/Zotero/storage/J52D59AK/2403.html}
 }
 
 @article{mnih_playing_2013,
@@ -725,7 +725,7 @@
   url = {http://arxiv.org/abs/1312.5602},
   urldate = {2024-06-21},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2013/Playing Atari with Deep Reinforcement Learning (2013) - Mnih et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2013/Playing Atari with Deep Reinforcement Learning (2013) - Mnih et al.pdf}
 }
 
 @book{agarwal_reinforcement_2022,
@@ -735,7 +735,7 @@
   date = {2022-01-31},
   url = {https://rltheorybook.github.io/rltheorybook_AJKS.pdf},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Reinforcement Learning (2022) - Agarwal, Jiang, Kakade, Sun.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2022/Reinforcement Learning (2022) - Agarwal, Jiang, Kakade, Sun.pdf}
 }
 
 @inproceedings{azar_minimax_2017,
@@ -751,7 +751,7 @@
   abstract = {We consider the problem of provably optimal exploration in reinforcement learning for finite horizon MDPs. We show that an optimistic modification to value iteration achieves a regret bound of \$\textbackslash tilde \{O\}( \textbackslash sqrt\{HSAT\} + H\textasciicircum 2S\textasciicircum 2A+H\textbackslash sqrt\{T\})\$ where \$H\$ is the time horizon, \$S\$ the number of states, \$A\$ the number of actions and \$T\$ the number of time-steps. This result improves over the best previous known bound \$\textbackslash tilde \{O\}(HS \textbackslash sqrt\{AT\})\$ achieved by the UCRL2 algorithm. The key significance of our new results is that when \$T\textbackslash geq H\textasciicircum 3S\textasciicircum 3A\$ and \$SA\textbackslash geq H\$, it leads to a regret of \$\textbackslash tilde\{O\}(\textbackslash sqrt\{HSAT\})\$ that matches the established lower bound of \$\textbackslash Omega(\textbackslash sqrt\{HSAT\})\$ up to a logarithmic factor. Our analysis contain two key insights. We use careful application of concentration inequalities to the optimal value function as a whole, rather than to the transitions probabilities (to improve scaling in \$S\$), and we define Bernstein-based “exploration bonuses” that use the empirical variance of the estimated values at the next states (to improve scaling in \$H\$).},
   eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Minimax Regret Bounds for Reinforcement Learning (2017) - Azar, Osband, Munos.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Minimax Regret Bounds for Reinforcement Learning (2017) - Azar, Osband, Munos.pdf}
 }
 
 @inproceedings{kakade_natural_2001,
@@ -765,7 +765,7 @@
   urldate = {2024-06-20},
   abstract = {We provide a  natural gradient method that represents the steepest  descent  direction based on the underlying structure of the param(cid:173) eter space.  Although gradient methods cannot make large changes  in  the  values  of the  parameters,  we  show  that  the  natural  gradi(cid:173) ent is moving toward choosing a greedy optimal action rather than  just a  better action.  These greedy optimal  actions  are those  that  would  be  chosen  under  one  improvement  step  of  policy  iteration  with  approximate,  compatible  value  functions,  as  defined  by  Sut(cid:173) ton  et al.  [9].  We  then show drastic performance improvements in  simple MDPs and in the more challenging MDP of Tetris.},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2001/A Natural Policy Gradient (2001) - Kakade.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2001/A Natural Policy Gradient (2001) - Kakade.pdf}
 }
 
 @article{deng_mnist_2012,
@@ -856,7 +856,7 @@
   urldate = {2025-01-23},
   abstract = {A fundamental challenge in interactive learning and decision making, ranging from bandit problems to reinforcement learning, is to provide sample-efficient, adaptive learning algorithms that achieve near-optimal regret. This question is analogous to the classical problem of optimal (supervised) statistical learning, where there are well-known complexity measures (e.g., VC dimension and Rademacher complexity) that govern the statistical complexity of learning. However, characterizing the statistical complexity of interactive learning is substantially more challenging due to the adaptive nature of the problem. The main result of this work provides a complexity measure, the Decision-Estimation Coefficient, that is proven to be both necessary and sufficient for sample-efficient interactive learning. In particular, we provide: 1. a lower bound on the optimal regret for any interactive decision making problem, establishing the Decision-Estimation Coefficient as a fundamental limit. 2. a unified algorithm design principle, Estimation-to-Decisions (E2D), which transforms any algorithm for supervised estimation into an online algorithm for decision making. E2D attains a regret bound that matches our lower bound up to dependence on a notion of estimation performance, thereby achieving optimal sample-efficient learning as characterized by the Decision-Estimation Coefficient. Taken together, these results constitute a theory of learnability for interactive decision making. When applied to reinforcement learning settings, the Decision-Estimation Coefficient recovers essentially all existing hardness results and lower bounds. More broadly, the approach can be viewed as a decision-theoretic analogue of the classical Le Cam theory of statistical estimation; it also unifies a number of existing approaches -- both Bayesian and frequentist.},
   pubstate = {prepublished},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2023/The Statistical Complexity of Interactive Decision Making (2023) - Foster, Kakade, Qian, Rakhlin.pdf;/Users/adzcai/Zotero/storage/M7UNCKRF/2112.html}
+  file = {/Users/adzcai/Vault/papers/assets/2023/The Statistical Complexity of Interactive Decision Making (2023) - Foster, Kakade, Qian, Rakhlin.pdf;/Users/adzcai/Zotero/storage/M7UNCKRF/2112.html}
 }
 
 @online{shao_deepseekmath_2024,
@@ -872,7 +872,7 @@
   urldate = {2025-02-06},
   abstract = {Mathematical reasoning poses a significant challenge for language models due to its complex and structured nature. In this paper, we introduce DeepSeekMath 7B, which continues pre-training DeepSeek-Coder-Base-v1.5 7B with 120B math-related tokens sourced from Common Crawl, together with natural language and code data. DeepSeekMath 7B has achieved an impressive score of 51.7\% on the competition-level MATH benchmark without relying on external toolkits and voting techniques, approaching the performance level of Gemini-Ultra and GPT-4. Self-consistency over 64 samples from DeepSeekMath 7B achieves 60.9\% on MATH. The mathematical reasoning capability of DeepSeekMath is attributed to two key factors: First, we harness the significant potential of publicly available web data through a meticulously engineered data selection pipeline. Second, we introduce Group Relative Policy Optimization (GRPO), a variant of Proximal Policy Optimization (PPO), that enhances mathematical reasoning abilities while concurrently optimizing the memory usage of PPO.},
   pubstate = {prepublished},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/DeepSeekMath (2024) - Shao et al.pdf;/Users/adzcai/Zotero/storage/JYYAQBDU/2402.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/DeepSeekMath (2024) - Shao et al.pdf;/Users/adzcai/Zotero/storage/JYYAQBDU/2402.html}
 }
 
 @article{meurer_sympy_2017,
@@ -891,7 +891,7 @@
   urldate = {2025-02-06},
   abstract = {SymPy is an open source computer algebra system written in pure Python. It is built with a focus on extensibility and ease of use, through both interactive and programmatic applications. These characteristics have led SymPy to become a popular symbolic library for the scientific Python ecosystem. This paper presents the architecture of SymPy, a description of its features, and a discussion of select submodules. The supplementary material provide additional examples and further outline details of the architecture and features of SymPy.},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/SymPy (2017) - Meurer et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2017/SymPy (2017) - Meurer et al.pdf}
 }
 
 @inproceedings{ansel_pytorch_2024,
@@ -920,7 +920,7 @@
   url = {https://doi.org/10.1162/neco_a_01705},
   urldate = {2025-02-07},
   abstract = {Adaptive behavior often requires predicting future events. The theory of reinforcement learning prescribes what kinds of predictive representations are useful and how to compute them. This review integrates these theoretical ideas with work on cognition and neuroscience. We pay special attention to the successor representation and its generalizations, which have been widely applied as both engineering tools and models of brain function. This convergence suggests that particular kinds of predictive representations may function as versatile building blocks of intelligence.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Predictive Representations (2024) - Carvalho et al.pdf;/Users/adzcai/Zotero/storage/KH9JNQTF/Predictive-Representations-Building-Blocks-of.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/Predictive Representations (2024) - Carvalho et al.pdf;/Users/adzcai/Zotero/storage/KH9JNQTF/Predictive-Representations-Building-Blocks-of.html}
 }
 
 @online{deepseek-ai_deepseek-r1_2025,
@@ -936,7 +936,7 @@
   urldate = {2025-02-07},
   abstract = {We introduce our first-generation reasoning models, DeepSeek-R1-Zero and DeepSeek-R1. DeepSeek-R1-Zero, a model trained via large-scale reinforcement learning (RL) without supervised fine-tuning (SFT) as a preliminary step, demonstrates remarkable reasoning capabilities. Through RL, DeepSeek-R1-Zero naturally emerges with numerous powerful and intriguing reasoning behaviors. However, it encounters challenges such as poor readability, and language mixing. To address these issues and further enhance reasoning performance, we introduce DeepSeek-R1, which incorporates multi-stage training and cold-start data before RL. DeepSeek-R1 achieves performance comparable to OpenAI-o1-1217 on reasoning tasks. To support the research community, we open-source DeepSeek-R1-Zero, DeepSeek-R1, and six dense models (1.5B, 7B, 8B, 14B, 32B, 70B) distilled from DeepSeek-R1 based on Qwen and Llama.},
   pubstate = {prepublished},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2025/DeepSeek-R1 (2025) - DeepSeek-AI et al.pdf;/Users/adzcai/Zotero/storage/3MYSD8TV/2501.html}
+  file = {/Users/adzcai/Vault/papers/assets/2025/DeepSeek-R1 (2025) - DeepSeek-AI et al.pdf;/Users/adzcai/Zotero/storage/3MYSD8TV/2501.html}
 }
 
 @article{maxwell_governors_1867,
@@ -953,7 +953,7 @@
   url = {https://www.jstor.org/stable/112510},
   urldate = {2025-03-08},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1867/On Governors (1867) - Maxwell.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1867/On Governors (1867) - Maxwell.pdf}
 }
 
 @inproceedings{schulman_trust_2015,
@@ -968,7 +968,7 @@
   urldate = {2025-03-09},
   abstract = {In this article, we describe a method for optimizing control policies, with guaranteed monotonic improvement. By making several approximations to the theoretically-justified scheme, we develop a practical algorithm, called Trust Region Policy Optimization (TRPO). This algorithm is effective for optimizing large nonlinear policies such as neural networks. Our experiments demonstrate its robust performance on a wide variety of tasks: learning simulated robotic swimming, hopping, and walking gaits; and playing Atari games using images of the screen as input. Despite its approximations that deviate from the theory, TRPO tends to give monotonic improvement, with little tuning of hyperparameters.},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust region policy optimization (2015) - Schulman et al 2.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Trust region policy optimization (2015) - Schulman et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2015/Trust region policy optimization (2015) - Schulman et al 2.pdf;/Users/adzcai/Vault/papers/assets/2015/Trust region policy optimization (2015) - Schulman et al.pdf}
 }
 
 @artwork{danilyuk_robot_2021,
@@ -993,7 +993,7 @@
   urldate = {2025-03-19},
   abstract = {Proximal Policy Optimization algorithm employing a clipped surrogate objective (PPO-Clip) is a prominent exemplar of the policy optimization methods. However, despite its remarkable empirical success, PPO-Clip lacks theoretical substantiation to date. In this paper, we contribute to the field by establishing the first global convergence results of a PPO-Clip variant in both tabular and neural function approximation settings. Our findings highlight the O(1/√T) min-iterate convergence rate specifically in the context of neural function approximation. We tackle the inherent challenges in analyzing PPO-Clip through three central concepts: (i) We introduce a generalized version of the PPO-Clip objective, illuminated by its connection with the hinge loss. (ii) Employing entropic mirror descent, we establish asymptotic convergence for tabular PPO-Clip with direct policy parameterization. (iii) Inspired by the tabular analysis, we streamline convergence analysis by introducing a two-step policy improvement approach. This decouples policy search from complex neural policy parameterization using a regression-based update scheme. Furthermore, we gain deeper insights into the efficacy of PPO-Clip by interpreting these generalized objectives. Our theoretical findings also mark the first characterization of the influence of the clipping mechanism on PPO-Clip convergence. Importantly, the clipping range affects only the pre-constant of the convergence rate.},
   isbn = {978-1-57735-887-9},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/PPO-clip attains global optimality (2024) - Huang, Hsieh, Ho, Wu.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2024/PPO-clip attains global optimality (2024) - Huang, Hsieh, Ho, Wu.pdf}
 }
 
 @article{silver_reward_2021,
@@ -1010,7 +1010,7 @@
   urldate = {2025-03-19},
   abstract = {In this article we hypothesise that intelligence, and its associated abilities, can be understood as subserving the maximisation of reward. Accordingly, reward is enough to drive behaviour that exhibits abilities studied in natural and artificial intelligence, including knowledge, learning, perception, social intelligence, language, generalisation and imitation. This is in contrast to the view that specialised problem formulations are needed for each ability, based on other signals or objectives. Furthermore, we suggest that agents that learn through trial and error experience to maximise reward could learn behaviour that exhibits most if not all of these abilities, and therefore that powerful reinforcement learning agents could constitute a solution to artificial general intelligence.},
   keywords = {Artificial general intelligence,Artificial intelligence,Reinforcement learning,Reward},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Reward is enough (2021) - Silver, Singh, Precup, Sutton.pdf;/Users/adzcai/Zotero/storage/VCSD52BK/S0004370221000862.html}
+  file = {/Users/adzcai/Vault/papers/assets/2021/Reward is enough (2021) - Silver, Singh, Precup, Sutton.pdf;/Users/adzcai/Zotero/storage/VCSD52BK/S0004370221000862.html}
 }
 
 @book{bertsekas_neuro-dynamic_1996,
@@ -1035,7 +1035,7 @@
   urldate = {2025-03-20},
   abstract = {In some stochastic environments the well-known reinforcement learning algorithm Q-learning performs very poorly. This poor performance is caused by large overestimations of action values. These overestimations result from a positive bias that is introduced because Q-learning uses the maximum action value as an approximation for the maximum expected action value. We introduce an alternative way to approximate the maximum expected value for any set of random variables. The obtained double estimator method is shown to sometimes underestimate rather than overestimate the maximum expected value. We apply the double estimator to Q-learning to construct Double Q-learning, a new off-policy reinforcement learning algorithm. We show the new algorithm converges to the optimal policy and that it performs well in some settings in which Q-learning performs poorly due to its overestimation.},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2010/Double Q-learning (2010) - Hasselt.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2010/Double Q-learning (2010) - Hasselt.pdf}
 }
 
 @inproceedings{wang_dueling_2016,
@@ -1051,7 +1051,7 @@
   abstract = {In recent years there have been many successes of using deep representations in reinforcement learning. Still, many of these applications use conventional architectures, such as convolutional networks, LSTMs, or auto-encoders. In this paper, we present a new neural network architecture for model-free reinforcement learning. Our dueling network represents two separate estimators: one for the state value function and one for the state-dependent action advantage function. The main benefit of this factoring is to generalize learning across actions without imposing any change to the underlying reinforcement learning algorithm. Our results show that this architecture leads to better policy evaluation in the presence of many similar-valued actions. Moreover, the dueling architecture enables our RL agent to outperform the state-of-the-art on the Atari 2600 domain.},
   eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Dueling Network Architectures for Deep Reinforcement Learning (2016) - Wang et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Dueling Network Architectures for Deep Reinforcement Learning (2016) - Wang et al.pdf}
 }
 
 @article{lecun_gradient-based_1998,
@@ -1069,7 +1069,7 @@
   abstract = {Multilayer neural networks trained with the back-propagation algorithm constitute the best example of a successful gradient based learning technique. Given an appropriate network architecture, gradient-based learning algorithms can be used to synthesize a complex decision surface that can classify high-dimensional patterns, such as handwritten characters, with minimal preprocessing. This paper reviews various methods applied to handwritten character recognition and compares them on a standard handwritten digit recognition task. Convolutional neural networks, which are specifically designed to deal with the variability of 2D shapes, are shown to outperform all other techniques. Real-life document recognition systems are composed of multiple modules including field extraction, segmentation recognition, and language modeling. A new learning paradigm, called graph transformer networks (GTN), allows such multimodule systems to be trained globally using gradient-based methods so as to minimize an overall performance measure. Two systems for online handwriting recognition are described. Experiments demonstrate the advantage of global training, and the flexibility of graph transformer networks. A graph transformer network for reading a bank cheque is also described. It uses convolutional neural network character recognizers combined with global training techniques to provide record accuracy on business and personal cheques. It is deployed commercially and reads several million cheques per day.},
   eventtitle = {Proceedings of the {{IEEE}}},
   keywords = {Character recognition,Feature extraction,Hidden Markov models,Machine learning,Multi-layer neural network,Neural networks,Optical character recognition software,Optical computing,Pattern recognition,Principal component analysis},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1998/Gradient-based learning applied to document recognition (1998) - Lecun, Bottou, Bengio, Haffner.pdf;/Users/adzcai/Zotero/storage/YMDDDNJS/726791.html}
+  file = {/Users/adzcai/Vault/papers/assets/1998/Gradient-based learning applied to document recognition (1998) - Lecun, Bottou, Bengio, Haffner.pdf;/Users/adzcai/Zotero/storage/YMDDDNJS/726791.html}
 }
 
 @inproceedings{schaul_prioritized_2016,
@@ -1083,7 +1083,7 @@
   bibsource = {dblp computer science bibliography, https://dblp.org},
   keywords = {⛔ No DOI found},
   timestamp = {Thu, 25 Jul 2019 14:25:38 +0200},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Prioritized experience replay (2016) - Schaul et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Prioritized experience replay (2016) - Schaul et al.pdf}
 }
 
 @inproceedings{farebrother_stop_2024,
@@ -1098,20 +1098,20 @@
   publisher = {JMLR.org},
   location = {Vienna, Austria},
   abstract = {Value functions are an essential component in deep reinforcement learning (RL), that are typically trained via mean squared error regression to match bootstrapped target values. However, scaling value-based RL methods to large networks has proven challenging. This difficulty is in stark contrast to supervised learning: by leveraging a crossentropy classification loss, supervised methods have scaled reliably to massive networks. Observing this discrepancy, in this paper, we investigate whether the scalability of deep RL can also be improved simply by using classification in place of regression for training value functions. We show that training value functions with categorical cross-entropy significantly enhances performance and scalability across various domains, including single-task RL on Atari 2600 games, multitask RL on Atari with large-scale ResNets, robotic manipulation with Q-transformers, playing Chess without search, and a language-agent Wordle task with high-capacity Transformers, achieving state-of-the-art results on these domains. Through careful analysis, we show that categorical cross-entropy mitigates issues inherent to value-based RL, such as noisy targets and non-stationarity. We argue that shifting to categorical cross-entropy for training value functions can substantially improve the scalability of deep RL at little-to-no cost.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Stop regressing (2024) - Farebrother et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2024/Stop regressing (2024) - Farebrother et al.pdf}
 }
 
-@inproceedings{hasselt_deep_2016,
+@inproceedings{van_hasselt_deep_2016,
   title = {Deep Reinforcement Learning with Double Q-Learning},
   booktitle = {Proceedings of the Thirtieth {{AAAI}} Conference on Artificial Intelligence},
-  author = {family=Hasselt, given=Hado, prefix=van, useprefix=false and Guez, Arthur and Silver, David},
+  author = {family=Hasselt, given=Hado, prefix=van, useprefix=true and Guez, Arthur and Silver, David},
   date = {2016-02-12},
   series = {{{AAAI}}'16},
   pages = {2094--2100},
   publisher = {AAAI Press},
   location = {Phoenix, Arizona},
   abstract = {The popular Q-learning algorithm is known to overestimate action values under certain conditions. It was not previously known whether, in practice, such overestimations are common, whether they harm performance, and whether they can generally be prevented. In this paper, we answer all these questions affirmatively. In particular, we first show that the recent DQN algorithm, which combines Q-learning with a deep neural network, suffers from substantial overestimations in some games in the Atari 2600 domain. We then show that the idea behind the Double Q-learning algorithm, which was introduced in a tabular setting, can be generalized to work with large-scale function approximation. We propose a specific adaptation to the DQN algorithm and show that the resulting algorithm not only reduces the observed overestimations, as hypothesized, but that this also leads to much better performance on several games.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Deep reinforcement learning with double Q-Learning (2016) - Hasselt, Guez, Silver.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Deep reinforcement learning with double q-learning (2016) - van Hasselt, Guez, Silver.pdf}
 }
 
 @inproceedings{mnih_asynchronous_2016,
@@ -1127,7 +1127,7 @@
   abstract = {We propose a conceptually simple and lightweight framework for deep reinforcement learning that uses asynchronous gradient descent for optimization of deep neural network controllers. We present asynchronous variants of four standard reinforcement learning algorithms and show that parallel actor-learners have a stabilizing effect on training allowing all four methods to successfully train neural network controllers. The best performing method, an asynchronous variant of actor-critic, surpasses the current state-of-the-art on the Atari domain while training for half the time on a single multi-core CPU instead of a GPU. Furthermore, we show that asynchronous actor-critic succeeds on a wide variety of continuous motor control problems as well as on a new task of navigating random 3D mazes using a visual input.},
   eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Asynchronous Methods for Deep Reinforcement Learning (2016) - Mnih et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Asynchronous Methods for Deep Reinforcement Learning (2016) - Mnih et al.pdf}
 }
 
 @inproceedings{schulman_high-dimensional_2016,
@@ -1141,7 +1141,7 @@
   bibsource = {dblp computer science bibliography, https://dblp.org},
   keywords = {⛔ No DOI found},
   timestamp = {Thu, 25 Jul 2019 14:25:38 +0200},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/High-dimensional continuous control using generalized advantage estimation (2016) - Schulman et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/High-dimensional continuous control using generalized advantage estimation (2016) - Schulman et al.pdf}
 }
 
 @inproceedings{wu_scalable_2017,
@@ -1155,7 +1155,7 @@
   urldate = {2025-03-20},
   abstract = {In this work, we propose to apply trust region optimization to deep reinforcement learning using a recently proposed Kronecker-factored approximation to the curvature. We extend the framework of natural policy gradient and propose to optimize both the actor and the critic using Kronecker-factored approximate curvature (K-FAC) with trust region; hence we call our method Actor Critic using Kronecker-Factored Trust Region (ACKTR). To the best of our knowledge, this is the first scalable trust region natural gradient method for actor-critic methods. It is also the method that learns non-trivial tasks in continuous control as well as discrete control policies directly from raw pixel inputs. We tested our approach across discrete domains in Atari games as well as continuous domains in the MuJoCo environment. With the proposed methods, we are able to achieve higher rewards and a 2- to 3-fold improvement in sample efficiency on average, compared to previous state-of-the-art on-policy actor-critic methods. Code is available at https://github.com/openai/baselines},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Scalable trust-region method for deep reinforcement learning using Kronecker-factored approximation (2017) - Wu et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Scalable trust-region method for deep reinforcement learning using Kronecker-factored approximation (2017) - Wu et al.pdf}
 }
 
 @inproceedings{wang_sample_2017,
@@ -1167,7 +1167,7 @@
   urldate = {2025-03-20},
   abstract = {This paper presents an actor-critic deep reinforcement learning agent with experience replay that is stable, sample efficient, and performs remarkably well on challenging environments, including the discrete 57-game Atari domain and several continuous control problems. To achieve this, the paper introduces several innovations, including truncated importance sampling with bias correction, stochastic dueling network architectures, and a new trust region policy optimization method.},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Sample Efficient Actor-Critic with Experience Replay (2017) - Wang et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Sample Efficient Actor-Critic with Experience Replay (2017) - Wang et al.pdf}
 }
 
 @inproceedings{haarnoja_soft_2018,
@@ -1184,7 +1184,7 @@
   abstract = {Model-free deep reinforcement learning (RL) algorithms have been demonstrated on a range of challenging decision making and control tasks. However, these methods typically suffer from two major challenges: very high sample complexity and brittle convergence properties, which necessitate meticulous hyperparameter tuning. Both of these challenges severely limit the applicability of such methods to complex, real-world domains. In this paper, we propose soft actor-critic, an off-policy actor-critic deep RL algorithm based on the maximum entropy reinforcement learning framework. In this framework, the actor aims to maximize expected reward while also maximizing entropy. That is, to succeed at the task while acting as randomly as possible. Prior deep RL methods based on this framework have been formulated as Q-learning methods. By combining off-policy updates with a stable stochastic actor-critic formulation, our method achieves state-of-the-art performance on a range of continuous control benchmark tasks, outperforming prior on-policy and off-policy methods. Furthermore, we demonstrate that, in contrast to other off-policy algorithms, our approach is very stable, achieving very similar performance across different random seeds.},
   eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Soft Actor-Critic (2018) - Haarnoja, Zhou, Abbeel, Levine_1.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Soft Actor-Critic (2018) - Haarnoja, Zhou, Abbeel, Levine_2.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Soft Actor-Critic (2018) - Haarnoja, Zhou, Abbeel, Levine_1.pdf;/Users/adzcai/Vault/papers/assets/2018/Soft Actor-Critic (2018) - Haarnoja, Zhou, Abbeel, Levine_2.pdf}
 }
 
 @inproceedings{silver_deterministic_2014,
@@ -1200,7 +1200,7 @@
   abstract = {In this paper we consider deterministic policy gradient algorithms for reinforcement learning with continuous actions. The deterministic policy gradient has a particularly appealing form: it is the expected gradient of the action-value function. This simple form means that the deterministic policy gradient can be estimated much more efficiently than the usual stochastic policy gradient. To ensure adequate exploration, we introduce an off-policy actor-critic algorithm that learns a deterministic target policy from an exploratory behaviour policy. Deterministic policy gradient algorithms outperformed their stochastic counterparts in several benchmark problems, particularly in high-dimensional action spaces.},
   eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2014/Deterministic Policy Gradient Algorithms (2014) - Silver et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2014/Deterministic Policy Gradient Algorithms (2014) - Silver et al.pdf}
 }
 
 @book{szepesvari_algorithms_2010,
@@ -1215,7 +1215,7 @@
   urldate = {2025-03-20},
   isbn = {978-3-031-00423-0 978-3-031-01551-9},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2010/Algorithms for Reinforcement Learning (2010) - Szepesvári.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2010/Algorithms for Reinforcement Learning (2010) - Szepesvári.pdf}
 }
 
 @book{plaat_deep_2022,
@@ -1230,7 +1230,7 @@
   isbn = {978-981-19-0637-4 978-981-19-0638-1},
   langid = {english},
   keywords = {Alpha Go,artificial intelligence,deep learning,deep reinforcement learning,meta-learning,multi-agent learning,optimal control,reinforcement learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Deep Reinforcement Learning (2022) - Plaat.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2022/Deep Reinforcement Learning (2022) - Plaat.pdf}
 }
 
 @book{murphy_probabilistic_2023,
@@ -1245,7 +1245,7 @@
   isbn = {978-0-262-04843-9 978-0-262-37599-3 978-0-262-37600-6},
   langid = {english},
   pagetotal = {1},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2023/Probabilistic machine learning (2023) - Murphy.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2023/Probabilistic machine learning (2023) - Murphy.pdf}
 }
 
 @online{ivanov_modern_2019,
@@ -1261,7 +1261,7 @@
   abstract = {Recent advances in Reinforcement Learning, grounded on combining classical theoretical results with Deep Learning paradigm, led to breakthroughs in many artificial intelligence tasks and gave birth to Deep Reinforcement Learning (DRL) as a field of research. In this work latest DRL algorithms are reviewed with a focus on their theoretical justification, practical limitations and observed empirical properties.},
   pubstate = {prepublished},
   keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning,Statistics - Machine Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2019/Modern Deep Reinforcement Learning Algorithms (2019) - Ivanov, D'yakonov.pdf;/Users/adzcai/Zotero/storage/KLSM92FX/1906.html}
+  file = {/Users/adzcai/Vault/papers/assets/2019/Modern Deep Reinforcement Learning Algorithms (2019) - Ivanov, D'yakonov.pdf;/Users/adzcai/Zotero/storage/KLSM92FX/1906.html}
 }
 
 @book{puterman_markov_1994,
@@ -1301,7 +1301,7 @@
   abstract = {Foundations of Reinforcement Learning with Applications in Finance aims to demystify Reinforcement Learning, and to make it a practically useful tool for those studying and working in applied areas — especially finance. Reinforcement Learning is emerging as a powerful technique for solving a variety of complex problems across industries that involve Sequential Optimal Decisioning under Uncertainty. Its penetration in high-profile problems like self-driving cars, robotics, and strategy games points to a future where Reinforcement Learning algorithms will have decisioning abilities far superior to humans. But when it comes getting educated in this area, there seems to be a reluctance to jump right in, because Reinforcement Learning appears to have acquired a reputation for being mysterious and technically challenging. This book strives to impart a lucid and insightful understanding of the topic by emphasizing the foundational mathematics and implementing models and algorithms in well-designed Python code, along with robust coverage of several financial trading problems that can be solved with Reinforcement Learning. This book has been created after years of iterative experimentation on the pedagogy of these topics while being taught to university students as well as industry practitioners. Features Focus on the foundational theory underpinning Reinforcement Learning and software design of the corresponding models and algorithms Suitable as a primary text for courses in Reinforcement Learning, but also as supplementary reading for applied/financial mathematics, programming, and other related courses Suitable for a professional audience of quantitative analysts or data scientists Blends theory/mathematics, programming/algorithms and real-world financial nuances while always striving to maintain simplicity and to build intuitive understanding To access the code base for this book, please go to: https://github.com/TikhonJelvis/RL-book},
   isbn = {978-1-003-22919-3},
   pagetotal = {522},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Foundations of Reinforcement Learning with Applications in Finance (2022) - Rao, Jelvis.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2022/Foundations of Reinforcement Learning with Applications in Finance (2022) - Rao, Jelvis.pdf}
 }
 
 @book{mannor_reinforcement_2024,
@@ -1309,7 +1309,7 @@
   author = {Mannor, Shie and Mansour, Yishay and Tamar, Aviv},
   date = {2024},
   url = {https://sites.google.com/view/rlfoundations/home},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Reinforcement learning (2024) - Mannor, Mansour, Tamar.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2024/Reinforcement learning (2024) - Mannor, Mansour, Tamar.pdf}
 }
 
 @article{arulkumaran_deep_2017,
@@ -1328,7 +1328,7 @@
   abstract = {Deep reinforcement learning (DRL) is poised to revolutionize the field of artificial intelligence (AI) and represents a step toward building autonomous systems with a higher-level understanding of the visual world. Currently, deep learning is enabling reinforcement learning (RL) to scale to problems that were previously intractable, such as learning to play video games directly from pixels. DRL algorithms are also applied to robotics, allowing control policies for robots to be learned directly from camera inputs in the real world. In this survey, we begin with an introduction to the general field of RL, then progress to the main streams of value-based and policy-based methods. Our survey will cover central algorithms in deep RL, including the deep Q-network (DQN), trust region policy optimization (TRPO), and asynchronous advantage actor critic. In parallel, we highlight the unique advantages of deep neural networks, focusing on visual understanding via RL. To conclude, we describe several current areas of research within the field.},
   eventtitle = {{{IEEE Signal Processing Magazine}}},
   keywords = {Artificial intelligence,Learning (artificial intelligence),Machine learning,Neural networks,Signal processing algorithms,Visualization},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Deep Reinforcement Learning (2017) - Arulkumaran, Deisenroth, Brundage, Bharath.pdf;/Users/adzcai/Zotero/storage/K9ATXLD4/8103164.html}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Deep Reinforcement Learning (2017) - Arulkumaran, Deisenroth, Brundage, Bharath.pdf;/Users/adzcai/Zotero/storage/K9ATXLD4/8103164.html}
 }
 
 @article{weng2018bandit,
@@ -1338,19 +1338,6 @@
   journaltitle = {lilianweng.github.io},
   url = {https://lilianweng.github.io/posts/2018-02-19-rl-overview/},
   keywords = {⛔ No DOI found}
-}
-
-@book{powell_reinforcement_2022,
-  title = {Reinforcement Learning and Stochastic Optimization: A Unified Framework for Sequential Decisions},
-  shorttitle = {Reinforcement Learning and Stochastic Optimization},
-  author = {Powell, Warren B.},
-  date = {2022},
-  publisher = {Wiley},
-  location = {Hoboken, New Jersey},
-  abstract = {"The first step in sequential decision problems is to understand what decisions are being made. It is surprising how often it is that people faced with complex problems, which spans scientists in a lab to people trying to solve major health problems, are not able to identify the decisions they face. We then want to find a method for making decisions. There are at least 45 words in the English language that are equivalent to "method for making a decision," but the one we have settled on is policy. The term policy is very familiar to fields such as Markov decision processes and reinforcement learning, but with a much narrower interpretation than we will use. Other fields do not use the term at all. Designing effective policies will be the focus of most of this book. Even more subtle is identifying the different sources of uncertainty. It can be hard enough trying to identify potential decisions, but thinking about all the random events that might affect whatever it is that you are managing, whether it is reducing disease, managing inventories, or making investments, can seem like a hopeless challenge"--},
-  isbn = {978-1-119-81503-7 978-1-119-81504-4 978-1-119-81505-1 978-1-119-81506-8},
-  langid = {english},
-  pagetotal = {1}
 }
 
 @inproceedings{agarwal_deep_2021,
@@ -1365,7 +1352,7 @@
   urldate = {2025-03-21},
   abstract = {Deep reinforcement learning (RL) algorithms are predominantly evaluated by comparing their relative performance on a large suite of tasks. Most published results on deep RL benchmarks compare point estimates of aggregate performance such as mean and median scores across tasks, ignoring the statistical uncertainty implied by the use of a finite number of training runs. Beginning with the Arcade Learning Environment (ALE), the shift towards computationally-demanding benchmarks has led to the practice of evaluating only a small number of runs per task, exacerbating the statistical uncertainty in point estimates. In this paper, we argue that reliable evaluation in the few run deep RL regime cannot ignore the uncertainty in results without running the risk of slowing down progress in the field. We illustrate this point using a case study on the Atari 100k benchmark, where we find substantial discrepancies between conclusions drawn from point estimates alone versus a more thorough statistical analysis. With the aim of increasing the field's confidence in reported results with a handful of runs, we advocate for reporting interval estimates of aggregate performance and propose performance profiles to account for the variability in results, as well as present more robust and efficient aggregate metrics, such as interquartile mean scores, to achieve small uncertainty in results. Using such statistical tools, we scrutinize performance evaluations of existing algorithms on other widely used RL benchmarks including the ALE, Procgen, and the DeepMind Control Suite, again revealing discrepancies in prior comparisons. Our findings call for a change in how we evaluate performance in deep RL, for which we present a more rigorous evaluation methodology, accompanied with an open-source library rliable, to prevent unreliable results from stagnating the field. This work received an outstanding paper award at NeurIPS 2021.},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Deep reinforcement learning at the edge of the statistical precipice (2021) - Agarwal et al_1.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Deep Reinforcement Learning at the Edge of the Statistical Precipice (2021) - Agarwal et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2021/Deep reinforcement learning at the edge of the statistical precipice (2021) - Agarwal et al_1.pdf;/Users/adzcai/Vault/papers/assets/2021/Deep Reinforcement Learning at the Edge of the Statistical Precipice (2021) - Agarwal et al.pdf}
 }
 
 @online{openai_introducing_2022,
@@ -1397,17 +1384,16 @@
   urldate = {2025-03-21},
   abstract = {In this paper we describe a new conceptual framework that connects approximate Dynamic Programming (DP), Model Predictive Control (MPC), and Reinforcement Learning (RL). This framework centers around two algorithms, which are designed largely independently of each other and operate in synergy through the powerful mechanism of Newton's method. We call them the off-line training and the on-line play algorithms. The names are borrowed from some of the major successes of RL involving games; primary examples are the recent (2017) AlphaZero program (which plays chess, [SHS17], [SSS17]), and the similarly structured and earlier (1990s) TD-Gammon program (which plays backgammon, [Tes94], [Tes95], [TeG96]). In these game contexts, the off-line training algorithm is the method used to teach the program how to evaluate positions and to generate good moves at any given position, while the on-line play algorithm is the method used to play in real time against human or computer opponents. Significantly, the synergy between off-line training and on-line play also underlies MPC (as well as other major classes of sequential decision problems), and indeed the MPC design architecture is very similar to the one of AlphaZero and TD-Gammon. This conceptual insight provides a vehicle for bridging the cultural gap between RL and MPC, and sheds new light on some fundamental issues in MPC. These include the enhancement of stability properties through rollout, the treatment of uncertainty through the use of certainty equivalence, the resilience of MPC in adaptive control settings that involve changing system parameters, and the insights provided by the superlinear performance bounds implied by Newton's method.},
   keywords = {Adaptive Control,Dynamic Programming,Model Predictive Control,Newton's Method,Reinforcement Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/Model Predictive Control and Reinforcement Learning (2024) - Bertsekas.pdf;/Users/adzcai/Zotero/storage/69APCYBK/S2405896324014356.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/Model Predictive Control and Reinforcement Learning (2024) - Bertsekas.pdf;/Users/adzcai/Zotero/storage/69APCYBK/S2405896324014356.html}
 }
 
-@article{turing_intelligent_1948,
+@unpublished{turing_intelligent_1948,
   title = {Intelligent Machinery},
   author = {Turing, Alan},
   date = {1948},
-  journaltitle = {National physical laboratory},
   url = {https://weightagnostic.github.io/papers/turing1948.pdf},
   urldate = {2025-03-21},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/_/turing1948 () - .pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1948/Intelligent machinery (1948) - Turing.pdf}
 }
 
 @artwork{pixabay_20_2016,
@@ -1442,7 +1428,7 @@
   urldate = {2025-03-21},
   abstract = {We consider the framework of stochastic multi-armed bandit problems and study the possibilities and limitations of forecasters that perform an on-line exploration of the arms. These forecasters are assessed in terms of their simple regret, a regret notion that captures the fact that exploration is only constrained by the number of available rounds (not necessarily known in advance), in contrast to the case when the cumulative regret is considered and when exploitation needs to be performed at the same time. We believe that this performance criterion is suited to situations when the cost of pulling an arm is expressed in terms of resources rather than rewards. We discuss the links between the simple and the cumulative regret. One of the main results in the case of a finite number of arms is a general lower bound on the simple regret of a forecaster in terms of its cumulative regret: the smaller the latter, the larger the former. Keeping this result in mind, we then exhibit upper bounds on the simple regret of some forecasters. The paper ends with a study devoted to continuous-armed bandit problems; we show that the simple regret can be minimized with respect to a family of probability distributions if and only if the cumulative regret can be minimized for it. Based on this equivalence, we are able to prove that the separable metric spaces are exactly the metric spaces on which these regrets can be minimized with respect to the family of all probability distributions with continuous mean-payoff functions.},
   keywords = {Continuous-armed bandits,Efficient exploration,Multi-armed bandits,Simple regret},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2011/Pure exploration in finitely-armed and continuous-armed bandits (2011) - Bubeck, Munos, Stoltz.pdf;/Users/adzcai/Zotero/storage/X6Z4IFMA/S030439751000767X.html}
+  file = {/Users/adzcai/Vault/papers/assets/2011/Pure exploration in finitely-armed and continuous-armed bandits (2011) - Bubeck, Munos, Stoltz.pdf;/Users/adzcai/Zotero/storage/X6Z4IFMA/S030439751000767X.html}
 }
 
 @inproceedings{dann_unifying_2017,
@@ -1457,7 +1443,7 @@
   urldate = {2025-03-21},
   abstract = {Statistical performance bounds for reinforcement learning (RL) algorithms can be critical for high-stakes applications like healthcare. This paper introduces a new framework for theoretically measuring the performance of such algorithms called Uniform-PAC, which is a strengthening of the classical Probably Approximately Correct (PAC) framework. In contrast to the PAC framework, the uniform version may be used to derive high probability regret guarantees and so forms a bridge between the two setups that has been missing in the literature. We demonstrate the benefits of the new framework for finite-state episodic MDPs with a new algorithm that is Uniform-PAC and simultaneously achieves optimal regret and PAC guarantees except for a factor of the horizon.},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Unifying PAC and Regret (2017) - Dann, Lattimore, Brunskill.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Unifying PAC and Regret (2017) - Dann, Lattimore, Brunskill.pdf}
 }
 
 @online{razin_what_2025,
@@ -1474,7 +1460,7 @@
   abstract = {The success of Reinforcement Learning from Human Feedback (RLHF) critically depends on the quality of the reward model. While this quality is primarily evaluated through accuracy, it remains unclear whether accuracy fully captures what makes a reward model an effective teacher. We address this question from an optimization perspective. First, we prove that regardless of how accurate a reward model is, if it induces low reward variance, then the RLHF objective suffers from a flat landscape. Consequently, even a perfectly accurate reward model can lead to extremely slow optimization, underperforming less accurate models that induce higher reward variance. We additionally show that a reward model that works well for one language model can induce low reward variance, and thus a flat objective landscape, for another. These results establish a fundamental limitation of evaluating reward models solely based on accuracy or independently of the language model they guide. Experiments using models of up to 8B parameters corroborate our theory, demonstrating the interplay between reward variance, accuracy, and reward maximization rate. Overall, our findings highlight that beyond accuracy, a reward model needs to induce sufficient variance for efficient optimization.},
   pubstate = {prepublished},
   keywords = {Computer Science - Artificial Intelligence,Computer Science - Computation and Language,Computer Science - Machine Learning,Statistics - Machine Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2025/What Makes a Reward Model a Good Teacher (2025) - Razin et al.pdf;/Users/adzcai/Zotero/storage/PXP47NW9/2503.html}
+  file = {/Users/adzcai/Vault/papers/assets/2025/What Makes a Reward Model a Good Teacher (2025) - Razin et al.pdf;/Users/adzcai/Zotero/storage/PXP47NW9/2503.html}
 }
 
 @artwork{pixabay_coins_2016,
@@ -1530,7 +1516,7 @@
   urldate = {2025-03-23},
   abstract = {Personalized web services strive to adapt their services (advertisements, news articles, etc.) to individual users by making use of both content and user information. Despite a few recent advances, this problem remains challenging for at least two reasons. First, web service is featured with dynamically changing pools of content, rendering traditional collaborative filtering methods inapplicable. Second, the scale of most web services of practical interest calls for solutions that are both fast in learning and computation.In this work, we model personalized recommendation of news articles as a contextual bandit problem, a principled approach in which a learning algorithm sequentially selects articles to serve users based on contextual information about the users and articles, while simultaneously adapting its article-selection strategy based on user-click feedback to maximize total user clicks.The contributions of this work are three-fold. First, we propose a new, general contextual bandit algorithm that is computationally efficient and well motivated from learning theory. Second, we argue that any bandit algorithm can be reliably evaluated offline using previously recorded random traffic. Finally, using this offline evaluation method, we successfully applied our new algorithm to a Yahoo! Front Page Today Module dataset containing over 33 million events. Results showed a 12.5\% click lift compared to a standard context-free bandit algorithm, and the advantage becomes even greater when data gets more scarce.},
   isbn = {978-1-60558-799-8},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2010/A contextual-bandit approach to personalized news article recommendation (2010) - Li, Chu, Langford, Schapire.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2010/A contextual-bandit approach to personalized news article recommendation (2010) - Li, Chu, Langford, Schapire.pdf}
 }
 
 @article{auer_using_2002,
@@ -1546,7 +1532,7 @@
   abstract = {We show how a standard tool from statistics --- namely confidence bounds --- can be used to elegantly deal with situations which exhibit an exploitation-exploration trade-off. Our technique for designing and analyzing algorithms for such situations is general and can be applied when an algorithm has to make exploitation-versus-exploration decisions based on uncertain information provided by a random process. We apply our technique to two models with such an exploitation-exploration trade-off. For the adversarial bandit problem with shifting our new algorithm suffers only O((ST)1/2) regret with high probability over T trials with S shifts. Such a regret bound was previously known only in expectation. The second model we consider is associative reinforcement learning with linear value functions. For this model our technique improves the regret from O(T3/4) to O(T1/2).},
   issue = {Nov},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2002/Using Confidence Bounds for Exploitation-Exploration Trade-offs (2002) - Auer.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2002/Using Confidence Bounds for Exploitation-Exploration Trade-offs (2002) - Auer.pdf}
 }
 
 @article{thompson_likelihood_1933,
@@ -1564,7 +1550,7 @@
   doi = {10.2307/2332286},
   url = {https://www.jstor.org/stable/2332286},
   urldate = {2025-03-24},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1933/On the Likelihood that One Unknown Probability Exceeds Another in View of the Evidence of Two Samples (1933) - Thompson.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1933/On the Likelihood that One Unknown Probability Exceeds Another in View of the Evidence of Two Samples (1933) - Thompson.pdf}
 }
 
 @article{thompson_theory_1935,
@@ -1582,7 +1568,7 @@
   doi = {10.2307/2371219},
   url = {https://www.jstor.org/stable/2371219},
   urldate = {2025-03-24},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1935/On the Theory of Apportionment (1935) - Thompson.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1935/On the Theory of Apportionment (1935) - Thompson.pdf}
 }
 
 @book{stigler_history_2003,
@@ -1596,7 +1582,7 @@
   isbn = {978-0-674-40341-3 978-0-674-40340-6},
   langid = {english},
   pagetotal = {410},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2003/The history of statistics (2003) - Stigler.djvu}
+  file = {/Users/adzcai/Vault/papers/assets/2003/The history of statistics (2003) - Stigler.djvu}
 }
 
 @incollection{fisher_statistical_1992,
@@ -1615,7 +1601,7 @@
   isbn = {978-1-4612-4380-9},
   langid = {english},
   keywords = {Manure Plot,Manurial Response,Manurial Treatment,Rothamsted Experimental Station,Total Yield},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1992/Breakthroughs in Statistics, Statistical Methods for Research Workers (1992) - Fisher, Kotz, Johnson.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1992/Breakthroughs in Statistics, Statistical Methods for Research Workers (1992) - Fisher, Kotz, Johnson.pdf}
 }
 
 @book{fisher_statistical_1925,
@@ -1642,7 +1628,7 @@
   url = {https://projecteuclid.org/journals/bulletin-of-the-american-mathematical-society/volume-58/issue-5/Some-aspects-of-the-sequential-design-of-experiments/bams/1183517370.full},
   urldate = {2025-03-24},
   abstract = {Bulletin (New Series) of the American Mathematical Society},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1952/Some aspects of the sequential design of experiments (1952) - Robbins.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1952/Some aspects of the sequential design of experiments (1952) - Robbins.pdf}
 }
 
 @article{wald_statistical_1949,
@@ -1659,7 +1645,7 @@
   url = {https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-20/issue-2/Statistical-Decision-Functions/10.1214/aoms/1177730030.full},
   urldate = {2025-03-24},
   abstract = {The foundations of a general theory of statistical decision functions, including the classical non-sequential case as well as the sequential case, was discussed by the author in a previous publication [3]. Several assumptions made in [3] appear, however, to be unnecessarily restrictive (see conditions 1-7, pp. 297 in [3]). These assumptions, moreover, are not always fulfilled for statistical problems in their conventional form. In this paper the main results of [3], as well as several new results, are obtained from a considerably weaker set of conditions which are fulfilled for most of the statistical problems treated in the literature. It seemed necessary to abandon most of the methods of proofs used in [3] (particularly those in section 4 of [3]) and to develop the theory from the beginning. To make the present paper self-contained, the basic definitions already given in [3] are briefly restated in section 2.1. In [3] it is postulated (see Condition 3, p. 207) that the space \$\textbackslash Omega\$ of all admissible distribution functions \$F\$ is compact. In problems where the distribution function \$F\$ is known except for the values of a finite number of parameters, i.e., where \$\textbackslash Omega\$ is a parametric class of distribution functions, the compactness condition will usually not be fulfilled if no restrictions are imposed on the possible values of the parameters. For example, if \$\textbackslash Omega\$ is the class of all univariate normal distributions with unit variance, \$\textbackslash Omega\$ is not compact. It is true that by restricting the parameter space to a bounded and closed subset of the unrestricted space, compactness of \$\textbackslash Omega\$ will usually be attained. Since such a restriction of the parameter space can frequently be made in applied problems, the condition of compactness may not be too restrictive from the point of view of practical applications. Nevertheless, it seems highly desirable from the theoretical point of view to eliminate or to weaken the condition of compactness of \$\textbackslash Omega\$. This is done in the present paper. The compactness condition is completely omitted in the discrete case (Theorems 2.1-2.5), and replaced by the condition of separability of \$\textbackslash Omega\$ in the continuous case (Theorems 3.1-3.4). The latter condition is fulfilled in most of the conventional statistical problems. Another restriction postulated in [3] (Condition 4, p. 297) is the continuity of the weight function \$W(F, d)\$ in \$F\$. As explained in section 2.1 of the present paper, the value of \$W(F, d)\$ is interpreted as the loss suffered when \$F\$ happens to be the true distribution of the chance variables under consideration and the decision \$d\$ is made by the statistician. While the assumption of continuity of \$W(F, d)\$ in \$F\$ may seem reasonable from the point of view of practical application, it is rather undesirable from the theoretical point of view for the following reasons. It is of considerable theoretical interest to consider simplified weight functions \$W(F, d)\$ which can take only the values 0 and 1 (the value 0 corresponds to a correct decision, and the value 1 to a wrong decision). Frequently, such weight functions are necessarily discontinuous. Consider, for example, the problem of testing the hypothesis \$H\$ that the mean \$\textbackslash theta\$ of a normally distributed chance variable \$X\$ with unit variance is equal to zero. Let \$d\_1\$ denote the decision to accept \$H\$, and \$d\_2\$ the decision to reject \$H\$. Assigning the value zero to the weight \$W\$ whenever a correct decision is made, and the value 1 whenever a wrong decision is made, we have: \$W(\textbackslash theta, d\_1) = 0 \textbackslash text\{for\} \textbackslash theta = 0, \textbackslash text\{and\} = 1 \textbackslash text\{for\} \textbackslash theta \textbackslash neq 0; W (\textbackslash theta, d\_2) = 0 \textbackslash text\{for\} \textbackslash theta \textbackslash neq 0, \textbackslash text\{and\} = 1 \textbackslash text\{for\} \textbackslash theta = 0.\$ This weight function is obviously discontinuous. In the present paper the main results (Theorems 2.1-2.5 and Theorems 3.1-3.4) are obtained without making any continuity assumption regarding \$W(F, d)\$. The restrictions imposed in the present paper on the cost function of experimentation are considerably weaker than those formulated in [3]. Condition 5 [3, p. 297] concerning the class \$\textbackslash Omega\$ of admissible distribution functions, and condition 7 [3, p. 298] concerning the class of decision functions at the disposal of the statistician are omitted here altogether. One of the new results obtained here is the establishment of the existence of so called minimax solutions under rather weak conditions (Theorems 2.3 and 3.2). This result is a simple consequence of two lemmas (Lemmas 2.4 and 3.3) which seem to be of interest in themselves. The present paper consists of three sections. In the first section several theorems are given concerning zero sum two person games which go somewhat beyond previously published results. The results in section 1 are then applied to statistical decision functions in sections 2 and 3. Section 2 treats the case of discrete chance variables, while section 3 deals with the continuous case. The two cases have been treated separately, since the author was not able to find any simple and convenient way of combining them into a single more general theory.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1949/Statistical Decision Functions (1949) - Wald.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1949/Statistical Decision Functions (1949) - Wald.pdf}
 }
 
 @article{bellman_problem_1956,
@@ -1677,7 +1663,7 @@
   url = {https://www.jstor.org/stable/25048278},
   urldate = {2025-03-24},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1956/A Problem in the Sequential Design of Experiments (1956) - Bellman.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1956/A Problem in the Sequential Design of Experiments (1956) - Bellman.pdf}
 }
 
 @book{vapnik_nature_2000,
@@ -1706,7 +1692,7 @@
   doi = {10.1016/j.inffus.2022.03.003},
   url = {https://doi.org/10.1016/j.inffus.2022.03.003},
   urldate = {2025-03-24},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Exploration in deep reinforcement learning (2022) - Ladosz, Weng, Kim, Oh.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2022/Exploration in deep reinforcement learning (2022) - Ladosz, Weng, Kim, Oh.pdf}
 }
 
 @inproceedings{tang_exploration_2017,
@@ -1721,24 +1707,7 @@
   urldate = {2025-03-24},
   abstract = {Count-based exploration algorithms are known to perform near-optimally when used in conjunction with tabular reinforcement learning (RL) methods for solving small discrete Markov decision processes (MDPs). It is generally thought that count-based methods cannot be applied in high-dimensional state spaces, since most states will only occur once. Recent deep RL exploration strategies are able to deal with high-dimensional continuous state spaces through complex heuristics, often relying on optimism in the face of uncertainty or intrinsic motivation. In this work, we describe a surprising finding: a simple generalization of the classic count-based approach can reach near state-of-the-art performance on various high-dimensional and/or continuous deep RL benchmarks. States are mapped to hash codes, which allows to count their occurrences with a hash table. These counts are then used to compute a reward bonus according to the classic count-based exploration theory. We find that simple hash functions can achieve surprisingly good results on many challenging tasks. Furthermore, we show that a domain-dependent learned hash code may further improve these results. Detailed analysis reveals important aspects of a good hash function: 1) having appropriate granularity and 2) encoding information relevant to solving the MDP. This exploration strategy achieves near state-of-the-art performance on both continuous control tasks and Atari 2600 games, hence providing a simple yet powerful baseline for solving MDPs that require considerable exploration.},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/#Exploration (2017) - Tang et al.pdf}
-}
-
-@online{murphy_reinforcement_2025,
-  title = {Reinforcement Learning: A Comprehensive Overview},
-  shorttitle = {Reinforcement Learning},
-  author = {Murphy, Kevin},
-  date = {2025-03-24},
-  eprint = {2412.05265},
-  eprinttype = {arXiv},
-  eprintclass = {cs},
-  doi = {10.48550/arXiv.2412.05265},
-  url = {http://arxiv.org/abs/2412.05265},
-  urldate = {2025-03-26},
-  abstract = {This manuscript gives a big-picture, up-to-date overview of the field of (deep) reinforcement learning and sequential decision making, covering value-based method, policy-gradient methods, model-based methods, and various other topics (e.g., multi-agent RL, RL+LLMs, and RL+inference).},
-  pubstate = {prepublished},
-  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2025/Reinforcement Learning (2025) - Murphy.pdf;/Users/adzcai/Zotero/storage/E8QYKMX4/2412.html}
+  file = {/Users/adzcai/Vault/papers/assets/2017/#Exploration (2017) - Tang et al.pdf}
 }
 
 @book{lambert_reinforcement_2024,
@@ -1779,7 +1748,7 @@
   abstract = {Reinforcement learning policies face the exploration versus exploitation dilemma, i.e. the search for a balance between exploring the environment to find profitable actions while taking the empirically best action as often as possible. A popular measure of a policy's success in addressing this dilemma is the regret, that is the loss due to the fact that the globally optimal policy is not followed all the times. One of the simplest examples of the exploration/exploitation dilemma is the multi-armed bandit problem. Lai and Robbins were the first ones to show that the regret for this problem has to grow at least logarithmically in the number of plays. Since then, policies which asymptotically achieve this regret have been devised by Lai and Robbins and many others. In this work we show that the optimal logarithmic regret is also achievable uniformly over time, with simple and efficient policies, and for all reward distributions with bounded support.},
   langid = {english},
   keywords = {adaptive allocation rules,Artificial Intelligence,bandit problems,finite horizon regret},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2002/Finite-time Analysis of the Multiarmed Bandit Problem (2002) - Auer, Cesa-Bianchi, Fischer.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2002/Finite-time Analysis of the Multiarmed Bandit Problem (2002) - Auer, Cesa-Bianchi, Fischer.pdf}
 }
 
 @article{witten_adaptive_1977,
@@ -1796,7 +1765,7 @@
   url = {https://www.sciencedirect.com/science/article/pii/S0019995877903540},
   urldate = {2025-03-27},
   abstract = {This paper describes an adaptive controller for discrete-time stochastic environments. The controller receives the environment's current state and a reward signal which indicates the desirability of that state. In response, it selects an appropriate control action and notes its effect. The cycle repeats indefinitely. The control environments to be tackled include the well-known n-armed bandit problem, and the adaptive controller comprises an ensemble of n-armed bandit controllers, suitably interconnected. The design of these constituent elements is not discussed. It is shown that, under certain conditions, the controller's actions eventually become optimal for the particular control task with which it is faced, in the sense that they maximize the expected reward obtained in the future.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1977/An adaptive optimal controller for discrete-time Markov environments (1977) - Witten.pdf;/Users/adzcai/Zotero/storage/JC2QFXP9/S0019995877903540.html}
+  file = {/Users/adzcai/Vault/papers/assets/1977/An adaptive optimal controller for discrete-time Markov environments (1977) - Witten.pdf;/Users/adzcai/Zotero/storage/JC2QFXP9/S0019995877903540.html}
 }
 
 @article{barto_neuronlike_1983,
@@ -1814,7 +1783,7 @@
   abstract = {It is shown how a system consisting of two neuronlike adaptive elements can solve a difficult learning control problem. The task is to balance a pole that is hinged to a movable cart by applying forces to the cart's base. It is argued that the learning problems faced by adaptive elements that are components of adaptive networks are at least as difficult as this version of the pole-balancing problem. The learning system consists of a single associative search element (ASE) and a single adaptive critic element (ACE). In the course of learning to balance the pole, the ASE constructs associations between input and output by searching under the influence of reinforcement feedback, and the ACE constructs a more informative evaluation function than reinforcement feedback alone can provide. The differences between this approach and other attempts to solve problems using neurolike elements are discussed, as is the relation of this work to classical and instrumental conditioning in animal learning studies and its possible implications for research in the neurosciences.},
   eventtitle = {{{IEEE Transactions}} on {{Systems}}, {{Man}}, and {{Cybernetics}}},
   keywords = {Adaptive systems,Biological neural networks,Neurons,Pattern recognition,Problem-solving,Supervised learning,Training},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1983/Neuronlike adaptive elements that can solve difficult learning control problems (1983) - Barto, Sutton, Anderson.pdf;/Users/adzcai/Zotero/storage/8LU269S4/6313077.html}
+  file = {/Users/adzcai/Vault/papers/assets/1983/Neuronlike adaptive elements that can solve difficult learning control problems (1983) - Barto, Sutton, Anderson.pdf;/Users/adzcai/Zotero/storage/8LU269S4/6313077.html}
 }
 
 @thesis{sutton_temporal_1984,
@@ -1844,7 +1813,7 @@
   abstract = {This article introduces a class of incremental learning procedures specialized for prediction-that is, for using past experience with an incompletely known system to predict its future behavior. Whereas conventional prediction-learning methods assign credit by means of the difference between predicted and actual outcomes, the new methods assign credit by means of the difference between temporally successive predictions. Although such temporal-difference methods have been used in Samuel's checker player, Holland's bucket brigade, and the author's Adaptive Heuristic Critic, they have remained poorly understood. Here we prove their convergence and optimality for special cases and relate them to supervised-learning methods. For most real-world prediction problems, temporal-difference methods require less memory and less peak computation than conventional methods and they produce more accurate predictions. We argue that most problems to which supervised learning is currently applied are really prediction problems of the sort to which temporal-difference methods can be applied to advantage.},
   langid = {english},
   keywords = {Artificial Intelligence,connectionism,credit assignment,evaluation functions,Incremental learning,prediction},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1988/Learning to predict by the methods of temporal differences (1988) - Sutton.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1988/Learning to predict by the methods of temporal differences (1988) - Sutton.pdf}
 }
 
 @article{samuel_studies_1959,
@@ -1861,7 +1830,7 @@
   urldate = {2025-03-27},
   abstract = {Two machine-learning procedures have been investigated in some detail using the game of checkers. Enough work has been done to verify the fact that a computer can be programmed so that it will learn to play a better game of checkers than can be played by the person who wrote the program. Furthermore, it can learn to do this in a remarkably short period of time (8 or 10 hours of machine-playing time) when given only the rules of the game, a sense of direction, and a redundant and incomplete list of parameters which are thought to have something to do with the game, but whose correct signs and relative weights are unknown and unspecified. The principles of machine learning verified by these experiments are, of course, applicable to many other situations.},
   eventtitle = {{{IBM Journal}} of {{Research}} and {{Development}}},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1959/Some Studies in Machine Learning Using the Game of Checkers (1959) - Samuel.pdf;/Users/adzcai/Zotero/storage/ZQR6ZSH9/5392560.html}
+  file = {/Users/adzcai/Vault/papers/assets/1959/Some Studies in Machine Learning Using the Game of Checkers (1959) - Samuel.pdf;/Users/adzcai/Zotero/storage/ZQR6ZSH9/5392560.html}
 }
 
 @book{klopf_brain_1972,
@@ -1874,7 +1843,7 @@
   publisher = {Air Force Cambridge Research Laboratories, Air Force Systems Command, United States Air Force},
   langid = {english},
   pagetotal = {84},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1972/Brain Function and Adaptive Systems (1972) - Klopf.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1972/Brain Function and Adaptive Systems (1972) - Klopf.pdf}
 }
 
 @inproceedings{werbos_neural_1989,
@@ -1889,7 +1858,7 @@
   abstract = {A review is presented of the field of neuroengineering as a whole, highlighting the importance of neurocontrol and neuroidentification. Then a description is given of the five major architectures in use today in neurocontrol (in robotics, in particular) and a few areas for future research. The author concludes with comments on neuroidentification.{$<>$}},
   eventtitle = {Proceedings of the 28th {{IEEE Conference}} on {{Decision}} and {{Control}},},
   keywords = {Biological neural networks,Computer architecture,Control systems,Control theory,Educational institutions,Hardware,Neural engineering,Neural networks,Optical computing,System identification},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1989/Neural networks for control and system identification (1989) - Werbos.pdf;/Users/adzcai/Zotero/storage/AQB9V93Y/70114.html}
+  file = {/Users/adzcai/Vault/papers/assets/1989/Neural networks for control and system identification (1989) - Werbos.pdf;/Users/adzcai/Zotero/storage/AQB9V93Y/70114.html}
 }
 
 @inproceedings{hessel_rainbow_2018,
@@ -1904,7 +1873,7 @@
   location = {New Orleans, Louisiana, USA},
   abstract = {The deep reinforcement learning community has made several independent improvements to the DQN algorithm. However, it is unclear which of these extensions are complementary and can be fruitfully combined. This paper examines six extensions to the DQN algorithm and empirically studies their combination. Our experiments show that the combination provides state-of-the-art performance on the Atari 2600 benchmark, both in terms of data efficiency and final performance. We also provide results from a detailed ablation study that shows the contribution of each component to overall performance.},
   isbn = {978-1-57735-800-8},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Rainbow (2018) - Hessel et al_1.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Rainbow (2018) - Hessel et al_1.pdf}
 }
 
 @article{mnih_human-level_2015,
@@ -1923,7 +1892,7 @@
   abstract = {An artificial agent is developed that learns to play~a diverse range of classic Atari 2600 computer games directly from sensory experience, achieving a~performance comparable to that of an expert human player; this work paves the way to building general-purpose learning algorithms that bridge the divide between perception and action.},
   langid = {english},
   keywords = {Computer science},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Human-level control through deep reinforcement learning (2015) - Mnih et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2015/Human-level control through deep reinforcement learning (2015) - Mnih et al.pdf}
 }
 
 @inproceedings{rummery_-line_1994,
@@ -1947,7 +1916,7 @@
   location = {Lewiston, NY, US},
   doi = {10.5962/bhl.title.55072},
   pagetotal = {viii, 297},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1911/Animal intelligence (1911) - Thorndike.pdf;/Users/adzcai/Zotero/storage/Y2AUVKSN/2003-00027-000.html}
+  file = {/Users/adzcai/Vault/papers/assets/1911/Animal intelligence (1911) - Thorndike.pdf;/Users/adzcai/Zotero/storage/Y2AUVKSN/2003-00027-000.html}
 }
 
 @inproceedings{martens_optimizing_2015,
@@ -1963,7 +1932,7 @@
   abstract = {We propose an efficient method for approximating natural gradient descent in neural networks which we call Kronecker-factored Approximate Curvature (K-FAC). K-FAC is based on an efficiently invertible approximation of a neural network’s Fisher information matrix which is neither diagonal nor low-rank, and in some cases is completely non-sparse. It is derived by approximating various large blocks of the Fisher (corresponding to entire layers) as being the Kronecker product of two much smaller matrices. While only several times more expensive to compute than the plain stochastic gradient, the updates produced by K-FAC make much more progress optimizing the objective, which results in an algorithm that can be much faster than stochastic gradient descent with momentum in practice. And unlike some previously proposed approximate natural-gradient/Newton methods which use high-quality non-diagonal curvature matrices (such as Hessian-free optimization), K-FAC works very well in highly stochastic optimization regimes. This is because the cost of storing and inverting K-FAC’s approximation to the curvature matrix does not depend on the amount of data used to estimate it, which is a feature typically associated only with diagonal or low-rank approximations to the curvature matrix.},
   eventtitle = {International {{Conference}} on {{Machine Learning}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2015/Optimizing Neural Networks with Kronecker-factored Approximate Curvature (2015) - Martens, Grosse.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2015/Optimizing Neural Networks with Kronecker-factored Approximate Curvature (2015) - Martens, Grosse.pdf}
 }
 
 @inproceedings{maei_convergent_2009,
@@ -1976,7 +1945,7 @@
   url = {https://papers.nips.cc/paper_files/paper/2009/hash/3a15c7d0bbe60300a39f76f8a5ba6896-Abstract.html},
   urldate = {2025-03-27},
   keywords = {⛔ No DOI found},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2009/Convergent Temporal-Difference Learning with Arbitrary Smooth Function Approximation (2009) - Maei et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2009/Convergent Temporal-Difference Learning with Arbitrary Smooth Function Approximation (2009) - Maei et al.pdf}
 }
 
 @inproceedings{haarnoja_reinforcement_2017,
@@ -1989,7 +1958,7 @@
   publisher = {JMLR.org},
   location = {Sydney, NSW, Australia},
   abstract = {We propose a method for learning expressive energy-based policies for continuous states and actions, which has been feasible only in tabular domains before. We apply our method to learning maximum entropy policies, resulting into a new algorithm, called soft Q-learning, that expresses the optimal policy via a Boltzmann distribution. We use the recently proposed amortized Stein variational gradient descent to learn a stochastic sampling network that approximates samples from this distribution. The benefits of the proposed algorithm include improved exploration and compositionality that allows transferring skills between tasks, which we confirm in simulated experiments with swimming and walking robots. We also draw a connection to actor-critic methods, which can be viewed performing approximate inference on the corresponding energy-based model.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Reinforcement learning with deep energy-based policies (2017) - Haarnoja, Tang, Abbeel, Levine.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Reinforcement learning with deep energy-based policies (2017) - Haarnoja, Tang, Abbeel, Levine.pdf}
 }
 
 @article{wise_dopamine_2004,
@@ -2022,7 +1991,7 @@
   location = {Red Hook, NY, USA},
   abstract = {In this work, we take a fresh look at some old and new algorithms for off-policy, return-based reinforcement learning. Expressing these in a common form, we derive a novel algorithm, Retrace(λ), with three desired properties: (1) it has low variance; (2) it safely uses samples collected from any behaviour policy, whatever its degree of "off-policyness"; and (3) it is efficient as it makes the best use of samples collected from near on-policy behaviour policies. We analyze the contractive nature of the related operator under both off-policy policy evaluation and control settings and derive online sample-based algorithms. We believe this is the first return-based off-policy control algorithm converging a.s. to Q* without the GLIE assumption (Greedy in the Limit with Infinite Exploration). As a corollary, we prove the convergence of Watkins' Q(λ), which was an open problem since 1989. We illustrate the benefits of Retrace(λ) on a standard suite of Atari 2600 games.},
   isbn = {978-1-5108-3881-9},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Safe and efficient off-policy reinforcement learning (2016) - Munos, Stepleton, Harutyunyan, Bellemare.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Safe and efficient off-policy reinforcement learning (2016) - Munos, Stepleton, Harutyunyan, Bellemare.pdf}
 }
 
 @article{lin_self-improving_1992,
@@ -2041,7 +2010,7 @@
   abstract = {To date, reinforcement learning has mostly been studied solving simple learning tasks. Reinforcement learning methods that have been studied so far typically converge slowly. The purpose of this work is thus two-fold: 1) to investigate the utility of reinforcement learning in solving much more complicated learning tasks than previously studied, and 2) to investigate methods that will speed up reinforcement learning.},
   langid = {english},
   keywords = {Artificial Intelligence,connectionist networks,planning,Reinforcement learning,teaching},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1992/Self-improving reactive agents based on reinforcement learning, planning and teaching (1992) - Lin.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1992/Self-improving reactive agents based on reinforcement learning, planning and teaching (1992) - Lin.pdf}
 }
 
 @article{amari_natural_1998,
@@ -2091,7 +2060,7 @@
   isbn = {978-3-540-31692-3},
   langid = {english},
   keywords = {Fisher Information Matrix,Imitation Learning,Motor Primitive,Natural Gradient,Reinforcement Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2005/Natural Actor-Critic (2005) - Peters et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2005/Natural Actor-Critic (2005) - Peters et al.pdf}
 }
 
 @inproceedings{park_rls-based_2005,
@@ -2125,7 +2094,7 @@
   urldate = {2025-03-28},
   abstract = {The mirror descent algorithm (MDA) was introduced by Nemirovsky and Yudin for solving convex optimization problems. This method exhibits an efficiency estimate that is mildly dependent in the decision variables dimension, and thus suitable for solving very large scale optimization problems. We present a new derivation and analysis of this algorithm. We show that the MDA can be viewed as a nonlinear projected-subgradient type method, derived from using a general distance-like function instead of the usual Euclidean squared distance. Within this interpretation, we derive in a simple way convergence and efficiency estimates. We then propose an Entropic mirror descent algorithm for convex minimization over the unit simplex, with a global efficiency estimate proven to be mildly dependent in the dimension of the problem.},
   keywords = {Complexity analysis,Global rate of convergence,Mirror descent algorithms,Nonlinear projections,Nonsmooth convex minimization,Projected subgradient methods,Relative entropy},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2003/Mirror descent and nonlinear projected subgradient methods for convex optimization (2003) - Beck, Teboulle.pdf;/Users/adzcai/Zotero/storage/DPEEWVP5/S0167637702002316.html}
+  file = {/Users/adzcai/Vault/papers/assets/2003/Mirror descent and nonlinear projected subgradient methods for convex optimization (2003) - Beck, Teboulle.pdf;/Users/adzcai/Zotero/storage/DPEEWVP5/S0167637702002316.html}
 }
 
 @book{nemirovskij_problem_1983,
@@ -2138,7 +2107,7 @@
   isbn = {978-0-471-10345-5},
   langid = {english},
   pagetotal = {388},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1983/Problem complexity and method efficiency in optimization (1983) - Nemirovskij, Judin, Dawson, Nemirovskij_1.pdf;/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1983/Problem complexity and method efficiency in optimization (1983) - Nemirovskij, Judin, Dawson, Nemirovskij.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1983/Problem complexity and method efficiency in optimization (1983) - Nemirovskij, Judin, Dawson, Nemirovskij_1.pdf;/Users/adzcai/Vault/papers/assets/1983/Problem complexity and method efficiency in optimization (1983) - Nemirovskij, Judin, Dawson, Nemirovskij.pdf}
 }
 
 @inproceedings{mahadevan_sparse_2012,
@@ -2170,7 +2139,7 @@
   issue = {1},
   langid = {english},
   keywords = {basis adaptation,mirror descent,Reinforcement learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2013/Basis Adaptation for Sparse Nonlinear Reinforcement Learning (2013) - Mahadevan, Giguere, Jacek.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2013/Basis Adaptation for Sparse Nonlinear Reinforcement Learning (2013) - Mahadevan, Giguere, Jacek.pdf}
 }
 
 @inproceedings{sutton_policy_1999,
@@ -2183,7 +2152,7 @@
   publisher = {MIT Press},
   location = {Cambridge, MA, USA},
   abstract = {Function approximation is essential to reinforcement learning, but the standard approach of approximating a value function and determining a policy from it has so far proven theoretically intractable. In this paper we explore an alternative approach in which the policy is explicitly represented by its own function approximator, independent of the value function, and is updated according to the gradient of expected reward with respect to the policy parameters. Williams's REINFORCE method and actor-critic methods are examples of this approach. Our main new result is to show that the gradient can be written in a form suitable for estimation from experience aided by an approximate action-value or advantage function. Using this result, we prove for the first time that a version of policy iteration with arbitrary differentiable function approximation is convergent to a locally optimal policy.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1999/Policy gradient methods for reinforcement learning with function approximation (1999) - Sutton, McAllester, Singh, Mansour.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1999/Policy gradient methods for reinforcement learning with function approximation (1999) - Sutton, McAllester, Singh, Mansour.pdf}
 }
 
 @article{bhatnagar_natural_2009,
@@ -2201,7 +2170,7 @@
   urldate = {2025-03-28},
   abstract = {We present four new reinforcement learning algorithms based on actor–critic, natural-gradient and function-approximation ideas, and we provide their convergence proofs. Actor–critic reinforcement learning methods are online approximations to policy iteration in which the value-function parameters are estimated using temporal difference learning and the policy parameters are updated by stochastic gradient descent. Methods based on policy gradients in this way are of special interest because of their compatibility with function-approximation methods, which are needed to handle large or infinite state spaces. The use of temporal difference learning in this way is of special interest because in many applications it dramatically reduces the variance of the gradient estimates. The use of the natural gradient is of interest because it can produce better conditioned parameterizations and has been shown to further reduce variance in some cases. Our results extend prior two-timescale convergence results for actor–critic methods by Konda and Tsitsiklis by using temporal difference learning in the actor and by incorporating natural gradients. Our results extend prior empirical studies of natural actor–critic methods by Peters, Vijayakumar and Schaal by providing the first convergence proofs and the first fully incremental algorithms.},
   keywords = {Actor–critic reinforcement learning algorithms,Approximate dynamic programming,Function approximation,Natural gradient,Policy-gradient methods,Temporal difference learning,Two-timescale stochastic approximation},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2009/Natural actor–critic algorithms (2009) - Bhatnagar, Sutton, Ghavamzadeh, Lee.pdf;/Users/adzcai/Zotero/storage/LYD47RRG/S0005109809003549.html}
+  file = {/Users/adzcai/Vault/papers/assets/2009/Natural actor–critic algorithms (2009) - Bhatnagar, Sutton, Ghavamzadeh, Lee.pdf;/Users/adzcai/Zotero/storage/LYD47RRG/S0005109809003549.html}
 }
 
 @article{marbach_simulation-based_2001,
@@ -2219,7 +2188,7 @@
   abstract = {This paper proposes a simulation-based algorithm for optimizing the average reward in a finite-state Markov reward process that depends on a set of parameters. As a special case, the method applies to Markov decision processes where optimization takes place within a parametrized set of policies. The algorithm relies on the regenerative structure of finite-state Markov processes, involves the simulation of a single sample path, and can be implemented online. A convergence result (with probability 1) is provided.},
   eventtitle = {{{IEEE Transactions}} on {{Automatic Control}}},
   keywords = {Computational modeling,Convergence,Decision making,Dynamic programming,Laboratories,Markov processes,Optimization methods,State-space methods,Stochastic processes,Uncertainty},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2001/Simulation-based optimization of Markov reward processes (2001) - Marbach, Tsitsiklis.pdf;/Users/adzcai/Zotero/storage/XWPNQCRG/905687.html}
+  file = {/Users/adzcai/Vault/papers/assets/2001/Simulation-based optimization of Markov reward processes (2001) - Marbach, Tsitsiklis.pdf;/Users/adzcai/Zotero/storage/XWPNQCRG/905687.html}
 }
 
 @article{zare_survey_2024,
@@ -2238,7 +2207,7 @@
   abstract = {In recent years, the development of robotics and artificial intelligence (AI) systems has been nothing short of remarkable. As these systems continue to evolve, they are being utilized in increasingly complex and unstructured environments, such as autonomous driving, aerial robotics, and natural language processing. As a consequence, programming their behaviors manually or defining their behavior through the reward functions [as done in reinforcement learning (RL)] has become exceedingly difficult. This is because such environments require a high degree of flexibility and adaptability, making it challenging to specify an optimal set of rules or reward signals that can account for all the possible situations. In such environments, learning from an expert’s behavior through imitation is often more appealing. This is where imitation learning (IL) comes into play - a process where desired behavior is learned by imitating an expert’s behavior, which is provided through demonstrations.This article aims to provide an introduction to IL and an overview of its underlying assumptions and approaches. It also offers a detailed description of recent advances and emerging areas of research in the field. Additionally, this article discusses how researchers have addressed common challenges associated with IL and provides potential directions for future research. Overall, the goal of this article is to provide a comprehensive guide to the growing field of IL in robotics and AI.},
   eventtitle = {{{IEEE Transactions}} on {{Cybernetics}}},
   keywords = {Autonomous vehicles,Costs,Imitation learning,Imitation learning (IL),learning from demonstrations,Reinforcement learning,reinforcement learning (RL),robotics,Robots,survey,Surveys,Training,Trajectory},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2024/A Survey of Imitation Learning (2024) - Zare, Kebria, Khosravi, Nahavandi.pdf;/Users/adzcai/Zotero/storage/AJ2A4SAD/10602544.html}
+  file = {/Users/adzcai/Vault/papers/assets/2024/A Survey of Imitation Learning (2024) - Zare, Kebria, Khosravi, Nahavandi.pdf;/Users/adzcai/Zotero/storage/AJ2A4SAD/10602544.html}
 }
 
 @article{pomerleau_efficient_1991,
@@ -2271,7 +2240,7 @@
   url = {https://dl.acm.org/doi/10.1145/279943.279964},
   urldate = {2025-03-27},
   isbn = {978-1-58113-057-7},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1998/Learning agents for uncertain environments (extended abstract) (1998) - Russell.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1998/Learning agents for uncertain environments (extended abstract) (1998) - Russell.pdf}
 }
 
 @inproceedings{ziebart_maximum_2008,
@@ -2301,7 +2270,7 @@
   abstract = {imitation provides open-source implementations of imitation and reward learning algorithms in PyTorch. We include three inverse reinforcement learning (IRL) algorithms, three imitation learning algorithms and a preference comparison algorithm. The implementations have been benchmarked against previous results, and automated tests cover 98\% of the code. Moreover, the algorithms are implemented in a modular fashion, making it simple to develop novel algorithms in the framework. Our source code, including documentation and examples, is available at https://github.com/HumanCompatibleAI/imitation},
   pubstate = {prepublished},
   keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/imitation (2022) - Gleave et al.pdf;/Users/adzcai/Zotero/storage/P4LB2IMT/2211.html}
+  file = {/Users/adzcai/Vault/papers/assets/2022/imitation (2022) - Gleave et al.pdf;/Users/adzcai/Zotero/storage/P4LB2IMT/2211.html}
 }
 
 @inproceedings{ziebart_modeling_2010,
@@ -2344,7 +2313,7 @@
   abstract = {Learning from demonstrations is a paradigm by which an apprentice agent learns a control policy for a dynamic environment by observing demonstrations delivered by an expert agent. It is usually implemented as either imitation learning (IL) or inverse reinforcement learning (IRL) in the literature. On the one hand, IRL is a paradigm relying on the Markov decision processes, where the goal of the apprentice agent is to find a reward function from the expert demonstrations that could explain the expert behavior. On the other hand, IL consists in directly generalizing the expert strategy, observed in the demonstrations, to unvisited states (and it is therefore close to classification, when there is a finite set of possible decisions). While these two visions are often considered as opposite to each other, the purpose of this paper is to exhibit a formal link between these approaches from which new algorithms can be derived. We show that IL and IRL can be redefined in a way that they are equivalent, in the sense that there exists an explicit bijective operator (namely, the inverse optimal Bellman operator) between their respective spaces of solutions. To do so, we introduce the set-policy framework that creates a clear link between the IL and the IRL. As a result, the IL and IRL solutions making the best of both worlds are obtained. In addition, it is a unifying framework from which existing IL and IRL algorithms can be derived and which opens the way for the IL methods able to deal with the environment's dynamics. Finally, the IRL algorithms derived from the set-policy framework are compared with the algorithms belonging to the more common trajectory-matching family. Experiments demonstrate that the set-policy-based algorithms outperform both the standard IRL and IL ones and result in more robust solutions.},
   eventtitle = {{{IEEE Transactions}} on {{Neural Networks}} and {{Learning Systems}}},
   keywords = {Heuristic algorithms,Imitation learning (IL),inverse reinforcement learning (IRL),Learning (artificial intelligence),learning from demonstrations (LfD),Learning systems,Markov processes,Robots,Robustness,Standards},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2017/Bridging the Gap Between Imitation Learning and Inverse Reinforcement Learning (2017) - Piot, Geist, Pietquin.pdf;/Users/adzcai/Zotero/storage/DWLMFE7F/7464854.html}
+  file = {/Users/adzcai/Vault/papers/assets/2017/Bridging the Gap Between Imitation Learning and Inverse Reinforcement Learning (2017) - Piot, Geist, Pietquin.pdf;/Users/adzcai/Zotero/storage/DWLMFE7F/7464854.html}
 }
 
 @inproceedings{ho_generative_2016,
@@ -2358,7 +2327,7 @@
   location = {Red Hook, NY, USA},
   abstract = {Consider learning a policy from example expert behavior, without interaction with the expert or access to a reinforcement signal. One approach is to recover the expert's cost function with inverse reinforcement learning, then extract a policy from that cost function with reinforcement learning. This approach is indirect and can be slow. We propose a new general framework for directly extracting a policy from data as if it were obtained by reinforcement learning following inverse reinforcement learning. We show that a certain instantiation of our framework draws an analogy between imitation learning and generative adversarial networks, from which we derive a model-free imitation learning algorithm that obtains significant performance gains over existing model-free methods in imitating complex behaviors in large, high-dimensional environments.},
   isbn = {978-1-5108-3881-9},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Generative adversarial imitation learning (2016) - Ho, Ermon.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Generative adversarial imitation learning (2016) - Ho, Ermon.pdf}
 }
 
 @inproceedings{ratliff_maximum_2006,
@@ -2521,7 +2490,7 @@
   isbn = {978-0-7484-0062-1},
   langid = {english},
   pagetotal = {270},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1992/The general problem of the stability of motion (1992) - Ljapunov, Fuller, Ljapunov.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1992/The general problem of the stability of motion (1992) - Ljapunov, Fuller, Ljapunov.pdf}
 }
 
 @thesis{lyapunov_general_1892,
@@ -2547,7 +2516,7 @@
   abstract = {In 1976 the Control Systems Society named three distinguished control systems specialists as Consulting Editors. One of the charges to these men was to submit an invited paper on a topic of their choice for publication without the usual IDC review procedures. At the same time Professor A.G.J. MacFarlane, Professor of Control Engineering at Cambridge University, was invited by the IDC to prepare an IEEE Press reprint book of important papers on frequency-domain methods in control and systems engineering. The coincidence of these two decisions has led to the following paper. "The Development of Frequency-Response Methods in Automatic Control" is one part of the IEEE Press book, Frequency-Response Methodr in Control Systems, edited by A.G.J. MacFarlane and sponsored by the Control Systems Society. The book will appear in mid-1979. The paper has been selected by Consulting Editor Nathaniel Nichols and should be of substantial interest to TRANSACTIONS readers. It also conveys some of the spirit and content of the book which may be purchased from IEEE Press when available.},
   eventtitle = {{{IEEE Transactions}} on {{Automatic Control}}},
   keywords = {Automatic control,Automatic frequency control,Books,Communication system control,Control systems,Engines,Friction,IEEE Press,Stability,Telecommunication control},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1979/The development of frequency-response methods in automatic control [Perspectives] (1979) - MacFarlane.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/1979/The development of frequency-response methods in automatic control [Perspectives] (1979) - MacFarlane.pdf}
 }
 
 @book{bellman_adaptive_1961,
@@ -2573,7 +2542,7 @@
   urldate = {2025-03-28},
   abstract = {AlphaZero is a powerful reinforcement learning algorithm based on approximate policy iteration and tree search. However, AlphaZero can fail to improve its policy network, if not visiting all actions at the root of a search tree. To address this issue, we propose a policy improvement algorithm based on sampling actions without replacement. Furthermore, we use the idea of policy improvement to replace the more heuristic mechanisms by which AlphaZero selects and uses actions, both at root nodes and at non-root nodes. Our new algorithms, Gumbel AlphaZero and Gumbel MuZero, respectively without and with model-learning, match the state of the art on Go, chess, and Atari, and significantly improve prior performance when planning with few simulations.},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Policy improvement by planning with Gumbel (2021) - Danihelka, Guez, Schrittwieser, Silver.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2021/Policy improvement by planning with Gumbel (2021) - Danihelka, Guez, Schrittwieser, Silver.pdf}
 }
 
 @inproceedings{antonoglou_planning_2021,
@@ -2586,13 +2555,13 @@
   abstract = {Model-based reinforcement learning has proven highly successful. However, learning a model in isolation from its use during planning is problematic in complex environments. To date, the most effective techniques have instead combined value-equivalent model learning with powerful tree-search methods. This approach is exemplified by MuZero, which has achieved state-of-the-art performance in a wide range of domains, from board games to visually rich environments, with discrete and continuous action spaces, in online and offline settings. However, previous instantiations of this approach were limited to the use of deterministic models. This limits their performance in environments that are inherently stochastic, partially observed, or so large and complex that they appear stochastic to a finite agent. In this paper we extend this approach to learn and plan with stochastic models. Specifically, we introduce a new algorithm, Stochastic MuZero, that learns a stochastic model incorporating afterstates, and uses this model to perform a stochastic tree search. Stochastic MuZero matched or exceeded the state of the art in a set of canonical single and multi-agent environments, including 2048 and backgammon, while maintaining the same performance as standard MuZero in the game of Go.},
   eventtitle = {International {{Conference}} on {{Learning Representations}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2021/Planning in Stochastic Environments with a Learned Model (2021) - Antonoglou et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2021/Planning in Stochastic Environments with a Learned Model (2021) - Antonoglou et al.pdf}
 }
 
-@software{noauthor_google-deepmindmctx_2025,
-  title = {Google-Deepmind/Mctx},
-  date = {2025-03-27T22:46:30Z},
-  origdate = {2022-03-01T17:26:43Z},
+@software{google_deepmind_mctx_2022,
+  title = {Mctx},
+  author = {{Google DeepMind}},
+  date = {2022-03-01},
   url = {https://github.com/google-deepmind/mctx},
   urldate = {2025-03-28},
   abstract = {Monte Carlo tree search in JAX},
@@ -2613,7 +2582,7 @@
   url = {https://dl.acm.org/doi/10.1145/3422622},
   urldate = {2025-03-28},
   abstract = {Generative adversarial networks are a kind of artificial intelligence algorithm designed to solve the generative modeling problem. The goal of a generative model is to study a collection of training examples and learn the probability distribution that generated them. Generative Adversarial Networks (GANs) are then able to generate more examples from the estimated probability distribution. Generative models based on deep learning are common, but GANs are among the most successful generative models (especially in terms of their ability to generate realistic high-resolution images). GANs have been successfully applied to a wide variety of tasks (mostly in research settings) but continue to present unique challenges and research opportunities because they are based on game theory while most other approaches to generative modeling are based on optimization.},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2020/Generative adversarial networks (2020) - Goodfellow et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2020/Generative adversarial networks (2020) - Goodfellow et al.pdf}
 }
 
 @online{drago_refined_2025,
@@ -2629,7 +2598,7 @@
   abstract = {In this work, we provide a refined analysis of the UCBVI algorithm (Azar et al., 2017), improving both the bonus terms and the regret analysis. Additionally, we compare our version of UCBVI with both its original version and the state-of-the-art MVP algorithm. Our empirical validation demonstrates that improving the multiplicative constants in the bounds has significant positive effects on the empirical performance of the algorithms.},
   pubstate = {prepublished},
   keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2025/A Refined Analysis of UCBVI (2025) - Drago, Mussi, Metelli.pdf;/Users/adzcai/Zotero/storage/5GPIJZ6Z/2502.html}
+  file = {/Users/adzcai/Vault/papers/assets/2025/A Refined Analysis of UCBVI (2025) - Drago, Mussi, Metelli.pdf;/Users/adzcai/Zotero/storage/5GPIJZ6Z/2502.html}
 }
 
 @inproceedings{schmidhuber_curious_1991,
@@ -2644,7 +2613,7 @@
   abstract = {A novel curious model-building control system is described which actively tries to provoke situations for which it learned to expect to learn something about the environment. Such a system has been implemented as a four-network system based on Watkins' Q-learning algorithm which can be used to maximize the expectation of the temporal derivative of the adaptive assumed reliability of future predictions. An experiment with an artificial nondeterministic environment demonstrates that the system can be superior to previous model-building control systems, which do not address the problem of modeling the reliability of the world model's predictions in uncertain environments and use ad-hoc methods (like random search) to train the world model.{$<>$}},
   eventtitle = {[{{Proceedings}}] 1991 {{IEEE International Joint Conference}} on {{Neural Networks}}},
   keywords = {Adaptive control,Computer architecture,Computer networks,Computer science,Control system synthesis,Error correction,Learning,Manipulator dynamics,Predictive models,Programmable control},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/1991/Curious model-building control systems (1991) - Schmidhuber.pdf;/Users/adzcai/Zotero/storage/REQXSM6F/170605.html}
+  file = {/Users/adzcai/Vault/papers/assets/1991/Curious model-building control systems (1991) - Schmidhuber.pdf;/Users/adzcai/Zotero/storage/REQXSM6F/170605.html}
 }
 
 @incollection{meyer_possibility_1991,
@@ -2672,7 +2641,7 @@
   abstract = {We introduce an exploration bonus for deep reinforcement learning methods that is easy to implement and adds minimal overhead to the computation performed. The bonus is the error of a neural network predicting features of the observations given by a fixed randomly initialized neural network. We also introduce a method to flexibly combine intrinsic and extrinsic rewards. We find that the random network distillation (RND) bonus combined with this increased flexibility enables significant progress on several hard exploration Atari games. In particular we establish state of the art performance on Montezuma's Revenge, a game famously difficult for deep reinforcement learning methods. To the best of our knowledge, this is the first method that achieves better than average human performance on this game without using demonstrations or having access the underlying state of the game, and occasionally completes the first level. This suggests that relatively simple methods that scale well can be sufficient to tackle challenging exploration problems.},
   eventtitle = {International {{Conference}} on {{Learning Representations}}},
   langid = {english},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2018/Exploration by random network distillation (2018) - Burda, Edwards, Storkey, Klimov.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2018/Exploration by random network distillation (2018) - Burda, Edwards, Storkey, Klimov.pdf}
 }
 
 @inproceedings{bellemare_unifying_2016,
@@ -2686,7 +2655,7 @@
   location = {Red Hook, NY, USA},
   abstract = {We consider an agent's uncertainty about its environment and the problem of generalizing this uncertainty across states. Specifically, we focus on the problem of exploration in non-tabular reinforcement learning. Drawing inspiration from the intrinsic motivation literature, we use density models to measure uncertainty, and propose a novel algorithm for deriving a pseudo-count from an arbitrary density model. This technique enables us to generalize count-based exploration algorithms to the non-tabular case. We apply our ideas to Atari 2600 games, providing sensible pseudo-counts from raw pixels. We transform these pseudo-counts into exploration bonuses and obtain significantly improved exploration in a number of hard games, including the infamously difficult MONTEZUMA'S REVENGE.},
   isbn = {978-1-5108-3881-9},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2016/Unifying count-based exploration and intrinsic motivation (2016) - Bellemare et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2016/Unifying count-based exploration and intrinsic motivation (2016) - Bellemare et al.pdf}
 }
 
 @inproceedings{gao_scaling_2023,
@@ -2715,7 +2684,7 @@
   abstract = {The reinforcement learning (RL) research area is very active, with an important number of new contributions; especially considering the emergent field of deep RL (DRL). However a number of scientific and technical challenges still need to be addressed, amongst which we can mention the ability to abstract actions or the difficulty to explore the environment which can be addressed by intrinsic motivation (IM). In this article, we provide a survey on the role of intrinsic motivation in DRL. We categorize the different kinds of intrinsic motivations and detail for each category, its advantages and limitations with respect to the mentioned challenges. Additionnally, we conduct an in-depth investigation of substantial current research questions, that are currently under study or not addressed at all in the considered research area of DRL. We choose to survey these research works, from the perspective of learning how to achieve tasks. We suggest then, that solving current challenges could lead to a larger developmental architecture which may tackle most of the tasks. We describe this developmental architecture on the basis of several building blocks composed of a RL algorithm and an IM module compressing information.},
   pubstate = {prepublished},
   keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2019/A survey on intrinsic motivation in reinforcement learning (2019) - Aubret, Matignon, Hassas.pdf;/Users/adzcai/Zotero/storage/MJGEULCL/1908.html}
+  file = {/Users/adzcai/Vault/papers/assets/2019/A survey on intrinsic motivation in reinforcement learning (2019) - Aubret, Matignon, Hassas.pdf;/Users/adzcai/Zotero/storage/MJGEULCL/1908.html}
 }
 
 @article{schmidhuber_formal_2010,
@@ -2749,7 +2718,7 @@
   abstract = {Reward learning enables the application of reinforcement learning (RL) to tasks where reward is defined by human judgment, building a model of reward by asking humans questions. Most work on reward learning has used simulated environments, but complex information about values is often expressed in natural language, and we believe reward learning for language is a key to making RL practical and safe for real-world tasks. In this paper, we build on advances in generative pretraining of language models to apply reward learning to four natural language tasks: continuing text with positive sentiment or physically descriptive language, and summarization tasks on the TL;DR and CNN/Daily Mail datasets. For stylistic continuation we achieve good results with only 5,000 comparisons evaluated by humans. For summarization, models trained with 60,000 comparisons copy whole sentences from the input but skip irrelevant preamble; this leads to reasonable ROUGE scores and very good performance according to our human labelers, but may be exploiting the fact that labelers rely on simple heuristics.},
   pubstate = {prepublished},
   keywords = {Computer Science - Computation and Language,Computer Science - Machine Learning,Statistics - Machine Learning},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2020/Fine-Tuning Language Models from Human Preferences (2020) - Ziegler et al.pdf;/Users/adzcai/Zotero/storage/SVGVH9JZ/1909.html}
+  file = {/Users/adzcai/Vault/papers/assets/2020/Fine-Tuning Language Models from Human Preferences (2020) - Ziegler et al.pdf;/Users/adzcai/Zotero/storage/SVGVH9JZ/1909.html}
 }
 
 @inproceedings{ouyang_training_2022,
@@ -2763,5 +2732,17 @@
   location = {Red Hook, NY, USA},
   abstract = {Making language models bigger does not inherently make them better at following a user's intent. For example, large language models can generate outputs that are untruthful, toxic, or simply not helpful to the user. In other words, these models are not aligned with their users. In this paper, we show an avenue for aligning language models with user intent on a wide range of tasks by fine-tuning with human feedback. Starting with a set of labeler-written prompts and prompts submitted through a language model API, we collect a dataset of labeler demonstrations of the desired model behavior, which we use to fine-tune GPT-3 using supervised learning. We then collect a dataset of rankings of model outputs, which we use to further fine-tune this supervised model using reinforcement learning from human feedback. We call the resulting models InstructGPT. In human evaluations on our prompt distribution, outputs from the 1.3B parameter InstructGPT model are preferred to outputs from the 175B GPT-3, despite having 100x fewer parameters. Moreover, InstructGPT models show improvements in truthfulness and reductions in toxic output generation while having minimal performance regressions on public NLP datasets. Even though InstructGPT still makes simple mistakes, our results show that fine-tuning with human feedback is a promising direction for aligning language models with human intent.},
   isbn = {978-1-7138-7108-8},
-  file = {/Users/adzcai/Library/Mobile Documents/com~apple~CloudDocs/assets/2022/Training language models to follow instructions with human feedback (2022) - Ouyang et al.pdf}
+  file = {/Users/adzcai/Vault/papers/assets/2022/Training language models to follow instructions with human feedback (2022) - Ouyang et al.pdf}
+}
+
+@book{brunton_data-driven_2019,
+  title = {Data-Driven Science and Engineering: Machine Learning, Dynamical Systems, and Control},
+  shorttitle = {Data-Driven Science and Engineering},
+  author = {Brunton, Steven L. and Kutz, Jose Nathan},
+  date = {2019},
+  publisher = {Cambridge University Press},
+  location = {Cambridge},
+  abstract = {"Data-driven discovery is revolutionizing the modelling, prediction, and control of complex systems. This textbook brings together machine learning, engineering mathematics, and mathematical physics to integrate modelling and control of dynamical systems with modern methods in data science. It highlights many of the recent advances in scientific computing that enable data-driven methods to be applied to a diverse range of complex systems, such as turbulence, the brain, climate, epidemiology, finance, robotics, and autonomy. Aimed at advanced undergraduate and beginning graduate students in the engineering and physical sciences, the text presents a range of topics and methods from introductory to state of the art"--},
+  isbn = {978-1-108-42209-3},
+  keywords = {Data processing,Engineering,Mathematical analysis,Science}
 }

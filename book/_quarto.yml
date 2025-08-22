@@ -15,8 +15,6 @@ book:
   site-url: https://rlbook.adzc.ai
   chapters:
     - index.qmd
-    - acknowledgements.qmd
-    - preface.qmd
     - notation.qmd
     - introduction.qmd
     - mdps.qmd
