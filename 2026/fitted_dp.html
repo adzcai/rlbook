@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Fitted Dynamic Programming Algorithms – An Introduction to Reinforcement Learning</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./pg.html" rel="next">
+<link href="./supervised_learning.html" rel="prev">
+<link href="./shared/184.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-6c4587840f9fcdbebb703f5fd59ba42a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d3f7f8e73c8d287b30bcf59c2b563615.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="6&nbsp; Fitted Dynamic Programming Algorithms – An Introduction to Reinforcement Learning">
+<meta property="og:description" content="">
+<meta property="og:site_name" content="An Introduction to Reinforcement Learning">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fitted_dp.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">An Introduction to Reinforcement Learning</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/adzcai/rlbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.pdf">
+              <i class="bi bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./An-Introduction-to-Reinforcement-Learning.epub">
+              <i class="bi bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Abstract</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acknowledgements</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mdps.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Markov Decision Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear Quadratic Regulators</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bandits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multi-Armed Bandits</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./supervised_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fitted_dp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./imitation_learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Imitation Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./planning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Tree Search Methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./exploration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Exploration in MDPs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./proofs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Proofs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-fit-pe" id="toc-sec-fit-pe" class="nav-link active" data-scroll-target="#sec-fit-pe"><span class="header-section-number">6.1</span> Fitted policy evaluation</a>
+  <ul class="collapse">
+  <li><a href="#offline-fitted-policy-evaluation" id="toc-offline-fitted-policy-evaluation" class="nav-link" data-scroll-target="#offline-fitted-policy-evaluation"><span class="header-section-number">6.1.1</span> Offline fitted policy evaluation</a></li>
+  <li><a href="#sec-bootstrapping" id="toc-sec-bootstrapping" class="nav-link" data-scroll-target="#sec-bootstrapping"><span class="header-section-number">6.1.2</span> Bootstrapping and target networks</a></li>
+  <li><a href="#sec-td-0" id="toc-sec-td-0" class="nav-link" data-scroll-target="#sec-td-0"><span class="header-section-number">6.1.3</span> Online fitted policy evaluation</a></li>
+  </ul></li>
+  <li><a href="#sec-fit-vi" id="toc-sec-fit-vi" class="nav-link" data-scroll-target="#sec-fit-vi"><span class="header-section-number">6.2</span> Fitted value iteration</a>
+  <ul class="collapse">
+  <li><a href="#offline-fitted-value-iteration" id="toc-offline-fitted-value-iteration" class="nav-link" data-scroll-target="#offline-fitted-value-iteration"><span class="header-section-number">6.2.1</span> Offline fitted value iteration</a></li>
+  <li><a href="#sec-q-learning" id="toc-sec-q-learning" class="nav-link" data-scroll-target="#sec-q-learning"><span class="header-section-number">6.2.2</span> Q-learning</a></li>
+  </ul></li>
+  <li><a href="#sec-fit-pi" id="toc-sec-fit-pi" class="nav-link" data-scroll-target="#sec-fit-pi"><span class="header-section-number">6.3</span> Fitted policy iteration</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways"><span class="header-section-number">6.4</span> Key takeaways</a></li>
+  <li><a href="#sec-fit-bib" id="toc-sec-fit-bib" class="nav-link" data-scroll-target="#sec-fit-bib"><span class="header-section-number">6.5</span> Bibliographic notes and further reading</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/fitted_dp.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/fitted_dp.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-fit" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fitted Dynamic Programming Algorithms</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In <a href="mdps.html" class="quarto-xref"><span>Chapter 2</span></a>, we discussed how to solve known tabular Markov decision processes where the state and action spaces <span class="math inline">\(\mathcal{S}\)</span> and <span class="math inline">\(\mathcal{A}\)</span> were finite and small and we knew the reward function and state transitions of the environment. For most interesting tasks, however, we don’t know the analytical form of the reward functions or state transitions. In such settings, we must <em>learn</em> through interaction with the environment.</p>
+<div id="rem-model-free-model-based" class="proof remark">
+<p><span class="proof-title"><em>Remark 6.1</em> (Tackling unknown environments). </span>How can we deal with an unknown environment? One way is to learn a <em>model</em> of the environment, that is, approximations of the reward function and state transitions. We can then plan in the model environment. This is the <strong>model-based</strong> approach. If the approximation is good enough, the optimal policy in the model environment will be near-optimal in the true environment.</p>
+<p>Instead of learning a model and planning within it, we could also try to learn the optimal value function and/or optimal policy directly. Such <strong>model-free</strong> methods are popular in practice, though they generally require many more samples.</p>
+</div>
+<p>In this short chapter, we will tackle the full RL problem by extending DP algorithms to account for unknown environments. We will also relax the assumption that the state space is small and finite: the methods we will cover support large or continuous state spaces by using <em>parameterized</em> function approximation. This will require <em>learning</em> about the environment by collecting data through interaction and then applying <em>supervised learning</em> (see <a href="supervised_learning.html" class="quarto-xref"><span>Chapter 5</span></a>) to approximate relevant functions.</p>
+<p>Each of the algorithms we’ll cover is analogous to one of the algorithms from <a href="mdps.html" class="quarto-xref"><span>Chapter 2</span></a>:</p>
+<div id="tbl-fit-overview" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fit-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6.1: Fitted algorithms for general environments.
+</figcaption>
+<div aria-describedby="tbl-fit-overview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 45%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Algorithm</th>
+<th>Description</th>
+<th>Fitted version</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Policy evaluation (<a href="mdps.html#sec-infinite-policy-evaluation" class="quarto-xref"><span>Section 2.4.3</span></a>)</td>
+<td>Given a policy <span class="math inline">\(\pi\)</span>, compute its value function <span class="math inline">\(V^\pi\)</span> by iterating the Bellman consistency equations.</td>
+<td>Fitted policy evaluation (<a href="#sec-fit-pe" class="quarto-xref"><span>Section 6.1</span></a>)</td>
+</tr>
+<tr class="even">
+<td>Value iteration (<a href="mdps.html#sec-vi" class="quarto-xref"><span>Section 2.4.4.1</span></a>)</td>
+<td>Compute the optimal value function <span class="math inline">\(V^\star\)</span> by iterating the Bellman optimality equations.</td>
+<td>Fitted value iteration (<a href="#sec-fit-vi" class="quarto-xref"><span>Section 6.2</span></a>)</td>
+</tr>
+<tr class="odd">
+<td>Policy iteration (<a href="mdps.html#sec-pi" class="quarto-xref"><span>Section 2.4.4.2</span></a>)</td>
+<td>Repeatedly make the policy <span class="math inline">\(\pi\)</span> greedy with respect to its own Q function.</td>
+<td>Fitted policy iteration (<a href="#sec-fit-pi" class="quarto-xref"><span>Section 6.3</span></a>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>The term “fitted” means that, since we can no longer compute the Bellman consistency equations or Bellman optimality equations exactly, we plug data from the environment into a supervised learning algorithm to <em>approximately</em> solve these equations. As such, these are also termed “approximate DP” algorithms, or “neuro-DP” algorithms, as in <span class="citation" data-cites="bertsekas_neuro-dynamic_1996">Bertsekas &amp; Tsitsiklis (<a href="references.html#ref-bertsekas_neuro-dynamic_1996" role="doc-biblioref">1996</a>)</span>. We will also introduce some useful language for classifying RL algorithms.</p>
+<div id="rem-state-time" class="proof remark">
+<p><span class="proof-title"><em>Remark 6.2</em> (Notation). </span>To simplify our notation, we will assume that each state <span class="math inline">\(s\)</span> includes the current timestep <span class="math inline">\(h\)</span>. That is, if the original state space was <span class="math inline">\(\mathcal{S}\)</span>, the augmented state space is <span class="math inline">\(\mathcal{S} \times [H]\)</span>. This allows us to treat all state-dependent quantities as time-dependent without explicitly carrying around a subscript <span class="math inline">\(h\)</span>. This also holds true in most real-world episodic tasks, where the state conveys how many timesteps have passed. For example, in tic-tac-toe, one can simply count the number of moves on the board.</p>
+</div>
+<div id="63fcef99" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> utils <span class="im">import</span> gym, tqdm, rand, Float, Array, NamedTuple, Callable, Optional, np, latex</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>key <span class="op">=</span> rand.PRNGKey(<span class="dv">184</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transition(NamedTuple):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    s: <span class="bu">int</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    a: <span class="bu">int</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    r: <span class="bu">float</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Trajectory <span class="op">=</span> <span class="bu">list</span>[Transition]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_num_actions(trajectories: <span class="bu">list</span>[Trajectory]) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Get the number of actions in the dataset. Assumes actions range from 0 to A-1."""</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">max</span>(<span class="bu">max</span>(t.a <span class="cf">for</span> t <span class="kw">in</span> τ) <span class="cf">for</span> τ <span class="kw">in</span> trajectories) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>State <span class="op">=</span> Float[Array, <span class="st">"..."</span>]  <span class="co"># arbitrary shape</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># assume finite `A` actions and f outputs an array of Q-values</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># i.e. Q(s, a, h) is implemented as f(s, h)[a]</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>QFunction <span class="op">=</span> Callable[[State, <span class="bu">int</span>], Float[Array, <span class="st">" A"</span>]]</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Q_zero(A: <span class="bu">int</span>) <span class="op">-&gt;</span> QFunction:</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""A Q-function that always returns zero."""</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">lambda</span> s, a: np.zeros(A)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># a deterministic time-dependent policy</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>Policy <span class="op">=</span> Callable[[State, <span class="bu">int</span>], <span class="bu">int</span>]</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_to_greedy(Q: QFunction) <span class="op">-&gt;</span> Policy:</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Get the greedy policy for the given state-action value function."""</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">lambda</span> s, h: np.argmax(Q(s, h))</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># We will see some examples of fitting methods in the next section</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>FittingMethod <span class="op">=</span> Callable[[Float[Array, <span class="st">"N D"</span>], Float[Array, <span class="st">" N"</span>]], QFunction]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<section id="sec-fit-pe" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="sec-fit-pe"><span class="header-section-number">6.1</span> Fitted policy evaluation</h2>
+<p>Recall the task of <em>policy evaluation:</em> given a policy <span class="math inline">\(\pi : \mathcal{S} \to \Delta(\mathcal{A})\)</span>, compute its <em>Q function</em> <span class="math inline">\(Q^\pi\)</span>, which expresses the expected total reward in a given starting state-action pair.</p>
+<div id="rem-v-vs-q" class="proof remark">
+<p><span class="proof-title"><em>Remark 6.3</em> (Value function vs Q function). </span>In <a href="mdps.html" class="quarto-xref"><span>Chapter 2</span></a>, we sought to compute the <em>value function</em> <span class="math inline">\(V^\pi\)</span>. Here, we’ll instead approximate the action-value function <span class="math inline">\(Q^\pi\)</span>, since we’ll need the ability to take the <em>action</em> with the maximum expected remaining reward. If we don’t know the environment, we can’t compute the action-values using only <span class="math inline">\(V^\pi\)</span>.</p>
+</div>
+<div id="rem-review-pe" class="proof remark">
+<p><span class="proof-title"><em>Remark 6.4</em> (Fixed-point policy evaluation review). </span>The fixed-point policy evaluation algorithm (<a href="mdps.html#sec-iterative-pe" class="quarto-xref"><span>Section 2.4.3.2</span></a>) makes use of the Bellman consistency equations (<a href="mdps.html#thm-consistency" class="quarto-xref">Theorem&nbsp;<span>2.3</span></a>), restated here for the Q-function:</p>
+<p><span id="eq-consistency-q"><span class="math display">\[
+Q^\pi(s, a) = r(s, a) + \mathop{\mathbb{E}}_{\substack{
+    s' \sim P(\cdot \mid s, a)\\
+    a' \sim \pi(\cdot \mid s')
+}} [Q^\pi(s', a')].
+\tag{6.1}\]</span></span></p>
+<p>In fixed-point iteration, we treat <a href="#eq-consistency-q" class="quarto-xref">eq.&nbsp;<span>6.1</span></a> not as an <em>equation,</em> but as an “operator” that takes in a function <span class="math inline">\(q^i : \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span> and returns an updated function <span class="math inline">\(q^{i+1}\)</span> by substituting <span class="math inline">\(q^i\)</span> in place of <span class="math inline">\(Q^\pi\)</span>.</p>
+<p><span id="eq-consistency-q-op"><span class="math display">\[
+q^{i+1}(s, a) := r(s, a) + \mathop{\mathbb{E}}_{\substack{
+    s' \sim P(\cdot \mid s, a)\\
+    a' \sim \pi(\cdot \mid s')
+}} [q^i(s', a')].
+\tag{6.2}\]</span></span></p>
+<p>Roughly speaking, <span class="math inline">\(q^{i+1}\)</span> approximates <span class="math inline">\(Q^\pi\)</span> slightly better than <span class="math inline">\(q^i\)</span> since it incorporates a single step of reward from the environment. Since this operator is a contraction mapping (<a href="mdps.html#thm-bellman-contraction" class="quarto-xref">Theorem&nbsp;<span>2.8</span></a>), by iterating this process, <span class="math inline">\(q\)</span> will eventually converge to the true policy <span class="math inline">\(Q^\pi\)</span>.</p>
+</div>
+<p>However, computing the update step in <a href="#eq-consistency-q-op" class="quarto-xref">eq.&nbsp;<span>6.2</span></a> requires computing an expectation over the state transitions <span class="math inline">\(s' \sim P(\cdot \mid s, a)\)</span>. As mentioned in the introduction, this is intractable for most real-world tasks. Either the state space is too large, or we simply don’t know what <span class="math inline">\(P\)</span> is. Instead, we will apply <em>supervised learning</em> methods to approximately solve the Bellman consistency equations using data.</p>
+<p>Recall that supervised learning is good at learning <em>conditional expectations</em> of the form</p>
+<p><span id="eq-exm-cond-mean"><span class="math display">\[
+f(x) = \mathop{\mathbb{E}}[ y \mid x ],
+\tag{6.3}\]</span></span></p>
+<p>where <span class="math inline">\(x\)</span> are the input features and <span class="math inline">\(y\)</span> is the scalar response. Can we rewrite the one-step value target (<a href="#eq-consistency-q" class="quarto-xref">eq.&nbsp;<span>6.1</span></a>) as a conditional expectation? In fact, it already is! Let us use notation that makes this more clear. We explicitly treat <span class="math inline">\(s', a'\)</span> as random variables and move the conditioning on <span class="math inline">\(s, a\)</span> into the brackets:</p>
+<p><span id="eq-q-cond-mean"><span class="math display">\[
+Q^\pi(s, a) = \mathop{\mathbb{E}}[ r(s, a) + Q^\pi(s', a') \mid s, a ].
+\tag{6.4}\]</span></span></p>
+<p>We can see that the input <span class="math inline">\(x\)</span> corresponds to <span class="math inline">\(s, a\)</span> and the response <span class="math inline">\(y\)</span> corresponds to <span class="math inline">\(r(s, a) + q^i(s', a')\)</span>, where <span class="math inline">\(q^i\)</span> is our current estimate of <span class="math inline">\(Q^\pi\)</span>. Now we just need to obtain a dataset of input-output pairs and run empirical risk minimization (<a href="supervised_learning.html#sec-erm" class="quarto-xref"><span>Section 5.3</span></a>). We can classify data collection strategies as either <em>offline</em> or <em>online</em>.</p>
+<div id="def-offline-online" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.1 (Offline and online algorithms)</strong></span> We say that a learning algorithm works <em>offline</em> if the learning is performed as a function of a static dataset, without requiring further interaction with the environment. In contrast, <em>online</em> learning algorithms require interaction with the environment during learning.</p>
+</div>
+<p>We’ll begin with an offline version of fitted policy evaluation and then see an online version.</p>
+<section id="offline-fitted-policy-evaluation" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="offline-fitted-policy-evaluation"><span class="header-section-number">6.1.1</span> Offline fitted policy evaluation</h3>
+<p>In particular, we use <span class="math inline">\(\pi\)</span>, the policy we’re trying to evaluate, to obtain a dataset of <span class="math inline">\(N\)</span> trajectories <span class="math inline">\(\tau^1, \dots, \tau^N \sim \rho^{\pi}\)</span>. Let us indicate the trajectory index in the superscript, so that</p>
+<p><span id="eq-exm-trajectory"><span class="math display">\[
+\tau^n = \{ s_0^n, a_0^n, r_0^n, s_1^n, a_1^n, r_1^n, \dots, s_{H-1}^n, a_{H-1}^n, r_{H-1}^n \}.
+\tag{6.5}\]</span></span></p>
+<p>This would give us <span class="math inline">\(N (H- 1)\)</span> samples in the dataset. We subtract one from the horizon since each <span class="math inline">\((x, y)\)</span> sample requires a <em>pair</em> of consecutive timesteps:</p>
+<p><span id="eq-def-x-y"><span class="math display">\[
+x^n_{h} = (s_h^n, a_h^n) \qquad y^n_{h} = r(s_h^n, a_h^n) + q^i(s^n_{h+ 1}, a^n_{h+1})
+\tag{6.6}\]</span></span></p>
+<p>where <span class="math inline">\(q^i\)</span> is our current estimate of <span class="math inline">\(Q^\pi\)</span>. This makes our new algorithm a fixed-point algorithm as well, since it uses <span class="math inline">\(q^i\)</span> to compute the next iterate <span class="math inline">\(q^{i+1}\)</span>.</p>
+<p>Now we can use empirical risk minimization to find a function <span class="math inline">\(q^I\)</span> that approximates the optimal Q-function.</p>
+<div class="cell" data-fig-width="6" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-fit-pe" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fit-pe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-fit-pe">graph LR
+    A["$$\text{Use } \pi \text{ to collect data } \tau^1, \dots, \tau^N$$"] --&gt; B
+    B["$$\text{Compute labels } y^n_h \text{ using Bellman consistency equations for } q$$"] --&gt; C
+    C["$$\text{Update } q \text{ by fitting to data}$$"] --&gt; B
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fit-pe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.1: Fitted policy evaluation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="def-fit-evaluation" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.2 (Fitted policy evaluation)</strong></span> Let <span class="math inline">\(\pi : \mathcal{S} \to \Delta(\mathcal{A})\)</span> be the policy we wish to evaluate. Our goal is to compute an approximation of its Q-function <span class="math inline">\(Q^\pi\)</span>.</p>
+<ol type="1">
+<li>Collect a dataset <span class="math inline">\(\tau^1, \dots, \tau^N \sim \rho^\pi\)</span>.</li>
+<li>Initialize some function <span class="math inline">\(q^0 : \mathcal{S} \times \mathcal{A} \in \mathbb{R}\)</span>.</li>
+<li>For <span class="math inline">\(i = 0, \dots, I-1\)</span>:
+<ol type="1">
+<li>Generate labels <span class="math inline">\(y^1, \dots, y^N\)</span> from the trajectories and the current estimate <span class="math inline">\(q^i\)</span>, where the labels come from <a href="#eq-consistency-q" class="quarto-xref">eq.&nbsp;<span>6.1</span></a>.</li>
+<li>Set <span class="math inline">\(q^{i+1}\)</span> to the function that minimizes the empirical risk:</li>
+</ol></li>
+</ol>
+<p><span id="eq-fit-evaluation"><span class="math display">\[
+q \gets \arg\min_{q} \frac{1}{N H} \sum_{n=1}^N \sum_{h=1}^{H-2} (y^n_h- q(x^n_h))^2.
+\tag{6.7}\]</span></span></p>
+</div>
+<div id="0e264ec7" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fitted_evaluation(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    trajectories: <span class="bu">list</span>[Trajectory],</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    fit: FittingMethod,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    π: Policy,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    epochs: <span class="bu">int</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    Q_init: QFunction,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> QFunction:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Run fitted policy evaluation using the given dataset.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns an estimate of the Q-function of the given policy.</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    Q_hat <span class="op">=</span> Q_init</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> get_X(trajectories)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> tqdm(<span class="bu">range</span>(epochs)):</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> get_y(trajectories, Q_hat, π)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        Q_hat <span class="op">=</span> fit(X, y)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Q_hat</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>latex(fitted_evaluation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{fitted\_evaluation}(\mathrm{trajectories}: \mathrm{list}_{\mathrm{Trajectory}}, \mathrm{fit}: \mathrm{FittingMethod}, π: \mathrm{Policy}, \mathrm{epochs}: \mathbb{Z}, Q_{\mathrm{init}}: \mathrm{QFunction}) \\ \hspace{1em} \textrm{"
+    Run fitted policy evaluation using the given dataset.
+    Returns an estimate of the Q-function of the given policy.
+    "} \\ \hspace{1em} \widehat{Q} \gets Q_{\mathrm{init}} \\ \hspace{1em} X \gets \mathrm{get\_X} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{1em} \mathbf{for} \ \mathrm{epoch} \in \mathrm{tqdm} \mathopen{}\left( \mathrm{range} \mathopen{}\left( \mathrm{epochs} \mathclose{}\right) \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} y \gets \mathrm{get\_y} \mathopen{}\left( \mathrm{trajectories}, \widehat{Q}, π \mathclose{}\right) \\ \hspace{2em} \widehat{Q} \gets \mathrm{fit} \mathopen{}\left( X, y \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \widehat{Q} \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
+</div>
+</div>
+<p>Fitted policy evaluation is offline since the “interaction phase” and the “learning phase” are disjoint. In other words, we can think of fitted policy evaluation as taking a dataset of trajectories collected by some unknown policy <span class="math inline">\(\pi_\text{data}\)</span>, and then approximating the Q function of <span class="math inline">\(\pi_\text{data}\)</span>.</p>
+<p>Fitted policy evaluation is <em>on-policy</em> because the update rule uses trajectories sampled from <span class="math inline">\(\pi\)</span>. Where do we need this assumption? Pay close attention to the target, and compare it to the true one-step value target (<a href="#eq-consistency-q" class="quarto-xref">eq.&nbsp;<span>6.1</span></a>):</p>
+<p><span id="eq-compare"><span class="math display">\[
+\begin{aligned}
+y_h&amp;= r(s_h, a_h) + q(s_{h+1}, a_{h+1}) \\
+Q^\pi(s, a) &amp;= r(s, a) + \mathop{\mathbb{E}}_{\substack{
+    s' \sim P(\cdot \mid s, a) \\
+    a' \sim \pi(\cdot \mid s')
+}} Q^\pi(s', a').
+\end{aligned}
+\tag{6.8}\]</span></span></p>
+<p>Notice that <span class="math inline">\((s_{h+1}, a_{h+1})\)</span> is a single sample from the joint distribution <span class="math inline">\(s' \sim P(\cdot \mid s, a)\)</span> and <span class="math inline">\(a' \sim \pi(\cdot \mid s')\)</span>. If the trajectories were collected from a <em>different policy,</em> then <span class="math inline">\(a_{h+1}\)</span> would <em>not</em> be a sample from <span class="math inline">\(\pi(\cdot \mid s')\)</span>, making the target a biased sample for evaluating <span class="math inline">\(\pi\)</span>.</p>
+<div id="def-on-off-policy" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.3 (On-policy and off-policy algorithms)</strong></span> We say that a learning algorithm is <em>on-policy</em> if the update rule must use data collected by the current policy. On the other hand, we call a learning algorithm <em>off-policy</em> if its update rule doesn’t care about how the data was collected.</p>
+</div>
+<div id="exr-off-policy" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6.1 (Off-policy fitted policy evaluation)</strong></span> Now suppose you are given a dataset of trajectories sampled from a policy <span class="math inline">\(\pi_\text{data}\)</span>, and you want to evaluate a <em>different</em> policy <span class="math inline">\(\pi\)</span>. You are <em>not</em> given access to the environment. How could you use the dataset to evaluate <span class="math inline">\(\pi\)</span>? Explain what makes this an <em>off-policy</em> algorithm.</p>
+</div>
+<div id="27130c65" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> collect_data(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    env: gym.Env, N: <span class="bu">int</span>, H: <span class="bu">int</span>, key: rand.PRNGKey, π: Optional[Policy] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="bu">list</span>[Trajectory]:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Collect a dataset of trajectories from the given policy (or a random one)."""</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    trajectories <span class="op">=</span> []</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    seeds <span class="op">=</span> [rand.bits(k).item() <span class="cf">for</span> k <span class="kw">in</span> rand.split(key, N)]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> tqdm(<span class="bu">range</span>(N)):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        τ <span class="op">=</span> []</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        s, _ <span class="op">=</span> env.reset(seed<span class="op">=</span>seeds[i])</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> h <span class="kw">in</span> <span class="bu">range</span>(H):</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># sample from a random policy</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            a <span class="op">=</span> π(s, h) <span class="cf">if</span> π <span class="cf">else</span> env.action_space.sample()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            s_next, r, terminated, truncated, _ <span class="op">=</span> env.step(a)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            τ.append(Transition(s, a, r))</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> terminated <span class="kw">or</span> truncated:</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            s <span class="op">=</span> s_next</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        trajectories.append(τ)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> trajectories</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_X(trajectories: <span class="bu">list</span>[Trajectory]):</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">    We pass the state and timestep as input to the Q-function</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">    and return an array of Q-values.</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> [(τ[h].s, τ[h].a, h) <span class="cf">for</span> τ <span class="kw">in</span> trajectories <span class="cf">for</span> h <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(τ))]</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [np.stack(ary) <span class="cf">for</span> ary <span class="kw">in</span> <span class="bu">zip</span>(<span class="op">*</span>rows)]</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_y(</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    trajectories: <span class="bu">list</span>[Trajectory],</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    f: Optional[QFunction] <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    π: Optional[Policy] <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">    Transform the dataset of trajectories into a dataset for supervised learning.</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">    If `π` is None, instead estimates the optimal Q function.</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co">    Otherwise, estimates the Q function of π.</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    f <span class="op">=</span> f <span class="kw">or</span> Q_zero(get_num_actions(trajectories))</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> []</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> τ <span class="kw">in</span> trajectories:</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> h <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(τ) <span class="op">-</span> <span class="dv">1</span>):</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>            s, a, r <span class="op">=</span> τ[h]</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>            Q_values <span class="op">=</span> f(s, h <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>            y.append(r <span class="op">+</span> (Q_values[π(s, h <span class="op">+</span> <span class="dv">1</span>)] <span class="cf">if</span> π <span class="cf">else</span> Q_values.<span class="bu">max</span>()))</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        y.append(τ[<span class="op">-</span><span class="dv">1</span>].r)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="sec-bootstrapping" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="sec-bootstrapping"><span class="header-section-number">6.1.2</span> Bootstrapping and target networks</h3>
+<p>Using the current guess <span class="math inline">\(q\)</span> to compute the labels is known as <strong>bootstrapping.</strong> (This has nothing to do with the term bootstrapping in statistical inference.)</p>
+<p>This term comes from the following metaphor: if you are trying to get on a horse, and there’s nobody to help you up, you need to “pull yourself up by your bootstraps,” or in other words, start from your existing resources to build up to something more effective.</p>
+<p>Using a bootstrapped estimate makes the optimization more complicated. Since we are constantly updating our Q function estimate, the labels are also constantly changing, destabilizing learning. <span class="citation" data-cites="sutton_reinforcement_2018">Sutton &amp; Barto (<a href="references.html#ref-sutton_reinforcement_2018" role="doc-biblioref">2018</a>)</span> calls bootstrapping one prong of the <strong>deadly triad</strong> of deep reinforcement learning, alongside <strong>function approximation</strong> and <strong>off-policy learning</strong>. When an algorithm relies on all three of these properties, it is possible for learning to <em>diverge</em>, so that the fitted Q function is far from the true Q function <span class="citation" data-cites="van_hasselt_deep_2018">(<a href="references.html#ref-van_hasselt_deep_2018" role="doc-biblioref">van Hasselt et al., 2018</a>)</span>.</p>
+<p>Many tricks exist to mitigate this issue in practice. One such trick is to use a <em>target network.</em> That is, when computing <span class="math inline">\(y\)</span>, instead of using <span class="math inline">\(q\)</span>, which is constantly changing, we maintain another <em>target network</em> <span class="math inline">\(q_\text{target}\)</span> that “updates more slowly.” Concretely, <span class="math inline">\(q_\text{target}\)</span> is an exponential moving average of the iterates of <span class="math inline">\(q\)</span>. Whenever we update <span class="math inline">\(q\)</span>, we update <span class="math inline">\(q_\text{target}\)</span> accordingly:</p>
+<p><span id="eq-target-update"><span class="math display">\[
+q_\text{target} \gets (1-\lambda_{\text{target}}) q_\text{target} + \lambda_\text{target} q,
+\tag{6.9}\]</span></span></p>
+<p>where <span class="math inline">\(\lambda_\text{target} \in (0, 1)\)</span> is some mixing parameter: the larger it is, the more we update towards the current estimate <span class="math inline">\(q\)</span>.</p>
+</section>
+<section id="sec-td-0" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="sec-td-0"><span class="header-section-number">6.1.3</span> Online fitted policy evaluation</h3>
+<p>In the offline algorithm above, we collect the whole dataset before starting the learning process. What could go wrong with this? Since the environment is unknown, the dataset only contains information about some portion of the environment. When we update <span class="math inline">\(q\)</span>, it may only learn to approximate <span class="math inline">\(Q^\pi\)</span> well for states that are in the initial dataset. It would be much better if <span class="math inline">\(q\)</span> were accurate in states that the policy will actually find itself in. This leads to the following simple shift: collect trajectories <em>inside</em> the iteration loop! This results in an <em>online</em> algorithm for fitted policy evaluation, also known as <span class="math inline">\(\text{TD}(0)\)</span>.</p>
+<div id="cell-fig-fit-pe-online" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fitted_policy_evaluation_online(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    env,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    pi: Policy,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    epochs: <span class="bu">int</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    learning_rate: <span class="bu">float</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    q_init,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    key</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> q_init</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        trajectory <span class="op">=</span> collect_data(env, N<span class="op">=</span><span class="dv">1</span>, H<span class="op">=</span><span class="dv">20</span>, key<span class="op">=</span>key, pi<span class="op">=</span>pi)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (s, a, r), (s_next, a_next, _) <span class="kw">in</span> <span class="bu">zip</span>(trajectory[:<span class="op">-</span><span class="dv">1</span>], trajectory[<span class="dv">1</span>:]):</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            target <span class="op">=</span> r <span class="op">+</span> q[s_next, a_next]</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            q[s, a] <span class="op">=</span> q[s, a] <span class="op">-</span> learning_rate <span class="op">*</span> (q[s, a] <span class="op">-</span> target)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> q</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>latex(fitted_policy_evaluation_online)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-fit-pe-online" class="cell-output cell-output-display cell-output-markdown quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="4">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fit-pe-online-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{fitted\_policy\_evaluation\_online}(\mathrm{env}, \pi: \mathrm{Policy}, \mathrm{epochs}: \mathbb{Z}, \mathrm{learning\_rate}: \mathbb{R}, q_{\mathrm{init}}) \\ \hspace{1em} q \gets q_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ \mathrm{epoch} \in \mathrm{range} \mathopen{}\left( \mathrm{epochs} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{trajectory} \gets \mathrm{collect\_data} \mathopen{}\left( \mathrm{env} \mathclose{}\right) \\ \hspace{2em} \mathbf{for} \ \mathopen{}\left( \mathopen{}\left( s, a, r \mathclose{}\right), \mathopen{}\left( s_{\mathrm{next}}, a_{\mathrm{next}}, \mathrm{\_} \mathclose{}\right) \mathclose{}\right) \in \mathrm{zip} \mathopen{}\left( \mathrm{trajectory}_{:-1}, \mathrm{trajectory}_{1:} \mathclose{}\right) \ \mathbf{do} \\ \hspace{3em} \mathrm{target} \gets r + q_{s_{\mathrm{next}}, a_{\mathrm{next}}} \\ \hspace{3em} q_{s, a} \gets q_{s, a} - \mathrm{learning\_rate} \cdot \mathopen{}\left( q_{s, a} - \mathrm{target} \mathclose{}\right) \\ \hspace{2em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ q \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fit-pe-online-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.2: Pseudocode for online policy evaluation (TD(0))
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Note that we explicitly write out one step of gradient descent on the squared “temporal difference error”.</p>
+<div id="rem-td-zero" class="proof remark">
+<p><span class="proof-title"><em>Remark 6.5</em> (On notation). </span>What does <span class="math inline">\(\text{TD}(0)\)</span> stand for? This notation suggests the existence of other <span class="math inline">\(\text{TD}(\lambda)\)</span> algorithms. In fact, <span class="math inline">\(\text{TD}(\lambda)\)</span> is a well-studied algorithm with a parameter <span class="math inline">\(\lambda \in [0, 1]\)</span>, and <span class="math inline">\(\text{TD}(0)\)</span> is simply the special case <span class="math inline">\(\lambda = 0\)</span>. TD stands for “temporal difference”: we use the value function at a different point in time to estimate the value of the current state at the current time step. The parameter <span class="math inline">\(\lambda\)</span> is one way to average between the <em>near-term</em> estimates and the <em>long-term</em> estimates at later timesteps.</p>
+</div>
+</section>
+</section>
+<section id="sec-fit-vi" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="sec-fit-vi"><span class="header-section-number">6.2</span> Fitted value iteration</h2>
+<p>We’ll now explore an algorithm for computing the <em>optimal</em> value function <span class="math inline">\(V^\star\)</span> when the environment is unknown. This method is analogous to value iteration (<a href="mdps.html#sec-vi" class="quarto-xref"><span>Section 2.4.4.1</span></a>), except instead of solving the Bellman optimality equations (<a href="mdps.html#eq-bellman-opt" class="quarto-xref">eq.&nbsp;<span>2.38</span></a>) exactly, which would require full knowledge of the environment, we will collect a dataset of trajectories and apply <em>supervised learning</em> to solve the Bellman optimality equations <em>approximately.</em> This is exactly analogous to fitted policy evaluation (<a href="#sec-fit-pe" class="quarto-xref"><span>Section 6.1</span></a>), except we use the Bellman <em>optimality</em> equations (<a href="mdps.html#eq-bellman-opt" class="quarto-xref">eq.&nbsp;<span>2.38</span></a>) instead of the Bellman <em>consistency</em> equations (<a href="mdps.html#eq-consistency" class="quarto-xref">eq.&nbsp;<span>2.9</span></a>) for a given policy.</p>
+<div id="tbl-ctx-fit-vi" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-ctx-fit-vi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6.2: How fitted value iteration relates to existing algorithms.
+</figcaption>
+<div aria-describedby="tbl-ctx-fit-vi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Known environment</th>
+<th>Unknown environment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bellman <em>consistency</em> equations (evaluation)</td>
+<td>Policy evaluation</td>
+<td>Fitted policy evaluation</td>
+</tr>
+<tr class="even">
+<td>Bellman <em>optimality</em> equations (optimization)</td>
+<td>Value iteration</td>
+<td>Fitted value iteration</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="rem-review-vi" class="proof remark">
+<p><span class="proof-title"><em>Remark 6.6</em> (Value iteration review). </span>Value iteration was an algorithm we used to compute the optimal value function <span class="math inline">\(V^\star : \mathcal{S} \to \mathbb{R}\)</span> in an infinite-horizon MDP (<a href="mdps.html#sec-vi" class="quarto-xref"><span>Section 2.4.4.1</span></a>). Here, we will present the equivalent algorithm for the optimal action-value function <span class="math inline">\(Q^\star : \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span>. The optimal action-value function satisfies the Bellman optimality equations</p>
+<p><span id="eq-review-bellman-opt"><span class="math display">\[
+Q^\star(s, a) = r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(\cdot \mid s, a)}[
+    \max_{a' \in \mathcal{A}} Q^\star(s', a')
+].
+\tag{6.10}\]</span></span></p>
+<p>Now let us treat <a href="#eq-review-bellman-opt" class="quarto-xref">eq.&nbsp;<span>6.10</span></a> as an “operator” instead of an equation, that is,</p>
+<p><span id="eq-review-bellman-opt-operator"><span class="math display">\[
+q(s, a) \gets r(s, a) + \mathop{\mathbb{E}}_{s' \sim P(\cdot \mid s, a)}[
+    \max_{a' \in \mathcal{A}} q(s', a')
+].
+\tag{6.11}\]</span></span></p>
+<p>If we start with some guess <span class="math inline">\(q : \mathcal{S} \times \mathcal{A} \to \mathbb{R}\)</span>, and repeatedly apply the update step <a href="#eq-review-bellman-opt-operator" class="quarto-xref">eq.&nbsp;<span>6.11</span></a>, the iterates will eventually converge to <span class="math inline">\(Q^\star\)</span> since <a href="#eq-review-bellman-opt-operator" class="quarto-xref">eq.&nbsp;<span>6.11</span></a> is a contraction mapping.</p>
+</div>
+<p>When we can’t compute expectations over <span class="math inline">\(s' \sim P(\cdot \mid s, a)\)</span>, we can instead apply supervised learning to <em>approximately</em> solve the Bellman optimality equations. As before, we can write <span class="math inline">\(Q^\star\)</span> explicitly as a conditional expectation</p>
+<p><span id="eq-q-cond"><span class="math display">\[
+Q^\star(s, a) = \mathop{\mathbb{E}}\left[
+    r(s, a) + \max_{a' \in \mathcal{A}}Q^\star(s', a') \mid s, a
+\right].
+\tag{6.12}\]</span></span></p>
+<p>From this expression, we can read off the inputs <span class="math inline">\(x\)</span> and the targets <span class="math inline">\(y\)</span> for supervised learning. As before, since we don’t know <span class="math inline">\(Q^\star\)</span>, we replace it with our current guess <span class="math inline">\(q \approx Q^\star\)</span>:</p>
+<p><span id="eq-fit-vi-inputs-targets"><span class="math display">\[
+\begin{aligned}
+x &amp;:= (s, a) \\
+y &amp;:= r(s, a) + \max_{a' \in \mathcal{A}} q(s', a').
+\end{aligned}
+\tag{6.13}\]</span></span></p>
+<p>The only difference from fitted policy evaluation (<a href="#sec-fit-pe" class="quarto-xref"><span>Section 6.1</span></a>) is how we compute the targets <span class="math inline">\(y\)</span>. Instead of using the next action from the trajectory, we use the action with the <em>maximum</em> value. Notice that these equations don’t reference a policy anywhere! In other words, fitted value iteration is an <em>off-policy</em> algorithm.</p>
+<div class="cell" data-fig-width="6" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-fit-vi" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fit-vi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-fit-vi">graph LR
+    A["$$\text{Use } \pi \text{ to collect data } \tau^1, \dots, \tau^N$$"] --&gt; B
+    B["$$\text{Compute labels } y^n_h \text{ using Bellman optimality equations for } q$$"] --&gt; C
+    C["$$\text{Update } q \text{ by fitting to data}$$"] --&gt; B
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fit-vi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.3: Fitted policy evaluation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="offline-fitted-value-iteration" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="offline-fitted-value-iteration"><span class="header-section-number">6.2.1</span> Offline fitted value iteration</h3>
+<p>To construct an offline algorithm, we take some dataset of trajectories, and then do all of the learning without ever interacting with the environment.</p>
+<div id="def-fit-vi" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.4 (Fitted value iteration)</strong></span> Suppose we have some dataset of trajectories <span class="math inline">\(\tau^1, \dots, \tau^N\)</span> collected by interacting with the environment.</p>
+<ol type="1">
+<li>Initialize some function <span class="math inline">\(q^0(s, a, h) \in \mathbb{R}\)</span>.</li>
+<li>Compute <span class="math inline">\(x^n_h= (s^n_h, a^n_h)\)</span>.</li>
+<li>For <span class="math inline">\(t = 0, \dots, T-1\)</span>:
+<ol type="1">
+<li>Use <span class="math inline">\(q^t\)</span> to generate the targets <span id="eq-fit-vi-targets"><span class="math display">\[
+y^n_h= r^n_h+ \max_{a'} q^t(s^n_h, a').
+\tag{6.14}\]</span></span></li>
+<li>Set <span class="math inline">\(q^{t+1}\)</span> to the function that minimizes the empirical risk:</li>
+</ol></li>
+</ol>
+<p><span id="eq-fit-vi"><span class="math display">\[
+f^{t+1} \gets \arg\min_f \frac{1}{N (H-1)} \sum_{n=1}^N  \sum_{h=0}^{H-2} (y^n_h- f(x^n_h))^2,
+\tag{6.15}\]</span></span></p>
+</div>
+<div id="cell-fig-alg-fit-vi" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fitted_q_iteration(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    trajectories,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    fit,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    epochs,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    Q_init,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> QFunction:</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    Q_hat <span class="op">=</span> Q_init <span class="kw">or</span> Q_zero(get_num_actions(trajectories))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> get_X(trajectories)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> get_y(trajectories, Q_hat)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        Q_hat <span class="op">=</span> fit(X, y)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Q_hat</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>latex(fitted_q_iteration)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-alg-fit-vi" class="cell-output cell-output-display cell-output-markdown quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-alg-fit-vi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ \mathrm{fitted\_q\_iteration}(\mathrm{trajectories}, \mathrm{fit}, \mathrm{epochs}, Q_{\mathrm{init}}) \\ \hspace{1em} \widehat{Q} \gets Q_{\mathrm{init}} \lor Q_{\mathrm{zero}} \mathopen{}\left( \mathrm{get\_num\_actions} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \mathclose{}\right) \\ \hspace{1em} X \gets \mathrm{get\_X} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{1em} \mathbf{for} \ \mathrm{\_} \in \mathrm{range} \mathopen{}\left( \mathrm{epochs} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} y \gets \mathrm{get\_y} \mathopen{}\left( \mathrm{trajectories}, \widehat{Q} \mathclose{}\right) \\ \hspace{2em} \widehat{Q} \gets \mathrm{fit} \mathopen{}\left( X, y \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ \widehat{Q} \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-alg-fit-vi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.4: Pseudocode for fitted value iteration.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-q-learning" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="sec-q-learning"><span class="header-section-number">6.2.2</span> Q-learning</h3>
+<p>In fitted value iteration (<a href="#fig-alg-fit-vi" class="quarto-xref">fig.&nbsp;<span>6.4</span></a>), we collect the whole dataset beforehand from some unknown policy (or policies). This doesn’t interact with the environment during the learning process. What could go wrong? Since the environment is unknown, the dataset only contains information about some portion of the environment. When we update <span class="math inline">\(q\)</span>, it may therefore only learn to approximate <span class="math inline">\(Q^\star\)</span> well for states that are in the initial dataset. It would be much better if <span class="math inline">\(q\)</span> was accurate in states that the policy will actually find itself in. Given access to the environment, we can instead collect trajectories while learning. This turns fitted value interation into an <em>online</em> algorithm known as <strong>Q-learning.</strong></p>
+<div class="cell" data-fig-width="6" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-fit-q-viz" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fit-q-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-fit-q-viz">graph LR
+    A[Collect trajectories from data collection policy] --&gt; B
+    B[Compute targets by bootstrapping with q] --&gt; C
+    C[Update q by empirical risk minimization] --&gt; B
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fit-q-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.5: Fitted value iteration
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-fig-width="6" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-q-learning-viz" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-q-learning-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-q-learning-viz">graph LR
+    A[Collect trajectories from epsilon-greedy policy for current guess for Q] --&gt; B
+    B[Compute targets by bootstrapping with q] --&gt; C
+    C[Update q by empirical risk minimization] --&gt; A
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-q-learning-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.6: Q learning
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="c818e426" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_learning(env, Q_init, epochs: <span class="bu">int</span>):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> Q_init</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        trajectories <span class="op">=</span> collect_trajectories(env, EpsilonGreedyPolicy(theta))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> get_X(trajectories)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> get_y(trajectories, q)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        q <span class="op">=</span> fit(X, y)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> q</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>latex(q_learning, id_to_latex<span class="op">=</span>{<span class="st">"q_learning"</span>: <span class="vs">r"</span><span class="ch">\t</span><span class="vs">ext{Q-learning}"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ \text{Q-learning}(\mathrm{env}, Q_{\mathrm{init}}, \mathrm{epochs}: \mathbb{Z}) \\ \hspace{1em} q \gets Q_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ \mathrm{\_} \in \mathrm{range} \mathopen{}\left( \mathrm{epochs} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{trajectories} \gets \mathrm{collect\_trajectories} \mathopen{}\left( \mathrm{env}, \mathrm{EpsilonGreedyPolicy} \mathopen{}\left( \theta \mathclose{}\right) \mathclose{}\right) \\ \hspace{2em} X \gets \mathrm{get\_X} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{2em} y \gets \mathrm{get\_y} \mathopen{}\left( \mathrm{trajectories}, q \mathclose{}\right) \\ \hspace{2em} q \gets \mathrm{fit} \mathopen{}\left( X, y \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ q \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
+</div>
+</div>
+<p>Note that it doesn’t actually matter how the trajectories are collected, making Q-learning an <strong>off-policy</strong> algorithm. One common choice is to collect trajectories using an <em>epsilon-greedy</em> policy with respect to the current guess <span class="math inline">\(q\)</span>.</p>
+<p>Another common trick used in practice is to <em>grow</em> the dataset, called a <strong>replay buffer,</strong> at each iteration. Then, in the improvement step, we randomly sample a batch of <span class="math inline">\((x, y)\)</span> samples from the replay buffer and use these for empirical risk minimization.</p>
+<div id="b27918b9" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> q_learning_with_buffer(env, Q_init, epochs: <span class="bu">int</span>, batch_size):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    q <span class="op">=</span> Q_init</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">buffer</span> <span class="op">=</span> []</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        trajectories <span class="op">=</span> collect_trajectories(env, EpsilonGreedyPolicy(theta))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">buffer</span>.extend(trajectories)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        batch <span class="op">=</span> random.sample(trajectories, batch_size)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> get_X(batch)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> get_y(batch, q)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        q <span class="op">=</span> fit(X, y)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> q</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>latex(q_learning, id_to_latex<span class="op">=</span>{<span class="st">"q_learning_with_buffer"</span>: <span class="vs">r"</span><span class="ch">\t</span><span class="vs">ext{Q-learning-buffer}"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="7">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ q_{\mathrm{learning}}(\mathrm{env}, Q_{\mathrm{init}}, \mathrm{epochs}: \mathbb{Z}) \\ \hspace{1em} q \gets Q_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ \mathrm{\_} \in \mathrm{range} \mathopen{}\left( \mathrm{epochs} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \mathrm{trajectories} \gets \mathrm{collect\_trajectories} \mathopen{}\left( \mathrm{env}, \mathrm{EpsilonGreedyPolicy} \mathopen{}\left( \theta \mathclose{}\right) \mathclose{}\right) \\ \hspace{2em} X \gets \mathrm{get\_X} \mathopen{}\left( \mathrm{trajectories} \mathclose{}\right) \\ \hspace{2em} y \gets \mathrm{get\_y} \mathopen{}\left( \mathrm{trajectories}, q \mathclose{}\right) \\ \hspace{2em} q \gets \mathrm{fit} \mathopen{}\left( X, y \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ q \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-fit-pi" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="sec-fit-pi"><span class="header-section-number">6.3</span> Fitted policy iteration</h2>
+<p>We can use fitted policy evaluation to extend <em>policy iteration</em> (<a href="mdps.html#sec-pi" class="quarto-xref"><span>Section 2.4.4.2</span></a>) to this new, more general setting. The algorithm remains exactly the same – repeatedly make the policy greedy with respect to its own value function – except now we evaluate the policy <span class="math inline">\(\pi\)</span> (i.e.&nbsp;estimate <span class="math inline">\(Q^\pi\)</span>) using fitted policy evaluation.</p>
+<div id="cell-fig-fit-pi" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fitted_policy_iteration(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    trajectories: <span class="bu">list</span>[Trajectory],</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    fit: FittingMethod,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    epochs: <span class="bu">int</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    evaluation_epochs: <span class="bu">int</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    π_init: Optional[Policy] <span class="op">=</span> <span class="kw">lambda</span> s, h: <span class="dv">0</span>,  <span class="co"># constant zero policy</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Run fitted policy iteration using the given dataset."""</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    π <span class="op">=</span> π_init</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        Q_hat <span class="op">=</span> fitted_evaluation(trajectories, fit, π, evaluation_epochs)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        π <span class="op">=</span> q_to_greedy(Q_hat)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> π</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>latex(fitted_policy_iteration, id_to_latex<span class="op">=</span>{<span class="st">"fitted_policy_iteration"</span>: <span class="vs">r"</span><span class="ch">\t</span><span class="vs">ext{fitted-policy-iteration}"</span>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="fig-fit-pi" class="cell-output cell-output-display cell-output-markdown quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="8">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fit-pi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+$
+<span class="math display">\[\begin{array}{l} \mathbf{function} \ \text{fitted-policy-iteration}(\mathrm{trajectories}: \mathrm{list}_{\mathrm{Trajectory}}, \mathrm{fit}: \mathrm{FittingMethod}, \mathrm{epochs}: \mathbb{Z}, \mathrm{evaluation\_epochs}: \mathbb{Z}, π_{\mathrm{init}}: \mathrm{Optional}_{\mathrm{Policy}}) \\ \hspace{1em} \textrm{"Run fitted policy iteration using the given dataset."} \\ \hspace{1em} π \gets π_{\mathrm{init}} \\ \hspace{1em} \mathbf{for} \ \mathrm{\_} \in \mathrm{range} \mathopen{}\left( \mathrm{epochs} \mathclose{}\right) \ \mathbf{do} \\ \hspace{2em} \widehat{Q} \gets \mathrm{fitted\_evaluation} \mathopen{}\left( \mathrm{trajectories}, \mathrm{fit}, π, \mathrm{evaluation\_epochs} \mathclose{}\right) \\ \hspace{2em} π \gets \mathrm{q\_to\_greedy} \mathopen{}\left( \widehat{Q} \mathclose{}\right) \\ \hspace{1em} \mathbf{end \ for} \\ \hspace{1em} \mathbf{return} \ π \\ \mathbf{end \ function} \end{array}\]</span>
+<p>$</p>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fit-pi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.7: Pseudocode for fitted policy iteration.
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="exr-pi-categorization" class="theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6.2 (Classification of fitted policy iteration)</strong></span> Is fitted policy iteration online or offline? On-policy or off-policy?</p>
+</div>
+</section>
+<section id="key-takeaways" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="key-takeaways"><span class="header-section-number">6.4</span> Key takeaways</h2>
+<p>In a finite MDP where the environment is known, we can apply <strong>dynamic programming</strong> (<a href="mdps.html#sec-finite-opt-dp" class="quarto-xref"><span>Section 2.3.2</span></a>) to compute the optimal policy. But in most real-world settings, we <em>don’t</em> know the state transitions <span class="math inline">\(P\)</span>. This means we can’t <em>exactly</em> compute the Bellman consistency or optimality equations (<a href="mdps.html#thm-consistency" class="quarto-xref">Theorem&nbsp;<span>2.3</span></a>), which require taking an expectation over the next state.</p>
+<p>In an unknown environment, we must learn from data collected from the environment. <strong>Model-based methods</strong> learn a model of the environment, and then plan within that model to choose the best action. <strong>Model-free methods</strong> instead use the data to approximate quantities of interest (e.g.&nbsp;the optimal Q function or optimal policy) directly.</p>
+<p>We began by considering <em>offline</em> algorithms that used a dataset of interactions to learn some quantity of interest. We then saw the <em>online</em> equivalents that observe data by interacting with the environment.</p>
+</section>
+<section id="sec-fit-bib" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="sec-fit-bib"><span class="header-section-number">6.5</span> Bibliographic notes and further reading</h2>
+<p>The fitted dynamic programming algorithms we discuss in this chapter are a special case of <em>temporal difference</em> (TD) methods, an important class of reinforcement learning algorithms. In particular, this chapter only discusses one-step methods, which can be directly generalized to <span class="math inline">\(n\)</span>-step methods and the <span class="math inline">\(\lambda\)</span>-return, the formulation most commonly used in practice. This allows us to draw direct parallels to the tabular DP methods of <a href="mdps.html" class="quarto-xref"><span>Chapter 2</span></a> (see <a href="#tbl-fit-overview" class="quarto-xref">tbl.&nbsp;<span>6.1</span></a>). TD learning is perhaps the “central and novel [idea of] reinforcement learning” <span class="citation" data-cites="sutton_reinforcement_2018">(<a href="references.html#ref-sutton_reinforcement_2018" role="doc-biblioref">Sutton &amp; Barto, 2018</a>, ch.&nbsp;6)</span>.</p>
+<p>TD methods are based in the psychology of animal learning</p>
+<p><span class="citation" data-cites="witten_adaptive_1977">Witten (<a href="references.html#ref-witten_adaptive_1977" role="doc-biblioref">1977</a>)</span>, which proposed the tabular <span class="math inline">\(\text{TD}(0)\)</span> method, appears to be the earliest instance of a temporal difference algorithm.</p>
+<p>Richard Sutton’s PhD thesis <span class="citation" data-cites="sutton_learning_1988">(<a href="references.html#ref-sutton_learning_1988" role="doc-biblioref">Sutton, 1988</a>)</span> proved theoretical guarantees for many of the algorithms presented here. <span class="citation" data-cites="sutton_reinforcement_2018">Sutton &amp; Barto (<a href="references.html#ref-sutton_reinforcement_2018" role="doc-biblioref">2018</a>)</span> gives a comprehensive discussion of the methods discussed here.</p>
+<p>In later work, <span class="citation" data-cites="hausknecht_deep_2017">Hausknecht &amp; Stone (<a href="references.html#ref-hausknecht_deep_2017" role="doc-biblioref">2017</a>)</span> made the Q-function recurrent, so that it depends on the past history of states. The resulting policy is non-Markovian, which additionally accounts for the partial observability of the environment.</p>
+<p><span class="citation" data-cites="maei_convergent_2009">Maei et al. (<a href="references.html#ref-maei_convergent_2009" role="doc-biblioref">2009</a>)</span> further discusses the <strong>deadly triad</strong> of off-policy sampling, function approximation, and value bootstrapping.</p>
+<p>Deep RL rose to prominence when <span class="citation" data-cites="mnih_playing_2013">Mnih et al. (<a href="references.html#ref-mnih_playing_2013" role="doc-biblioref">2013</a>)</span> used a deep Q network to achieve state of the art performance on the Atari games. However, the combination of deep learning and the underlying variance in RL problems made it challenging to optimize these neural networks. Many changes have been proposed. <span class="citation" data-cites="wang_dueling_2016">Wang et al. (<a href="references.html#ref-wang_dueling_2016" role="doc-biblioref">2016</a>)</span> suggests learning the value function and advantage function separately in a “dueling” architecture. <span class="citation" data-cites="hasselt_double_2010">Hasselt (<a href="references.html#ref-hasselt_double_2010" role="doc-biblioref">2010</a>)</span> suggested the “double learning” algorithm to compensate for Q-learning’s tendency to overestimate the true values. <span class="citation" data-cites="hasselt_deep_2016">Hasselt et al. (<a href="references.html#ref-hasselt_deep_2016" role="doc-biblioref">2016</a>)</span> applied double learning to deep neural networks. <span class="citation" data-cites="hessel_rainbow_2018">Hessel et al. (<a href="references.html#ref-hessel_rainbow_2018" role="doc-biblioref">2018</a>)</span> combined</p>
+<p><span class="citation" data-cites="bertsekas_neuro-dynamic_1996">Bertsekas &amp; Tsitsiklis (<a href="references.html#ref-bertsekas_neuro-dynamic_1996" role="doc-biblioref">1996</a>)</span> coined the term “neuro-dynamic programming” to refere to the combination of (artificial) neural networks with dynamic programming techniques.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-bertsekas_neuro-dynamic_1996" class="csl-entry" role="listitem">
+Bertsekas, D. P., &amp; Tsitsiklis, J. N. (1996). <em>Neuro-dynamic programming</em>. Athena scientific.
+</div>
+<div id="ref-hasselt_double_2010" class="csl-entry" role="listitem">
+Hasselt, H. (2010). Double q-learning. <em>Advances in <span>Neural Information Processing Systems</span></em>, <em>23</em>. <a href="https://proceedings.neurips.cc/paper_files/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-Abstract.html">https://proceedings.neurips.cc/paper_files/paper/2010/hash/091d584fced301b442654dd8c23b3fc9-Abstract.html</a>
+</div>
+<div id="ref-hasselt_deep_2016" class="csl-entry" role="listitem">
+Hasselt, H. van, Guez, A., &amp; Silver, D. (2016). Deep reinforcement learning with double q-learning. <em>Proceedings of the Thirtieth <span>AAAI</span> Conference on Artificial Intelligence</em>, 2094–2100.
+</div>
+<div id="ref-hausknecht_deep_2017" class="csl-entry" role="listitem">
+Hausknecht, M., &amp; Stone, P. (2017, January 11). <em>Deep recurrent q-learning for partially observable mdps</em>. <a href="https://doi.org/10.48550/arXiv.1507.06527">https://doi.org/10.48550/arXiv.1507.06527</a>
+</div>
+<div id="ref-hessel_rainbow_2018" class="csl-entry" role="listitem">
+Hessel, M., Modayil, J., van Hasselt, H., Schaul, T., Ostrovski, G., Dabney, W., Horgan, D., Piot, B., Azar, M., &amp; Silver, D. (2018). Rainbow: Combining improvements in deep reinforcement learning. <em>Proceedings of the <span>Thirty-Second AAAI Conference</span> on <span>Artificial Intelligence</span> and <span>Thirtieth Innovative Applications</span> of <span>Artificial Intelligence Conference</span> and <span>Eighth AAAI Symposium</span> on <span>Educational Advances</span> in <span>Artificial Intelligence</span></em>, 3215–3222.
+</div>
+<div id="ref-maei_convergent_2009" class="csl-entry" role="listitem">
+Maei, H., Szepesvári, C., Bhatnagar, S., Precup, D., Silver, D., &amp; Sutton, R. S. (2009). Convergent temporal-difference learning with arbitrary smooth function approximation. <em>Advances in <span>Neural Information Processing Systems</span></em>, <em>22</em>. <a href="https://papers.nips.cc/paper_files/paper/2009/hash/3a15c7d0bbe60300a39f76f8a5ba6896-Abstract.html">https://papers.nips.cc/paper_files/paper/2009/hash/3a15c7d0bbe60300a39f76f8a5ba6896-Abstract.html</a>
+</div>
+<div id="ref-mnih_playing_2013" class="csl-entry" role="listitem">
+Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., &amp; Riedmiller, M. A. (2013). Playing atari with deep reinforcement learning. <em>CoRR</em>, <em>abs/1312.5602</em>. <a href="http://arxiv.org/abs/1312.5602">http://arxiv.org/abs/1312.5602</a>
+</div>
+<div id="ref-sutton_learning_1988" class="csl-entry" role="listitem">
+Sutton, R. S. (1988). Learning to predict by the methods of temporal differences. <em>Machine Learning</em>, <em>3</em>(1), 9–44. <a href="https://doi.org/10.1007/BF00115009">https://doi.org/10.1007/BF00115009</a>
+</div>
+<div id="ref-sutton_reinforcement_2018" class="csl-entry" role="listitem">
+Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement learning: An introduction</em> (Second edition). The MIT Press. <a href="http://incompleteideas.net/book/RLbook2020trimmed.pdf">http://incompleteideas.net/book/RLbook2020trimmed.pdf</a>
+</div>
+<div id="ref-van_hasselt_deep_2018" class="csl-entry" role="listitem">
+van Hasselt, H., Doron, Y., Strub, F., Hessel, M., Sonnerat, N., &amp; Modayil, J. (2018, December 6). <em>Deep reinforcement learning and the deadly triad</em>. <a href="https://doi.org/10.48550/arXiv.1812.02648">https://doi.org/10.48550/arXiv.1812.02648</a>
+</div>
+<div id="ref-wang_dueling_2016" class="csl-entry" role="listitem">
+Wang, Z., Schaul, T., Hessel, M., Hasselt, H., Lanctot, M., &amp; Freitas, N. (2016). Dueling network architectures for deep reinforcement learning. <em>Proceedings of <span>The</span> 33rd <span>International Conference</span> on <span>Machine Learning</span></em>, 1995–2003. <a href="https://proceedings.mlr.press/v48/wangf16.html">https://proceedings.mlr.press/v48/wangf16.html</a>
+</div>
+<div id="ref-witten_adaptive_1977" class="csl-entry" role="listitem">
+Witten, I. H. (1977). An adaptive optimal controller for discrete-time markov environments. <em>Information and Control</em>, <em>34</em>(4), 286–295. <a href="https://doi.org/10.1016/S0019-9958(77)90354-0">https://doi.org/10.1016/S0019-9958(77)90354-0</a>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/rlbook\.adzc\.ai\/2026");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./supervised_learning.html" class="pagination-link" aria-label="Supervised learning">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Supervised learning</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./pg.html" class="pagination-link" aria-label="Policy Gradient Methods">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Policy Gradient Methods</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Copyright 2025 Alexander Cai</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/adzcai/rlbook/edit/main/fitted_dp.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/adzcai/rlbook/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/adzcai/rlbook/blob/main/fitted_dp.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link active" href="https://github.com/adzcai/rlbook" aria-current="page">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
